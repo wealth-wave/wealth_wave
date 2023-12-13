@@ -7,7 +7,7 @@ class GetBasketsUseCase {
   GetBasketsUseCase({BasketApi? basketApi})
       : _basketApi = basketApi ?? BasketApi();
 
-  Future<List<Basket>> getBaskets() async {
+  Future<List<Basket>> getBaskets() {
     return _basketApi.getBaskets();
   }
 }

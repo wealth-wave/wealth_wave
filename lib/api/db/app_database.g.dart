@@ -18,14 +18,8 @@ class $BasketTableTable extends BasketTable
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
-  static const VerificationMeta _expectedSplitMeta =
-      const VerificationMeta('expectedSplit');
   @override
-  late final GeneratedColumn<double> expectedSplit = GeneratedColumn<double>(
-      'expected_split', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns => [name, expectedSplit];
+  List<GeneratedColumn> get $columns => [name];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -42,12 +36,6 @@ class $BasketTableTable extends BasketTable
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('expected_split')) {
-      context.handle(
-          _expectedSplitMeta,
-          expectedSplit.isAcceptableOrUnknown(
-              data['expected_split']!, _expectedSplitMeta));
-    }
     return context;
   }
 
@@ -59,8 +47,6 @@ class $BasketTableTable extends BasketTable
     return BasketDO(
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      expectedSplit: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}expected_split']),
     );
   }
 
@@ -72,24 +58,17 @@ class $BasketTableTable extends BasketTable
 
 class BasketDO extends DataClass implements Insertable<BasketDO> {
   final String name;
-  final double? expectedSplit;
-  const BasketDO({required this.name, this.expectedSplit});
+  const BasketDO({required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['name'] = Variable<String>(name);
-    if (!nullToAbsent || expectedSplit != null) {
-      map['expected_split'] = Variable<double>(expectedSplit);
-    }
     return map;
   }
 
   BasketTableCompanion toCompanion(bool nullToAbsent) {
     return BasketTableCompanion(
       name: Value(name),
-      expectedSplit: expectedSplit == null && nullToAbsent
-          ? const Value.absent()
-          : Value(expectedSplit),
     );
   }
 
@@ -98,7 +77,6 @@ class BasketDO extends DataClass implements Insertable<BasketDO> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return BasketDO(
       name: serializer.fromJson<String>(json['name']),
-      expectedSplit: serializer.fromJson<double?>(json['expectedSplit']),
     );
   }
   @override
@@ -106,68 +84,51 @@ class BasketDO extends DataClass implements Insertable<BasketDO> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'name': serializer.toJson<String>(name),
-      'expectedSplit': serializer.toJson<double?>(expectedSplit),
     };
   }
 
-  BasketDO copyWith(
-          {String? name,
-          Value<double?> expectedSplit = const Value.absent()}) =>
-      BasketDO(
+  BasketDO copyWith({String? name}) => BasketDO(
         name: name ?? this.name,
-        expectedSplit:
-            expectedSplit.present ? expectedSplit.value : this.expectedSplit,
       );
   @override
   String toString() {
     return (StringBuffer('BasketDO(')
-          ..write('name: $name, ')
-          ..write('expectedSplit: $expectedSplit')
+          ..write('name: $name')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(name, expectedSplit);
+  int get hashCode => name.hashCode;
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is BasketDO &&
-          other.name == this.name &&
-          other.expectedSplit == this.expectedSplit);
+      identical(this, other) || (other is BasketDO && other.name == this.name);
 }
 
 class BasketTableCompanion extends UpdateCompanion<BasketDO> {
   final Value<String> name;
-  final Value<double?> expectedSplit;
   final Value<int> rowid;
   const BasketTableCompanion({
     this.name = const Value.absent(),
-    this.expectedSplit = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BasketTableCompanion.insert({
     required String name,
-    this.expectedSplit = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : name = Value(name);
   static Insertable<BasketDO> custom({
     Expression<String>? name,
-    Expression<double>? expectedSplit,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (name != null) 'name': name,
-      if (expectedSplit != null) 'expected_split': expectedSplit,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
-  BasketTableCompanion copyWith(
-      {Value<String>? name, Value<double?>? expectedSplit, Value<int>? rowid}) {
+  BasketTableCompanion copyWith({Value<String>? name, Value<int>? rowid}) {
     return BasketTableCompanion(
       name: name ?? this.name,
-      expectedSplit: expectedSplit ?? this.expectedSplit,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -177,9 +138,6 @@ class BasketTableCompanion extends UpdateCompanion<BasketDO> {
     final map = <String, Expression>{};
     if (name.present) {
       map['name'] = Variable<String>(name.value);
-    }
-    if (expectedSplit.present) {
-      map['expected_split'] = Variable<double>(expectedSplit.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -191,7 +149,6 @@ class BasketTableCompanion extends UpdateCompanion<BasketDO> {
   String toString() {
     return (StringBuffer('BasketTableCompanion(')
           ..write('name: $name, ')
-          ..write('expectedSplit: $expectedSplit, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();

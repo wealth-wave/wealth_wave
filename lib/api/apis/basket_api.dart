@@ -7,11 +7,15 @@ class BasketApi {
   BasketApi({AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
   Future<List<Basket>> getBaskets() {
-    return _db.select(_db.basketTable).get().then(
-        (value) => value.map((e) => Basket(e.name, e.expectedSplit)).toList());
+    return _db
+        .select(_db.basketTable)
+        .get()
+        .then((value) => value.map((e) => Basket(e.name)).toList());
   }
 
-  Future<void> saveBaskets(List<Basket> baskets) async {
-    throw UnimplementedError();
+  Future<void> addBasket(String name) {
+    return _db
+        .into(_db.basketTable)
+        .insertOnConflictUpdate(BasketDO(name: name));
   }
 }
