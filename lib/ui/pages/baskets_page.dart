@@ -13,18 +13,55 @@ class BasketsPage extends StatefulWidget {
 class _BasketsPage
     extends PageState<BasketsPageViewState, BasketsPage, BasketsPagePresenter> {
   @override
+  void initState() {
+    super.initState();
+    presenter.fetchBaskets();
+  }
+
+  @override
   Widget buildWidget(BuildContext context, BasketsPageViewState snapshot) {
     List<Basket> baskets = snapshot.baskets;
     return Scaffold(
-      body: ListView.builder(
+      body: Center(
+          child: ListView.builder(
         itemCount: baskets.length,
         itemBuilder: (context, index) {
           Basket basket = baskets[index];
-          return ListTile(title: Text(basket.name));
+          return Card(
+              child: ListTile(
+            title: Text(basket.name),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    _showBasketNameDialog(context, name: basket.name).then((value) {
+                      if (value != null) {
+                        presenter.updateBasket(basket.id, value);
+                      }
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    presenter.deleteBasket(basket.id);
+                  },
+                ),
+              ],
+            ),
+          ));
         },
-      ),
+      )),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          _showBasketNameDialog(context).then((value) {
+            if (value != null) {
+              presenter.addBasket(value);
+            }
+          });
+        },
         tooltip: 'Add',
         child: const Icon(Icons.add),
       ),
@@ -34,5 +71,39 @@ class _BasketsPage
   @override
   BasketsPagePresenter initializePresenter() {
     return BasketsPagePresenter();
+  }
+
+  final _textFieldController = TextEditingController();
+
+  Future<String?> _showBasketNameDialog(BuildContext context, {String? name}) async {
+    if (name != null) {
+      _textFieldController.text = name;
+    }
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Add Basket'),
+            content: TextField(
+              controller: _textFieldController,
+              decoration: const InputDecoration(hintText: "Basket Name"),
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                  child: const Text("Cancel"),
+                  onPressed: () {
+                    _textFieldController.clear();
+                    Navigator.pop(context);
+                  }),
+              ElevatedButton(
+                  child: const Text('Add'),
+                  onPressed: () {
+                    var name = _textFieldController.text;
+                    _textFieldController.clear();
+                    Navigator.pop(context, name);
+                  }),
+            ],
+          );
+        });
   }
 }

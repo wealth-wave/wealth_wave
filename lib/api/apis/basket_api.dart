@@ -10,12 +10,20 @@ class BasketApi {
     return _db
         .select(_db.basketTable)
         .get()
-        .then((value) => value.map((e) => Basket(e.name)).toList());
+        .then((value) => value.map((e) => Basket(e.id, e.name)).toList());
   }
 
   Future<void> addBasket(String name) {
     return _db
         .into(_db.basketTable)
-        .insertOnConflictUpdate(BasketDO(name: name));
+        .insert(BasketTableCompanion.insert(name: name));
+  }
+
+  Future<void> updateBasket(int id, String name) {
+    return _db.update(_db.basketTable).replace(BasketDO(id: id, name: name));
+  }
+
+  Future<void> deleteBasket(int id) {
+    return (_db.delete(_db.basketTable)..where((t) => t.id.equals(id))).go();
   }
 }

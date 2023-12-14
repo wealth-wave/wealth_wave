@@ -9,17 +9,24 @@ class $BasketTableTable extends BasketTable
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $BasketTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 6, maxTextLength: 32),
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   @override
-  List<GeneratedColumn> get $columns => [name];
+  List<GeneratedColumn> get $columns => [id, name];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -30,6 +37,9 @@ class $BasketTableTable extends BasketTable
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -40,11 +50,13 @@ class $BasketTableTable extends BasketTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   BasketDO map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return BasketDO(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
     );
@@ -57,17 +69,20 @@ class $BasketTableTable extends BasketTable
 }
 
 class BasketDO extends DataClass implements Insertable<BasketDO> {
+  final int id;
   final String name;
-  const BasketDO({required this.name});
+  const BasketDO({required this.id, required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     return map;
   }
 
   BasketTableCompanion toCompanion(bool nullToAbsent) {
     return BasketTableCompanion(
+      id: Value(id),
       name: Value(name),
     );
   }
@@ -76,6 +91,7 @@ class BasketDO extends DataClass implements Insertable<BasketDO> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return BasketDO(
+      id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
     );
   }
@@ -83,64 +99,68 @@ class BasketDO extends DataClass implements Insertable<BasketDO> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
     };
   }
 
-  BasketDO copyWith({String? name}) => BasketDO(
+  BasketDO copyWith({int? id, String? name}) => BasketDO(
+        id: id ?? this.id,
         name: name ?? this.name,
       );
   @override
   String toString() {
     return (StringBuffer('BasketDO(')
+          ..write('id: $id, ')
           ..write('name: $name')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => name.hashCode;
+  int get hashCode => Object.hash(id, name);
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || (other is BasketDO && other.name == this.name);
+      identical(this, other) ||
+      (other is BasketDO && other.id == this.id && other.name == this.name);
 }
 
 class BasketTableCompanion extends UpdateCompanion<BasketDO> {
+  final Value<int> id;
   final Value<String> name;
-  final Value<int> rowid;
   const BasketTableCompanion({
+    this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   BasketTableCompanion.insert({
+    this.id = const Value.absent(),
     required String name,
-    this.rowid = const Value.absent(),
   }) : name = Value(name);
   static Insertable<BasketDO> custom({
+    Expression<int>? id,
     Expression<String>? name,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
+      if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
-  BasketTableCompanion copyWith({Value<String>? name, Value<int>? rowid}) {
+  BasketTableCompanion copyWith({Value<int>? id, Value<String>? name}) {
     return BasketTableCompanion(
+      id: id ?? this.id,
       name: name ?? this.name,
-      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
     }
     return map;
   }
@@ -148,8 +168,8 @@ class BasketTableCompanion extends UpdateCompanion<BasketDO> {
   @override
   String toString() {
     return (StringBuffer('BasketTableCompanion(')
-          ..write('name: $name, ')
-          ..write('rowid: $rowid')
+          ..write('id: $id, ')
+          ..write('name: $name')
           ..write(')'))
         .toString();
   }

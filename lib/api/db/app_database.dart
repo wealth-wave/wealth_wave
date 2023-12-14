@@ -6,7 +6,8 @@ part 'app_database.g.dart';
 
 @DataClassName('BasketDO')
 class BasketTable extends Table {
-  TextColumn get name => text().withLength(min: 6, max: 32).unique()();
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text().unique()();
 }
 
 @DriftDatabase(tables: [BasketTable])
@@ -26,7 +27,7 @@ class AppDatabase extends _$AppDatabase {
 DatabaseConnection connectOnWeb() {
   return DatabaseConnection.delayed(Future(() async {
     final result = await WasmDatabase.open(
-      databaseName: 'my_app_db', // prefer to only use valid identifiers here
+      databaseName: 'wealth_wave_db', // prefer to only use valid identifiers here
       sqlite3Uri: Uri.parse('sqlite3.wasm'),
       driftWorkerUri: Uri.parse('drift_worker.dart.js'),
     );

@@ -1,5 +1,6 @@
 class Basket {
+  int id;
   String name;
 
-  Basket(this.name);
+  Basket(this.id, this.name);
 }
