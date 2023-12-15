@@ -307,14 +307,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
-  intl:
-    dependency: transitive
-    description:
-      name: intl
-      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.18.1"
   io:
     dependency: transitive
     description:
@@ -616,14 +608,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
-  textfield_datepicker:
-    dependency: "direct main"
-    description:
-      name: textfield_datepicker
-      sha256: "8c89f938de8c5c95f24d6f30cdac741b00510784622f76d99cf1b11c8e80df6e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0"
   timing:
     dependency: transitive
     description:
