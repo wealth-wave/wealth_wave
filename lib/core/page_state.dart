@@ -17,7 +17,7 @@ abstract class PageState<D, T extends StatefulWidget, P extends Presenter<D>>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return StreamBuilder(
         stream: presenter.getViewStateStream(),
         builder: (context, snapshot) {
@@ -38,7 +38,7 @@ abstract class PageState<D, T extends StatefulWidget, P extends Presenter<D>>
         });
   }
 
-  Widget buildWidget(BuildContext context, D snapshot);
+  Widget buildWidget(final BuildContext context, final D snapshot);
 
   @override
   void dispose() {

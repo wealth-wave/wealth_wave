@@ -10,7 +10,7 @@ abstract class Presenter<T> {
   final StreamController<ViewStateHolder<T>> _viewStateController =
   StreamController();
 
-  Presenter(T viewState) : _viewStateHolder = ViewStateHolder(viewState) {
+  Presenter(final T viewState) : _viewStateHolder = ViewStateHolder(viewState) {
     _viewStateController.sink.add(_viewStateHolder);
   }
 
@@ -26,12 +26,12 @@ abstract class Presenter<T> {
     }
   }
 
-  void setLoading({String? message}) {
+  void setLoading({final String? message}) {
     _viewStateHolder.setLoading(message: message);
     _viewStateController.sink.add(_viewStateHolder);
   }
 
-  void setError({required String error, VoidCallback? onRetry}) {
+  void setError({required final String error, final VoidCallback? onRetry}) {
     _viewStateHolder.setError(error: error, retry: onRetry);
     _viewStateController.sink.add(_viewStateHolder);
   }

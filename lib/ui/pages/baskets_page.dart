@@ -19,7 +19,7 @@ class _BasketsPage
   }
 
   @override
-  Widget buildWidget(BuildContext context, BasketsPageViewState snapshot) {
+  Widget buildWidget(final BuildContext context, final BasketsPageViewState snapshot) {
     List<Basket> baskets = snapshot.baskets;
     return Scaffold(
       body: Center(
@@ -38,7 +38,7 @@ class _BasketsPage
                   onPressed: () {
                     _showBasketNameDialog(context, name: basket.name).then((value) {
                       if (value != null) {
-                        presenter.updateBasketName(basket.id, value);
+                        presenter.updateBasketName(id: basket.id, name: value);
                       }
                     });
                   },
@@ -46,7 +46,7 @@ class _BasketsPage
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    presenter.deleteBasket(basket.id);
+                    presenter.deleteBasket(id: basket.id);
                   },
                 ),
               ],
@@ -58,7 +58,7 @@ class _BasketsPage
         onPressed: () {
           _showBasketNameDialog(context).then((value) {
             if (value != null) {
-              presenter.addBasket(value);
+              presenter.createBasket(name: value);
             }
           });
         },
@@ -83,7 +83,7 @@ class _BasketsPage
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Add Basket'),
+            title: const Text('Create Basket'),
             content: TextField(
               controller: _textFieldController,
               decoration: const InputDecoration(hintText: "Basket Name"),
@@ -96,7 +96,7 @@ class _BasketsPage
                     Navigator.pop(context);
                   }),
               ElevatedButton(
-                  child: const Text('Add'),
+                  child: const Text('Create'),
                   onPressed: () {
                     var name = _textFieldController.text;
                     _textFieldController.clear();

@@ -206,6 +206,13 @@ class $InvestmentTableTable extends InvestmentTable
   late final GeneratedColumn<double> value = GeneratedColumn<double>(
       'VALUE', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _riskLevelMeta =
+      const VerificationMeta('riskLevel');
+  @override
+  late final GeneratedColumnWithTypeConverter<RiskLevel, String> riskLevel =
+      GeneratedColumn<String>('RISK_LEVEL', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<RiskLevel>($InvestmentTableTable.$converterriskLevel);
   static const VerificationMeta _valueUpdatedOnMeta =
       const VerificationMeta('valueUpdatedOn');
   @override
@@ -214,7 +221,7 @@ class $InvestmentTableTable extends InvestmentTable
           type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, basketId, value, valueUpdatedOn];
+      [id, name, basketId, value, riskLevel, valueUpdatedOn];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -246,6 +253,7 @@ class $InvestmentTableTable extends InvestmentTable
     } else if (isInserting) {
       context.missing(_valueMeta);
     }
+    context.handle(_riskLevelMeta, const VerificationResult.success());
     if (data.containsKey('VALUE_UPDATED_ON')) {
       context.handle(
           _valueUpdatedOnMeta,
@@ -271,6 +279,9 @@ class $InvestmentTableTable extends InvestmentTable
           .read(DriftSqlType.int, data['${effectivePrefix}BASKET_ID'])!,
       value: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}VALUE'])!,
+      riskLevel: $InvestmentTableTable.$converterriskLevel.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!),
       valueUpdatedOn: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}VALUE_UPDATED_ON'])!,
     );
@@ -280,6 +291,9 @@ class $InvestmentTableTable extends InvestmentTable
   $InvestmentTableTable createAlias(String alias) {
     return $InvestmentTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<RiskLevel, String, String> $converterriskLevel =
+      const EnumNameConverter<RiskLevel>(RiskLevel.values);
 }
 
 class INVESTMENT extends DataClass implements Insertable<INVESTMENT> {
@@ -287,12 +301,14 @@ class INVESTMENT extends DataClass implements Insertable<INVESTMENT> {
   final String name;
   final int basketId;
   final double value;
+  final RiskLevel riskLevel;
   final DateTime valueUpdatedOn;
   const INVESTMENT(
       {required this.id,
       required this.name,
       required this.basketId,
       required this.value,
+      required this.riskLevel,
       required this.valueUpdatedOn});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -301,6 +317,10 @@ class INVESTMENT extends DataClass implements Insertable<INVESTMENT> {
     map['NAME'] = Variable<String>(name);
     map['BASKET_ID'] = Variable<int>(basketId);
     map['VALUE'] = Variable<double>(value);
+    {
+      map['RISK_LEVEL'] = Variable<String>(
+          $InvestmentTableTable.$converterriskLevel.toSql(riskLevel));
+    }
     map['VALUE_UPDATED_ON'] = Variable<DateTime>(valueUpdatedOn);
     return map;
   }
@@ -311,6 +331,7 @@ class INVESTMENT extends DataClass implements Insertable<INVESTMENT> {
       name: Value(name),
       basketId: Value(basketId),
       value: Value(value),
+      riskLevel: Value(riskLevel),
       valueUpdatedOn: Value(valueUpdatedOn),
     );
   }
@@ -323,6 +344,8 @@ class INVESTMENT extends DataClass implements Insertable<INVESTMENT> {
       name: serializer.fromJson<String>(json['name']),
       basketId: serializer.fromJson<int>(json['basketId']),
       value: serializer.fromJson<double>(json['value']),
+      riskLevel: $InvestmentTableTable.$converterriskLevel
+          .fromJson(serializer.fromJson<String>(json['riskLevel'])),
       valueUpdatedOn: serializer.fromJson<DateTime>(json['valueUpdatedOn']),
     );
   }
@@ -334,6 +357,8 @@ class INVESTMENT extends DataClass implements Insertable<INVESTMENT> {
       'name': serializer.toJson<String>(name),
       'basketId': serializer.toJson<int>(basketId),
       'value': serializer.toJson<double>(value),
+      'riskLevel': serializer.toJson<String>(
+          $InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),
       'valueUpdatedOn': serializer.toJson<DateTime>(valueUpdatedOn),
     };
   }
@@ -343,12 +368,14 @@ class INVESTMENT extends DataClass implements Insertable<INVESTMENT> {
           String? name,
           int? basketId,
           double? value,
+          RiskLevel? riskLevel,
           DateTime? valueUpdatedOn}) =>
       INVESTMENT(
         id: id ?? this.id,
         name: name ?? this.name,
         basketId: basketId ?? this.basketId,
         value: value ?? this.value,
+        riskLevel: riskLevel ?? this.riskLevel,
         valueUpdatedOn: valueUpdatedOn ?? this.valueUpdatedOn,
       );
   @override
@@ -358,13 +385,15 @@ class INVESTMENT extends DataClass implements Insertable<INVESTMENT> {
           ..write('name: $name, ')
           ..write('basketId: $basketId, ')
           ..write('value: $value, ')
+          ..write('riskLevel: $riskLevel, ')
           ..write('valueUpdatedOn: $valueUpdatedOn')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, basketId, value, valueUpdatedOn);
+  int get hashCode =>
+      Object.hash(id, name, basketId, value, riskLevel, valueUpdatedOn);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -373,6 +402,7 @@ class INVESTMENT extends DataClass implements Insertable<INVESTMENT> {
           other.name == this.name &&
           other.basketId == this.basketId &&
           other.value == this.value &&
+          other.riskLevel == this.riskLevel &&
           other.valueUpdatedOn == this.valueUpdatedOn);
 }
 
@@ -381,12 +411,14 @@ class InvestmentTableCompanion extends UpdateCompanion<INVESTMENT> {
   final Value<String> name;
   final Value<int> basketId;
   final Value<double> value;
+  final Value<RiskLevel> riskLevel;
   final Value<DateTime> valueUpdatedOn;
   const InvestmentTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.basketId = const Value.absent(),
     this.value = const Value.absent(),
+    this.riskLevel = const Value.absent(),
     this.valueUpdatedOn = const Value.absent(),
   });
   InvestmentTableCompanion.insert({
@@ -394,16 +426,19 @@ class InvestmentTableCompanion extends UpdateCompanion<INVESTMENT> {
     required String name,
     required int basketId,
     required double value,
+    required RiskLevel riskLevel,
     required DateTime valueUpdatedOn,
   })  : name = Value(name),
         basketId = Value(basketId),
         value = Value(value),
+        riskLevel = Value(riskLevel),
         valueUpdatedOn = Value(valueUpdatedOn);
   static Insertable<INVESTMENT> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? basketId,
     Expression<double>? value,
+    Expression<String>? riskLevel,
     Expression<DateTime>? valueUpdatedOn,
   }) {
     return RawValuesInsertable({
@@ -411,6 +446,7 @@ class InvestmentTableCompanion extends UpdateCompanion<INVESTMENT> {
       if (name != null) 'NAME': name,
       if (basketId != null) 'BASKET_ID': basketId,
       if (value != null) 'VALUE': value,
+      if (riskLevel != null) 'RISK_LEVEL': riskLevel,
       if (valueUpdatedOn != null) 'VALUE_UPDATED_ON': valueUpdatedOn,
     });
   }
@@ -420,12 +456,14 @@ class InvestmentTableCompanion extends UpdateCompanion<INVESTMENT> {
       Value<String>? name,
       Value<int>? basketId,
       Value<double>? value,
+      Value<RiskLevel>? riskLevel,
       Value<DateTime>? valueUpdatedOn}) {
     return InvestmentTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       basketId: basketId ?? this.basketId,
       value: value ?? this.value,
+      riskLevel: riskLevel ?? this.riskLevel,
       valueUpdatedOn: valueUpdatedOn ?? this.valueUpdatedOn,
     );
   }
@@ -445,6 +483,10 @@ class InvestmentTableCompanion extends UpdateCompanion<INVESTMENT> {
     if (value.present) {
       map['VALUE'] = Variable<double>(value.value);
     }
+    if (riskLevel.present) {
+      map['RISK_LEVEL'] = Variable<String>(
+          $InvestmentTableTable.$converterriskLevel.toSql(riskLevel.value));
+    }
     if (valueUpdatedOn.present) {
       map['VALUE_UPDATED_ON'] = Variable<DateTime>(valueUpdatedOn.value);
     }
@@ -458,6 +500,7 @@ class InvestmentTableCompanion extends UpdateCompanion<INVESTMENT> {
           ..write('name: $name, ')
           ..write('basketId: $basketId, ')
           ..write('value: $value, ')
+          ..write('riskLevel: $riskLevel, ')
           ..write('valueUpdatedOn: $valueUpdatedOn')
           ..write(')'))
         .toString();
@@ -745,30 +788,28 @@ class $GoalTableTable extends GoalTable with TableInfo<$GoalTableTable, GOAL> {
   late final GeneratedColumn<double> targetAmount = GeneratedColumn<double>(
       'TARGET_AMOUNT', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _targetDateMeta =
-      const VerificationMeta('targetDate');
-  @override
-  late final GeneratedColumn<DateTime> targetDate = GeneratedColumn<DateTime>(
-      'TARGET_DATE', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _inflationMeta =
       const VerificationMeta('inflation');
   @override
   late final GeneratedColumn<double> inflation = GeneratedColumn<double>(
       'INFLATION', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _riskProfileTypeMeta =
-      const VerificationMeta('riskProfileType');
+  static const VerificationMeta _targetDateMeta =
+      const VerificationMeta('targetDate');
   @override
-  late final GeneratedColumnWithTypeConverter<RiskProfileType?, String>
-      riskProfileType = GeneratedColumn<String>(
-              'RISK_PROFILE_TYPE', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<RiskProfileType?>(
-              $GoalTableTable.$converterriskProfileTypen);
+  late final GeneratedColumn<DateTime> targetDate = GeneratedColumn<DateTime>(
+      'TARGET_DATE', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _importanceMeta =
+      const VerificationMeta('importance');
+  @override
+  late final GeneratedColumnWithTypeConverter<GoalImportance, String>
+      importance = GeneratedColumn<String>('IMPORTANCE', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<GoalImportance>($GoalTableTable.$converterimportance);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, targetAmount, targetDate, inflation, riskProfileType];
+      [id, name, targetAmount, inflation, targetDate, importance];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -796,6 +837,12 @@ class $GoalTableTable extends GoalTable with TableInfo<$GoalTableTable, GOAL> {
     } else if (isInserting) {
       context.missing(_targetAmountMeta);
     }
+    if (data.containsKey('INFLATION')) {
+      context.handle(_inflationMeta,
+          inflation.isAcceptableOrUnknown(data['INFLATION']!, _inflationMeta));
+    } else if (isInserting) {
+      context.missing(_inflationMeta);
+    }
     if (data.containsKey('TARGET_DATE')) {
       context.handle(
           _targetDateMeta,
@@ -804,13 +851,7 @@ class $GoalTableTable extends GoalTable with TableInfo<$GoalTableTable, GOAL> {
     } else if (isInserting) {
       context.missing(_targetDateMeta);
     }
-    if (data.containsKey('INFLATION')) {
-      context.handle(_inflationMeta,
-          inflation.isAcceptableOrUnknown(data['INFLATION']!, _inflationMeta));
-    } else if (isInserting) {
-      context.missing(_inflationMeta);
-    }
-    context.handle(_riskProfileTypeMeta, const VerificationResult.success());
+    context.handle(_importanceMeta, const VerificationResult.success());
     return context;
   }
 
@@ -826,13 +867,13 @@ class $GoalTableTable extends GoalTable with TableInfo<$GoalTableTable, GOAL> {
           .read(DriftSqlType.string, data['${effectivePrefix}NAME'])!,
       targetAmount: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}TARGET_AMOUNT'])!,
-      targetDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}TARGET_DATE'])!,
       inflation: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}INFLATION'])!,
-      riskProfileType: $GoalTableTable.$converterriskProfileTypen.fromSql(
-          attachedDatabase.typeMapping.read(DriftSqlType.string,
-              data['${effectivePrefix}RISK_PROFILE_TYPE'])),
+      targetDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}TARGET_DATE'])!,
+      importance: $GoalTableTable.$converterimportance.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}IMPORTANCE'])!),
     );
   }
 
@@ -841,39 +882,36 @@ class $GoalTableTable extends GoalTable with TableInfo<$GoalTableTable, GOAL> {
     return $GoalTableTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<RiskProfileType, String, String>
-      $converterriskProfileType =
-      const EnumNameConverter<RiskProfileType>(RiskProfileType.values);
-  static JsonTypeConverter2<RiskProfileType?, String?, String?>
-      $converterriskProfileTypen =
-      JsonTypeConverter2.asNullable($converterriskProfileType);
+  static JsonTypeConverter2<GoalImportance, String, String>
+      $converterimportance =
+      const EnumNameConverter<GoalImportance>(GoalImportance.values);
 }
 
 class GOAL extends DataClass implements Insertable<GOAL> {
   final int id;
   final String name;
   final double targetAmount;
-  final DateTime targetDate;
   final double inflation;
-  final RiskProfileType? riskProfileType;
+  final DateTime targetDate;
+  final GoalImportance importance;
   const GOAL(
       {required this.id,
       required this.name,
       required this.targetAmount,
-      required this.targetDate,
       required this.inflation,
-      this.riskProfileType});
+      required this.targetDate,
+      required this.importance});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['ID'] = Variable<int>(id);
     map['NAME'] = Variable<String>(name);
     map['TARGET_AMOUNT'] = Variable<double>(targetAmount);
-    map['TARGET_DATE'] = Variable<DateTime>(targetDate);
     map['INFLATION'] = Variable<double>(inflation);
-    if (!nullToAbsent || riskProfileType != null) {
-      map['RISK_PROFILE_TYPE'] = Variable<String>(
-          $GoalTableTable.$converterriskProfileTypen.toSql(riskProfileType));
+    map['TARGET_DATE'] = Variable<DateTime>(targetDate);
+    {
+      map['IMPORTANCE'] = Variable<String>(
+          $GoalTableTable.$converterimportance.toSql(importance));
     }
     return map;
   }
@@ -883,11 +921,9 @@ class GOAL extends DataClass implements Insertable<GOAL> {
       id: Value(id),
       name: Value(name),
       targetAmount: Value(targetAmount),
-      targetDate: Value(targetDate),
       inflation: Value(inflation),
-      riskProfileType: riskProfileType == null && nullToAbsent
-          ? const Value.absent()
-          : Value(riskProfileType),
+      targetDate: Value(targetDate),
+      importance: Value(importance),
     );
   }
 
@@ -898,10 +934,10 @@ class GOAL extends DataClass implements Insertable<GOAL> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       targetAmount: serializer.fromJson<double>(json['targetAmount']),
-      targetDate: serializer.fromJson<DateTime>(json['targetDate']),
       inflation: serializer.fromJson<double>(json['inflation']),
-      riskProfileType: $GoalTableTable.$converterriskProfileTypen
-          .fromJson(serializer.fromJson<String?>(json['riskProfileType'])),
+      targetDate: serializer.fromJson<DateTime>(json['targetDate']),
+      importance: $GoalTableTable.$converterimportance
+          .fromJson(serializer.fromJson<String>(json['importance'])),
     );
   }
   @override
@@ -911,10 +947,10 @@ class GOAL extends DataClass implements Insertable<GOAL> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'targetAmount': serializer.toJson<double>(targetAmount),
-      'targetDate': serializer.toJson<DateTime>(targetDate),
       'inflation': serializer.toJson<double>(inflation),
-      'riskProfileType': serializer.toJson<String?>(
-          $GoalTableTable.$converterriskProfileTypen.toJson(riskProfileType)),
+      'targetDate': serializer.toJson<DateTime>(targetDate),
+      'importance': serializer.toJson<String>(
+          $GoalTableTable.$converterimportance.toJson(importance)),
     };
   }
 
@@ -922,18 +958,16 @@ class GOAL extends DataClass implements Insertable<GOAL> {
           {int? id,
           String? name,
           double? targetAmount,
-          DateTime? targetDate,
           double? inflation,
-          Value<RiskProfileType?> riskProfileType = const Value.absent()}) =>
+          DateTime? targetDate,
+          GoalImportance? importance}) =>
       GOAL(
         id: id ?? this.id,
         name: name ?? this.name,
         targetAmount: targetAmount ?? this.targetAmount,
-        targetDate: targetDate ?? this.targetDate,
         inflation: inflation ?? this.inflation,
-        riskProfileType: riskProfileType.present
-            ? riskProfileType.value
-            : this.riskProfileType,
+        targetDate: targetDate ?? this.targetDate,
+        importance: importance ?? this.importance,
       );
   @override
   String toString() {
@@ -941,16 +975,16 @@ class GOAL extends DataClass implements Insertable<GOAL> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('targetAmount: $targetAmount, ')
-          ..write('targetDate: $targetDate, ')
           ..write('inflation: $inflation, ')
-          ..write('riskProfileType: $riskProfileType')
+          ..write('targetDate: $targetDate, ')
+          ..write('importance: $importance')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, name, targetAmount, targetDate, inflation, riskProfileType);
+  int get hashCode =>
+      Object.hash(id, name, targetAmount, inflation, targetDate, importance);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -958,52 +992,53 @@ class GOAL extends DataClass implements Insertable<GOAL> {
           other.id == this.id &&
           other.name == this.name &&
           other.targetAmount == this.targetAmount &&
-          other.targetDate == this.targetDate &&
           other.inflation == this.inflation &&
-          other.riskProfileType == this.riskProfileType);
+          other.targetDate == this.targetDate &&
+          other.importance == this.importance);
 }
 
 class GoalTableCompanion extends UpdateCompanion<GOAL> {
   final Value<int> id;
   final Value<String> name;
   final Value<double> targetAmount;
-  final Value<DateTime> targetDate;
   final Value<double> inflation;
-  final Value<RiskProfileType?> riskProfileType;
+  final Value<DateTime> targetDate;
+  final Value<GoalImportance> importance;
   const GoalTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.targetAmount = const Value.absent(),
-    this.targetDate = const Value.absent(),
     this.inflation = const Value.absent(),
-    this.riskProfileType = const Value.absent(),
+    this.targetDate = const Value.absent(),
+    this.importance = const Value.absent(),
   });
   GoalTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required double targetAmount,
-    required DateTime targetDate,
     required double inflation,
-    this.riskProfileType = const Value.absent(),
+    required DateTime targetDate,
+    required GoalImportance importance,
   })  : name = Value(name),
         targetAmount = Value(targetAmount),
+        inflation = Value(inflation),
         targetDate = Value(targetDate),
-        inflation = Value(inflation);
+        importance = Value(importance);
   static Insertable<GOAL> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<double>? targetAmount,
-    Expression<DateTime>? targetDate,
     Expression<double>? inflation,
-    Expression<String>? riskProfileType,
+    Expression<DateTime>? targetDate,
+    Expression<String>? importance,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
       if (name != null) 'NAME': name,
       if (targetAmount != null) 'TARGET_AMOUNT': targetAmount,
-      if (targetDate != null) 'TARGET_DATE': targetDate,
       if (inflation != null) 'INFLATION': inflation,
-      if (riskProfileType != null) 'RISK_PROFILE_TYPE': riskProfileType,
+      if (targetDate != null) 'TARGET_DATE': targetDate,
+      if (importance != null) 'IMPORTANCE': importance,
     });
   }
 
@@ -1011,16 +1046,16 @@ class GoalTableCompanion extends UpdateCompanion<GOAL> {
       {Value<int>? id,
       Value<String>? name,
       Value<double>? targetAmount,
-      Value<DateTime>? targetDate,
       Value<double>? inflation,
-      Value<RiskProfileType?>? riskProfileType}) {
+      Value<DateTime>? targetDate,
+      Value<GoalImportance>? importance}) {
     return GoalTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       targetAmount: targetAmount ?? this.targetAmount,
-      targetDate: targetDate ?? this.targetDate,
       inflation: inflation ?? this.inflation,
-      riskProfileType: riskProfileType ?? this.riskProfileType,
+      targetDate: targetDate ?? this.targetDate,
+      importance: importance ?? this.importance,
     );
   }
 
@@ -1036,16 +1071,15 @@ class GoalTableCompanion extends UpdateCompanion<GOAL> {
     if (targetAmount.present) {
       map['TARGET_AMOUNT'] = Variable<double>(targetAmount.value);
     }
-    if (targetDate.present) {
-      map['TARGET_DATE'] = Variable<DateTime>(targetDate.value);
-    }
     if (inflation.present) {
       map['INFLATION'] = Variable<double>(inflation.value);
     }
-    if (riskProfileType.present) {
-      map['RISK_PROFILE_TYPE'] = Variable<String>($GoalTableTable
-          .$converterriskProfileTypen
-          .toSql(riskProfileType.value));
+    if (targetDate.present) {
+      map['TARGET_DATE'] = Variable<DateTime>(targetDate.value);
+    }
+    if (importance.present) {
+      map['IMPORTANCE'] = Variable<String>(
+          $GoalTableTable.$converterimportance.toSql(importance.value));
     }
     return map;
   }
@@ -1056,9 +1090,9 @@ class GoalTableCompanion extends UpdateCompanion<GOAL> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('targetAmount: $targetAmount, ')
-          ..write('targetDate: $targetDate, ')
           ..write('inflation: $inflation, ')
-          ..write('riskProfileType: $riskProfileType')
+          ..write('targetDate: $targetDate, ')
+          ..write('importance: $importance')
           ..write(')'))
         .toString();
   }

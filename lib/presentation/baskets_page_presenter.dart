@@ -1,23 +1,23 @@
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
-import 'package:wealth_wave/domain/use_cases/basket/add_basket_use_case.dart';
+import 'package:wealth_wave/domain/use_cases/basket/create_basket_use_case.dart';
 import 'package:wealth_wave/domain/use_cases/basket/delete_basket_use_case.dart';
 import 'package:wealth_wave/domain/use_cases/basket/get_baskets_use_case.dart';
 import 'package:wealth_wave/domain/use_cases/basket/update_basket_use_case.dart';
 
 class BasketsPagePresenter extends Presenter<BasketsPageViewState> {
-  final AddBasketUseCase _addBasketsUseCase;
+  final CreateBasketUseCase _createBasketsUseCase;
   final GetBasketsUseCase _getBasketsUseCase;
   final UpdateBasketUseCase _updateBasketsUseCase;
   final DeleteBasketUseCase _deleteBasketsUseCase;
 
   BasketsPagePresenter({
-    GetBasketsUseCase? getBasketsUseCase,
-    AddBasketUseCase? addBasketUseCase,
-    UpdateBasketUseCase? updateBasketUseCase,
-    DeleteBasketUseCase? deleteBasketUseCase,
+    final GetBasketsUseCase? getBasketsUseCase,
+    final CreateBasketUseCase? createBasketUseCase,
+    final UpdateBasketUseCase? updateBasketUseCase,
+    final DeleteBasketUseCase? deleteBasketUseCase,
   })  : _getBasketsUseCase = getBasketsUseCase ?? GetBasketsUseCase(),
-        _addBasketsUseCase = addBasketUseCase ?? AddBasketUseCase(),
+        _createBasketsUseCase = createBasketUseCase ?? CreateBasketUseCase(),
         _updateBasketsUseCase = updateBasketUseCase ?? UpdateBasketUseCase(),
         _deleteBasketsUseCase = deleteBasketUseCase ?? DeleteBasketUseCase(),
         super(BasketsPageViewState());
@@ -30,21 +30,21 @@ class BasketsPagePresenter extends Presenter<BasketsPageViewState> {
         });
   }
 
-  void addBasket(String name) {
-    _addBasketsUseCase.addBasket(name).then((_) => fetchBaskets());
+  void createBasket({required final String name}) {
+    _createBasketsUseCase.createBasket(name: name).then((_) => fetchBaskets());
   }
 
-  void updateBasketName(int id, String name) {
-    _updateBasketsUseCase.update(id, name).then((_) => fetchBaskets());
+  void updateBasketName({required final int id, required final String name}) {
+    _updateBasketsUseCase
+        .update(id: id, name: name)
+        .then((_) => fetchBaskets());
   }
 
-  void deleteBasket(int id) {
-    _deleteBasketsUseCase.deleteBasket(id).then((_) => fetchBaskets());
+  void deleteBasket({required final int id}) {
+    _deleteBasketsUseCase.deleteBasket(id: id).then((_) => fetchBaskets());
   }
 }
 
 class BasketsPageViewState {
   List<Basket> baskets = [];
-
-  BasketsPageViewState({this.baskets = const []});
 }

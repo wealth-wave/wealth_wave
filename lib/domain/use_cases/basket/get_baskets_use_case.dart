@@ -4,7 +4,7 @@ import 'package:wealth_wave/domain/models/basket.dart';
 class GetBasketsUseCase {
   final BasketApi _basketApi;
 
-  GetBasketsUseCase({BasketApi? basketApi})
+  GetBasketsUseCase({final BasketApi? basketApi})
       : _basketApi = basketApi ?? BasketApi();
 
   Future<List<Basket>> getBaskets() {

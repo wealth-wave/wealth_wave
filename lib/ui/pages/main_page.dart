@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/ui/pages/baskets_page.dart';
+import 'package:wealth_wave/ui/pages/goals_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -34,7 +35,7 @@ class _MainPageState extends State<MainPage> {
               case 0:
                 return Container();
               case 1:
-                return Container();
+                return const GoalsPage();
               case 2:
                 return Container();
               case 3:

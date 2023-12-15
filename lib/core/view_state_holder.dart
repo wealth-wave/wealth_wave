@@ -14,18 +14,18 @@ class ViewStateHolder<T> {
     errorEvent = SingleEvent(ErrorHolder(errorMessage: error, onRetry: retry));
   }
 
-  void setLoading({String? message}) {
+  void setLoading({final String? message}) {
     loadingEvent = SingleEvent(message);
   }
 
-  void updateViewState(T viewState) {
+  void updateViewState(final T viewState) {
     this.viewState = viewState;
   }
 }
 
 class ErrorHolder {
-  String errorMessage;
-  VoidCallback? onRetry;
+  final String errorMessage;
+  final VoidCallback? onRetry;
 
   ErrorHolder({required this.errorMessage, this.onRetry});
 }

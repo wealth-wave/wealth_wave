@@ -3,10 +3,10 @@ import 'package:wealth_wave/api/apis/basket_api.dart';
 class UpdateBasketUseCase {
   final BasketApi _basketApi;
 
-  UpdateBasketUseCase({BasketApi? basketApi})
+  UpdateBasketUseCase({final BasketApi? basketApi})
       : _basketApi = basketApi ?? BasketApi();
 
-  Future<void> update(int id, String name) {
-    return _basketApi.updateName(id, name);
+  Future<void> update({required final int id, required final String name}) {
+    return _basketApi.updateName(id: id, name: name);
   }
 }

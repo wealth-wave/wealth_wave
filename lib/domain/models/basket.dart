@@ -1,6 +1,6 @@
 class Basket {
-  int id;
-  String name;
+  final int id;
+  final String name;
 
-  Basket(this.id, this.name);
+  Basket({required this.id, required this.name});
 }

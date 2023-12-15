@@ -1,4 +1,4 @@
-enum RiskProfileType {
+enum GoalImportance {
   low,
   medium,
   high,

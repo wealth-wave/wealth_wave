@@ -1,7 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:drift/wasm.dart';
 import 'package:flutter/foundation.dart';
-import 'package:wealth_wave/contract/risk_profile_type.dart';
+import 'package:wealth_wave/contract/goal_importance.dart';
+import 'package:wealth_wave/contract/risk_level.dart';
 
 part 'app_database.g.dart';
 
@@ -17,6 +18,7 @@ class InvestmentTable extends Table {
   TextColumn get name => text().named('NAME')();
   IntColumn get basketId => integer().named('BASKET_ID')();
   RealColumn get value => real().named('VALUE')();
+  TextColumn get riskLevel => textEnum<RiskLevel>().named('RISK_LEVEL')();
   DateTimeColumn get valueUpdatedOn => dateTime().named('VALUE_UPDATED_ON')();
 
   @override
@@ -44,10 +46,10 @@ class GoalTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
   TextColumn get name => text().named('NAME')();
   RealColumn get targetAmount => real().named('TARGET_AMOUNT')();
-  DateTimeColumn get targetDate => dateTime().named('TARGET_DATE')();
   RealColumn get inflation => real().named('INFLATION')();
-  TextColumn get riskProfileType =>
-      textEnum<RiskProfileType>().named('RISK_PROFILE_TYPE').nullable()();
+  DateTimeColumn get targetDate => dateTime().named('TARGET_DATE')();
+
+  TextColumn get importance => textEnum<GoalImportance>().named('IMPORTANCE')();
 
   @override
   List<String> get customConstraints => [
@@ -70,7 +72,13 @@ class GoalInvestmentMapTable extends Table {
       ];
 }
 
-@DriftDatabase(tables: [BasketTable, InvestmentTable, TransactionTable, GoalTable, GoalInvestmentMapTable])
+@DriftDatabase(tables: [
+  BasketTable,
+  InvestmentTable,
+  TransactionTable,
+  GoalTable,
+  GoalInvestmentMapTable
+])
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;
 
