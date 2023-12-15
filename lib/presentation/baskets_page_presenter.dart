@@ -34,8 +34,8 @@ class BasketsPagePresenter extends Presenter<BasketsPageViewState> {
     _addBasketsUseCase.addBasket(name).then((_) => fetchBaskets());
   }
 
-  void updateBasket(int id, String name) {
-    _updateBasketsUseCase.updateBasket(id, name).then((_) => fetchBaskets());
+  void updateBasketName(int id, String name) {
+    _updateBasketsUseCase.update(id, name).then((_) => fetchBaskets());
   }
 
   void deleteBasket(int id) {

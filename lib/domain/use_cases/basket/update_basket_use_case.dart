@@ -6,7 +6,7 @@ class UpdateBasketUseCase {
   UpdateBasketUseCase({BasketApi? basketApi})
       : _basketApi = basketApi ?? BasketApi();
 
-  Future<void> updateBasket(int id, String name) {
-    return _basketApi.updateBasket(id, name);
+  Future<void> update(int id, String name) {
+    return _basketApi.updateName(id, name);
   }
 }

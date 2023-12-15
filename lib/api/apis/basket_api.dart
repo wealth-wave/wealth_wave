@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 
@@ -19,8 +20,11 @@ class BasketApi {
         .insert(BasketTableCompanion.insert(name: name));
   }
 
-  Future<void> updateBasket(int id, String name) {
-    return _db.update(_db.basketTable).replace(BasketDO(id: id, name: name));
+  Future<void> updateName(int id, String name) {
+    return (_db.update(_db.basketTable)..where((t) => t.id.equals(id)))
+        .write(BasketTableCompanion(
+      name: Value(name),
+    ));
   }
 
   Future<void> deleteBasket(int id) {

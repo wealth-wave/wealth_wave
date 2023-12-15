@@ -38,7 +38,7 @@ class _BasketsPage
                   onPressed: () {
                     _showBasketNameDialog(context, name: basket.name).then((value) {
                       if (value != null) {
-                        presenter.updateBasket(basket.id, value);
+                        presenter.updateBasketName(basket.id, value);
                       }
                     });
                   },
