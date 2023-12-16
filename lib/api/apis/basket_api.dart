@@ -6,8 +6,8 @@ class BasketApi {
 
   BasketApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
-  Future<List<BasketDTO>> getBaskets() {
-    return _db.select(_db.basket).get();
+  Stream<List<BasketDTO>> getBaskets() {
+    return _db.select(_db.basket).watch();
   }
 
   Future<void> createBasket({required final String name}) {

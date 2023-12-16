@@ -2,32 +2,32 @@ import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/domain/use_cases/basket/create_basket_use_case.dart';
 import 'package:wealth_wave/domain/use_cases/basket/delete_basket_use_case.dart';
-import 'package:wealth_wave/domain/use_cases/basket/get_baskets_use_case.dart';
+import 'package:wealth_wave/domain/use_cases/basket/get_basket_list_use_case.dart';
 import 'package:wealth_wave/domain/use_cases/basket/update_basket_use_case.dart';
 
 class BasketsPagePresenter extends Presenter<BasketsPageViewState> {
   final CreateBasketUseCase _createBasketsUseCase;
-  final GetBasketsUseCase _getBasketsUseCase;
+  final GetBasketListUseCase _getBasketsUseCase;
   final UpdateBasketUseCase _updateBasketsUseCase;
   final DeleteBasketUseCase _deleteBasketsUseCase;
 
   BasketsPagePresenter({
-    final GetBasketsUseCase? getBasketsUseCase,
+    final GetBasketListUseCase? getBasketsUseCase,
     final CreateBasketUseCase? createBasketUseCase,
     final UpdateBasketUseCase? updateBasketUseCase,
     final DeleteBasketUseCase? deleteBasketUseCase,
-  })  : _getBasketsUseCase = getBasketsUseCase ?? GetBasketsUseCase(),
+  })  : _getBasketsUseCase = getBasketsUseCase ?? GetBasketListUseCase(),
         _createBasketsUseCase = createBasketUseCase ?? CreateBasketUseCase(),
         _updateBasketsUseCase = updateBasketUseCase ?? UpdateBasketUseCase(),
         _deleteBasketsUseCase = deleteBasketUseCase ?? DeleteBasketUseCase(),
         super(BasketsPageViewState());
 
   void fetchBaskets() {
-    _getBasketsUseCase.getBaskets().then((baskets) => {
-          updateViewState((viewState) {
-            viewState.baskets = baskets;
-          })
-        });
+    _getBasketsUseCase
+        .getBaskets()
+        .listen((baskets) => updateViewState((viewState) {
+              viewState.baskets = baskets;
+            }));
   }
 
   void createBasket({required final String name}) {

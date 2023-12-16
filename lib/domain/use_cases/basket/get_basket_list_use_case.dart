@@ -1,15 +1,15 @@
 import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 
-class GetBasketsUseCase {
+class GetBasketListUseCase {
   final BasketApi _basketApi;
 
-  GetBasketsUseCase({final BasketApi? basketApi})
+  GetBasketListUseCase({final BasketApi? basketApi})
       : _basketApi = basketApi ?? BasketApi();
 
-  Future<List<Basket>> getBaskets() {
+  Stream<List<Basket>> getBaskets() {
     return _basketApi
         .getBaskets()
-        .then((value) => value.map((e) => Basket.from(e)).toList());
+        .map((value) => value.map((e) => Basket.from(e)).toList());
   }
 }
