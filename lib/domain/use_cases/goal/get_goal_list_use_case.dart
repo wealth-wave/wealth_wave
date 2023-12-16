@@ -7,9 +7,9 @@ class GetGoalListUseCase {
   GetGoalListUseCase({final GoalApi? goalApi})
       : _goalApi = goalApi ?? GoalApi();
 
-  Future<List<Goal>> getGoals() {
+  Stream<List<Goal>> getGoals() {
     return _goalApi
         .getGoals()
-        .then((value) => value.map((e) => Goal.from(e)).toList());
+        .map((event) => event.map((e) => Goal.from(e)).toList());
   }
 }

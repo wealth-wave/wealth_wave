@@ -787,17 +787,27 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'NAME', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _targetAmountMeta =
-      const VerificationMeta('targetAmount');
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
-  late final GeneratedColumn<double> targetAmount = GeneratedColumn<double>(
-      'TARGET_AMOUNT', aliasedName, false,
+  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
+      'AMOUNT', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+      'DATE', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _inflationMeta =
       const VerificationMeta('inflation');
   @override
   late final GeneratedColumn<double> inflation = GeneratedColumn<double>(
       'INFLATION', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _targetAmountMeta =
+      const VerificationMeta('targetAmount');
+  @override
+  late final GeneratedColumn<double> targetAmount = GeneratedColumn<double>(
+      'TARGET_AMOUNT', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: true);
   static const VerificationMeta _targetDateMeta =
       const VerificationMeta('targetDate');
@@ -814,7 +824,7 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
           .withConverter<GoalImportance>($GoalTable.$converterimportance);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, targetAmount, inflation, targetDate, importance];
+      [id, name, amount, date, inflation, targetAmount, targetDate, importance];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -834,6 +844,24 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('AMOUNT')) {
+      context.handle(_amountMeta,
+          amount.isAcceptableOrUnknown(data['AMOUNT']!, _amountMeta));
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('DATE')) {
+      context.handle(
+          _dateMeta, date.isAcceptableOrUnknown(data['DATE']!, _dateMeta));
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('INFLATION')) {
+      context.handle(_inflationMeta,
+          inflation.isAcceptableOrUnknown(data['INFLATION']!, _inflationMeta));
+    } else if (isInserting) {
+      context.missing(_inflationMeta);
+    }
     if (data.containsKey('TARGET_AMOUNT')) {
       context.handle(
           _targetAmountMeta,
@@ -841,12 +869,6 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
               data['TARGET_AMOUNT']!, _targetAmountMeta));
     } else if (isInserting) {
       context.missing(_targetAmountMeta);
-    }
-    if (data.containsKey('INFLATION')) {
-      context.handle(_inflationMeta,
-          inflation.isAcceptableOrUnknown(data['INFLATION']!, _inflationMeta));
-    } else if (isInserting) {
-      context.missing(_inflationMeta);
     }
     if (data.containsKey('TARGET_DATE')) {
       context.handle(
@@ -870,10 +892,14 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
           .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}NAME'])!,
-      targetAmount: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}TARGET_AMOUNT'])!,
+      amount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!,
+      date: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}DATE'])!,
       inflation: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}INFLATION'])!,
+      targetAmount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}TARGET_AMOUNT'])!,
       targetDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}TARGET_DATE'])!,
       importance: $GoalTable.$converterimportance.fromSql(attachedDatabase
@@ -895,15 +921,19 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
 class GoalDTO extends DataClass implements Insertable<GoalDTO> {
   final int id;
   final String name;
-  final double targetAmount;
+  final double amount;
+  final DateTime date;
   final double inflation;
+  final double targetAmount;
   final DateTime targetDate;
   final GoalImportance importance;
   const GoalDTO(
       {required this.id,
       required this.name,
-      required this.targetAmount,
+      required this.amount,
+      required this.date,
       required this.inflation,
+      required this.targetAmount,
       required this.targetDate,
       required this.importance});
   @override
@@ -911,8 +941,10 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
     final map = <String, Expression>{};
     map['ID'] = Variable<int>(id);
     map['NAME'] = Variable<String>(name);
-    map['TARGET_AMOUNT'] = Variable<double>(targetAmount);
+    map['AMOUNT'] = Variable<double>(amount);
+    map['DATE'] = Variable<DateTime>(date);
     map['INFLATION'] = Variable<double>(inflation);
+    map['TARGET_AMOUNT'] = Variable<double>(targetAmount);
     map['TARGET_DATE'] = Variable<DateTime>(targetDate);
     {
       map['IMPORTANCE'] =
@@ -925,8 +957,10 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
     return GoalCompanion(
       id: Value(id),
       name: Value(name),
-      targetAmount: Value(targetAmount),
+      amount: Value(amount),
+      date: Value(date),
       inflation: Value(inflation),
+      targetAmount: Value(targetAmount),
       targetDate: Value(targetDate),
       importance: Value(importance),
     );
@@ -938,8 +972,10 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
     return GoalDTO(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      targetAmount: serializer.fromJson<double>(json['targetAmount']),
+      amount: serializer.fromJson<double>(json['amount']),
+      date: serializer.fromJson<DateTime>(json['date']),
       inflation: serializer.fromJson<double>(json['inflation']),
+      targetAmount: serializer.fromJson<double>(json['targetAmount']),
       targetDate: serializer.fromJson<DateTime>(json['targetDate']),
       importance: $GoalTable.$converterimportance
           .fromJson(serializer.fromJson<String>(json['importance'])),
@@ -951,8 +987,10 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'targetAmount': serializer.toJson<double>(targetAmount),
+      'amount': serializer.toJson<double>(amount),
+      'date': serializer.toJson<DateTime>(date),
       'inflation': serializer.toJson<double>(inflation),
+      'targetAmount': serializer.toJson<double>(targetAmount),
       'targetDate': serializer.toJson<DateTime>(targetDate),
       'importance': serializer
           .toJson<String>($GoalTable.$converterimportance.toJson(importance)),
@@ -962,15 +1000,19 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
   GoalDTO copyWith(
           {int? id,
           String? name,
-          double? targetAmount,
+          double? amount,
+          DateTime? date,
           double? inflation,
+          double? targetAmount,
           DateTime? targetDate,
           GoalImportance? importance}) =>
       GoalDTO(
         id: id ?? this.id,
         name: name ?? this.name,
-        targetAmount: targetAmount ?? this.targetAmount,
+        amount: amount ?? this.amount,
+        date: date ?? this.date,
         inflation: inflation ?? this.inflation,
+        targetAmount: targetAmount ?? this.targetAmount,
         targetDate: targetDate ?? this.targetDate,
         importance: importance ?? this.importance,
       );
@@ -979,8 +1021,10 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
     return (StringBuffer('GoalDTO(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('targetAmount: $targetAmount, ')
+          ..write('amount: $amount, ')
+          ..write('date: $date, ')
           ..write('inflation: $inflation, ')
+          ..write('targetAmount: $targetAmount, ')
           ..write('targetDate: $targetDate, ')
           ..write('importance: $importance')
           ..write(')'))
@@ -988,16 +1032,18 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, targetAmount, inflation, targetDate, importance);
+  int get hashCode => Object.hash(
+      id, name, amount, date, inflation, targetAmount, targetDate, importance);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is GoalDTO &&
           other.id == this.id &&
           other.name == this.name &&
-          other.targetAmount == this.targetAmount &&
+          other.amount == this.amount &&
+          other.date == this.date &&
           other.inflation == this.inflation &&
+          other.targetAmount == this.targetAmount &&
           other.targetDate == this.targetDate &&
           other.importance == this.importance);
 }
@@ -1005,43 +1051,55 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
 class GoalCompanion extends UpdateCompanion<GoalDTO> {
   final Value<int> id;
   final Value<String> name;
-  final Value<double> targetAmount;
+  final Value<double> amount;
+  final Value<DateTime> date;
   final Value<double> inflation;
+  final Value<double> targetAmount;
   final Value<DateTime> targetDate;
   final Value<GoalImportance> importance;
   const GoalCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.targetAmount = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.date = const Value.absent(),
     this.inflation = const Value.absent(),
+    this.targetAmount = const Value.absent(),
     this.targetDate = const Value.absent(),
     this.importance = const Value.absent(),
   });
   GoalCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required double targetAmount,
+    required double amount,
+    required DateTime date,
     required double inflation,
+    required double targetAmount,
     required DateTime targetDate,
     required GoalImportance importance,
   })  : name = Value(name),
-        targetAmount = Value(targetAmount),
+        amount = Value(amount),
+        date = Value(date),
         inflation = Value(inflation),
+        targetAmount = Value(targetAmount),
         targetDate = Value(targetDate),
         importance = Value(importance);
   static Insertable<GoalDTO> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<double>? targetAmount,
+    Expression<double>? amount,
+    Expression<DateTime>? date,
     Expression<double>? inflation,
+    Expression<double>? targetAmount,
     Expression<DateTime>? targetDate,
     Expression<String>? importance,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
       if (name != null) 'NAME': name,
-      if (targetAmount != null) 'TARGET_AMOUNT': targetAmount,
+      if (amount != null) 'AMOUNT': amount,
+      if (date != null) 'DATE': date,
       if (inflation != null) 'INFLATION': inflation,
+      if (targetAmount != null) 'TARGET_AMOUNT': targetAmount,
       if (targetDate != null) 'TARGET_DATE': targetDate,
       if (importance != null) 'IMPORTANCE': importance,
     });
@@ -1050,15 +1108,19 @@ class GoalCompanion extends UpdateCompanion<GoalDTO> {
   GoalCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
-      Value<double>? targetAmount,
+      Value<double>? amount,
+      Value<DateTime>? date,
       Value<double>? inflation,
+      Value<double>? targetAmount,
       Value<DateTime>? targetDate,
       Value<GoalImportance>? importance}) {
     return GoalCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      targetAmount: targetAmount ?? this.targetAmount,
+      amount: amount ?? this.amount,
+      date: date ?? this.date,
       inflation: inflation ?? this.inflation,
+      targetAmount: targetAmount ?? this.targetAmount,
       targetDate: targetDate ?? this.targetDate,
       importance: importance ?? this.importance,
     );
@@ -1073,11 +1135,17 @@ class GoalCompanion extends UpdateCompanion<GoalDTO> {
     if (name.present) {
       map['NAME'] = Variable<String>(name.value);
     }
-    if (targetAmount.present) {
-      map['TARGET_AMOUNT'] = Variable<double>(targetAmount.value);
+    if (amount.present) {
+      map['AMOUNT'] = Variable<double>(amount.value);
+    }
+    if (date.present) {
+      map['DATE'] = Variable<DateTime>(date.value);
     }
     if (inflation.present) {
       map['INFLATION'] = Variable<double>(inflation.value);
+    }
+    if (targetAmount.present) {
+      map['TARGET_AMOUNT'] = Variable<double>(targetAmount.value);
     }
     if (targetDate.present) {
       map['TARGET_DATE'] = Variable<DateTime>(targetDate.value);
@@ -1094,8 +1162,10 @@ class GoalCompanion extends UpdateCompanion<GoalDTO> {
     return (StringBuffer('GoalCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('targetAmount: $targetAmount, ')
+          ..write('amount: $amount, ')
+          ..write('date: $date, ')
           ..write('inflation: $inflation, ')
+          ..write('targetAmount: $targetAmount, ')
           ..write('targetDate: $targetDate, ')
           ..write('importance: $importance')
           ..write(')'))

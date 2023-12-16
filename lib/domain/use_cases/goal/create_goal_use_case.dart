@@ -8,12 +8,16 @@ class CreateGoalUseCase {
 
   Future<void> createGoal(
       {required final String name,
+      required final double amount,
+      required final DateTime date,
+      required final double inflation,
       required final double targetAmount,
       required final DateTime targetDate,
-      required final double inflation,
       required final GoalImportance importance}) {
     return _goalApi.createGoal(
         name: name,
+        amount: amount,
+        date: date,
         targetAmount: targetAmount,
         targetDate: targetDate,
         inflation: inflation,

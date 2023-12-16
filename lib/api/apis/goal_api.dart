@@ -7,8 +7,8 @@ class GoalApi {
 
   GoalApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
-  Future<List<GoalDTO>> getGoals() {
-    return _db.select(_db.goal).get();
+  Stream<List<GoalDTO>> getGoals() {
+    return _db.select(_db.goal).watch();
   }
 
   Future<GoalDTO> getGoal({required final int id}) {
@@ -17,12 +17,16 @@ class GoalApi {
 
   Future<void> createGoal(
       {required final String name,
+      required final double amount,
+      required final DateTime date,
       required final double targetAmount,
       required final DateTime targetDate,
       required final double inflation,
       required final GoalImportance importance}) {
     return _db.into(_db.goal).insert(GoalCompanion.insert(
         name: name,
+        amount: amount,
+        date: date,
         targetAmount: targetAmount,
         targetDate: targetDate,
         inflation: inflation,

@@ -37,8 +37,10 @@ class InvestmentTransaction extends Table {
 class Goal extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
   TextColumn get name => text().named('NAME')();
-  RealColumn get targetAmount => real().named('TARGET_AMOUNT')();
+  RealColumn get amount => real().named('AMOUNT')();
+  DateTimeColumn get date => dateTime().named('DATE')();
   RealColumn get inflation => real().named('INFLATION')();
+  RealColumn get targetAmount => real().named('TARGET_AMOUNT')();
   DateTimeColumn get targetDate => dateTime().named('TARGET_DATE')();
   TextColumn get importance => textEnum<GoalImportance>().named('IMPORTANCE')();
 }

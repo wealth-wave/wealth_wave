@@ -19,11 +19,9 @@ class GoalsPagePresenter extends Presenter<GoalsPageViewState> {
         super(GoalsPageViewState());
 
   void fetchGoals() {
-    _getGoalsUseCase.getGoals().then((goals) => {
-          updateViewState((viewState) {
-            viewState.goals = goals;
-          })
-        });
+    _getGoalsUseCase.getGoals().listen((goals) => updateViewState((viewState) {
+          viewState.goals = goals;
+        }));
   }
 
   void deleteGoal({required final int id}) {

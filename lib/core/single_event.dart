@@ -1,21 +1,21 @@
 class SingleEvent<T> {
-  final T content;
+  final T _content;
 
   bool _isConsumed = false;
 
-  SingleEvent(this.content);
+  SingleEvent(this._content);
 
   void consume(Function(T) action) {
     if (!_isConsumed) {
       _isConsumed = true;
-      action(content);
+      action(_content);
     }
   }
 
   T? consumeGet() {
     if (!_isConsumed) {
       _isConsumed = true;
-      return content;
+      return _content;
     }
     return null;
   }
@@ -25,6 +25,6 @@ class SingleEvent<T> {
   }
 
   T peekContent() {
-    return content;
+    return _content;
   }
 }
