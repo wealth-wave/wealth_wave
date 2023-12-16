@@ -18,6 +18,7 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState, CreateGoalPage,
   final _nameController = TextEditingController();
   final _amountController = TextEditingController();
   final _targetDateController = TextEditingController();
+  final _targetAmountController = TextEditingController();
 
   @override
   void initState() {
@@ -95,14 +96,20 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState, CreateGoalPage,
                           min: 0,
                           max: 20,
                           divisions: 20,
-                          value: (snapshot.inflation ?? 0),
+                          value: (snapshot.inflation),
                           onChanged: (value) {
                             presenter.inflationChanged(value);
                           }),
                     ),
                     Text(
-                      "Inflation: ${(snapshot.inflation ?? 0)}",
+                      "Inflation: ${(snapshot.inflation)}",
                       style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(AppDimen.minPadding),
+                      child: Text(
+                        "Target Amount: ${snapshot.getTargetAmount()}",
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(AppDimen.minPadding),
