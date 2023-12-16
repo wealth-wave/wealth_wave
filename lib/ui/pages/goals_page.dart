@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
 import 'package:wealth_wave/presentation/goals_page_presenter.dart';
+import 'package:wealth_wave/ui/nav_path.dart';
 
 class GoalsPage extends StatefulWidget {
   const GoalsPage({super.key});
@@ -37,21 +37,8 @@ class _GoalsPage
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
-                    _showCreateGoalDialog(context).then((value) {
-                      if (value != null && value) {
-                        presenter.updateGoal(
-                            id: goal.id,
-                            name: _nameFieldController.text,
-                            targetAmount:
-                                double.parse(_amountFieldController.text),
-                            targetDate:
-                                DateTime.parse(_targetDateFieldController.text),
-                            inflation:
-                                double.parse(_inflationFieldController.text),
-                            importance: _importanceFieldController.text
-                                as GoalImportance);
-                      }
-                    });
+                    Navigator.of(context)
+                        .pushNamed(NavPath.updateGoal(id: goal.id));
                   },
                 ),
                 IconButton(
@@ -67,17 +54,7 @@ class _GoalsPage
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showCreateGoalDialog(context).then((value) {
-            if (value != null && value) {
-              presenter.createGoal(
-                  name: _nameFieldController.text,
-                  targetAmount: double.parse(_amountFieldController.text),
-                  targetDate: DateTime.parse(_targetDateFieldController.text),
-                  inflation: double.parse(_inflationFieldController.text),
-                  importance:
-                      _importanceFieldController.text as GoalImportance);
-            }
-          });
+          Navigator.of(context).pushNamed(NavPath.createGoal);
         },
         tooltip: 'Add',
         child: const Icon(Icons.add),
@@ -88,63 +65,5 @@ class _GoalsPage
   @override
   GoalsPagePresenter initializePresenter() {
     return GoalsPagePresenter();
-  }
-
-  final _nameFieldController = TextEditingController();
-  final _amountFieldController = TextEditingController();
-  final _inflationFieldController = TextEditingController();
-  final _targetDateFieldController = TextEditingController();
-  final _importanceFieldController = TextEditingController();
-
-  Future<bool?> _showCreateGoalDialog(BuildContext context,
-      {Goal? goal}) async {
-    if (goal != null) {
-      _nameFieldController.text = goal.name;
-      _inflationFieldController.text = goal.inflation.toString();
-    }
-
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Create Goal'),
-            content: Row(
-              children: [
-                TextField(
-                  controller: _nameFieldController,
-                  decoration: const InputDecoration(hintText: "Name"),
-                ),
-                TextField(
-                  controller: _amountFieldController,
-                  decoration: const InputDecoration(hintText: "Amount"),
-                ),
-                TextField(
-                  controller: _inflationFieldController,
-                  decoration: const InputDecoration(hintText: "Inflation"),
-                ),
-                TextField(
-                  controller: _targetDateFieldController,
-                  decoration: const InputDecoration(hintText: "Target Date"),
-                ),
-                TextField(
-                  controller: _importanceFieldController,
-                  decoration: const InputDecoration(hintText: "Importance"),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              ElevatedButton(
-                  child: const Text("Cancel"),
-                  onPressed: () {
-                    Navigator.pop(context, false);
-                  }),
-              ElevatedButton(
-                  child: const Text('Add'),
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                  }),
-            ],
-          );
-        });
   }
 }

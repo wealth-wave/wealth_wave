@@ -8,6 +8,8 @@ class GetBasketsUseCase {
       : _basketApi = basketApi ?? BasketApi();
 
   Future<List<Basket>> getBaskets() {
-    return _basketApi.getBaskets();
+    return _basketApi
+        .getBaskets()
+        .then((value) => value.map((e) => Basket.from(e)).toList());
   }
 }

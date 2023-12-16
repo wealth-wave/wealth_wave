@@ -1,3 +1,4 @@
+import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 
 class Goal {
@@ -15,4 +16,14 @@ class Goal {
       required this.targetDate,
       required this.inflation,
       required this.importance});
+
+  static Goal from(GoalDTO goal) {
+    return Goal(
+        id: goal.id,
+        name: goal.name,
+        targetAmount: goal.targetAmount,
+        targetDate: goal.targetDate,
+        inflation: goal.inflation,
+        importance: goal.importance);
+  }
 }

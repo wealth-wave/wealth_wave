@@ -3,19 +3,16 @@ import 'package:wealth_wave/ui/pages/baskets_page.dart';
 import 'package:wealth_wave/ui/pages/goals_page.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final List<String> path;
 
-  static bool isMatchingPath(String path) {
-    var uri = Uri.parse(path);
-    return uri.pathSegments.isEmpty;
-  }
+  const MainPage({super.key, required this.path});
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  int navIndex = 0;
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -24,28 +21,49 @@ class _MainPageState extends State<MainPage> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text("Wealth Wave"),
         ),
-        drawer: SideNav(navIndex, (int index) {
-          setState(() {
-            navIndex = index;
-          });
-        }),
-        body: Builder(
-          builder: (context) {
-            switch (navIndex) {
-              case 0:
-                return Container();
-              case 1:
-                return const GoalsPage();
-              case 2:
-                return Container();
-              case 3:
-                return Container();
-              case 4:
-                return const BasketsPage();
-              default:
-                return Container();
-            }
-          },
+        body: SafeArea(
+          child: Row(
+            children: [
+              NavigationRail(
+                  extended: true,
+                  onDestinationSelected: (value) {
+                    setState(() {
+                      _selectedIndex = value;
+                    });
+                  },
+                  destinations: const [
+                    NavigationRailDestination(
+                        icon: Icon(Icons.dashboard), label: Text('Dashboard')),
+                    NavigationRailDestination(
+                        icon: Icon(Icons.bookmark), label: Text('Goals')),
+                    NavigationRailDestination(
+                        icon: Icon(Icons.monetization_on),
+                        label: Text('Investment')),
+                    NavigationRailDestination(
+                        icon: Icon(Icons.local_offer), label: Text('Baskets')),
+                  ],
+                  selectedIndex: _selectedIndex),
+              const VerticalDivider(thickness: 1, width: 1),
+              Expanded(
+                child: Builder(
+                  builder: (context) {
+                    switch (_selectedIndex) {
+                      case 0:
+                        return Container();
+                      case 1:
+                        return const GoalsPage();
+                      case 2:
+                        return Container();
+                      case 4:
+                        return const BasketsPage();
+                      default:
+                        return Container();
+                    }
+                  },
+                ),
+              )
+            ],
+          ),
         ));
   }
 }

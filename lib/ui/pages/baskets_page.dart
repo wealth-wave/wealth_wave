@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/presentation/baskets_page_presenter.dart';
+import 'package:wealth_wave/ui/nav_path.dart';
 
 class BasketsPage extends StatefulWidget {
   const BasketsPage({super.key});
@@ -19,7 +20,8 @@ class _BasketsPage
   }
 
   @override
-  Widget buildWidget(final BuildContext context, final BasketsPageViewState snapshot) {
+  Widget buildWidget(
+      final BuildContext context, final BasketsPageViewState snapshot) {
     List<Basket> baskets = snapshot.baskets;
     return Scaffold(
       body: Center(
@@ -36,11 +38,8 @@ class _BasketsPage
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
-                    _showBasketNameDialog(context, name: basket.name).then((value) {
-                      if (value != null) {
-                        presenter.updateBasketName(id: basket.id, name: value);
-                      }
-                    });
+                    Navigator.of(context)
+                        .pushNamed(NavPath.updateBasket(id: basket.id));
                   },
                 ),
                 IconButton(
@@ -56,11 +55,7 @@ class _BasketsPage
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showBasketNameDialog(context).then((value) {
-            if (value != null) {
-              presenter.createBasket(name: value);
-            }
-          });
+          Navigator.of(context).pushNamed(NavPath.createBasket);
         },
         tooltip: 'Add',
         child: const Icon(Icons.add),
@@ -71,39 +66,5 @@ class _BasketsPage
   @override
   BasketsPagePresenter initializePresenter() {
     return BasketsPagePresenter();
-  }
-
-  final _textFieldController = TextEditingController();
-
-  Future<String?> _showBasketNameDialog(BuildContext context, {String? name}) async {
-    if (name != null) {
-      _textFieldController.text = name;
-    }
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Create Basket'),
-            content: TextField(
-              controller: _textFieldController,
-              decoration: const InputDecoration(hintText: "Basket Name"),
-            ),
-            actions: <Widget>[
-              ElevatedButton(
-                  child: const Text("Cancel"),
-                  onPressed: () {
-                    _textFieldController.clear();
-                    Navigator.pop(context);
-                  }),
-              ElevatedButton(
-                  child: const Text('Create'),
-                  onPressed: () {
-                    var name = _textFieldController.text;
-                    _textFieldController.clear();
-                    Navigator.pop(context, name);
-                  }),
-            ],
-          );
-        });
   }
 }
