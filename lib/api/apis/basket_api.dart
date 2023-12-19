@@ -6,22 +6,24 @@ class BasketApi {
 
   BasketApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
-  Stream<List<BasketDTO>> getBaskets() {
-    return _db.select(_db.basket).watch();
+  Stream<List<Basket>> getBaskets() {
+    return _db.select(_db.basketTable).watch();
   }
 
   Future<void> createBasket({required final String name}) {
-    return _db.into(_db.basket).insert(BasketCompanion.insert(name: name));
+    return _db
+        .into(_db.basketTable)
+        .insert(BasketTableCompanion.insert(name: name));
   }
 
   Future<void> updateName({required final int id, required final String name}) {
-    return (_db.update(_db.basket)..where((t) => t.id.equals(id)))
-        .write(BasketCompanion(
+    return (_db.update(_db.basketTable)..where((t) => t.id.equals(id)))
+        .write(BasketTableCompanion(
       name: Value(name),
     ));
   }
 
   Future<void> deleteBasket({required final int id}) {
-    return (_db.delete(_db.basket)..where((t) => t.id.equals(id))).go();
+    return (_db.delete(_db.basketTable)..where((t) => t.id.equals(id))).go();
   }
 }

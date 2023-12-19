@@ -7,12 +7,12 @@ class GoalApi {
 
   GoalApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
-  Stream<List<GoalDTO>> getGoals() {
-    return _db.select(_db.goal).watch();
+  Stream<List<Goal>> getGoals() {
+    return _db.select(_db.goalTable).watch();
   }
 
-  Future<GoalDTO> getGoal({required final int id}) {
-    return _db.select(_db.goal).getSingle();
+  Future<Goal> getGoal({required final int id}) {
+    return _db.select(_db.goalTable).getSingle();
   }
 
   Future<void> createGoal(
@@ -23,7 +23,7 @@ class GoalApi {
       required final DateTime targetDate,
       required final double inflation,
       required final GoalImportance importance}) {
-    return _db.into(_db.goal).insert(GoalCompanion.insert(
+    return _db.into(_db.goalTable).insert(GoalTableCompanion.insert(
         name: name,
         amount: amount,
         date: date,
@@ -40,8 +40,8 @@ class GoalApi {
       required final DateTime targetDate,
       required final double inflation,
       required final GoalImportance importance}) {
-    return (_db.update(_db.goal)..where((t) => t.id.equals(id))).write(
-        GoalCompanion(
+    return (_db.update(_db.goalTable)..where((t) => t.id.equals(id))).write(
+        GoalTableCompanion(
             name: Value(name),
             targetAmount: Value(targetAmount),
             targetDate: Value(targetDate),
@@ -51,8 +51,9 @@ class GoalApi {
 
   Future<void> deleteGoal({required final int id}) {
     return Future.wait([
-      (_db.delete(_db.goalInvestment)..where((t) => t.goalId.equals(id))).go(),
-      (_db.delete(_db.goal)..where((t) => t.id.equals(id))).go()
+      (_db.delete(_db.goalInvestmentTable)..where((t) => t.goalId.equals(id)))
+          .go(),
+      (_db.delete(_db.goalTable)..where((t) => t.id.equals(id))).go()
     ]);
   }
 }

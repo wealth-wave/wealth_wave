@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/presentation/baskets_page_presenter.dart';
 import 'package:wealth_wave/ui/nav_path.dart';
 

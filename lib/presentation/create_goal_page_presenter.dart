@@ -1,16 +1,16 @@
 import 'dart:math';
 
+import 'package:wealth_wave/api/apis/goal_api.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
-import 'package:wealth_wave/domain/use_cases/goal/create_goal_use_case.dart';
 
 class CreateGoalPagePresenter extends Presenter<CreateGoalPageViewState> {
-  final CreateGoalUseCase _createGoalUseCase;
+  final GoalApi _goalApi;
 
   CreateGoalPagePresenter({
-    final CreateGoalUseCase? createGoalUseCase,
-  })  : _createGoalUseCase = createGoalUseCase ?? CreateGoalUseCase(),
+    final GoalApi? goalApi,
+  })  : _goalApi = goalApi ?? GoalApi(),
         super(CreateGoalPageViewState());
 
   void createGoal() {
@@ -28,7 +28,7 @@ class CreateGoalPagePresenter extends Presenter<CreateGoalPageViewState> {
     final inflation = viewState.inflation;
     final importance = viewState.importance;
 
-    _createGoalUseCase
+    _goalApi
         .createGoal(
             name: name,
             amount: amount,

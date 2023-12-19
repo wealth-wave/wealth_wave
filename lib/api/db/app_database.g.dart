@@ -3,11 +3,12 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $BasketTable extends Basket with TableInfo<$BasketTable, BasketDTO> {
+class $BasketTableTable extends BasketTable
+    with TableInfo<$BasketTableTable, Basket> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $BasketTable(this.attachedDatabase, [this._alias]);
+  $BasketTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -30,9 +31,9 @@ class $BasketTable extends Basket with TableInfo<$BasketTable, BasketDTO> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'basket';
+  static const String $name = 'basket_table';
   @override
-  VerificationContext validateIntegrity(Insertable<BasketDTO> instance,
+  VerificationContext validateIntegrity(Insertable<Basket> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -51,9 +52,9 @@ class $BasketTable extends Basket with TableInfo<$BasketTable, BasketDTO> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  BasketDTO map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Basket map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BasketDTO(
+    return Basket(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
       name: attachedDatabase.typeMapping
@@ -62,15 +63,15 @@ class $BasketTable extends Basket with TableInfo<$BasketTable, BasketDTO> {
   }
 
   @override
-  $BasketTable createAlias(String alias) {
-    return $BasketTable(attachedDatabase, alias);
+  $BasketTableTable createAlias(String alias) {
+    return $BasketTableTable(attachedDatabase, alias);
   }
 }
 
-class BasketDTO extends DataClass implements Insertable<BasketDTO> {
+class Basket extends DataClass implements Insertable<Basket> {
   final int id;
   final String name;
-  const BasketDTO({required this.id, required this.name});
+  const Basket({required this.id, required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -79,17 +80,17 @@ class BasketDTO extends DataClass implements Insertable<BasketDTO> {
     return map;
   }
 
-  BasketCompanion toCompanion(bool nullToAbsent) {
-    return BasketCompanion(
+  BasketTableCompanion toCompanion(bool nullToAbsent) {
+    return BasketTableCompanion(
       id: Value(id),
       name: Value(name),
     );
   }
 
-  factory BasketDTO.fromJson(Map<String, dynamic> json,
+  factory Basket.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BasketDTO(
+    return Basket(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -103,13 +104,13 @@ class BasketDTO extends DataClass implements Insertable<BasketDTO> {
     };
   }
 
-  BasketDTO copyWith({int? id, String? name}) => BasketDTO(
+  Basket copyWith({int? id, String? name}) => Basket(
         id: id ?? this.id,
         name: name ?? this.name,
       );
   @override
   String toString() {
-    return (StringBuffer('BasketDTO(')
+    return (StringBuffer('Basket(')
           ..write('id: $id, ')
           ..write('name: $name')
           ..write(')'))
@@ -121,21 +122,21 @@ class BasketDTO extends DataClass implements Insertable<BasketDTO> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is BasketDTO && other.id == this.id && other.name == this.name);
+      (other is Basket && other.id == this.id && other.name == this.name);
 }
 
-class BasketCompanion extends UpdateCompanion<BasketDTO> {
+class BasketTableCompanion extends UpdateCompanion<Basket> {
   final Value<int> id;
   final Value<String> name;
-  const BasketCompanion({
+  const BasketTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
   });
-  BasketCompanion.insert({
+  BasketTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
   }) : name = Value(name);
-  static Insertable<BasketDTO> custom({
+  static Insertable<Basket> custom({
     Expression<int>? id,
     Expression<String>? name,
   }) {
@@ -145,8 +146,8 @@ class BasketCompanion extends UpdateCompanion<BasketDTO> {
     });
   }
 
-  BasketCompanion copyWith({Value<int>? id, Value<String>? name}) {
-    return BasketCompanion(
+  BasketTableCompanion copyWith({Value<int>? id, Value<String>? name}) {
+    return BasketTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
     );
@@ -166,7 +167,7 @@ class BasketCompanion extends UpdateCompanion<BasketDTO> {
 
   @override
   String toString() {
-    return (StringBuffer('BasketCompanion(')
+    return (StringBuffer('BasketTableCompanion(')
           ..write('id: $id, ')
           ..write('name: $name')
           ..write(')'))
@@ -174,12 +175,12 @@ class BasketCompanion extends UpdateCompanion<BasketDTO> {
   }
 }
 
-class $InvestmentTable extends Investment
-    with TableInfo<$InvestmentTable, InvestmentDTO> {
+class $InvestmentTableTable extends InvestmentTable
+    with TableInfo<$InvestmentTableTable, Investment> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $InvestmentTable(this.attachedDatabase, [this._alias]);
+  $InvestmentTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -202,7 +203,7 @@ class $InvestmentTable extends Investment
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES basket (ID)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES basket_table (ID)'));
   static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
   late final GeneratedColumn<double> value = GeneratedColumn<double>(
@@ -214,7 +215,7 @@ class $InvestmentTable extends Investment
   late final GeneratedColumnWithTypeConverter<RiskLevel, String> riskLevel =
       GeneratedColumn<String>('RISK_LEVEL', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<RiskLevel>($InvestmentTable.$converterriskLevel);
+          .withConverter<RiskLevel>($InvestmentTableTable.$converterriskLevel);
   static const VerificationMeta _valueUpdatedOnMeta =
       const VerificationMeta('valueUpdatedOn');
   @override
@@ -228,9 +229,9 @@ class $InvestmentTable extends Investment
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'investment';
+  static const String $name = 'investment_table';
   @override
-  VerificationContext validateIntegrity(Insertable<InvestmentDTO> instance,
+  VerificationContext validateIntegrity(Insertable<Investment> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -270,9 +271,9 @@ class $InvestmentTable extends Investment
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  InvestmentDTO map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Investment map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return InvestmentDTO(
+    return Investment(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
       name: attachedDatabase.typeMapping
@@ -281,31 +282,31 @@ class $InvestmentTable extends Investment
           .read(DriftSqlType.int, data['${effectivePrefix}BASKET_ID'])!,
       value: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}VALUE'])!,
-      riskLevel: $InvestmentTable.$converterriskLevel.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!),
+      riskLevel: $InvestmentTableTable.$converterriskLevel.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!),
       valueUpdatedOn: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}VALUE_UPDATED_ON'])!,
     );
   }
 
   @override
-  $InvestmentTable createAlias(String alias) {
-    return $InvestmentTable(attachedDatabase, alias);
+  $InvestmentTableTable createAlias(String alias) {
+    return $InvestmentTableTable(attachedDatabase, alias);
   }
 
   static JsonTypeConverter2<RiskLevel, String, String> $converterriskLevel =
       const EnumNameConverter<RiskLevel>(RiskLevel.values);
 }
 
-class InvestmentDTO extends DataClass implements Insertable<InvestmentDTO> {
+class Investment extends DataClass implements Insertable<Investment> {
   final int id;
   final String name;
   final int basketId;
   final double value;
   final RiskLevel riskLevel;
   final DateTime valueUpdatedOn;
-  const InvestmentDTO(
+  const Investment(
       {required this.id,
       required this.name,
       required this.basketId,
@@ -321,14 +322,14 @@ class InvestmentDTO extends DataClass implements Insertable<InvestmentDTO> {
     map['VALUE'] = Variable<double>(value);
     {
       map['RISK_LEVEL'] = Variable<String>(
-          $InvestmentTable.$converterriskLevel.toSql(riskLevel));
+          $InvestmentTableTable.$converterriskLevel.toSql(riskLevel));
     }
     map['VALUE_UPDATED_ON'] = Variable<DateTime>(valueUpdatedOn);
     return map;
   }
 
-  InvestmentCompanion toCompanion(bool nullToAbsent) {
-    return InvestmentCompanion(
+  InvestmentTableCompanion toCompanion(bool nullToAbsent) {
+    return InvestmentTableCompanion(
       id: Value(id),
       name: Value(name),
       basketId: Value(basketId),
@@ -338,15 +339,15 @@ class InvestmentDTO extends DataClass implements Insertable<InvestmentDTO> {
     );
   }
 
-  factory InvestmentDTO.fromJson(Map<String, dynamic> json,
+  factory Investment.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return InvestmentDTO(
+    return Investment(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       basketId: serializer.fromJson<int>(json['basketId']),
       value: serializer.fromJson<double>(json['value']),
-      riskLevel: $InvestmentTable.$converterriskLevel
+      riskLevel: $InvestmentTableTable.$converterriskLevel
           .fromJson(serializer.fromJson<String>(json['riskLevel'])),
       valueUpdatedOn: serializer.fromJson<DateTime>(json['valueUpdatedOn']),
     );
@@ -360,19 +361,19 @@ class InvestmentDTO extends DataClass implements Insertable<InvestmentDTO> {
       'basketId': serializer.toJson<int>(basketId),
       'value': serializer.toJson<double>(value),
       'riskLevel': serializer.toJson<String>(
-          $InvestmentTable.$converterriskLevel.toJson(riskLevel)),
+          $InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),
       'valueUpdatedOn': serializer.toJson<DateTime>(valueUpdatedOn),
     };
   }
 
-  InvestmentDTO copyWith(
+  Investment copyWith(
           {int? id,
           String? name,
           int? basketId,
           double? value,
           RiskLevel? riskLevel,
           DateTime? valueUpdatedOn}) =>
-      InvestmentDTO(
+      Investment(
         id: id ?? this.id,
         name: name ?? this.name,
         basketId: basketId ?? this.basketId,
@@ -382,7 +383,7 @@ class InvestmentDTO extends DataClass implements Insertable<InvestmentDTO> {
       );
   @override
   String toString() {
-    return (StringBuffer('InvestmentDTO(')
+    return (StringBuffer('Investment(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('basketId: $basketId, ')
@@ -399,7 +400,7 @@ class InvestmentDTO extends DataClass implements Insertable<InvestmentDTO> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is InvestmentDTO &&
+      (other is Investment &&
           other.id == this.id &&
           other.name == this.name &&
           other.basketId == this.basketId &&
@@ -408,14 +409,14 @@ class InvestmentDTO extends DataClass implements Insertable<InvestmentDTO> {
           other.valueUpdatedOn == this.valueUpdatedOn);
 }
 
-class InvestmentCompanion extends UpdateCompanion<InvestmentDTO> {
+class InvestmentTableCompanion extends UpdateCompanion<Investment> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> basketId;
   final Value<double> value;
   final Value<RiskLevel> riskLevel;
   final Value<DateTime> valueUpdatedOn;
-  const InvestmentCompanion({
+  const InvestmentTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.basketId = const Value.absent(),
@@ -423,7 +424,7 @@ class InvestmentCompanion extends UpdateCompanion<InvestmentDTO> {
     this.riskLevel = const Value.absent(),
     this.valueUpdatedOn = const Value.absent(),
   });
-  InvestmentCompanion.insert({
+  InvestmentTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required int basketId,
@@ -435,7 +436,7 @@ class InvestmentCompanion extends UpdateCompanion<InvestmentDTO> {
         value = Value(value),
         riskLevel = Value(riskLevel),
         valueUpdatedOn = Value(valueUpdatedOn);
-  static Insertable<InvestmentDTO> custom({
+  static Insertable<Investment> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? basketId,
@@ -453,14 +454,14 @@ class InvestmentCompanion extends UpdateCompanion<InvestmentDTO> {
     });
   }
 
-  InvestmentCompanion copyWith(
+  InvestmentTableCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
       Value<int>? basketId,
       Value<double>? value,
       Value<RiskLevel>? riskLevel,
       Value<DateTime>? valueUpdatedOn}) {
-    return InvestmentCompanion(
+    return InvestmentTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       basketId: basketId ?? this.basketId,
@@ -487,7 +488,7 @@ class InvestmentCompanion extends UpdateCompanion<InvestmentDTO> {
     }
     if (riskLevel.present) {
       map['RISK_LEVEL'] = Variable<String>(
-          $InvestmentTable.$converterriskLevel.toSql(riskLevel.value));
+          $InvestmentTableTable.$converterriskLevel.toSql(riskLevel.value));
     }
     if (valueUpdatedOn.present) {
       map['VALUE_UPDATED_ON'] = Variable<DateTime>(valueUpdatedOn.value);
@@ -497,7 +498,7 @@ class InvestmentCompanion extends UpdateCompanion<InvestmentDTO> {
 
   @override
   String toString() {
-    return (StringBuffer('InvestmentCompanion(')
+    return (StringBuffer('InvestmentTableCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('basketId: $basketId, ')
@@ -509,12 +510,12 @@ class InvestmentCompanion extends UpdateCompanion<InvestmentDTO> {
   }
 }
 
-class $InvestmentTransactionTable extends InvestmentTransaction
-    with TableInfo<$InvestmentTransactionTable, TransactionDTO> {
+class $InvestmentTransactionTableTable extends InvestmentTransactionTable
+    with TableInfo<$InvestmentTransactionTableTable, InvestmentTransaction> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $InvestmentTransactionTable(this.attachedDatabase, [this._alias]);
+  $InvestmentTransactionTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -531,8 +532,8 @@ class $InvestmentTransactionTable extends InvestmentTransaction
       'INVESTMENT_ID', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES investment (ID)'));
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES investment_table (ID)'));
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
@@ -551,9 +552,10 @@ class $InvestmentTransactionTable extends InvestmentTransaction
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'investment_transaction';
+  static const String $name = 'investment_transaction_table';
   @override
-  VerificationContext validateIntegrity(Insertable<TransactionDTO> instance,
+  VerificationContext validateIntegrity(
+      Insertable<InvestmentTransaction> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -588,9 +590,9 @@ class $InvestmentTransactionTable extends InvestmentTransaction
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  TransactionDTO map(Map<String, dynamic> data, {String? tablePrefix}) {
+  InvestmentTransaction map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TransactionDTO(
+    return InvestmentTransaction(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
       investmentId: attachedDatabase.typeMapping
@@ -603,17 +605,18 @@ class $InvestmentTransactionTable extends InvestmentTransaction
   }
 
   @override
-  $InvestmentTransactionTable createAlias(String alias) {
-    return $InvestmentTransactionTable(attachedDatabase, alias);
+  $InvestmentTransactionTableTable createAlias(String alias) {
+    return $InvestmentTransactionTableTable(attachedDatabase, alias);
   }
 }
 
-class TransactionDTO extends DataClass implements Insertable<TransactionDTO> {
+class InvestmentTransaction extends DataClass
+    implements Insertable<InvestmentTransaction> {
   final int id;
   final int investmentId;
   final double amount;
   final DateTime amountInvestedOn;
-  const TransactionDTO(
+  const InvestmentTransaction(
       {required this.id,
       required this.investmentId,
       required this.amount,
@@ -628,8 +631,8 @@ class TransactionDTO extends DataClass implements Insertable<TransactionDTO> {
     return map;
   }
 
-  InvestmentTransactionCompanion toCompanion(bool nullToAbsent) {
-    return InvestmentTransactionCompanion(
+  InvestmentTransactionTableCompanion toCompanion(bool nullToAbsent) {
+    return InvestmentTransactionTableCompanion(
       id: Value(id),
       investmentId: Value(investmentId),
       amount: Value(amount),
@@ -637,10 +640,10 @@ class TransactionDTO extends DataClass implements Insertable<TransactionDTO> {
     );
   }
 
-  factory TransactionDTO.fromJson(Map<String, dynamic> json,
+  factory InvestmentTransaction.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TransactionDTO(
+    return InvestmentTransaction(
       id: serializer.fromJson<int>(json['id']),
       investmentId: serializer.fromJson<int>(json['investmentId']),
       amount: serializer.fromJson<double>(json['amount']),
@@ -658,12 +661,12 @@ class TransactionDTO extends DataClass implements Insertable<TransactionDTO> {
     };
   }
 
-  TransactionDTO copyWith(
+  InvestmentTransaction copyWith(
           {int? id,
           int? investmentId,
           double? amount,
           DateTime? amountInvestedOn}) =>
-      TransactionDTO(
+      InvestmentTransaction(
         id: id ?? this.id,
         investmentId: investmentId ?? this.investmentId,
         amount: amount ?? this.amount,
@@ -671,7 +674,7 @@ class TransactionDTO extends DataClass implements Insertable<TransactionDTO> {
       );
   @override
   String toString() {
-    return (StringBuffer('TransactionDTO(')
+    return (StringBuffer('InvestmentTransaction(')
           ..write('id: $id, ')
           ..write('investmentId: $investmentId, ')
           ..write('amount: $amount, ')
@@ -685,25 +688,26 @@ class TransactionDTO extends DataClass implements Insertable<TransactionDTO> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TransactionDTO &&
+      (other is InvestmentTransaction &&
           other.id == this.id &&
           other.investmentId == this.investmentId &&
           other.amount == this.amount &&
           other.amountInvestedOn == this.amountInvestedOn);
 }
 
-class InvestmentTransactionCompanion extends UpdateCompanion<TransactionDTO> {
+class InvestmentTransactionTableCompanion
+    extends UpdateCompanion<InvestmentTransaction> {
   final Value<int> id;
   final Value<int> investmentId;
   final Value<double> amount;
   final Value<DateTime> amountInvestedOn;
-  const InvestmentTransactionCompanion({
+  const InvestmentTransactionTableCompanion({
     this.id = const Value.absent(),
     this.investmentId = const Value.absent(),
     this.amount = const Value.absent(),
     this.amountInvestedOn = const Value.absent(),
   });
-  InvestmentTransactionCompanion.insert({
+  InvestmentTransactionTableCompanion.insert({
     this.id = const Value.absent(),
     required int investmentId,
     required double amount,
@@ -711,7 +715,7 @@ class InvestmentTransactionCompanion extends UpdateCompanion<TransactionDTO> {
   })  : investmentId = Value(investmentId),
         amount = Value(amount),
         amountInvestedOn = Value(amountInvestedOn);
-  static Insertable<TransactionDTO> custom({
+  static Insertable<InvestmentTransaction> custom({
     Expression<int>? id,
     Expression<int>? investmentId,
     Expression<double>? amount,
@@ -725,12 +729,12 @@ class InvestmentTransactionCompanion extends UpdateCompanion<TransactionDTO> {
     });
   }
 
-  InvestmentTransactionCompanion copyWith(
+  InvestmentTransactionTableCompanion copyWith(
       {Value<int>? id,
       Value<int>? investmentId,
       Value<double>? amount,
       Value<DateTime>? amountInvestedOn}) {
-    return InvestmentTransactionCompanion(
+    return InvestmentTransactionTableCompanion(
       id: id ?? this.id,
       investmentId: investmentId ?? this.investmentId,
       amount: amount ?? this.amount,
@@ -758,7 +762,7 @@ class InvestmentTransactionCompanion extends UpdateCompanion<TransactionDTO> {
 
   @override
   String toString() {
-    return (StringBuffer('InvestmentTransactionCompanion(')
+    return (StringBuffer('InvestmentTransactionTableCompanion(')
           ..write('id: $id, ')
           ..write('investmentId: $investmentId, ')
           ..write('amount: $amount, ')
@@ -768,11 +772,11 @@ class InvestmentTransactionCompanion extends UpdateCompanion<TransactionDTO> {
   }
 }
 
-class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
+class $GoalTableTable extends GoalTable with TableInfo<$GoalTableTable, Goal> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $GoalTable(this.attachedDatabase, [this._alias]);
+  $GoalTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -821,7 +825,7 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
   late final GeneratedColumnWithTypeConverter<GoalImportance, String>
       importance = GeneratedColumn<String>('IMPORTANCE', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<GoalImportance>($GoalTable.$converterimportance);
+          .withConverter<GoalImportance>($GoalTableTable.$converterimportance);
   @override
   List<GeneratedColumn> get $columns =>
       [id, name, amount, date, inflation, targetAmount, targetDate, importance];
@@ -829,9 +833,9 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'goal';
+  static const String $name = 'goal_table';
   @override
-  VerificationContext validateIntegrity(Insertable<GoalDTO> instance,
+  VerificationContext validateIntegrity(Insertable<Goal> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -885,9 +889,9 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  GoalDTO map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Goal map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return GoalDTO(
+    return Goal(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
       name: attachedDatabase.typeMapping
@@ -902,15 +906,15 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
           .read(DriftSqlType.double, data['${effectivePrefix}TARGET_AMOUNT'])!,
       targetDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}TARGET_DATE'])!,
-      importance: $GoalTable.$converterimportance.fromSql(attachedDatabase
+      importance: $GoalTableTable.$converterimportance.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}IMPORTANCE'])!),
     );
   }
 
   @override
-  $GoalTable createAlias(String alias) {
-    return $GoalTable(attachedDatabase, alias);
+  $GoalTableTable createAlias(String alias) {
+    return $GoalTableTable(attachedDatabase, alias);
   }
 
   static JsonTypeConverter2<GoalImportance, String, String>
@@ -918,7 +922,7 @@ class $GoalTable extends Goal with TableInfo<$GoalTable, GoalDTO> {
       const EnumNameConverter<GoalImportance>(GoalImportance.values);
 }
 
-class GoalDTO extends DataClass implements Insertable<GoalDTO> {
+class Goal extends DataClass implements Insertable<Goal> {
   final int id;
   final String name;
   final double amount;
@@ -927,7 +931,7 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
   final double targetAmount;
   final DateTime targetDate;
   final GoalImportance importance;
-  const GoalDTO(
+  const Goal(
       {required this.id,
       required this.name,
       required this.amount,
@@ -947,14 +951,14 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
     map['TARGET_AMOUNT'] = Variable<double>(targetAmount);
     map['TARGET_DATE'] = Variable<DateTime>(targetDate);
     {
-      map['IMPORTANCE'] =
-          Variable<String>($GoalTable.$converterimportance.toSql(importance));
+      map['IMPORTANCE'] = Variable<String>(
+          $GoalTableTable.$converterimportance.toSql(importance));
     }
     return map;
   }
 
-  GoalCompanion toCompanion(bool nullToAbsent) {
-    return GoalCompanion(
+  GoalTableCompanion toCompanion(bool nullToAbsent) {
+    return GoalTableCompanion(
       id: Value(id),
       name: Value(name),
       amount: Value(amount),
@@ -966,10 +970,10 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
     );
   }
 
-  factory GoalDTO.fromJson(Map<String, dynamic> json,
+  factory Goal.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return GoalDTO(
+    return Goal(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       amount: serializer.fromJson<double>(json['amount']),
@@ -977,7 +981,7 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
       inflation: serializer.fromJson<double>(json['inflation']),
       targetAmount: serializer.fromJson<double>(json['targetAmount']),
       targetDate: serializer.fromJson<DateTime>(json['targetDate']),
-      importance: $GoalTable.$converterimportance
+      importance: $GoalTableTable.$converterimportance
           .fromJson(serializer.fromJson<String>(json['importance'])),
     );
   }
@@ -992,12 +996,12 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
       'inflation': serializer.toJson<double>(inflation),
       'targetAmount': serializer.toJson<double>(targetAmount),
       'targetDate': serializer.toJson<DateTime>(targetDate),
-      'importance': serializer
-          .toJson<String>($GoalTable.$converterimportance.toJson(importance)),
+      'importance': serializer.toJson<String>(
+          $GoalTableTable.$converterimportance.toJson(importance)),
     };
   }
 
-  GoalDTO copyWith(
+  Goal copyWith(
           {int? id,
           String? name,
           double? amount,
@@ -1006,7 +1010,7 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
           double? targetAmount,
           DateTime? targetDate,
           GoalImportance? importance}) =>
-      GoalDTO(
+      Goal(
         id: id ?? this.id,
         name: name ?? this.name,
         amount: amount ?? this.amount,
@@ -1018,7 +1022,7 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
       );
   @override
   String toString() {
-    return (StringBuffer('GoalDTO(')
+    return (StringBuffer('Goal(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('amount: $amount, ')
@@ -1037,7 +1041,7 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is GoalDTO &&
+      (other is Goal &&
           other.id == this.id &&
           other.name == this.name &&
           other.amount == this.amount &&
@@ -1048,7 +1052,7 @@ class GoalDTO extends DataClass implements Insertable<GoalDTO> {
           other.importance == this.importance);
 }
 
-class GoalCompanion extends UpdateCompanion<GoalDTO> {
+class GoalTableCompanion extends UpdateCompanion<Goal> {
   final Value<int> id;
   final Value<String> name;
   final Value<double> amount;
@@ -1057,7 +1061,7 @@ class GoalCompanion extends UpdateCompanion<GoalDTO> {
   final Value<double> targetAmount;
   final Value<DateTime> targetDate;
   final Value<GoalImportance> importance;
-  const GoalCompanion({
+  const GoalTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.amount = const Value.absent(),
@@ -1067,7 +1071,7 @@ class GoalCompanion extends UpdateCompanion<GoalDTO> {
     this.targetDate = const Value.absent(),
     this.importance = const Value.absent(),
   });
-  GoalCompanion.insert({
+  GoalTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required double amount,
@@ -1083,7 +1087,7 @@ class GoalCompanion extends UpdateCompanion<GoalDTO> {
         targetAmount = Value(targetAmount),
         targetDate = Value(targetDate),
         importance = Value(importance);
-  static Insertable<GoalDTO> custom({
+  static Insertable<Goal> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<double>? amount,
@@ -1105,7 +1109,7 @@ class GoalCompanion extends UpdateCompanion<GoalDTO> {
     });
   }
 
-  GoalCompanion copyWith(
+  GoalTableCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
       Value<double>? amount,
@@ -1114,7 +1118,7 @@ class GoalCompanion extends UpdateCompanion<GoalDTO> {
       Value<double>? targetAmount,
       Value<DateTime>? targetDate,
       Value<GoalImportance>? importance}) {
-    return GoalCompanion(
+    return GoalTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       amount: amount ?? this.amount,
@@ -1152,14 +1156,14 @@ class GoalCompanion extends UpdateCompanion<GoalDTO> {
     }
     if (importance.present) {
       map['IMPORTANCE'] = Variable<String>(
-          $GoalTable.$converterimportance.toSql(importance.value));
+          $GoalTableTable.$converterimportance.toSql(importance.value));
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('GoalCompanion(')
+    return (StringBuffer('GoalTableCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('amount: $amount, ')
@@ -1173,12 +1177,12 @@ class GoalCompanion extends UpdateCompanion<GoalDTO> {
   }
 }
 
-class $GoalInvestmentTable extends GoalInvestment
-    with TableInfo<$GoalInvestmentTable, GoalInvestmentDTO> {
+class $GoalInvestmentTableTable extends GoalInvestmentTable
+    with TableInfo<$GoalInvestmentTableTable, GoalInvestment> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $GoalInvestmentTable(this.attachedDatabase, [this._alias]);
+  $GoalInvestmentTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1195,7 +1199,7 @@ class $GoalInvestmentTable extends GoalInvestment
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES goal (ID)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES goal_table (ID)'));
   static const VerificationMeta _investmentIdMeta =
       const VerificationMeta('investmentId');
   @override
@@ -1203,8 +1207,8 @@ class $GoalInvestmentTable extends GoalInvestment
       'INVESTMENT_ID', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES investment (ID)'));
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES investment_table (ID)'));
   static const VerificationMeta _investmentPercentageMeta =
       const VerificationMeta('investmentPercentage');
   @override
@@ -1218,9 +1222,9 @@ class $GoalInvestmentTable extends GoalInvestment
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'goal_investment';
+  static const String $name = 'goal_investment_table';
   @override
-  VerificationContext validateIntegrity(Insertable<GoalInvestmentDTO> instance,
+  VerificationContext validateIntegrity(Insertable<GoalInvestment> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1255,9 +1259,9 @@ class $GoalInvestmentTable extends GoalInvestment
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  GoalInvestmentDTO map(Map<String, dynamic> data, {String? tablePrefix}) {
+  GoalInvestment map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return GoalInvestmentDTO(
+    return GoalInvestment(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
       goalId: attachedDatabase.typeMapping
@@ -1271,18 +1275,17 @@ class $GoalInvestmentTable extends GoalInvestment
   }
 
   @override
-  $GoalInvestmentTable createAlias(String alias) {
-    return $GoalInvestmentTable(attachedDatabase, alias);
+  $GoalInvestmentTableTable createAlias(String alias) {
+    return $GoalInvestmentTableTable(attachedDatabase, alias);
   }
 }
 
-class GoalInvestmentDTO extends DataClass
-    implements Insertable<GoalInvestmentDTO> {
+class GoalInvestment extends DataClass implements Insertable<GoalInvestment> {
   final int id;
   final int goalId;
   final int investmentId;
   final double investmentPercentage;
-  const GoalInvestmentDTO(
+  const GoalInvestment(
       {required this.id,
       required this.goalId,
       required this.investmentId,
@@ -1297,8 +1300,8 @@ class GoalInvestmentDTO extends DataClass
     return map;
   }
 
-  GoalInvestmentCompanion toCompanion(bool nullToAbsent) {
-    return GoalInvestmentCompanion(
+  GoalInvestmentTableCompanion toCompanion(bool nullToAbsent) {
+    return GoalInvestmentTableCompanion(
       id: Value(id),
       goalId: Value(goalId),
       investmentId: Value(investmentId),
@@ -1306,10 +1309,10 @@ class GoalInvestmentDTO extends DataClass
     );
   }
 
-  factory GoalInvestmentDTO.fromJson(Map<String, dynamic> json,
+  factory GoalInvestment.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return GoalInvestmentDTO(
+    return GoalInvestment(
       id: serializer.fromJson<int>(json['id']),
       goalId: serializer.fromJson<int>(json['goalId']),
       investmentId: serializer.fromJson<int>(json['investmentId']),
@@ -1328,12 +1331,12 @@ class GoalInvestmentDTO extends DataClass
     };
   }
 
-  GoalInvestmentDTO copyWith(
+  GoalInvestment copyWith(
           {int? id,
           int? goalId,
           int? investmentId,
           double? investmentPercentage}) =>
-      GoalInvestmentDTO(
+      GoalInvestment(
         id: id ?? this.id,
         goalId: goalId ?? this.goalId,
         investmentId: investmentId ?? this.investmentId,
@@ -1341,7 +1344,7 @@ class GoalInvestmentDTO extends DataClass
       );
   @override
   String toString() {
-    return (StringBuffer('GoalInvestmentDTO(')
+    return (StringBuffer('GoalInvestment(')
           ..write('id: $id, ')
           ..write('goalId: $goalId, ')
           ..write('investmentId: $investmentId, ')
@@ -1356,25 +1359,25 @@ class GoalInvestmentDTO extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is GoalInvestmentDTO &&
+      (other is GoalInvestment &&
           other.id == this.id &&
           other.goalId == this.goalId &&
           other.investmentId == this.investmentId &&
           other.investmentPercentage == this.investmentPercentage);
 }
 
-class GoalInvestmentCompanion extends UpdateCompanion<GoalInvestmentDTO> {
+class GoalInvestmentTableCompanion extends UpdateCompanion<GoalInvestment> {
   final Value<int> id;
   final Value<int> goalId;
   final Value<int> investmentId;
   final Value<double> investmentPercentage;
-  const GoalInvestmentCompanion({
+  const GoalInvestmentTableCompanion({
     this.id = const Value.absent(),
     this.goalId = const Value.absent(),
     this.investmentId = const Value.absent(),
     this.investmentPercentage = const Value.absent(),
   });
-  GoalInvestmentCompanion.insert({
+  GoalInvestmentTableCompanion.insert({
     this.id = const Value.absent(),
     required int goalId,
     required int investmentId,
@@ -1382,7 +1385,7 @@ class GoalInvestmentCompanion extends UpdateCompanion<GoalInvestmentDTO> {
   })  : goalId = Value(goalId),
         investmentId = Value(investmentId),
         investmentPercentage = Value(investmentPercentage);
-  static Insertable<GoalInvestmentDTO> custom({
+  static Insertable<GoalInvestment> custom({
     Expression<int>? id,
     Expression<int>? goalId,
     Expression<int>? investmentId,
@@ -1397,12 +1400,12 @@ class GoalInvestmentCompanion extends UpdateCompanion<GoalInvestmentDTO> {
     });
   }
 
-  GoalInvestmentCompanion copyWith(
+  GoalInvestmentTableCompanion copyWith(
       {Value<int>? id,
       Value<int>? goalId,
       Value<int>? investmentId,
       Value<double>? investmentPercentage}) {
-    return GoalInvestmentCompanion(
+    return GoalInvestmentTableCompanion(
       id: id ?? this.id,
       goalId: goalId ?? this.goalId,
       investmentId: investmentId ?? this.investmentId,
@@ -1431,7 +1434,7 @@ class GoalInvestmentCompanion extends UpdateCompanion<GoalInvestmentDTO> {
 
   @override
   String toString() {
-    return (StringBuffer('GoalInvestmentCompanion(')
+    return (StringBuffer('GoalInvestmentTableCompanion(')
           ..write('id: $id, ')
           ..write('goalId: $goalId, ')
           ..write('investmentId: $investmentId, ')
@@ -1443,16 +1446,23 @@ class GoalInvestmentCompanion extends UpdateCompanion<GoalInvestmentDTO> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  late final $BasketTable basket = $BasketTable(this);
-  late final $InvestmentTable investment = $InvestmentTable(this);
-  late final $InvestmentTransactionTable investmentTransaction =
-      $InvestmentTransactionTable(this);
-  late final $GoalTable goal = $GoalTable(this);
-  late final $GoalInvestmentTable goalInvestment = $GoalInvestmentTable(this);
+  late final $BasketTableTable basketTable = $BasketTableTable(this);
+  late final $InvestmentTableTable investmentTable =
+      $InvestmentTableTable(this);
+  late final $InvestmentTransactionTableTable investmentTransactionTable =
+      $InvestmentTransactionTableTable(this);
+  late final $GoalTableTable goalTable = $GoalTableTable(this);
+  late final $GoalInvestmentTableTable goalInvestmentTable =
+      $GoalInvestmentTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [basket, investment, investmentTransaction, goal, goalInvestment];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        basketTable,
+        investmentTable,
+        investmentTransactionTable,
+        goalTable,
+        goalInvestmentTable
+      ];
 }
