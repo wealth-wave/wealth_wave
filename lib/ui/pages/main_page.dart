@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/ui/pages/baskets_page.dart';
 import 'package:wealth_wave/ui/pages/goals_page.dart';
+import 'package:wealth_wave/ui/pages/investments_page.dart';
 
 class MainPage extends StatefulWidget {
   final List<String> path;
@@ -53,7 +54,7 @@ class _MainPageState extends State<MainPage> {
                       case 1:
                         return const GoalsPage();
                       case 2:
-                        return Container();
+                        return const InvestmentsPage();
                       case 4:
                         return const BasketsPage();
                       default:

@@ -1,51 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/baskets_page_presenter.dart';
+import 'package:wealth_wave/presentation/investments_page_presenter.dart';
 import 'package:wealth_wave/ui/nav_path.dart';
 
-class BasketsPage extends StatefulWidget {
-  const BasketsPage({super.key});
+class InvestmentsPage extends StatefulWidget {
+  const InvestmentsPage({super.key});
 
   @override
-  State<BasketsPage> createState() => _BasketsPage();
+  State<InvestmentsPage> createState() => _InvestmentsPage();
 }
 
-class _BasketsPage
-    extends PageState<BasketsPageViewState, BasketsPage, BasketsPagePresenter> {
+class _InvestmentsPage extends PageState<InvestmentsPageViewState,
+    InvestmentsPage, InvestmentsPagePresenter> {
   @override
   void initState() {
     super.initState();
-    presenter.fetchBaskets();
+    presenter.fetchInvestments();
   }
 
   @override
   Widget buildWidget(
-      final BuildContext context, final BasketsPageViewState snapshot) {
-    List<Basket> baskets = snapshot.baskets;
+      final BuildContext context, final InvestmentsPageViewState snapshot) {
+    List<InvestmentVO> investments = snapshot.investments;
     return Scaffold(
       body: Center(
           child: ListView.builder(
-        itemCount: baskets.length,
+        itemCount: investments.length,
         itemBuilder: (context, index) {
-          Basket basket = baskets[index];
+          InvestmentVO investment = investments[index];
           return Card(
               child: ListTile(
-            title: Text(basket.name),
+            title: Text(investment.investment.name),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(NavPath.updateBasket(id: basket.id));
+                    Navigator.of(context).pushNamed(
+                        NavPath.updateBasket(id: investment.investment.id));
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    presenter.deleteBasket(id: basket.id);
+                    presenter.deleteInvestment(id: investment.investment.id);
                   },
                 ),
               ],
@@ -57,7 +56,7 @@ class _BasketsPage
         onPressed: () {
           _showBasketNameDialog(context).then((value) {
             if (value != null) {
-              presenter.createBasket(name: value);
+              Navigator.of(context).pushNamed(NavPath.createInvestment);
             }
           });
         },
@@ -68,8 +67,8 @@ class _BasketsPage
   }
 
   @override
-  BasketsPagePresenter initializePresenter() {
-    return BasketsPagePresenter();
+  InvestmentsPagePresenter initializePresenter() {
+    return InvestmentsPagePresenter();
   }
 
   final _textFieldController = TextEditingController();
