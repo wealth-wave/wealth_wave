@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/investments_page_presenter.dart';
 import 'package:wealth_wave/ui/nav_path.dart';
@@ -31,26 +32,33 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
           InvestmentVO investment = investments[index];
           return Card(
               child: ListTile(
-            title: Text(investment.investment.name),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                        NavPath.updateBasket(id: investment.investment.id));
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    presenter.deleteInvestment(id: investment.investment.id);
-                  },
-                ),
-              ],
-            ),
-          ));
+                  title: Text(investment.investment.name),
+                  trailing: Column(children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(
+                                NavPath.updateBasket(
+                                    id: investment.investment.id));
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            presenter.deleteInvestment(
+                                id: investment.investment.id);
+                          },
+                        ),
+                      ],
+                    ),
+                    Column(
+                        children: investment.transactions
+                            .map((e) => _getTransactionItemWidget(e))
+                            .toList())
+                  ])));
         },
       )),
       floatingActionButton: FloatingActionButton(
@@ -60,6 +68,13 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
         tooltip: 'Add',
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  Widget _getTransactionItemWidget(InvestmentTransaction transaction) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [],
     );
   }
 
