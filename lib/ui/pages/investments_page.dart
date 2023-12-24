@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/investments_page_presenter.dart';
 import 'package:wealth_wave/ui/nav_path.dart';
+import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
 
 class InvestmentsPage extends StatefulWidget {
   const InvestmentsPage({super.key});
@@ -54,11 +55,7 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showBasketNameDialog(context).then((value) {
-            if (value != null) {
-              Navigator.of(context).pushNamed(NavPath.createInvestment);
-            }
-          });
+          showCreateInvestmentDialog(context: context);
         },
         tooltip: 'Add',
         child: const Icon(Icons.add),
@@ -69,40 +66,5 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
   @override
   InvestmentsPagePresenter initializePresenter() {
     return InvestmentsPagePresenter();
-  }
-
-  final _textFieldController = TextEditingController();
-
-  Future<String?> _showBasketNameDialog(BuildContext context,
-      {String? name}) async {
-    if (name != null) {
-      _textFieldController.text = name;
-    }
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Add Basket'),
-            content: TextField(
-              controller: _textFieldController,
-              decoration: const InputDecoration(hintText: "Basket Name"),
-            ),
-            actions: <Widget>[
-              ElevatedButton(
-                  child: const Text("Cancel"),
-                  onPressed: () {
-                    _textFieldController.clear();
-                    Navigator.pop(context);
-                  }),
-              ElevatedButton(
-                  child: const Text('Add'),
-                  onPressed: () {
-                    var name = _textFieldController.text;
-                    _textFieldController.clear();
-                    Navigator.pop(context, name);
-                  }),
-            ],
-          );
-        });
   }
 }

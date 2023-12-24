@@ -18,7 +18,6 @@ class InvestmentApi {
   Future<int> createInvestment({
     required final String name,
     required final int? basketId,
-    required final int? goalId,
     required final RiskLevel riskLevel,
     required final double value,
     required final DateTime valueUpdatedAt,
@@ -26,7 +25,6 @@ class InvestmentApi {
     return _db.into(_db.investmentTable).insert(InvestmentTableCompanion.insert(
         name: name,
         basketId: Value(basketId),
-        goalId: Value(goalId),
         value: 0,
         riskLevel: riskLevel,
         valueUpdatedOn: valueUpdatedAt));
@@ -47,7 +45,6 @@ class InvestmentApi {
     required final int id,
     required final String name,
     required final int? basketId,
-    required final int? goalId,
     required final RiskLevel riskLevel,
     required final double value,
     required final DateTime valueUpdatedAt,
@@ -56,7 +53,6 @@ class InvestmentApi {
         .write(InvestmentTableCompanion(
             name: Value(name),
             basketId: Value(basketId),
-            goalId: Value(goalId),
             riskLevel: Value(riskLevel),
             value: Value(value),
             valueUpdatedOn: Value(valueUpdatedAt)));
