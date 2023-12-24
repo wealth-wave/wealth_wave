@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/goals_page_presenter.dart';
-import 'package:wealth_wave/ui/nav_path.dart';
+import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';
 
 class GoalsPage extends StatefulWidget {
   const GoalsPage({super.key});
@@ -37,8 +37,7 @@ class _GoalsPage
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(NavPath.updateGoal(id: goal.id));
+                    showCreateGoalDialog(context: context, goal: goal);
                   },
                 ),
                 IconButton(
@@ -54,7 +53,7 @@ class _GoalsPage
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed(NavPath.createGoal);
+          showCreateGoalDialog(context: context);
         },
         tooltip: 'Add',
         child: const Icon(Icons.add),

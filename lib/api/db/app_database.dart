@@ -20,7 +20,10 @@ class InvestmentTable extends Table {
   TextColumn get name => text().named('NAME')();
 
   IntColumn get basketId =>
-      integer().named('BASKET_ID').references(BasketTable, #id)();
+      integer().nullable().named('BASKET_ID').references(BasketTable, #id)();
+
+  IntColumn get goalId =>
+      integer().nullable().named('GOAL_ID').references(GoalTable, #id)();
 
   RealColumn get value => real().named('VALUE')();
 
@@ -61,26 +64,11 @@ class GoalTable extends Table {
   TextColumn get importance => textEnum<GoalImportance>().named('IMPORTANCE')();
 }
 
-@DataClassName('GoalInvestment')
-class GoalInvestmentTable extends Table {
-  IntColumn get id => integer().named('ID').autoIncrement()();
-
-  IntColumn get goalId =>
-      integer().named('GOAL_ID').references(GoalTable, #id)();
-
-  IntColumn get investmentId =>
-      integer().named('INVESTMENT_ID').references(InvestmentTable, #id)();
-
-  RealColumn get investmentPercentage =>
-      real().named('INVESTMENT_PERCENTAGE')();
-}
-
 @DriftDatabase(tables: [
   BasketTable,
   InvestmentTable,
   InvestmentTransactionTable,
   GoalTable,
-  GoalInvestmentTable
 ])
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;

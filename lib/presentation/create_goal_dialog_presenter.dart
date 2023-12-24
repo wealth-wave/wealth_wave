@@ -1,14 +1,15 @@
 import 'dart:math';
 
 import 'package:wealth_wave/api/apis/goal_api.dart';
+import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
 
-class CreateGoalPagePresenter extends Presenter<CreateGoalPageViewState> {
+class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
   final GoalApi _goalApi;
 
-  CreateGoalPagePresenter({
+  CreateGoalDialogPresenter({
     final GoalApi? goalApi,
   })  : _goalApi = goalApi ?? GoalApi(),
         super(CreateGoalPageViewState());
@@ -22,7 +23,7 @@ class CreateGoalPagePresenter extends Presenter<CreateGoalPageViewState> {
 
     final name = viewState.name;
     final amount = viewState.amount;
-    final date = DateTime.now();
+    final date = viewState.date;
     final targetAmount = viewState.getTargetAmount();
     final targetDate = viewState.targetDate;
     final inflation = viewState.inflation;
@@ -50,6 +51,10 @@ class CreateGoalPagePresenter extends Presenter<CreateGoalPageViewState> {
         (viewState) => viewState.amount = double.tryParse(text) ?? 0);
   }
 
+  void dateChanged(DateTime date) {
+    updateViewState((viewState) => viewState.date = date);
+  }
+
   void targetDateChanged(DateTime date) {
     updateViewState((viewState) => viewState.targetDate = date);
   }
@@ -61,11 +66,20 @@ class CreateGoalPagePresenter extends Presenter<CreateGoalPageViewState> {
   void importanceChanged(GoalImportance importance) {
     updateViewState((viewState) => viewState.importance = importance);
   }
+
+  void setGoal(Goal goalToUpdate) {
+    updateViewState((viewState) {
+      viewState.goalId = goalToUpdate.id;
+      viewState.importance = goalToUpdate.importance;
+    });
+  }
 }
 
 class CreateGoalPageViewState {
+  int? goalId;
   String name = '';
   double amount = 0.0;
+  DateTime date = DateTime.now();
   DateTime targetDate = DateTime.now().add(const Duration(days: 365));
   double inflation = 0;
   GoalImportance importance = GoalImportance.high;
@@ -76,8 +90,7 @@ class CreateGoalPageViewState {
     final inflation = this.inflation;
     final targetDate = this.targetDate;
     return amount *
-        pow(1 + inflation / 100,
-            targetDate.difference(DateTime.now()).inDays / 365);
+        pow(1 + inflation / 100, targetDate.difference(date).inDays / 365);
   }
 
   bool isValid() {

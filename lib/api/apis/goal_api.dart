@@ -50,10 +50,6 @@ class GoalApi {
   }
 
   Future<void> deleteGoal({required final int id}) {
-    return Future.wait([
-      (_db.delete(_db.goalInvestmentTable)..where((t) => t.goalId.equals(id)))
-          .go(),
-      (_db.delete(_db.goalTable)..where((t) => t.id.equals(id))).go()
-    ]);
+    return (_db.delete(_db.goalTable)..where((t) => t.id.equals(id))).go();
   }
 }

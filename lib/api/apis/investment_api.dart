@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
-import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 
 class InvestmentApi {
@@ -18,16 +17,19 @@ class InvestmentApi {
 
   Future<int> createInvestment({
     required final String name,
-    required final int basketId,
+    required final int? basketId,
+    required final int? goalId,
     required final RiskLevel riskLevel,
-    required final DateTime date,
+    required final double value,
+    required final DateTime valueUpdatedAt,
   }) {
     return _db.into(_db.investmentTable).insert(InvestmentTableCompanion.insert(
         name: name,
-        basketId: basketId,
+        basketId: Value(basketId),
+        goalId: Value(goalId),
         value: 0,
         riskLevel: riskLevel,
-        valueUpdatedOn: date));
+        valueUpdatedOn: valueUpdatedAt));
   }
 
   Future<void> createTransaction(
@@ -41,28 +43,47 @@ class InvestmentApi {
             amountInvestedOn: date));
   }
 
-  Future<void> update(
-      {required final int id,
-      required final String name,
-      required final double targetAmount,
-      required final DateTime targetDate,
-      required final double inflation,
-      required final GoalImportance importance}) {
-    return (_db.update(_db.goalTable)..where((t) => t.id.equals(id))).write(
-        GoalTableCompanion(
+  Future<void> updateInvestment({
+    required final int id,
+    required final String name,
+    required final int? basketId,
+    required final int? goalId,
+    required final RiskLevel riskLevel,
+    required final double value,
+    required final DateTime valueUpdatedAt,
+  }) {
+    return (_db.update(_db.investmentTable)..where((t) => t.id.equals(id)))
+        .write(InvestmentTableCompanion(
             name: Value(name),
-            targetAmount: Value(targetAmount),
-            targetDate: Value(targetDate),
-            inflation: Value(inflation),
-            importance: Value(importance)));
+            basketId: Value(basketId),
+            goalId: Value(goalId),
+            riskLevel: Value(riskLevel),
+            value: Value(value),
+            valueUpdatedOn: Value(valueUpdatedAt)));
+  }
+
+  Future<void> updateTransaction(
+      {required final int id,
+      required final int investmentId,
+      required final double amount,
+      required final DateTime date}) {
+    return (_db.update(_db.investmentTransactionTable)
+          ..where((t) => t.id.equals(id)))
+        .write(InvestmentTransactionTableCompanion(
+      investmentId: Value(investmentId),
+      amount: Value(amount),
+      amountInvestedOn: Value(date),
+    ));
   }
 
   Future<void> deleteInvestment({required final int id}) {
-    return Future.wait([
-      (_db.delete(_db.investmentTransactionTable)
-            ..where((t) => t.investmentId.equals(id)))
-          .go(),
-      (_db.delete(_db.investmentTable)..where((t) => t.id.equals(id))).go()
-    ]);
+    return (_db.delete(_db.investmentTransactionTable)
+          ..where((t) => t.investmentId.equals(id)))
+        .go();
+  }
+
+  Future<void> deleteTransaction({required final int id}) {
+    return (_db.delete(_db.investmentTable)..where((t) => t.id.equals(id)))
+        .go();
   }
 }
