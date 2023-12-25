@@ -144,14 +144,20 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
                           ],
                         ),
                       ),
-                      FilledButton(
-                        onPressed: snapshot.isValid()
-                            ? () {
-                                presenter.createInvestment();
-                              }
-                            : null,
-                        child: const Text('Create'),
-                      ),
+                      Row(mainAxisSize: MainAxisSize.min, children: [
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Cancel'),
+                        ),
+                        FilledButton(
+                          onPressed: snapshot.isValid()
+                              ? () {
+                                  presenter.createInvestment();
+                                }
+                              : null,
+                          child: const Text('Create'),
+                        ),
+                      ]),
                     ],
                   ),
                 )))));

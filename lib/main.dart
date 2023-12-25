@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/app_router.dart';
 
 void main() {
-  runApp(const WealthWaveApp());
+  runApp(Provider<AppDatabase>(
+      create: (context) => AppDatabase.instance,
+      child: const WealthWaveApp(),
+      dispose: (context, db) => db.close()));
 }
 
 class WealthWaveApp extends StatelessWidget {

@@ -97,8 +97,7 @@ class AppDatabase extends _$AppDatabase {
 DatabaseConnection connectOnWeb() {
   return DatabaseConnection.delayed(Future(() async {
     final result = await WasmDatabase.open(
-      databaseName:
-          'wealth_wave_db1', // prefer to only use valid identifiers here
+      databaseName: 'wealth_wave_db',
       sqlite3Uri: Uri.parse('sqlite3.wasm'),
       driftWorkerUri: Uri.parse('drift_worker.dart.js'),
     );

@@ -45,11 +45,7 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState,
           DateFormat('dd-MM-yyyy').format(goalToUpdate.targetDate);
       _inflationController.text = goalToUpdate.inflation.toString();
 
-
-
       presenter.setGoal(goalToUpdate);
-
-
     }
 
     _nameController.addListener(() {
@@ -165,14 +161,20 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState,
                           ],
                         ),
                       ),
-                      FilledButton(
-                        onPressed: snapshot.isValid()
-                            ? () {
-                                presenter.createGoal();
-                              }
-                            : null,
-                        child: const Text('Create'),
-                      ),
+                      Row(mainAxisSize: MainAxisSize.min, children: [
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Cancel'),
+                        ),
+                        FilledButton(
+                          onPressed: snapshot.isValid()
+                              ? () {
+                                  presenter.createGoal();
+                                }
+                              : null,
+                          child: const Text('Create'),
+                        ),
+                      ]),
                     ],
                   ),
                 )))));
