@@ -29,7 +29,6 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState,
   final _currentDateController = TextEditingController();
   final _inflationController = TextEditingController();
   final _targetDateController = TextEditingController();
-  final _targetAmountController = TextEditingController();
 
   @override
   void initState() {
