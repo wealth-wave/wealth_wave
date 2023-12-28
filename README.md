@@ -12,4 +12,4 @@ Investment Portfolio and Wealth Management App
 
 ## Run
 
-- Run `flutter run -d chrome`
+- Run `flutter run -d web-server --web-port=8080`
