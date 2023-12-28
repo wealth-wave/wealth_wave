@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/goals_page_presenter.dart';
 import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';
@@ -21,29 +20,29 @@ class _GoalsPage
 
   @override
   Widget buildWidget(BuildContext context, GoalsPageViewState snapshot) {
-    List<Goal> goals = snapshot.goals;
+    List<GoalVO> goals = snapshot.goals;
     return Scaffold(
       body: Center(
           child: ListView.builder(
         itemCount: goals.length,
         itemBuilder: (context, index) {
-          Goal goal = goals[index];
+          GoalVO goal = goals[index];
           return Card(
               child: ListTile(
-            title: Text(goal.name),
+            title: Text(goal.goal.name),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
-                    showCreateGoalDialog(context: context, goal: goal);
+                    showCreateGoalDialog(context: context, goal: goal.goal);
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    presenter.deleteGoal(id: goal.id);
+                    presenter.deleteGoal(id: goal.goal.id);
                   },
                 ),
               ],

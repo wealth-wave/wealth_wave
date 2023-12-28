@@ -34,8 +34,6 @@ class _MainPageState extends State<MainPage> {
                   },
                   destinations: const [
                     NavigationRailDestination(
-                        icon: Icon(Icons.dashboard), label: Text('Dashboard')),
-                    NavigationRailDestination(
                         icon: Icon(Icons.bookmark), label: Text('Goals')),
                     NavigationRailDestination(
                         icon: Icon(Icons.monetization_on),
@@ -50,12 +48,10 @@ class _MainPageState extends State<MainPage> {
                   builder: (context) {
                     switch (_selectedIndex) {
                       case 0:
-                        return Container();
-                      case 1:
                         return const GoalsPage();
-                      case 2:
+                      case 1:
                         return const InvestmentsPage();
-                      case 4:
+                      case 2:
                         return const BasketsPage();
                       default:
                         return Container();

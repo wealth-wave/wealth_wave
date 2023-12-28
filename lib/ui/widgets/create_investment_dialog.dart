@@ -55,6 +55,8 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
       presenter.valueUpdatedDateChanged(
           DateFormat('dd-MM-yyyy').parse(_valueUpdatedDateController.text));
     });
+
+    presenter.getBaskets();
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/investments_page_presenter.dart';
+import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/nav_path.dart';
 import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
 
@@ -31,34 +32,41 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
         itemBuilder: (context, index) {
           InvestmentVO investment = investments[index];
           return Card(
-              child: ListTile(
-                  title: Text(investment.investment.name),
-                  trailing: Column(children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.of(context).pushNamed(
-                                NavPath.updateBasket(
-                                    id: investment.investment.id));
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            presenter.deleteInvestment(
-                                id: investment.investment.id);
-                          },
-                        ),
-                      ],
-                    ),
-                    Column(
-                        children: investment.transactions
-                            .map((e) => _getTransactionItemWidget(e))
-                            .toList())
-                  ])));
+              child: Padding(
+                  padding: const EdgeInsets.all(AppDimen.minPadding),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                              '${investment.investment.name} (${investment.basket.name})'),
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                  NavPath.updateInvestment(
+                                      id: investment.investment.id));
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              presenter.deleteInvestment(
+                                  id: investment.investment.id);
+                            },
+                          ),
+                          const Spacer(),
+                          TextButton(
+                              onPressed: () {},
+                              child: Text(
+                                  '${investment.transactions.length} transactions')),
+                          IconButton(
+                              onPressed: () {}, icon: const Icon(Icons.add))
+                        ],
+                      ),
+                    ],
+                  )));
         },
       )),
       floatingActionButton: FloatingActionButton(

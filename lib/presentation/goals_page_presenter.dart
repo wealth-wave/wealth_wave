@@ -12,7 +12,7 @@ class GoalsPagePresenter extends Presenter<GoalsPageViewState> {
 
   void fetchGoals() {
     _goalApi.getGoals().listen((goals) => updateViewState((viewState) {
-          viewState.goals = goals;
+          viewState.goals = goals.map((e) => GoalVO(e, [], 0, 0)).toList();
         }));
   }
 
@@ -22,5 +22,15 @@ class GoalsPagePresenter extends Presenter<GoalsPageViewState> {
 }
 
 class GoalsPageViewState {
-  List<Goal> goals = [];
+  List<GoalVO> goals = [];
+}
+
+class GoalVO {
+  final Goal goal;
+  final List<Investment> taggedInvestments;
+  final double totalInvestmentValue;
+  final double averageGrowthRate;
+
+  GoalVO(this.goal, this.taggedInvestments, this.totalInvestmentValue,
+      this.averageGrowthRate);
 }
