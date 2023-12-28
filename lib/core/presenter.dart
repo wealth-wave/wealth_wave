@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:wealth_wave/core/view_state_holder.dart';
 
 typedef UpdateViewStateFunction<T> = void Function(T viewState);
