@@ -1,16 +1,12 @@
-import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
 
 class InvestmentsPagePresenter extends Presenter<InvestmentsPageViewState> {
   final InvestmentApi _investmentApi;
-  final BasketApi _basketApi;
 
-  InvestmentsPagePresenter(
-      {final InvestmentApi? investmentApi, final BasketApi? basketApi})
+  InvestmentsPagePresenter({final InvestmentApi? investmentApi})
       : _investmentApi = investmentApi ?? InvestmentApi(),
-        _basketApi = basketApi ?? BasketApi(),
         super(InvestmentsPageViewState());
 
   void fetchInvestments() {

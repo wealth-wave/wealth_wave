@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
@@ -50,8 +51,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionPageViewState,
     });
 
     _valueUpdatedDateController.addListener(() {
-      presenter.transactionDateChanged(
-          DateFormat('dd-MM-yyyy').parse(_valueUpdatedDateController.text));
+      presenter.transactionDateChanged(_valueUpdatedDateController.text);
     });
   }
 
@@ -64,48 +64,51 @@ class _CreateTransactionPage extends PageState<CreateTransactionPageViewState,
       });
     });
 
-    return Scaffold(
-        body: Center(
-            child: SizedBox(
-                width: 400,
-                child: Card(
-                    child: Form(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text('Create Transaction',
-                          style: Theme.of(context).textTheme.headlineMedium),
-                      Padding(
-                        padding: const EdgeInsets.all(AppDimen.minPadding),
-                        child: TextFormField(
-                          controller: _valueController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(hintText: 'Amount'),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(AppDimen.minPadding),
-                        child: TextFormField(
-                          controller: _valueUpdatedDateController,
-                          decoration: const InputDecoration(
-                              hintText: 'Date (DD-MM-YYYY)'),
-                        ),
-                      ),
-                      FilledButton(
-                        onPressed: snapshot.isValid()
-                            ? () {
-                                presenter.createTransaction();
-                              }
-                            : null,
-                        child: const Text('Create'),
-                      ),
-                    ],
-                  ),
-                )))));
+    return AlertDialog(
+        title: Text('Create Investment',
+            style: Theme.of(context).textTheme.titleMedium),
+        actions: [
+          ElevatedButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          ElevatedButton(
+            onPressed: snapshot.isValid()
+                ? () {
+                    presenter.createTransaction(
+                        investmentId: widget.investmentId,
+                        transactionIdToUpdate: widget.transactionToUpdate?.id);
+                  }
+                : null,
+            child: widget.transactionToUpdate != null
+                ? const Text('Update')
+                : const Text('Create'),
+          ),
+        ],
+        content: SingleChildScrollView(
+          child: Column(children: <Widget>[
+            TextFormField(
+              controller: _valueController,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: const InputDecoration(
+                  labelText: 'Amount', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: AppDimen.minPadding),
+            TextFormField(
+              controller: _valueUpdatedDateController,
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
+              ],
+              decoration: const InputDecoration(
+                  labelText: 'Date (DD-MM-YYYY)', border: OutlineInputBorder()),
+            ),
+          ]),
+        ));
   }
 
   @override
   CreateTransactionDialogPresenter initializePresenter() {
-    return CreateTransactionDialogPresenter(widget.investmentId);
+    return CreateTransactionDialogPresenter();
   }
 }

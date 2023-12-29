@@ -168,7 +168,8 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState,
                         FilledButton(
                           onPressed: snapshot.isValid()
                               ? () {
-                                  presenter.createGoal();
+                                  presenter.createGoal(
+                                      goalIdToUpdate: widget.goalToUpdate?.id);
                                 }
                               : null,
                           child: const Text('Create'),

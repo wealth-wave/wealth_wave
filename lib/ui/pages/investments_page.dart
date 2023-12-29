@@ -59,16 +59,20 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
                           TextButton(
                               onPressed: () {
                                 showViewTransactionsDialog(
-                                    context: context,
-                                    investmentId: investment.id);
+                                        context: context,
+                                        investmentId: investment.id)
+                                    .then((value) =>
+                                        presenter.fetchInvestments());
                               },
                               child: Text(
                                   '${investment.totalTransactions} transactions')),
                           IconButton(
                               onPressed: () {
                                 showCreateTransactionDialog(
-                                    context: context,
-                                    investmentId: investment.id);
+                                        context: context,
+                                        investmentId: investment.id)
+                                    .then((value) =>
+                                        presenter.fetchInvestments());
                               },
                               icon: const Icon(Icons.add))
                         ],

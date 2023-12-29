@@ -44,6 +44,12 @@ class InvestmentApi {
             amountInvestedOn: date));
   }
 
+  Future<void> deleteTransaction({required final int id}) {
+    return (_db.delete(_db.investmentTransactionTable)
+          ..where((t) => t.id.equals(id)))
+        .go();
+  }
+
   Future<void> updateInvestment({
     required final int id,
     required final String name,

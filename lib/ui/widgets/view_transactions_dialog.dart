@@ -37,16 +37,17 @@ class _ViewTransactionPage extends PageState<ViewTransactionsPageViewState,
     return AlertDialog(
       title: const Text('Transactions'),
       content: SizedBox(
-        width: double.maxFinite,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: snapshot.transactions.length,
-          itemBuilder: (context, index) {
-            InvestmentTransaction transaction = snapshot.transactions[index];
-            return ListTile(
-              title: Text(
-                  'Amount: ${transaction.amount.toString()} \nDate: ${transaction.amountInvestedOn.toString()}'),
-              trailing: IconButton(
+          width: double.maxFinite,
+          child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: snapshot.transactions.length,
+        itemBuilder: (context, index) {
+          InvestmentTransaction transaction = snapshot.transactions[index];
+          return ListTile(
+            title: Text(
+                'Amount: ${transaction.amount.toString()} \nDate: ${transaction.amountInvestedOn.toString()}'),
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+              IconButton(
                 icon: const Icon(Icons.edit),
                 onPressed: () {
                   showCreateTransactionDialog(
@@ -57,10 +58,16 @@ class _ViewTransactionPage extends PageState<ViewTransactionsPageViewState,
                           investmentId: widget.investmentId));
                 },
               ),
-            );
-          },
-        ),
-      ),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  presenter.deleteTransaction(id: transaction.id);
+                },
+              )
+            ]),
+          );
+        },
+      )),
       actions: <Widget>[
         OutlinedButton(
           child: const Text('Close'),

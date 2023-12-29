@@ -106,13 +106,6 @@ class CreateInvestmentPageViewState {
   SingleEvent<void>? onInvestmentCreated;
   List<Basket> baskets = List.empty(growable: false);
 
-  Basket? getBasket() {
-    if (basketId == null) {
-      return null;
-    }
-    return baskets.where((element) => element.id == basketId!).first;
-  }
-
   bool isValid({int? investmentId}) {
     if (investmentId != null) {
       return name.isNotEmpty && basketId != null;

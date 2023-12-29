@@ -20,6 +20,12 @@ class ViewTransactionsDialogPresenter
               viewState.transactions = transactions;
             }));
   }
+
+  void deleteTransaction({required final int id}) {
+    _investmentApi
+        .deleteTransaction(id: id)
+        .then((_) => getTransactions(investmentId: investmentId));
+  }
 }
 
 class ViewTransactionsPageViewState {

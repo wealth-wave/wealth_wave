@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
@@ -7,28 +8,27 @@ import 'package:wealth_wave/core/single_event.dart';
 class CreateTransactionDialogPresenter
     extends Presenter<CreateTransactionPageViewState> {
   final InvestmentApi _investmentApi;
-  final int investmentId;
 
-  CreateTransactionDialogPresenter(this.investmentId,
+  CreateTransactionDialogPresenter(
       {final InvestmentApi? investmentApi, final BasketApi? basketApi})
       : _investmentApi = investmentApi ?? InvestmentApi(),
-        super(CreateTransactionPageViewState(investmentId));
+        super(CreateTransactionPageViewState());
 
-  void createTransaction() {
+  void createTransaction(
+      {required final int investmentId, final int? transactionIdToUpdate}) {
     var viewState = getViewState();
 
     if (!viewState.isValid()) {
       return;
     }
 
-    final investmentId = viewState.investmentId;
     final amount = viewState.amount;
-    final investedDate = viewState.investedDate;
+    final investedDate = viewState.getInvestedDate();
 
-    if (viewState.transactionId != null) {
+    if (transactionIdToUpdate != null) {
       _investmentApi
           .updateTransaction(
-              id: viewState.transactionId!,
+              id: transactionIdToUpdate,
               investmentId: investmentId,
               amount: amount,
               date: investedDate)
@@ -48,29 +48,38 @@ class CreateTransactionDialogPresenter
         (viewState) => viewState.amount = double.tryParse(text) ?? 0);
   }
 
-  void transactionDateChanged(DateTime date) {
+  void transactionDateChanged(String date) {
     updateViewState((viewState) => viewState.investedDate = date);
   }
 
   void setTransaction(InvestmentTransaction transactionToUpdate) {
     updateViewState((viewState) {
-      viewState.transactionId = transactionToUpdate.id;
       viewState.amount = transactionToUpdate.amount;
-      viewState.investedDate = transactionToUpdate.amountInvestedOn;
+      viewState.investedDate =
+          DateFormat('dd-MM-yyyy').format(transactionToUpdate.amountInvestedOn);
     });
   }
 }
 
 class CreateTransactionPageViewState {
-  final int investmentId;
-  int? transactionId;
   double amount = 0.0;
-  DateTime investedDate = DateTime.now();
+  String investedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
   SingleEvent<void>? onTransactionCreated;
 
-  CreateTransactionPageViewState(this.investmentId);
-
   bool isValid() {
-    return amount > 0;
+    return amount > 0 && _isDateValid();
+  }
+
+  DateTime getInvestedDate() {
+    return DateFormat('dd-MM-yyyy').parse(investedDate);
+  }
+
+  bool _isDateValid() {
+    try {
+      DateFormat('dd-MM-yyyy').parse(investedDate);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

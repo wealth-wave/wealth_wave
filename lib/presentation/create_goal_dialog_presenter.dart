@@ -14,7 +14,7 @@ class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
   })  : _goalApi = goalApi ?? GoalApi(),
         super(CreateGoalPageViewState());
 
-  void createGoal() {
+  void createGoal({int? goalIdToUpdate}) {
     var viewState = getViewState();
 
     if (!viewState.isValid()) {
@@ -29,10 +29,10 @@ class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
     final inflation = viewState.inflation;
     final importance = viewState.importance;
 
-    if (viewState.goalId != null) {
+    if (goalIdToUpdate != null) {
       _goalApi
           .update(
-              id: viewState.goalId!,
+              id: goalIdToUpdate,
               name: name,
               amount: amount,
               date: date,
@@ -84,14 +84,12 @@ class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
 
   void setGoal(Goal goalToUpdate) {
     updateViewState((viewState) {
-      viewState.goalId = goalToUpdate.id;
       viewState.importance = goalToUpdate.importance;
     });
   }
 }
 
 class CreateGoalPageViewState {
-  int? goalId;
   String name = '';
   double amount = 0.0;
   DateTime date = DateTime.now();
