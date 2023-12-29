@@ -84,7 +84,12 @@ class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
 
   void setGoal(Goal goalToUpdate) {
     updateViewState((viewState) {
+      viewState.name = goalToUpdate.name;
+      viewState.amount = goalToUpdate.amount;
+      viewState.inflation = goalToUpdate.inflation;
       viewState.importance = goalToUpdate.importance;
+      viewState.date = goalToUpdate.date;
+      viewState.targetDate = goalToUpdate.targetDate;
     });
   }
 }

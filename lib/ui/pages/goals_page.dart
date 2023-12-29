@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/goals_page_presenter.dart';
+import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';
 
 class GoalsPage extends StatefulWidget {
@@ -28,32 +29,35 @@ class _GoalsPage
         itemBuilder: (context, index) {
           GoalVO goal = goals[index];
           return Card(
+              margin: const EdgeInsets.all(AppDimen.minPadding),
               child: ListTile(
-            title: Text(goal.goal.name),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    showCreateGoalDialog(context: context, goal: goal.goal)
-                        .then((value) => presenter.fetchGoals());
-                  },
+                title: Text(goal.goal.name,
+                    style: Theme.of(context).textTheme.titleMedium),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        showCreateGoalDialog(context: context, goal: goal.goal)
+                            .then((value) => presenter.fetchGoals());
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        presenter.deleteGoal(id: goal.goal.id);
+                      },
+                    ),
+                  ],
                 ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    presenter.deleteGoal(id: goal.goal.id);
-                  },
-                ),
-              ],
-            ),
-          ));
+              ));
         },
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showCreateGoalDialog(context: context);
+          showCreateGoalDialog(context: context)
+              .then((value) => presenter.fetchGoals());
         },
         tooltip: 'Add',
         child: const Icon(Icons.add),
