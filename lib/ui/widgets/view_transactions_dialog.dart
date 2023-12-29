@@ -3,6 +3,7 @@ import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/view_transactions_dialog_presenter.dart';
 import 'package:wealth_wave/ui/widgets/create_transaction_dialog.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showViewTransactionsDialog(
     {required final BuildContext context, required final int investmentId}) {
@@ -39,35 +40,35 @@ class _ViewTransactionPage extends PageState<ViewTransactionsPageViewState,
       content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: snapshot.transactions.length,
-        itemBuilder: (context, index) {
-          InvestmentTransaction transaction = snapshot.transactions[index];
-          return ListTile(
-            title: Text(
-                'Amount: ${transaction.amount.toString()} \nDate: ${transaction.amountInvestedOn.toString()}'),
-            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  showCreateTransactionDialog(
-                          context: context,
-                          investmentId: widget.investmentId,
-                          transactionToUpdate: transaction)
-                      .then((value) => presenter.getTransactions(
-                          investmentId: widget.investmentId));
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  presenter.deleteTransaction(id: transaction.id);
-                },
-              )
-            ]),
-          );
-        },
-      )),
+            shrinkWrap: true,
+            itemCount: snapshot.transactions.length,
+            itemBuilder: (context, index) {
+              InvestmentTransaction transaction = snapshot.transactions[index];
+              return ListTile(
+                title: Text(
+                    'Amount: ${transaction.amount.toString()} \nDate: ${formatDate(transaction.amountInvestedOn)}'),
+                trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      showCreateTransactionDialog(
+                              context: context,
+                              investmentId: widget.investmentId,
+                              transactionToUpdate: transaction)
+                          .then((value) => presenter.getTransactions(
+                              investmentId: widget.investmentId));
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      presenter.deleteTransaction(id: transaction.id);
+                    },
+                  )
+                ]),
+              );
+            },
+          )),
       actions: <Widget>[
         OutlinedButton(
           child: const Text('Close'),

@@ -7,15 +7,19 @@ class InvestmentApi {
 
   InvestmentApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
-  Future<List<InvestmentEnriched>> getInvestments() {
+  Future<List<InvestmentEnriched>> getInvestments() async {
     return _db.select(_db.investmentEnrichedView).get();
   }
 
   Future<List<InvestmentTransaction>> getTransactions(
-      {required final int investmentId}) {
-    return (_db.select(_db.investmentTransactionTable)
-          ..where((t) => t.investmentId.equals(investmentId)))
-        .get();
+      {final int? investmentId}) async {
+    if (investmentId == null) {
+      return _db.select(_db.investmentTransactionTable).get();
+    } else {
+      return (_db.select(_db.investmentTransactionTable)
+            ..where((t) => t.investmentId.equals(investmentId)))
+          .get();
+    }
   }
 
   Future<int> createInvestment({
@@ -24,7 +28,7 @@ class InvestmentApi {
     required final RiskLevel riskLevel,
     required final double value,
     required final DateTime valueUpdatedAt,
-  }) {
+  }) async {
     return _db.into(_db.investmentTable).insert(InvestmentTableCompanion.insert(
         name: name,
         basketId: Value(basketId),
@@ -33,10 +37,10 @@ class InvestmentApi {
         valueUpdatedOn: valueUpdatedAt));
   }
 
-  Future<void> createTransaction(
+  Future<int> createTransaction(
       {required final int investmentId,
       required final double amount,
-      required final DateTime date}) {
+      required final DateTime date}) async {
     return _db.into(_db.investmentTransactionTable).insert(
         InvestmentTransactionTableCompanion.insert(
             investmentId: investmentId,
@@ -44,20 +48,20 @@ class InvestmentApi {
             amountInvestedOn: date));
   }
 
-  Future<void> deleteTransaction({required final int id}) {
+  Future<int> deleteTransaction({required final int id}) async {
     return (_db.delete(_db.investmentTransactionTable)
           ..where((t) => t.id.equals(id)))
         .go();
   }
 
-  Future<void> updateInvestment({
+  Future<int> updateInvestment({
     required final int id,
     required final String name,
     required final int? basketId,
     required final RiskLevel riskLevel,
     required final double value,
     required final DateTime valueUpdatedAt,
-  }) {
+  }) async {
     return (_db.update(_db.investmentTable)..where((t) => t.id.equals(id)))
         .write(InvestmentTableCompanion(
             name: Value(name),
@@ -67,11 +71,11 @@ class InvestmentApi {
             valueUpdatedOn: Value(valueUpdatedAt)));
   }
 
-  Future<void> updateTransaction(
+  Future<int> updateTransaction(
       {required final int id,
       required final int investmentId,
       required final double amount,
-      required final DateTime date}) {
+      required final DateTime date}) async {
     return (_db.update(_db.investmentTransactionTable)
           ..where((t) => t.id.equals(id)))
         .write(InvestmentTransactionTableCompanion(
@@ -81,13 +85,13 @@ class InvestmentApi {
     ));
   }
 
-  Future<void> deleteTransactions({required final int investmentId}) {
+  Future<int> deleteTransactions({required final int investmentId}) async {
     return (_db.delete(_db.investmentTransactionTable)
           ..where((t) => t.investmentId.equals(investmentId)))
         .go();
   }
 
-  Future<void> deleteInvestment({required final int id}) {
+  Future<int> deleteInvestment({required final int id}) async {
     return (_db.delete(_db.investmentTable)..where((t) => t.id.equals(id)))
         .go();
   }

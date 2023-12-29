@@ -5,6 +5,7 @@ import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/domain/investment_do.dart';
 
 class CreateInvestmentDialogPresenter
     extends Presenter<CreateInvestmentPageViewState> {
@@ -54,13 +55,8 @@ class CreateInvestmentDialogPresenter
               valueUpdatedAt: valueUpdatedAt,
               basketId: basketId,
               riskLevel: riskLevel)
-          .then((investmentId) => _investmentApi
-              .createTransaction(
-                  investmentId: investmentId,
-                  date: valueUpdatedAt,
-                  amount: value)
-              .then((_) => updateViewState((viewState) =>
-                  viewState.onInvestmentCreated = SingleEvent(null))));
+          .then((investmentId) => updateViewState((viewState) =>
+              viewState.onInvestmentCreated = SingleEvent(null)));
     }
   }
 
@@ -85,7 +81,7 @@ class CreateInvestmentDialogPresenter
     updateViewState((viewState) => viewState.riskLevel = riskLevel);
   }
 
-  void setInvestment(InvestmentEnriched investmentToUpdate) {
+  void setInvestment(InvestmentDO investmentToUpdate) {
     updateViewState((viewState) {
       viewState.name = investmentToUpdate.name;
       viewState.basketId = investmentToUpdate.basketId;

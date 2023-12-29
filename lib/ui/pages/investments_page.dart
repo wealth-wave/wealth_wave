@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
+import 'package:intl/intl.dart';
 import 'package:wealth_wave/core/page_state.dart';
+import 'package:wealth_wave/domain/investment_do.dart';
 import 'package:wealth_wave/presentation/investments_page_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
 import 'package:wealth_wave/ui/widgets/create_transaction_dialog.dart';
 import 'package:wealth_wave/ui/widgets/view_transactions_dialog.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 class InvestmentsPage extends StatefulWidget {
   const InvestmentsPage({super.key});
@@ -25,15 +27,13 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
   @override
   Widget buildWidget(
       final BuildContext context, final InvestmentsPageViewState snapshot) {
-    List<InvestmentVO> investments = snapshot.investments;
+    List<InvestmentDO> investments = snapshot.investments;
     return Scaffold(
       body: Center(
           child: ListView.builder(
         itemCount: investments.length,
         itemBuilder: (context, index) {
-          InvestmentVO investmentVO = investments[index];
-          InvestmentEnriched investment = investmentVO.investment;
-          double? irr = investmentVO.irr;
+          InvestmentDO investment = investments[index];
           return Card(
               child: Padding(
                   padding: const EdgeInsets.all(AppDimen.minPadding),
@@ -80,10 +80,34 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
                         ],
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Value: ${investment.value}'),
-                          const Spacer(),
-                          Text('IRR: ${irr?.toStringAsFixed(2) ?? '-'}%'),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Invested'),
+                              Text('${investment.totalInvestedAmount}'),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Current Value'),
+                              Text('${investment.value}'),
+                              Text(
+                                '(${DateFormat('dd-MM-yyyy').format(investment.valueUpdatedOn)})',
+                                style: Theme.of(context).textTheme.labelMedium,
+                              )
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Growth'),
+                              Text(formatToPercentage(investment.getIrr())),
+                            ],
+                          ),
                         ],
                       ),
                     ],

@@ -1,16 +1,18 @@
 import 'dart:math';
 
+import 'package:wealth_wave/domain/transaction_do.dart';
+
 class IRRCalculator {
   double calculateIRR(
-      {required final List<Transaction> transactions,
+      {required final List<TransactionDO> transactions,
       required final double finalValue,
       required final DateTime finalDate}) {
-    transactions.sort((a, b) => a.date.compareTo(b.date));
-    DateTime initialDate = transactions.first.date;
+    transactions.sort((a, b) => a.createdOn.compareTo(b.createdOn));
+    DateTime initialDate = transactions.first.createdOn;
     List<_CashFlow> cashFlows = transactions
         .map((transaction) => _CashFlow(
             amount: -transaction.amount,
-            years: transaction.date.difference(initialDate).inDays / 365))
+            years: transaction.createdOn.difference(initialDate).inDays / 365))
         .toList();
 
     cashFlows.add(_CashFlow(
@@ -38,11 +40,4 @@ class _CashFlow {
   final double years;
 
   _CashFlow({required this.amount, required this.years});
-}
-
-class Transaction {
-  final double amount;
-  final DateTime date;
-
-  Transaction({required this.amount, required this.date});
 }

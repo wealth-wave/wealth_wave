@@ -7,22 +7,22 @@ class GoalApi {
 
   GoalApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
-  Future<List<Goal>> getGoals() {
+  Future<List<Goal>> getGoals() async {
     return _db.select(_db.goalTable).get();
   }
 
-  Future<Goal> getGoal({required final int id}) {
+  Future<Goal> getGoal({required final int id}) async {
     return _db.select(_db.goalTable).getSingle();
   }
 
-  Future<void> createGoal(
+  Future<int> createGoal(
       {required final String name,
       required final double amount,
       required final DateTime date,
       required final double targetAmount,
       required final DateTime targetDate,
       required final double inflation,
-      required final GoalImportance importance}) {
+      required final GoalImportance importance}) async {
     return _db.into(_db.goalTable).insert(GoalTableCompanion.insert(
         name: name,
         amount: amount,
@@ -33,7 +33,7 @@ class GoalApi {
         importance: importance));
   }
 
-  Future<void> update(
+  Future<int> update(
       {required final int id,
       required final String name,
       required final double amount,
@@ -41,7 +41,7 @@ class GoalApi {
       required final double targetAmount,
       required final DateTime targetDate,
       required final double inflation,
-      required final GoalImportance importance}) {
+      required final GoalImportance importance}) async {
     return (_db.update(_db.goalTable)..where((t) => t.id.equals(id))).write(
         GoalTableCompanion(
             name: Value(name),
@@ -53,7 +53,7 @@ class GoalApi {
             importance: Value(importance)));
   }
 
-  Future<void> deleteGoal({required final int id}) {
+  Future<int> deleteGoal({required final int id}) async {
     return (_db.delete(_db.goalTable)..where((t) => t.id.equals(id))).go();
   }
 }

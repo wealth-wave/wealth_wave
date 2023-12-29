@@ -1,26 +1,24 @@
 import 'package:wealth_wave/api/apis/investment_api.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
-import 'package:wealth_wave/domain/irr_calculator.dart';
+import 'package:wealth_wave/domain/investment_do.dart';
+import 'package:wealth_wave/domain/usecases/fetch_investments_use_case.dart';
 
 class InvestmentsPagePresenter extends Presenter<InvestmentsPageViewState> {
   final InvestmentApi _investmentApi;
-  final IRRCalculator _irrCalculator;
+  final FetchInvestmentsUseCase _fetchInvestmentsUseCase;
 
   InvestmentsPagePresenter(
-      {final InvestmentApi? investmentApi, final IRRCalculator? irrCalculator})
+      {final InvestmentApi? investmentApi,
+      final FetchInvestmentsUseCase? fetchInvestmentsUseCase})
       : _investmentApi = investmentApi ?? InvestmentApi(),
-        _irrCalculator = irrCalculator ?? IRRCalculator(),
+        _fetchInvestmentsUseCase =
+            fetchInvestmentsUseCase ?? FetchInvestmentsUseCase(),
         super(InvestmentsPageViewState());
 
   void fetchInvestments() {
-    _investmentApi.getInvestments().then((investments) {
+    _fetchInvestmentsUseCase.fetchInvestments().then((investments) {
       updateViewState((viewState) {
-        viewState.investments = investments.map((e) {
-          InvestmentVO investmentVO = InvestmentVO(investment: e);
-          _updateIRR(investmentVO);
-          return investmentVO;
-        }).toList();
+        viewState.investments = investments;
       });
     });
   }
@@ -31,32 +29,8 @@ class InvestmentsPagePresenter extends Presenter<InvestmentsPageViewState> {
             .deleteInvestment(id: id)
             .then((value) => fetchInvestments()));
   }
-
-  _updateIRR(InvestmentVO investmentVO) {
-    _investmentApi
-        .getTransactions(investmentId: investmentVO.investment.id)
-        .then((transactions) {
-      double irr = _irrCalculator.calculateIRR(
-        transactions: transactions
-            .map((e) => Transaction(amount: e.amount, date: e.amountInvestedOn))
-            .toList(),
-        finalValue: investmentVO.investment.value,
-        finalDate: investmentVO.investment.valueUpdatedOn,
-      );
-      investmentVO.irr = irr;
-    });
-  }
 }
 
 class InvestmentsPageViewState {
-  List<InvestmentVO> investments = [];
-}
-
-class InvestmentVO {
-  InvestmentEnriched investment;
-  double? irr;
-
-  InvestmentVO({
-    required this.investment,
-  });
+  List<InvestmentDO> investments = [];
 }

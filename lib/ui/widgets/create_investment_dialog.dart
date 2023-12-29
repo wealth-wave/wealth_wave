@@ -4,12 +4,13 @@ import 'package:intl/intl.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
+import 'package:wealth_wave/domain/investment_do.dart';
 import 'package:wealth_wave/presentation/create_investment_dialog_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 
 Future<void> showCreateInvestmentDialog(
     {required final BuildContext context,
-    final InvestmentEnriched? investmentToUpdate}) {
+    final InvestmentDO? investmentToUpdate}) {
   return showDialog(
       context: context,
       builder: (context) =>
@@ -17,7 +18,7 @@ Future<void> showCreateInvestmentDialog(
 }
 
 class _CreateInvestmentDialog extends StatefulWidget {
-  final InvestmentEnriched? investmentToUpdate;
+  final InvestmentDO? investmentToUpdate;
 
   const _CreateInvestmentDialog({this.investmentToUpdate});
 
@@ -35,7 +36,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
   void initState() {
     super.initState();
 
-    InvestmentEnriched? investmentToUpdate = widget.investmentToUpdate;
+    InvestmentDO? investmentToUpdate = widget.investmentToUpdate;
     if (investmentToUpdate != null) {
       _nameController.text = investmentToUpdate.name;
       _valueController.text = investmentToUpdate.value.toString();
@@ -82,18 +83,14 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
                 labelText: 'Name', border: OutlineInputBorder()),
           ),
           const SizedBox(height: AppDimen.minPadding),
-          widget.investmentToUpdate == null
-              ? Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                  TextFormField(
-                    controller: _valueController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                        labelText: 'Amount', border: OutlineInputBorder()),
-                  ),
-                  const SizedBox(height: AppDimen.minPadding)
-                ])
-              : Container(),
+          TextFormField(
+            controller: _valueController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: const InputDecoration(
+                labelText: 'Value', border: OutlineInputBorder()),
+          ),
+          const SizedBox(height: AppDimen.minPadding),
           TextFormField(
             controller: _valueUpdatedDateController,
             inputFormatters: [
