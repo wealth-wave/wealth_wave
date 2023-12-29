@@ -11,7 +11,8 @@ class InvestmentApi {
     return _db.select(_db.investmentEnrichedView).get();
   }
 
-  Future<List<InvestmentTransaction>> getTransactions({required final int investmentId}) {
+  Future<List<InvestmentTransaction>> getTransactions(
+      {required final int investmentId}) {
     return (_db.select(_db.investmentTransactionTable)
           ..where((t) => t.investmentId.equals(investmentId)))
         .get();
@@ -27,7 +28,7 @@ class InvestmentApi {
     return _db.into(_db.investmentTable).insert(InvestmentTableCompanion.insert(
         name: name,
         basketId: Value(basketId),
-        value: 0,
+        value: value,
         riskLevel: riskLevel,
         valueUpdatedOn: valueUpdatedAt));
   }
@@ -74,13 +75,13 @@ class InvestmentApi {
     ));
   }
 
-  Future<void> deleteInvestment({required final int id}) {
+  Future<void> deleteTransactions({required final int investmentId}) {
     return (_db.delete(_db.investmentTransactionTable)
-          ..where((t) => t.investmentId.equals(id)))
+          ..where((t) => t.investmentId.equals(investmentId)))
         .go();
   }
 
-  Future<void> deleteTransaction({required final int id}) {
+  Future<void> deleteInvestment({required final int id}) {
     return (_db.delete(_db.investmentTable)..where((t) => t.id.equals(id)))
         .go();
   }

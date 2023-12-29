@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
@@ -52,8 +53,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
     });
 
     _valueUpdatedDateController.addListener(() {
-      presenter.valueUpdatedDateChanged(
-          DateFormat('dd-MM-yyyy').parse(_valueUpdatedDateController.text));
+      presenter.valueUpdatedDateChanged(_valueUpdatedDateController.text);
     });
 
     presenter.getBaskets();
@@ -68,107 +68,103 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
       });
     });
 
-    return Scaffold(
-        body: Center(
-            child: SizedBox(
-                width: 400,
-                child: Card(
-                    child: Form(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text('Create Investment',
-                          style: Theme.of(context).textTheme.headlineMedium),
-                      Padding(
-                        padding: const EdgeInsets.all(AppDimen.minPadding),
-                        child: TextFormField(
-                          textCapitalization: TextCapitalization.words,
-                          controller: _nameController,
-                          decoration: const InputDecoration(hintText: 'Name'),
-                        ),
-                      ),
-                      widget.investmentToUpdate == null
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.all(AppDimen.minPadding),
-                              child: TextFormField(
-                                controller: _valueController,
-                                keyboardType: TextInputType.number,
-                                decoration:
-                                    const InputDecoration(hintText: 'Amount'),
-                              ),
-                            )
-                          : Container(),
-                      Padding(
-                        padding: const EdgeInsets.all(AppDimen.minPadding),
-                        child: TextFormField(
-                          controller: _valueUpdatedDateController,
-                          decoration: const InputDecoration(
-                              hintText: 'Date (DD-MM-YYYY)'),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(AppDimen.minPadding),
-                        child: DropdownButtonFormField<int>(
-                            hint: const Text('Basket'),
-                            value: snapshot.basketId,
-                            onChanged: (value) {
-                              if (value != null) {
-                                presenter.baskedIdChanged(value);
-                              }
-                            },
-                            items: snapshot.baskets
-                                .map((e) => DropdownMenuItem(
-                                      value: e.id,
-                                      child: Text(e.name),
-                                    ))
-                                .toList()),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(AppDimen.minPadding),
-                        child: DropdownButtonFormField<RiskLevel>(
-                          hint: const Text('Risk Level'),
-                          value: snapshot.riskLevel,
-                          onChanged: (value) {
-                            if (value != null) {
-                              presenter.riskLevelChanged(value);
-                            }
-                          },
-                          items: const [
-                            DropdownMenuItem(
-                              value: RiskLevel.high,
-                              child: Text('High'),
-                            ),
-                            DropdownMenuItem(
-                              value: RiskLevel.medium,
-                              child: Text('Medium'),
-                            ),
-                            DropdownMenuItem(
-                              value: RiskLevel.low,
-                              child: Text('Low'),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(mainAxisSize: MainAxisSize.min, children: [
-                        OutlinedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Cancel'),
-                        ),
-                        FilledButton(
-                          onPressed: snapshot.isValid()
-                              ? () {
-                                  presenter.createInvestment();
-                                }
-                              : null,
-                          child: widget.investmentToUpdate != null
-                              ? const Text('Update')
-                              : const Text('Create'),
-                        ),
-                      ]),
-                    ],
+    return AlertDialog(
+        title: Text('Create Investment',
+            style: Theme.of(context).textTheme.titleMedium),
+        content: SingleChildScrollView(
+            child: Column(children: <Widget>[
+          TextFormField(
+            controller: _nameController,
+            inputFormatters: [
+              FilteringTextInputFormatter.deny(RegExp(r'[^a-zA-Z0-9\s]'))
+            ],
+            decoration: const InputDecoration(
+                labelText: 'Name', border: OutlineInputBorder()),
+          ),
+          const SizedBox(height: AppDimen.minPadding),
+          widget.investmentToUpdate == null
+              ? Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  TextFormField(
+                    controller: _valueController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: const InputDecoration(
+                        labelText: 'Amount', border: OutlineInputBorder()),
                   ),
-                )))));
+                  const SizedBox(height: AppDimen.minPadding)
+                ])
+              : Container(),
+          TextFormField(
+            controller: _valueUpdatedDateController,
+            inputFormatters: [
+              FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
+            ],
+            decoration: const InputDecoration(
+                labelText: 'Date (DD-MM-YYYY)', border: OutlineInputBorder()),
+          ),
+          const SizedBox(height: AppDimen.minPadding),
+          DropdownButtonFormField<int>(
+              decoration: const InputDecoration(border: OutlineInputBorder()),
+              hint: const Text('Basket'),
+              value: snapshot.basketId,
+              onChanged: (value) {
+                if (value != null) {
+                  presenter.baskedIdChanged(value);
+                }
+              },
+              items: snapshot.baskets
+                  .map((e) => DropdownMenuItem(
+                        value: e.id,
+                        child: Text(e.name),
+                      ))
+                  .toList()),
+          const SizedBox(height: AppDimen.minPadding),
+          DropdownButtonFormField<RiskLevel>(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            hint: const Text('Risk Level'),
+            value: snapshot.riskLevel,
+            onChanged: (value) {
+              if (value != null) {
+                presenter.riskLevelChanged(value);
+              }
+            },
+            items: const [
+              DropdownMenuItem(
+                value: RiskLevel.high,
+                child: Text('High'),
+              ),
+              DropdownMenuItem(
+                value: RiskLevel.medium,
+                child: Text('Medium'),
+              ),
+              DropdownMenuItem(
+                value: RiskLevel.low,
+                child: Text('Low'),
+              ),
+            ],
+          )
+        ])),
+        actions: [
+          ElevatedButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          ElevatedButton(
+            onPressed: snapshot.isValid(
+                    investmentId: widget.investmentToUpdate?.id)
+                ? () {
+                    presenter.createInvestment(
+                        investmentIdToUpdate: widget.investmentToUpdate?.id);
+                  }
+                : null,
+            child: widget.investmentToUpdate != null
+                ? const Text('Update')
+                : const Text('Create'),
+          ),
+        ]);
   }
 
   @override

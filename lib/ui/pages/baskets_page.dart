@@ -94,8 +94,6 @@ class _BasketsPage
                   controller: _textFieldController,
                   decoration: const InputDecoration(
                       labelText: "Basket Name", border: OutlineInputBorder()),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter a name' : null,
                 )),
             actions: <Widget>[
               ElevatedButton(
@@ -105,14 +103,16 @@ class _BasketsPage
                     Navigator.pop(context);
                   }),
               ElevatedButton(
-                  onPressed: _textFieldController.text.isEmpty
-                      ? null
-                      : () {
-                          var name = _textFieldController.text;
-                          _textFieldController.clear();
-                          Navigator.pop(context, name);
-                        },
-                  child: const Text('Add')),
+                  onPressed: () {
+                    var basketName = _textFieldController.text;
+                    _textFieldController.clear();
+                    if (basketName.isEmpty) {
+                      return;
+                    }
+                    Navigator.pop(context, basketName);
+                  },
+                  child:
+                      name == null ? const Text('Add') : const Text('Update')),
             ],
           );
         });

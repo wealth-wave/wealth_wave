@@ -100,7 +100,8 @@ abstract class InvestmentEnrichedView extends View {
         innerJoin(basket, basket.id.equalsExp(investment.basketId)),
         leftOuterJoin(
             transaction, transaction.investmentId.equalsExp(investment.id)),
-      ]);
+      ])
+        ..groupBy([investment.id]);
 }
 
 @DriftDatabase(tables: [

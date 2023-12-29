@@ -22,7 +22,10 @@ class InvestmentsPagePresenter extends Presenter<InvestmentsPageViewState> {
   }
 
   void deleteInvestment({required final int id}) {
-    _investmentApi.deleteInvestment(id: id).then((value) => null);
+    _investmentApi.deleteTransactions(investmentId: id).then((value) =>
+        _investmentApi
+            .deleteInvestment(id: id)
+            .then((value) => fetchInvestments()));
   }
 }
 

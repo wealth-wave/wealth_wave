@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
@@ -21,7 +22,7 @@ class CreateInvestmentDialogPresenter
         (value) => updateViewState((viewState) => viewState.baskets = value));
   }
 
-  void createInvestment() {
+  void createInvestment({int? investmentIdToUpdate}) {
     var viewState = getViewState();
 
     if (!viewState.isValid()) {
@@ -30,14 +31,14 @@ class CreateInvestmentDialogPresenter
 
     final name = viewState.name;
     final value = viewState.value;
-    final valueUpdatedAt = viewState.valueUpdatedAt;
+    final valueUpdatedAt = viewState._getValueUpdatedAt();
     final basketId = viewState.basketId;
     final riskLevel = viewState.riskLevel;
 
-    if (viewState.investmentId != null) {
+    if (investmentIdToUpdate != null) {
       _investmentApi
           .updateInvestment(
-              id: viewState.investmentId!,
+              id: investmentIdToUpdate,
               name: name,
               value: value,
               valueUpdatedAt: valueUpdatedAt,
@@ -72,7 +73,7 @@ class CreateInvestmentDialogPresenter
         (viewState) => viewState.value = double.tryParse(text) ?? 0);
   }
 
-  void valueUpdatedDateChanged(DateTime date) {
+  void valueUpdatedDateChanged(String date) {
     updateViewState((viewState) => viewState.valueUpdatedAt = date);
   }
 
@@ -86,23 +87,22 @@ class CreateInvestmentDialogPresenter
 
   void setInvestment(InvestmentEnriched investmentToUpdate) {
     updateViewState((viewState) {
-      viewState.investmentId = investmentToUpdate.id;
       viewState.name = investmentToUpdate.name;
       viewState.basketId = investmentToUpdate.basketId;
       viewState.value = investmentToUpdate.value;
-      viewState.valueUpdatedAt = investmentToUpdate.valueUpdatedOn;
+      viewState.valueUpdatedAt =
+          DateFormat('dd-MM-yyyy').format(investmentToUpdate.valueUpdatedOn);
       viewState.riskLevel = investmentToUpdate.riskLevel;
     });
   }
 }
 
 class CreateInvestmentPageViewState {
-  int? investmentId;
   String name = '';
   int? basketId;
   RiskLevel riskLevel = RiskLevel.medium;
   double value = 0.0;
-  DateTime valueUpdatedAt = DateTime.now();
+  String valueUpdatedAt = DateFormat('dd-MM-yyyy').format(DateTime.now());
   SingleEvent<void>? onInvestmentCreated;
   List<Basket> baskets = List.empty(growable: false);
 
@@ -113,11 +113,27 @@ class CreateInvestmentPageViewState {
     return baskets.where((element) => element.id == basketId!).first;
   }
 
-  bool isValid() {
+  bool isValid({int? investmentId}) {
     if (investmentId != null) {
       return name.isNotEmpty && basketId != null;
     } else {
-      return name.isNotEmpty && value > 0 && basketId != null;
+      return name.isNotEmpty &&
+          value > 0 &&
+          _isValidDate(valueUpdatedAt) &&
+          basketId != null;
     }
+  }
+
+  bool _isValidDate(dateText) {
+    try {
+      DateFormat('dd-MM-yyyy').parseStrict(dateText);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  DateTime _getValueUpdatedAt() {
+    return DateFormat('dd-MM-yyyy').parse(valueUpdatedAt);
   }
 }
