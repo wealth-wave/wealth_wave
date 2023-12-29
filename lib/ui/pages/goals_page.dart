@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
+import 'package:wealth_wave/domain/goal_do.dart';
 import 'package:wealth_wave/presentation/goals_page_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';
@@ -21,33 +22,43 @@ class _GoalsPage
 
   @override
   Widget buildWidget(BuildContext context, GoalsPageViewState snapshot) {
-    List<GoalVO> goals = snapshot.goals;
+    List<GoalDO> goals = snapshot.goals;
     return Scaffold(
       body: Center(
           child: ListView.builder(
         itemCount: goals.length,
         itemBuilder: (context, index) {
-          GoalVO goal = goals[index];
+          GoalDO goal = goals[index];
           return Card(
               margin: const EdgeInsets.all(AppDimen.minPadding),
-              child: ListTile(
-                title: Text(goal.goal.name,
-                    style: Theme.of(context).textTheme.titleMedium),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
+              child: Padding(
+                padding: const EdgeInsets.all(AppDimen.minPadding),
+                child: Column(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        showCreateGoalDialog(context: context, goal: goal.goal)
-                            .then((value) => presenter.fetchGoals());
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        presenter.deleteGoal(id: goal.goal.id);
-                      },
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('${goal.name}'),
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            showCreateGoalDialog(context: context, goal: goal);
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            presenter.deleteGoal(id: goal.id);
+                          },
+                        ),
+                        const Spacer(),
+                        TextButton(
+                            onPressed: () {},
+                            child: Text(
+                                '${goal.taggedInvestments.length} Tagged Investments')),
+                        IconButton(
+                            onPressed: () {}, icon: const Icon(Icons.add))
+                      ],
                     ),
                   ],
                 ),

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/page_state.dart';
+import 'package:wealth_wave/domain/goal_do.dart';
 import 'package:wealth_wave/presentation/create_goal_dialog_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 
 Future<void> showCreateGoalDialog(
-    {required final BuildContext context, final Goal? goal}) {
+    {required final BuildContext context, final GoalDO? goal}) {
   return showDialog(
       context: context,
       builder: (context) => _CreateGoalDialog(goalToUpdate: goal));
 }
 
 class _CreateGoalDialog extends StatefulWidget {
-  final Goal? goalToUpdate;
+  final GoalDO? goalToUpdate;
 
   const _CreateGoalDialog({super.key, this.goalToUpdate});
 
@@ -35,12 +35,12 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState,
   void initState() {
     super.initState();
 
-    Goal? goalToUpdate = widget.goalToUpdate;
+    GoalDO? goalToUpdate = widget.goalToUpdate;
     if (goalToUpdate != null) {
       _nameController.text = goalToUpdate.name;
       _amountController.text = goalToUpdate.amount.toString();
       _currentDateController.text =
-          DateFormat('dd-MM-yyyy').format(goalToUpdate.date);
+          DateFormat('dd-MM-yyyy').format(goalToUpdate.createdDate);
       _targetDateController.text =
           DateFormat('dd-MM-yyyy').format(goalToUpdate.targetDate);
       _inflationController.text = goalToUpdate.inflation.toString();
@@ -50,7 +50,7 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState,
       _currentDateController.text =
           DateFormat('dd-MM-yyyy').format(DateTime.now());
       _targetDateController.text = DateFormat('dd-MM-yyyy')
-          .format(DateTime.now().add(Duration(days: 365)));
+          .format(DateTime.now().add(const Duration(days: 365)));
     }
 
     _nameController.addListener(() {

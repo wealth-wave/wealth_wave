@@ -56,4 +56,42 @@ class GoalApi {
   Future<int> deleteGoal({required final int id}) async {
     return (_db.delete(_db.goalTable)..where((t) => t.id.equals(id))).go();
   }
+
+  Future<int> tagInvestmentToGoal(
+      {required final int goalId,
+      required final int investmentId,
+      required final double percentage}) async {
+    return _db.into(_db.goalInvestmentTable).insert(
+        GoalInvestmentTableCompanion.insert(
+            goalId: goalId,
+            investmentId: investmentId,
+            sharePercentage: percentage));
+  }
+
+  Future<List<GoalInvestment>> getGoalInvestments() async {
+    return _db.select(_db.goalInvestmentTable).get();
+  }
+
+  Future<int> updateGoalInvestmentTag(
+      {required final int id,
+      required final int goalId,
+      required final int investmentId,
+      required final double percentage}) async {
+    return (_db.update(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
+        .write(GoalInvestmentTableCompanion(
+            goalId: Value(goalId),
+            investmentId: Value(investmentId),
+            sharePercentage: Value(percentage)));
+  }
+
+  Future<int> deleteGoalInvestmentTag({required final int id}) async {
+    return (_db.delete(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
+        .go();
+  }
+
+  Future<int> deleteGoalInvestmentTags({required final int goalId}) async {
+    return (_db.delete(_db.goalInvestmentTable)
+          ..where((t) => t.goalId.equals(goalId)))
+        .go();
+  }
 }

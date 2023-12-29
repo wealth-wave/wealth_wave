@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:wealth_wave/api/apis/goal_api.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/domain/goal_do.dart';
 
 class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
   final GoalApi _goalApi;
@@ -82,13 +82,13 @@ class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
     updateViewState((viewState) => viewState.importance = importance);
   }
 
-  void setGoal(Goal goalToUpdate) {
+  void setGoal(GoalDO goalToUpdate) {
     updateViewState((viewState) {
       viewState.name = goalToUpdate.name;
       viewState.amount = goalToUpdate.amount;
       viewState.inflation = goalToUpdate.inflation;
       viewState.importance = goalToUpdate.importance;
-      viewState.date = goalToUpdate.date;
+      viewState.date = goalToUpdate.createdDate;
       viewState.targetDate = goalToUpdate.targetDate;
     });
   }
