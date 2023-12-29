@@ -25,13 +25,15 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
   @override
   Widget buildWidget(
       final BuildContext context, final InvestmentsPageViewState snapshot) {
-    List<InvestmentEnriched> investments = snapshot.investments;
+    List<InvestmentVO> investments = snapshot.investments;
     return Scaffold(
       body: Center(
           child: ListView.builder(
         itemCount: investments.length,
         itemBuilder: (context, index) {
-          InvestmentEnriched investment = investments[index];
+          InvestmentVO investmentVO = investments[index];
+          InvestmentEnriched investment = investmentVO.investment;
+          double? irr = investmentVO.irr;
           return Card(
               child: Padding(
                   padding: const EdgeInsets.all(AppDimen.minPadding),
@@ -75,6 +77,13 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
                                         presenter.fetchInvestments());
                               },
                               icon: const Icon(Icons.add))
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text('Value: ${investment.value}'),
+                          const Spacer(),
+                          Text('IRR: ${irr?.toStringAsFixed(2) ?? '-'}%'),
                         ],
                       ),
                     ],
