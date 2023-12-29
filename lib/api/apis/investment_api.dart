@@ -7,12 +7,14 @@ class InvestmentApi {
 
   InvestmentApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
-  Stream<List<Investment>> getInvestments() {
-    return _db.select(_db.investmentTable).watch();
+  Future<List<InvestmentEnriched>> getInvestments() {
+    return _db.select(_db.investmentEnrichedView).get();
   }
 
-  Stream<List<InvestmentTransaction>> getTransactions() {
-    return _db.select(_db.investmentTransactionTable).watch();
+  Future<List<InvestmentTransaction>> getTransactions({required final int investmentId}) {
+    return (_db.select(_db.investmentTransactionTable)
+          ..where((t) => t.investmentId.equals(investmentId)))
+        .get();
   }
 
   Future<int> createInvestment({

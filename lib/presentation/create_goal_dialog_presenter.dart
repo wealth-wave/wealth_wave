@@ -29,17 +29,32 @@ class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
     final inflation = viewState.inflation;
     final importance = viewState.importance;
 
-    _goalApi
-        .createGoal(
-            name: name,
-            amount: amount,
-            date: date,
-            targetAmount: targetAmount,
-            targetDate: targetDate,
-            inflation: inflation,
-            importance: importance)
-        .then((_) => updateViewState(
-            (viewState) => viewState.onGoalCreated = SingleEvent(null)));
+    if (viewState.goalId != null) {
+      _goalApi
+          .update(
+              id: viewState.goalId!,
+              name: name,
+              amount: amount,
+              date: date,
+              targetAmount: targetAmount,
+              targetDate: targetDate,
+              inflation: inflation,
+              importance: importance)
+          .then((_) => updateViewState(
+              (viewState) => viewState.onGoalCreated = SingleEvent(null)));
+    } else {
+      _goalApi
+          .createGoal(
+              name: name,
+              amount: amount,
+              date: date,
+              targetAmount: targetAmount,
+              targetDate: targetDate,
+              inflation: inflation,
+              importance: importance)
+          .then((_) => updateViewState(
+              (viewState) => viewState.onGoalCreated = SingleEvent(null)));
+    }
   }
 
   void nameChanged(String text) {

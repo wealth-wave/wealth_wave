@@ -36,7 +36,8 @@ class _GoalsPage
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
-                    showCreateGoalDialog(context: context, goal: goal.goal);
+                    showCreateGoalDialog(context: context, goal: goal.goal)
+                        .then((value) => presenter.fetchGoals());
                   },
                 ),
                 IconButton(

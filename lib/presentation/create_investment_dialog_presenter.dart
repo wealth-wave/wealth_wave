@@ -17,7 +17,7 @@ class CreateInvestmentDialogPresenter
         super(CreateInvestmentPageViewState());
 
   void getBaskets() {
-    _basketApi.getBaskets().first.then(
+    _basketApi.getBaskets().then(
         (value) => updateViewState((viewState) => viewState.baskets = value));
   }
 
@@ -34,15 +34,33 @@ class CreateInvestmentDialogPresenter
     final basketId = viewState.basketId;
     final riskLevel = viewState.riskLevel;
 
-    _investmentApi
-        .createInvestment(
-            name: name,
-            value: value,
-            valueUpdatedAt: valueUpdatedAt,
-            basketId: basketId,
-            riskLevel: riskLevel)
-        .then((_) => updateViewState(
-            (viewState) => viewState.onInvestmentCreated = SingleEvent(null)));
+    if (viewState.investmentId != null) {
+      _investmentApi
+          .updateInvestment(
+              id: viewState.investmentId!,
+              name: name,
+              value: value,
+              valueUpdatedAt: valueUpdatedAt,
+              basketId: basketId,
+              riskLevel: riskLevel)
+          .then((_) => updateViewState((viewState) =>
+              viewState.onInvestmentCreated = SingleEvent(null)));
+    } else {
+      _investmentApi
+          .createInvestment(
+              name: name,
+              value: value,
+              valueUpdatedAt: valueUpdatedAt,
+              basketId: basketId,
+              riskLevel: riskLevel)
+          .then((investmentId) => _investmentApi
+              .createTransaction(
+                  investmentId: investmentId,
+                  date: valueUpdatedAt,
+                  amount: value)
+              .then((_) => updateViewState((viewState) =>
+                  viewState.onInvestmentCreated = SingleEvent(null))));
+    }
   }
 
   void nameChanged(String text) {
@@ -66,7 +84,7 @@ class CreateInvestmentDialogPresenter
     updateViewState((viewState) => viewState.riskLevel = riskLevel);
   }
 
-  void setInvestment(Investment investmentToUpdate) {
+  void setInvestment(InvestmentEnriched investmentToUpdate) {
     updateViewState((viewState) {
       viewState.investmentId = investmentToUpdate.id;
       viewState.name = investmentToUpdate.name;
@@ -96,6 +114,10 @@ class CreateInvestmentPageViewState {
   }
 
   bool isValid() {
-    return name.isNotEmpty && value > 0 && basketId != null;
+    if (investmentId != null) {
+      return name.isNotEmpty && basketId != null;
+    } else {
+      return name.isNotEmpty && value > 0 && basketId != null;
+    }
   }
 }

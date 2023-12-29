@@ -8,11 +8,11 @@ import 'package:wealth_wave/ui/app_dimen.dart';
 Future<void> showCreateTransactionDialog(
     {required final BuildContext context,
     required final int investmentId,
-    final InvestmentTransaction? investmentToUpdate}) {
+    final InvestmentTransaction? transactionToUpdate}) {
   return showDialog(
       context: context,
       builder: (context) => _CreateTransactionDialog(
-            transactionToUpdate: investmentToUpdate,
+            transactionToUpdate: transactionToUpdate,
             investmentId: investmentId,
           ));
 }

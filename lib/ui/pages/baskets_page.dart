@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/baskets_page_presenter.dart';
-import 'package:wealth_wave/ui/nav_path.dart';
+import 'package:wealth_wave/ui/app_dimen.dart';
 
 class BasketsPage extends StatefulWidget {
   const BasketsPage({super.key});
@@ -38,8 +38,11 @@ class _BasketsPage
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(NavPath.updateBasket(id: basket.id));
+                    _showBasketNameDialog(context).then((value) {
+                      if (value != null) {
+                        presenter.updateBasketName(id: basket.id, name: value);
+                      }
+                    });
                   },
                 ),
                 IconButton(
@@ -83,11 +86,17 @@ class _BasketsPage
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Add Basket'),
-            content: TextField(
-              controller: _textFieldController,
-              decoration: const InputDecoration(hintText: "Basket Name"),
-            ),
+            title: Text('Add Basket',
+                style: Theme.of(context).textTheme.titleMedium),
+            content: Padding(
+                padding: const EdgeInsets.all(AppDimen.minPadding),
+                child: TextFormField(
+                  controller: _textFieldController,
+                  decoration: const InputDecoration(
+                      labelText: "Basket Name", border: OutlineInputBorder()),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter a name' : null,
+                )),
             actions: <Widget>[
               ElevatedButton(
                   child: const Text("Cancel"),
@@ -96,12 +105,14 @@ class _BasketsPage
                     Navigator.pop(context);
                   }),
               ElevatedButton(
-                  child: const Text('Add'),
-                  onPressed: () {
-                    var name = _textFieldController.text;
-                    _textFieldController.clear();
-                    Navigator.pop(context, name);
-                  }),
+                  onPressed: _textFieldController.text.isEmpty
+                      ? null
+                      : () {
+                          var name = _textFieldController.text;
+                          _textFieldController.clear();
+                          Navigator.pop(context, name);
+                        },
+                  child: const Text('Add')),
             ],
           );
         });

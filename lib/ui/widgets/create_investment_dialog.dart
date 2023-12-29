@@ -8,7 +8,7 @@ import 'package:wealth_wave/ui/app_dimen.dart';
 
 Future<void> showCreateInvestmentDialog(
     {required final BuildContext context,
-    final Investment? investmentToUpdate}) {
+    final InvestmentEnriched? investmentToUpdate}) {
   return showDialog(
       context: context,
       builder: (context) =>
@@ -16,7 +16,7 @@ Future<void> showCreateInvestmentDialog(
 }
 
 class _CreateInvestmentDialog extends StatefulWidget {
-  final Investment? investmentToUpdate;
+  final InvestmentEnriched? investmentToUpdate;
 
   const _CreateInvestmentDialog({this.investmentToUpdate});
 
@@ -34,7 +34,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
   void initState() {
     super.initState();
 
-    Investment? investmentToUpdate = widget.investmentToUpdate;
+    InvestmentEnriched? investmentToUpdate = widget.investmentToUpdate;
     if (investmentToUpdate != null) {
       _nameController.text = investmentToUpdate.name;
       _valueController.text = investmentToUpdate.value.toString();
@@ -87,14 +87,18 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
                           decoration: const InputDecoration(hintText: 'Name'),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(AppDimen.minPadding),
-                        child: TextFormField(
-                          controller: _valueController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(hintText: 'Amount'),
-                        ),
-                      ),
+                      widget.investmentToUpdate == null
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.all(AppDimen.minPadding),
+                              child: TextFormField(
+                                controller: _valueController,
+                                keyboardType: TextInputType.number,
+                                decoration:
+                                    const InputDecoration(hintText: 'Amount'),
+                              ),
+                            )
+                          : Container(),
                       Padding(
                         padding: const EdgeInsets.all(AppDimen.minPadding),
                         child: TextFormField(
@@ -157,7 +161,9 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
                                   presenter.createInvestment();
                                 }
                               : null,
-                          child: const Text('Create'),
+                          child: widget.investmentToUpdate != null
+                              ? const Text('Update')
+                              : const Text('Create'),
                         ),
                       ]),
                     ],

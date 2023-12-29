@@ -11,13 +11,13 @@ class GoalsPagePresenter extends Presenter<GoalsPageViewState> {
         super(GoalsPageViewState());
 
   void fetchGoals() {
-    _goalApi.getGoals().listen((goals) => updateViewState((viewState) {
+    _goalApi.getGoals().then((goals) => updateViewState((viewState) {
           viewState.goals = goals.map((e) => GoalVO(e, [], 0, 0)).toList();
         }));
   }
 
   void deleteGoal({required final int id}) {
-    _goalApi.deleteGoal(id: id).then((_) => null);
+    _goalApi.deleteGoal(id: id).then((_) => fetchGoals());
   }
 }
 

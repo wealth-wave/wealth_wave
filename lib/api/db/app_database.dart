@@ -74,12 +74,43 @@ class GoalInvestmentTable extends Table {
   RealColumn get sharePercentage => real().named('SHARE_PERCENTAGE')();
 }
 
+@DataClassName('InvestmentEnriched')
+abstract class InvestmentEnrichedView extends View {
+  InvestmentTable get investment;
+  BasketTable get basket;
+  InvestmentTransactionTable get transaction;
+
+  Expression<int> get basketId => basket.id;
+  Expression<String> get basketName => basket.name;
+  Expression<double> get totalInvestedAmount => transaction.amount.sum();
+  Expression<int> get totalTransactions => transaction.id.count();
+
+  @override
+  Query as() => select([
+        investment.id,
+        investment.name,
+        investment.riskLevel,
+        investment.value,
+        investment.valueUpdatedOn,
+        basketId,
+        basketName,
+        totalInvestedAmount,
+        totalTransactions,
+      ]).from(investment).join([
+        innerJoin(basket, basket.id.equalsExp(investment.basketId)),
+        leftOuterJoin(
+            transaction, transaction.investmentId.equalsExp(investment.id)),
+      ]);
+}
+
 @DriftDatabase(tables: [
   BasketTable,
   InvestmentTable,
   InvestmentTransactionTable,
   GoalTable,
   GoalInvestmentTable,
+], views: [
+  InvestmentEnrichedView,
 ])
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;

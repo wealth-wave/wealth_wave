@@ -1437,6 +1437,232 @@ class GoalInvestmentTableCompanion extends UpdateCompanion<GoalInvestment> {
   }
 }
 
+class InvestmentEnriched extends DataClass {
+  final int id;
+  final String name;
+  final RiskLevel riskLevel;
+  final double value;
+  final DateTime valueUpdatedOn;
+  final int? basketId;
+  final String? basketName;
+  final double? totalInvestedAmount;
+  final int? totalTransactions;
+  const InvestmentEnriched(
+      {required this.id,
+      required this.name,
+      required this.riskLevel,
+      required this.value,
+      required this.valueUpdatedOn,
+      this.basketId,
+      this.basketName,
+      this.totalInvestedAmount,
+      this.totalTransactions});
+  factory InvestmentEnriched.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InvestmentEnriched(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      riskLevel: $InvestmentTableTable.$converterriskLevel
+          .fromJson(serializer.fromJson<String>(json['riskLevel'])),
+      value: serializer.fromJson<double>(json['value']),
+      valueUpdatedOn: serializer.fromJson<DateTime>(json['valueUpdatedOn']),
+      basketId: serializer.fromJson<int?>(json['basketId']),
+      basketName: serializer.fromJson<String?>(json['basketName']),
+      totalInvestedAmount:
+          serializer.fromJson<double?>(json['totalInvestedAmount']),
+      totalTransactions: serializer.fromJson<int?>(json['totalTransactions']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'riskLevel': serializer.toJson<String>(
+          $InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),
+      'value': serializer.toJson<double>(value),
+      'valueUpdatedOn': serializer.toJson<DateTime>(valueUpdatedOn),
+      'basketId': serializer.toJson<int?>(basketId),
+      'basketName': serializer.toJson<String?>(basketName),
+      'totalInvestedAmount': serializer.toJson<double?>(totalInvestedAmount),
+      'totalTransactions': serializer.toJson<int?>(totalTransactions),
+    };
+  }
+
+  InvestmentEnriched copyWith(
+          {int? id,
+          String? name,
+          RiskLevel? riskLevel,
+          double? value,
+          DateTime? valueUpdatedOn,
+          Value<int?> basketId = const Value.absent(),
+          Value<String?> basketName = const Value.absent(),
+          Value<double?> totalInvestedAmount = const Value.absent(),
+          Value<int?> totalTransactions = const Value.absent()}) =>
+      InvestmentEnriched(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        riskLevel: riskLevel ?? this.riskLevel,
+        value: value ?? this.value,
+        valueUpdatedOn: valueUpdatedOn ?? this.valueUpdatedOn,
+        basketId: basketId.present ? basketId.value : this.basketId,
+        basketName: basketName.present ? basketName.value : this.basketName,
+        totalInvestedAmount: totalInvestedAmount.present
+            ? totalInvestedAmount.value
+            : this.totalInvestedAmount,
+        totalTransactions: totalTransactions.present
+            ? totalTransactions.value
+            : this.totalTransactions,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('InvestmentEnriched(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('riskLevel: $riskLevel, ')
+          ..write('value: $value, ')
+          ..write('valueUpdatedOn: $valueUpdatedOn, ')
+          ..write('basketId: $basketId, ')
+          ..write('basketName: $basketName, ')
+          ..write('totalInvestedAmount: $totalInvestedAmount, ')
+          ..write('totalTransactions: $totalTransactions')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, riskLevel, value, valueUpdatedOn,
+      basketId, basketName, totalInvestedAmount, totalTransactions);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InvestmentEnriched &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.riskLevel == this.riskLevel &&
+          other.value == this.value &&
+          other.valueUpdatedOn == this.valueUpdatedOn &&
+          other.basketId == this.basketId &&
+          other.basketName == this.basketName &&
+          other.totalInvestedAmount == this.totalInvestedAmount &&
+          other.totalTransactions == this.totalTransactions);
+}
+
+class $InvestmentEnrichedViewView
+    extends ViewInfo<$InvestmentEnrichedViewView, InvestmentEnriched>
+    implements HasResultSet {
+  final String? _alias;
+  @override
+  final _$AppDatabase attachedDatabase;
+  $InvestmentEnrichedViewView(this.attachedDatabase, [this._alias]);
+  $InvestmentTableTable get investment =>
+      attachedDatabase.investmentTable.createAlias('t0');
+  $BasketTableTable get basket =>
+      attachedDatabase.basketTable.createAlias('t1');
+  $InvestmentTransactionTableTable get transaction =>
+      attachedDatabase.investmentTransactionTable.createAlias('t2');
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        riskLevel,
+        value,
+        valueUpdatedOn,
+        basketId,
+        basketName,
+        totalInvestedAmount,
+        totalTransactions
+      ];
+  @override
+  String get aliasedName => _alias ?? entityName;
+  @override
+  String get entityName => 'investment_enriched_view';
+  @override
+  Map<SqlDialect, String>? get createViewStatements => null;
+  @override
+  $InvestmentEnrichedViewView get asDslTable => this;
+  @override
+  InvestmentEnriched map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InvestmentEnriched(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}NAME'])!,
+      riskLevel: $InvestmentTableTable.$converterriskLevel.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!),
+      value: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}VALUE'])!,
+      valueUpdatedOn: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}VALUE_UPDATED_ON'])!,
+      basketId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}basket_id']),
+      basketName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}basket_name']),
+      totalInvestedAmount: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}total_invested_amount']),
+      totalTransactions: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}total_transactions']),
+    );
+  }
+
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'ID', aliasedName, false,
+      generatedAs: GeneratedAs(investment.id, false), type: DriftSqlType.int);
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'NAME', aliasedName, false,
+      generatedAs: GeneratedAs(investment.name, false),
+      type: DriftSqlType.string);
+  late final GeneratedColumnWithTypeConverter<RiskLevel, String> riskLevel =
+      GeneratedColumn<String>('RISK_LEVEL', aliasedName, false,
+              generatedAs: GeneratedAs(investment.riskLevel, false),
+              type: DriftSqlType.string)
+          .withConverter<RiskLevel>($InvestmentTableTable.$converterriskLevel);
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+      'VALUE', aliasedName, false,
+      generatedAs: GeneratedAs(investment.value, false),
+      type: DriftSqlType.double);
+  late final GeneratedColumn<DateTime> valueUpdatedOn =
+      GeneratedColumn<DateTime>('VALUE_UPDATED_ON', aliasedName, false,
+          generatedAs: GeneratedAs(investment.valueUpdatedOn, false),
+          type: DriftSqlType.dateTime);
+  late final GeneratedColumn<int> basketId = GeneratedColumn<int>(
+      'basket_id', aliasedName, true,
+      generatedAs: GeneratedAs(basket.id, false), type: DriftSqlType.int);
+  late final GeneratedColumn<String> basketName = GeneratedColumn<String>(
+      'basket_name', aliasedName, true,
+      generatedAs: GeneratedAs(basket.name, false), type: DriftSqlType.string);
+  late final GeneratedColumn<double> totalInvestedAmount =
+      GeneratedColumn<double>('total_invested_amount', aliasedName, true,
+          generatedAs: GeneratedAs(transaction.amount.sum(), false),
+          type: DriftSqlType.double);
+  late final GeneratedColumn<int> totalTransactions = GeneratedColumn<int>(
+      'total_transactions', aliasedName, true,
+      generatedAs: GeneratedAs(transaction.id.count(), false),
+      type: DriftSqlType.int);
+  @override
+  $InvestmentEnrichedViewView createAlias(String alias) {
+    return $InvestmentEnrichedViewView(attachedDatabase, alias);
+  }
+
+  @override
+  Query? get query =>
+      (attachedDatabase.selectOnly(investment)..addColumns($columns)).join([
+        innerJoin(basket, basket.id.equalsExp(investment.basketId)),
+        leftOuterJoin(
+            transaction, transaction.investmentId.equalsExp(investment.id))
+      ]);
+  @override
+  Set<String> get readTables => const {
+        'investment_table',
+        'basket_table',
+        'investment_transaction_table'
+      };
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final $BasketTableTable basketTable = $BasketTableTable(this);
@@ -1447,6 +1673,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $GoalTableTable goalTable = $GoalTableTable(this);
   late final $GoalInvestmentTableTable goalInvestmentTable =
       $GoalInvestmentTableTable(this);
+  late final $InvestmentEnrichedViewView investmentEnrichedView =
+      $InvestmentEnrichedViewView(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1456,6 +1684,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         investmentTable,
         investmentTransactionTable,
         goalTable,
-        goalInvestmentTable
+        goalInvestmentTable,
+        investmentEnrichedView
       ];
 }

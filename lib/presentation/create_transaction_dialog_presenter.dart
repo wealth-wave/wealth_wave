@@ -25,11 +25,22 @@ class CreateTransactionDialogPresenter
     final amount = viewState.amount;
     final investedDate = viewState.investedDate;
 
-    _investmentApi
-        .createTransaction(
-            investmentId: investmentId, amount: amount, date: investedDate)
-        .then((_) => updateViewState(
-            (viewState) => viewState.onTransactionCreated = SingleEvent(null)));
+    if (viewState.transactionId != null) {
+      _investmentApi
+          .updateTransaction(
+              id: viewState.transactionId!,
+              investmentId: investmentId,
+              amount: amount,
+              date: investedDate)
+          .then((_) => updateViewState((viewState) =>
+              viewState.onTransactionCreated = SingleEvent(null)));
+    } else {
+      _investmentApi
+          .createTransaction(
+              investmentId: investmentId, amount: amount, date: investedDate)
+          .then((_) => updateViewState((viewState) =>
+              viewState.onTransactionCreated = SingleEvent(null)));
+    }
   }
 
   void onAmountChanged(String text) {
@@ -43,6 +54,7 @@ class CreateTransactionDialogPresenter
 
   void setTransaction(InvestmentTransaction transactionToUpdate) {
     updateViewState((viewState) {
+      viewState.transactionId = transactionToUpdate.id;
       viewState.amount = transactionToUpdate.amount;
       viewState.investedDate = transactionToUpdate.amountInvestedOn;
     });
@@ -51,6 +63,7 @@ class CreateTransactionDialogPresenter
 
 class CreateTransactionPageViewState {
   final int investmentId;
+  int? transactionId;
   double amount = 0.0;
   DateTime investedDate = DateTime.now();
   SingleEvent<void>? onTransactionCreated;

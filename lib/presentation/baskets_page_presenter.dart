@@ -10,17 +10,17 @@ class BasketsPagePresenter extends Presenter<BasketsPageViewState> {
         super(BasketsPageViewState());
 
   void fetchBaskets() {
-    _basketApi.getBaskets().listen((baskets) => updateViewState((viewState) {
+    _basketApi.getBaskets().then((baskets) => updateViewState((viewState) {
           viewState.baskets = baskets;
         }));
   }
 
   void createBasket({required final String name}) {
-    _basketApi.createBasket(name: name).then((_) => null);
+    _basketApi.createBasket(name: name).then((_) => fetchBaskets());
   }
 
   void updateBasketName({required final int id, required final String name}) {
-    _basketApi.updateName(id: id, name: name).then((_) => null);
+    _basketApi.updateName(id: id, name: name).then((_) => fetchBaskets());
   }
 
   void deleteBasket({required final int id}) {
