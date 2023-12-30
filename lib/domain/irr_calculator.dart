@@ -3,10 +3,12 @@ import 'dart:math';
 import 'package:wealth_wave/domain/models/transaction.dart';
 
 class IRRCalculator {
-  double calculateIRR(
+  double? calculateIRR(
       {required final List<Transaction> transactions,
       required final double finalValue,
       required final DateTime finalDate}) {
+    if (transactions.isEmpty) return null;
+
     transactions.sort((a, b) => a.createdOn.compareTo(b.createdOn));
     DateTime initialDate = transactions.first.createdOn;
     List<_CashFlow> cashFlows = transactions
@@ -31,7 +33,7 @@ class IRRCalculator {
       if (f.abs() < 1e-6) return guess; // Convergence tolerance
       guess -= f / df; // Newton-Raphson update
     }
-    throw Exception('IRR did not converge');
+    return null;
   }
 }
 

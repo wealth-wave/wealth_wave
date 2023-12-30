@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/presentation/investments_presenter.dart';
@@ -16,8 +15,8 @@ class InvestmentsPage extends StatefulWidget {
   State<InvestmentsPage> createState() => _InvestmentsPage();
 }
 
-class _InvestmentsPage extends PageState<InvestmentsViewState,
-    InvestmentsPage, InvestmentsPresenter> {
+class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
+    InvestmentsPresenter> {
   @override
   void initState() {
     super.initState();
@@ -34,6 +33,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState,
         itemCount: investments.length,
         itemBuilder: (context, index) {
           Investment investment = investments[index];
+          double? irr = investment.getIrr();
           return Card(
               child: Padding(
                   padding: const EdgeInsets.all(AppDimen.minPadding),
@@ -96,7 +96,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState,
                               const Text('Current Value'),
                               Text('${investment.value}'),
                               Text(
-                                '(${DateFormat('dd-MM-yyyy').format(investment.valueUpdatedOn)})',
+                                formatDate(investment.valueUpdatedOn),
                                 style: Theme.of(context).textTheme.labelMedium,
                               )
                             ],
@@ -105,7 +105,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('Growth'),
-                              Text(formatToPercentage(investment.getIrr())),
+                              Text(irr != null ? formatToPercentage(irr) : '-'),
                             ],
                           ),
                         ],

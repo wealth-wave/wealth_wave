@@ -27,7 +27,7 @@ class Investment {
       required this.totalTransactions,
       required this.transactions});
 
-  double getIrr() {
+  double? getIrr() {
     return IRRCalculator().calculateIRR(
       transactions: transactions,
       finalValue: value,
