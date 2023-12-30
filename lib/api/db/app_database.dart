@@ -6,14 +6,14 @@ import 'package:wealth_wave/contract/risk_level.dart';
 
 part 'app_database.g.dart';
 
-@DataClassName('Basket')
+@DataClassName('BasketDO')
 class BasketTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
   TextColumn get name => text().named('NAME').unique()();
 }
 
-@DataClassName('Investment')
+@DataClassName('InvestmentDO')
 class InvestmentTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -29,8 +29,8 @@ class InvestmentTable extends Table {
   DateTimeColumn get valueUpdatedOn => dateTime().named('VALUE_UPDATED_ON')();
 }
 
-@DataClassName('InvestmentTransaction')
-class InvestmentTransactionTable extends Table {
+@DataClassName('TransactionDO')
+class TransactionTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
   IntColumn get investmentId =>
@@ -42,7 +42,7 @@ class InvestmentTransactionTable extends Table {
       dateTime().named('AMOUNT_INVESTED_ON')();
 }
 
-@DataClassName('Goal')
+@DataClassName('GoalDO')
 class GoalTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -61,7 +61,7 @@ class GoalTable extends Table {
   TextColumn get importance => textEnum<GoalImportance>().named('IMPORTANCE')();
 }
 
-@DataClassName('GoalInvestment')
+@DataClassName('GoalInvestmentMappingDO')
 class GoalInvestmentTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -74,11 +74,11 @@ class GoalInvestmentTable extends Table {
   RealColumn get sharePercentage => real().named('SHARE_PERCENTAGE')();
 }
 
-@DataClassName('InvestmentEnriched')
+@DataClassName('InvestmentEnrichedDO')
 abstract class InvestmentEnrichedView extends View {
   InvestmentTable get investment;
   BasketTable get basket;
-  InvestmentTransactionTable get transaction;
+  TransactionTable get transaction;
 
   Expression<int> get basketId => basket.id;
   Expression<String> get basketName => basket.name;
@@ -107,7 +107,7 @@ abstract class InvestmentEnrichedView extends View {
 @DriftDatabase(tables: [
   BasketTable,
   InvestmentTable,
-  InvestmentTransactionTable,
+  TransactionTable,
   GoalTable,
   GoalInvestmentTable,
 ], views: [

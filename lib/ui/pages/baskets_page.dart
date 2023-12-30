@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/baskets_page_presenter.dart';
+import 'package:wealth_wave/presentation/baskets_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 
 class BasketsPage extends StatefulWidget {
@@ -12,7 +12,7 @@ class BasketsPage extends StatefulWidget {
 }
 
 class _BasketsPage
-    extends PageState<BasketsPageViewState, BasketsPage, BasketsPagePresenter> {
+    extends PageState<BasketsViewState, BasketsPage, BasketsPresenter> {
   @override
   void initState() {
     super.initState();
@@ -21,14 +21,14 @@ class _BasketsPage
 
   @override
   Widget buildWidget(
-      final BuildContext context, final BasketsPageViewState snapshot) {
-    List<Basket> baskets = snapshot.baskets;
+      final BuildContext context, final BasketsViewState snapshot) {
+    List<BasketDO> baskets = snapshot.baskets;
     return Scaffold(
       body: Center(
           child: ListView.builder(
         itemCount: baskets.length,
         itemBuilder: (context, index) {
-          Basket basket = baskets[index];
+          BasketDO basket = baskets[index];
           return Card(
               child: ListTile(
             title: Text(basket.name),
@@ -71,8 +71,8 @@ class _BasketsPage
   }
 
   @override
-  BasketsPagePresenter initializePresenter() {
-    return BasketsPagePresenter();
+  BasketsPresenter initializePresenter() {
+    return BasketsPresenter();
   }
 
   final _textFieldController = TextEditingController();

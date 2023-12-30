@@ -3,15 +3,14 @@ import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
 
-class ViewTransactionsDialogPresenter
-    extends Presenter<ViewTransactionsPageViewState> {
+class TransactionsPresenter extends Presenter<TransactionsViewState> {
   final InvestmentApi _investmentApi;
   final int investmentId;
 
-  ViewTransactionsDialogPresenter(this.investmentId,
+  TransactionsPresenter(this.investmentId,
       {final InvestmentApi? investmentApi, final BasketApi? basketApi})
       : _investmentApi = investmentApi ?? InvestmentApi(),
-        super(ViewTransactionsPageViewState(investmentId: investmentId));
+        super(TransactionsViewState(investmentId: investmentId));
 
   void getTransactions({required final int investmentId}) {
     _investmentApi
@@ -28,9 +27,9 @@ class ViewTransactionsDialogPresenter
   }
 }
 
-class ViewTransactionsPageViewState {
+class TransactionsViewState {
   final int investmentId;
-  List<InvestmentTransaction> transactions = [];
+  List<TransactionDO> transactions = [];
 
-  ViewTransactionsPageViewState({required this.investmentId});
+  TransactionsViewState({required this.investmentId});
 }

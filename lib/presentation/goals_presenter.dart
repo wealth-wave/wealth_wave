@@ -1,18 +1,18 @@
 import 'package:wealth_wave/api/apis/goal_api.dart';
 import 'package:wealth_wave/core/presenter.dart';
-import 'package:wealth_wave/domain/goal_do.dart';
+import 'package:wealth_wave/domain/models/goal.dart';
 import 'package:wealth_wave/domain/usecases/fetch_goals_use_case.dart';
 
-class GoalsPagePresenter extends Presenter<GoalsPageViewState> {
+class GoalsPresenter extends Presenter<GoalsViewState> {
   final GoalApi _goalApi;
   final FetchGoalsUseCase _fetchGoalsUseCase;
 
-  GoalsPagePresenter({
+  GoalsPresenter({
     final GoalApi? goalApi,
     final FetchGoalsUseCase? fetchGoalsUseCase,
   })  : _goalApi = goalApi ?? GoalApi(),
         _fetchGoalsUseCase = fetchGoalsUseCase ?? FetchGoalsUseCase(),
-        super(GoalsPageViewState());
+        super(GoalsViewState());
 
   void fetchGoals() {
     _fetchGoalsUseCase.invoke().then((goals) => updateViewState((viewState) {
@@ -25,6 +25,6 @@ class GoalsPagePresenter extends Presenter<GoalsPageViewState> {
   }
 }
 
-class GoalsPageViewState {
-  List<GoalDO> goals = [];
+class GoalsViewState {
+  List<Goal> goals = [];
 }

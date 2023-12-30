@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/investment_do.dart';
-import 'package:wealth_wave/presentation/investments_page_presenter.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/presentation/investments_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
 import 'package:wealth_wave/ui/widgets/create_transaction_dialog.dart';
-import 'package:wealth_wave/ui/widgets/view_transactions_dialog.dart';
+import 'package:wealth_wave/ui/widgets/transactions_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 class InvestmentsPage extends StatefulWidget {
@@ -16,8 +16,8 @@ class InvestmentsPage extends StatefulWidget {
   State<InvestmentsPage> createState() => _InvestmentsPage();
 }
 
-class _InvestmentsPage extends PageState<InvestmentsPageViewState,
-    InvestmentsPage, InvestmentsPagePresenter> {
+class _InvestmentsPage extends PageState<InvestmentsViewState,
+    InvestmentsPage, InvestmentsPresenter> {
   @override
   void initState() {
     super.initState();
@@ -26,14 +26,14 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
 
   @override
   Widget buildWidget(
-      final BuildContext context, final InvestmentsPageViewState snapshot) {
-    List<InvestmentDO> investments = snapshot.investments;
+      final BuildContext context, final InvestmentsViewState snapshot) {
+    List<Investment> investments = snapshot.investments;
     return Scaffold(
       body: Center(
           child: ListView.builder(
         itemCount: investments.length,
         itemBuilder: (context, index) {
-          InvestmentDO investment = investments[index];
+          Investment investment = investments[index];
           return Card(
               child: Padding(
                   padding: const EdgeInsets.all(AppDimen.minPadding),
@@ -60,7 +60,7 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
                           const Spacer(),
                           TextButton(
                               onPressed: () {
-                                showViewTransactionsDialog(
+                                showTransactionsDialog(
                                         context: context,
                                         investmentId: investment.id)
                                     .then((value) =>
@@ -126,7 +126,7 @@ class _InvestmentsPage extends PageState<InvestmentsPageViewState,
   }
 
   @override
-  InvestmentsPagePresenter initializePresenter() {
-    return InvestmentsPagePresenter();
+  InvestmentsPresenter initializePresenter() {
+    return InvestmentsPresenter();
   }
 }

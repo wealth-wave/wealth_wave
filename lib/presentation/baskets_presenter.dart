@@ -2,12 +2,12 @@ import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
 
-class BasketsPagePresenter extends Presenter<BasketsPageViewState> {
+class BasketsPresenter extends Presenter<BasketsViewState> {
   final BasketApi _basketApi;
 
-  BasketsPagePresenter({final BasketApi? basketApi})
+  BasketsPresenter({final BasketApi? basketApi})
       : _basketApi = basketApi ?? BasketApi(),
-        super(BasketsPageViewState());
+        super(BasketsViewState());
 
   void fetchBaskets() {
     _basketApi.getBaskets().then((baskets) => updateViewState((viewState) {
@@ -28,6 +28,6 @@ class BasketsPagePresenter extends Presenter<BasketsPageViewState> {
   }
 }
 
-class BasketsPageViewState {
-  List<Basket> baskets = [];
+class BasketsViewState {
+  List<BasketDO> baskets = [];
 }

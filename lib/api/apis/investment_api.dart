@@ -7,16 +7,19 @@ class InvestmentApi {
 
   InvestmentApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
-  Future<List<InvestmentEnriched>> getInvestments() async {
+  Future<List<InvestmentDO>> getInvestments() async {
+    return _db.select(_db.investmentTable).get();
+  }
+
+  Future<List<InvestmentEnrichedDO>> getEnrichedInvestments() async {
     return _db.select(_db.investmentEnrichedView).get();
   }
 
-  Future<List<InvestmentTransaction>> getTransactions(
-      {final int? investmentId}) async {
+  Future<List<TransactionDO>> getTransactions({final int? investmentId}) async {
     if (investmentId == null) {
-      return _db.select(_db.investmentTransactionTable).get();
+      return _db.select(_db.transactionTable).get();
     } else {
-      return (_db.select(_db.investmentTransactionTable)
+      return (_db.select(_db.transactionTable)
             ..where((t) => t.investmentId.equals(investmentId)))
           .get();
     }
@@ -41,16 +44,15 @@ class InvestmentApi {
       {required final int investmentId,
       required final double amount,
       required final DateTime date}) async {
-    return _db.into(_db.investmentTransactionTable).insert(
-        InvestmentTransactionTableCompanion.insert(
+    return _db.into(_db.transactionTable).insert(
+        TransactionTableCompanion.insert(
             investmentId: investmentId,
             amount: amount,
             amountInvestedOn: date));
   }
 
   Future<int> deleteTransaction({required final int id}) async {
-    return (_db.delete(_db.investmentTransactionTable)
-          ..where((t) => t.id.equals(id)))
+    return (_db.delete(_db.transactionTable)..where((t) => t.id.equals(id)))
         .go();
   }
 
@@ -76,9 +78,8 @@ class InvestmentApi {
       required final int investmentId,
       required final double amount,
       required final DateTime date}) async {
-    return (_db.update(_db.investmentTransactionTable)
-          ..where((t) => t.id.equals(id)))
-        .write(InvestmentTransactionTableCompanion(
+    return (_db.update(_db.transactionTable)..where((t) => t.id.equals(id)))
+        .write(TransactionTableCompanion(
       investmentId: Value(investmentId),
       amount: Value(amount),
       amountInvestedOn: Value(date),
@@ -86,7 +87,7 @@ class InvestmentApi {
   }
 
   Future<int> deleteTransactions({required final int investmentId}) async {
-    return (_db.delete(_db.investmentTransactionTable)
+    return (_db.delete(_db.transactionTable)
           ..where((t) => t.investmentId.equals(investmentId)))
         .go();
   }

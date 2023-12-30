@@ -5,18 +5,17 @@ import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
-import 'package:wealth_wave/domain/investment_do.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
 
-class CreateInvestmentDialogPresenter
-    extends Presenter<CreateInvestmentPageViewState> {
+class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
   final InvestmentApi _investmentApi;
   final BasketApi _basketApi;
 
-  CreateInvestmentDialogPresenter(
+  CreateInvestmentPresenter(
       {final InvestmentApi? investmentApi, final BasketApi? basketApi})
       : _investmentApi = investmentApi ?? InvestmentApi(),
         _basketApi = basketApi ?? BasketApi(),
-        super(CreateInvestmentPageViewState());
+        super(CreateInvestmentViewState());
 
   void getBaskets() {
     _basketApi.getBaskets().then(
@@ -81,7 +80,7 @@ class CreateInvestmentDialogPresenter
     updateViewState((viewState) => viewState.riskLevel = riskLevel);
   }
 
-  void setInvestment(InvestmentDO investmentToUpdate) {
+  void setInvestment(Investment investmentToUpdate) {
     updateViewState((viewState) {
       viewState.name = investmentToUpdate.name;
       viewState.basketId = investmentToUpdate.basketId;
@@ -93,14 +92,14 @@ class CreateInvestmentDialogPresenter
   }
 }
 
-class CreateInvestmentPageViewState {
+class CreateInvestmentViewState {
   String name = '';
   int? basketId;
   RiskLevel riskLevel = RiskLevel.medium;
   double value = 0.0;
   String valueUpdatedAt = DateFormat('dd-MM-yyyy').format(DateTime.now());
   SingleEvent<void>? onInvestmentCreated;
-  List<Basket> baskets = List.empty(growable: false);
+  List<BasketDO> baskets = List.empty(growable: false);
 
   bool isValid({int? investmentId}) {
     if (investmentId != null) {

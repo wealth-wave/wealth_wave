@@ -1,16 +1,15 @@
 import 'package:wealth_wave/api/db/app_database.dart';
 
-class TransactionDO {
+class Transaction {
   final int id;
   final double amount;
   final DateTime createdOn;
 
-  TransactionDO(
+  Transaction(
       {required this.id, required this.amount, required this.createdOn});
 
-  static TransactionDO from(
-      {required final InvestmentTransaction transaction}) {
-    return TransactionDO(
+  static Transaction from({required final TransactionDO transaction}) {
+    return Transaction(
         id: transaction.id,
         amount: transaction.amount,
         createdOn: transaction.amountInvestedOn);

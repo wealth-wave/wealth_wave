@@ -5,14 +5,14 @@ import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
 
-class CreateTransactionDialogPresenter
-    extends Presenter<CreateTransactionPageViewState> {
+class CreateTransactionPresenter
+    extends Presenter<CreateTransactionViewState> {
   final InvestmentApi _investmentApi;
 
-  CreateTransactionDialogPresenter(
+  CreateTransactionPresenter(
       {final InvestmentApi? investmentApi, final BasketApi? basketApi})
       : _investmentApi = investmentApi ?? InvestmentApi(),
-        super(CreateTransactionPageViewState());
+        super(CreateTransactionViewState());
 
   void createTransaction(
       {required final int investmentId, final int? transactionIdToUpdate}) {
@@ -52,7 +52,7 @@ class CreateTransactionDialogPresenter
     updateViewState((viewState) => viewState.investedDate = date);
   }
 
-  void setTransaction(InvestmentTransaction transactionToUpdate) {
+  void setTransaction(TransactionDO transactionToUpdate) {
     updateViewState((viewState) {
       viewState.amount = transactionToUpdate.amount;
       viewState.investedDate =
@@ -61,7 +61,7 @@ class CreateTransactionDialogPresenter
   }
 }
 
-class CreateTransactionPageViewState {
+class CreateTransactionViewState {
   double amount = 0.0;
   String investedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
   SingleEvent<void>? onTransactionCreated;

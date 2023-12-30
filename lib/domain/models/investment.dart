@@ -1,9 +1,9 @@
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/domain/irr_calculator.dart';
-import 'package:wealth_wave/domain/transaction_do.dart';
+import 'package:wealth_wave/domain/models/transaction.dart';
 
-class InvestmentDO {
+class Investment {
   final int id;
   final String name;
   final RiskLevel riskLevel;
@@ -13,9 +13,9 @@ class InvestmentDO {
   final String basketName;
   final double totalInvestedAmount;
   final int totalTransactions;
-  final List<TransactionDO> transactions;
+  final List<Transaction> transactions;
 
-  InvestmentDO(
+  Investment(
       {required this.id,
       required this.name,
       required this.riskLevel,
@@ -35,10 +35,10 @@ class InvestmentDO {
     );
   }
 
-  static InvestmentDO from(
-      {required final InvestmentEnriched investment,
-      required final List<InvestmentTransaction> transactions}) {
-    return InvestmentDO(
+  static Investment from(
+      {required final InvestmentEnrichedDO investment,
+      required final List<TransactionDO> transactions}) {
+    return Investment(
         id: investment.id,
         name: investment.name,
         riskLevel: investment.riskLevel,
@@ -49,7 +49,7 @@ class InvestmentDO {
         totalInvestedAmount: investment.totalInvestedAmount ?? 0,
         totalTransactions: investment.totalTransactions ?? 0,
         transactions: transactions
-            .map((transaction) => TransactionDO.from(transaction: transaction))
+            .map((transaction) => Transaction.from(transaction: transaction))
             .toList());
   }
 }

@@ -1,8 +1,8 @@
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
-import 'package:wealth_wave/domain/investment_do.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
 
-class GoalDO {
+class Goal {
   final int id;
   final String name;
   final double amount;
@@ -11,9 +11,9 @@ class GoalDO {
   final double targetAmount;
   final DateTime targetDate;
   final GoalImportance importance;
-  final Map<InvestmentDO, double> taggedInvestments;
+  final Map<Investment, double> taggedInvestments;
 
-  GoalDO(
+  Goal(
       {required this.id,
       required this.name,
       required this.amount,
@@ -24,10 +24,10 @@ class GoalDO {
       required this.importance,
       required this.taggedInvestments});
 
-  static GoalDO from(
-          {required final Goal goal,
-          required final Map<InvestmentDO, double> taggedInvestments}) =>
-      GoalDO(
+  static Goal from(
+          {required final GoalDO goal,
+          required final Map<Investment, double> taggedInvestments}) =>
+      Goal(
           id: goal.id,
           name: goal.name,
           amount: goal.amount,

@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:wealth_wave/domain/transaction_do.dart';
+import 'package:wealth_wave/domain/models/transaction.dart';
 
 class IRRCalculator {
   double calculateIRR(
-      {required final List<TransactionDO> transactions,
+      {required final List<Transaction> transactions,
       required final double finalValue,
       required final DateTime finalDate}) {
     transactions.sort((a, b) => a.createdOn.compareTo(b.createdOn));

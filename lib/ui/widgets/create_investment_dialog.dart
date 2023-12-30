@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/investment_do.dart';
-import 'package:wealth_wave/presentation/create_investment_dialog_presenter.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/presentation/create_investment_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 
 Future<void> showCreateInvestmentDialog(
     {required final BuildContext context,
-    final InvestmentDO? investmentToUpdate}) {
+    final Investment? investmentToUpdate}) {
   return showDialog(
       context: context,
       builder: (context) =>
@@ -18,7 +17,7 @@ Future<void> showCreateInvestmentDialog(
 }
 
 class _CreateInvestmentDialog extends StatefulWidget {
-  final InvestmentDO? investmentToUpdate;
+  final Investment? investmentToUpdate;
 
   const _CreateInvestmentDialog({this.investmentToUpdate});
 
@@ -26,8 +25,8 @@ class _CreateInvestmentDialog extends StatefulWidget {
   State<_CreateInvestmentDialog> createState() => _CreateInvestmentPage();
 }
 
-class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
-    _CreateInvestmentDialog, CreateInvestmentDialogPresenter> {
+class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
+    _CreateInvestmentDialog, CreateInvestmentPresenter> {
   final _nameController = TextEditingController();
   final _valueController = TextEditingController();
   final _valueUpdatedDateController = TextEditingController();
@@ -36,7 +35,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
   void initState() {
     super.initState();
 
-    InvestmentDO? investmentToUpdate = widget.investmentToUpdate;
+    Investment? investmentToUpdate = widget.investmentToUpdate;
     if (investmentToUpdate != null) {
       _nameController.text = investmentToUpdate.name;
       _valueController.text = investmentToUpdate.value.toString();
@@ -61,8 +60,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
   }
 
   @override
-  Widget buildWidget(
-      BuildContext context, CreateInvestmentPageViewState snapshot) {
+  Widget buildWidget(BuildContext context, CreateInvestmentViewState snapshot) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onInvestmentCreated?.consume((_) {
         Navigator.of(context).pop();
@@ -165,7 +163,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentPageViewState,
   }
 
   @override
-  CreateInvestmentDialogPresenter initializePresenter() {
-    return CreateInvestmentDialogPresenter();
+  CreateInvestmentPresenter initializePresenter() {
+    return CreateInvestmentPresenter();
   }
 }

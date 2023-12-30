@@ -3,19 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/goal_do.dart';
-import 'package:wealth_wave/presentation/create_goal_dialog_presenter.dart';
+import 'package:wealth_wave/domain/models/goal.dart';
+import 'package:wealth_wave/presentation/create_goal_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 
 Future<void> showCreateGoalDialog(
-    {required final BuildContext context, final GoalDO? goal}) {
+    {required final BuildContext context, final Goal? goal}) {
   return showDialog(
       context: context,
       builder: (context) => _CreateGoalDialog(goalToUpdate: goal));
 }
 
 class _CreateGoalDialog extends StatefulWidget {
-  final GoalDO? goalToUpdate;
+  final Goal? goalToUpdate;
 
   const _CreateGoalDialog({super.key, this.goalToUpdate});
 
@@ -23,8 +23,8 @@ class _CreateGoalDialog extends StatefulWidget {
   State<_CreateGoalDialog> createState() => _CreateGoalPage();
 }
 
-class _CreateGoalPage extends PageState<CreateGoalPageViewState,
-    _CreateGoalDialog, CreateGoalDialogPresenter> {
+class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
+    CreateGoalPresenter> {
   final _nameController = TextEditingController();
   final _amountController = TextEditingController();
   final _currentDateController = TextEditingController();
@@ -35,7 +35,7 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState,
   void initState() {
     super.initState();
 
-    GoalDO? goalToUpdate = widget.goalToUpdate;
+    Goal? goalToUpdate = widget.goalToUpdate;
     if (goalToUpdate != null) {
       _nameController.text = goalToUpdate.name;
       _amountController.text = goalToUpdate.amount.toString();
@@ -78,7 +78,7 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState,
   }
 
   @override
-  Widget buildWidget(BuildContext context, CreateGoalPageViewState snapshot) {
+  Widget buildWidget(BuildContext context, CreateGoalViewState snapshot) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onGoalCreated?.consume((_) {
         Navigator.of(context).pop();
@@ -201,7 +201,7 @@ class _CreateGoalPage extends PageState<CreateGoalPageViewState,
   }
 
   @override
-  CreateGoalDialogPresenter initializePresenter() {
-    return CreateGoalDialogPresenter();
+  CreateGoalPresenter initializePresenter() {
+    return CreateGoalPresenter();
   }
 }

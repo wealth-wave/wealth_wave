@@ -1,19 +1,19 @@
 import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/core/presenter.dart';
-import 'package:wealth_wave/domain/investment_do.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/usecases/fetch_investments_use_case.dart';
 
-class InvestmentsPagePresenter extends Presenter<InvestmentsPageViewState> {
+class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
   final InvestmentApi _investmentApi;
   final FetchInvestmentsUseCase _fetchInvestmentsUseCase;
 
-  InvestmentsPagePresenter(
+  InvestmentsPresenter(
       {final InvestmentApi? investmentApi,
       final FetchInvestmentsUseCase? fetchInvestmentsUseCase})
       : _investmentApi = investmentApi ?? InvestmentApi(),
         _fetchInvestmentsUseCase =
             fetchInvestmentsUseCase ?? FetchInvestmentsUseCase(),
-        super(InvestmentsPageViewState());
+        super(InvestmentsViewState());
 
   void fetchInvestments() {
     _fetchInvestmentsUseCase.fetchInvestments().then((investments) {
@@ -31,6 +31,6 @@ class InvestmentsPagePresenter extends Presenter<InvestmentsPageViewState> {
   }
 }
 
-class InvestmentsPageViewState {
-  List<InvestmentDO> investments = [];
+class InvestmentsViewState {
+  List<Investment> investments = [];
 }

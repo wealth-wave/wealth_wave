@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/create_transaction_dialog_presenter.dart';
+import 'package:wealth_wave/presentation/create_transaction_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 
 Future<void> showCreateTransactionDialog(
     {required final BuildContext context,
     required final int investmentId,
-    final InvestmentTransaction? transactionToUpdate}) {
+    final TransactionDO? transactionToUpdate}) {
   return showDialog(
       context: context,
       builder: (context) => _CreateTransactionDialog(
@@ -19,7 +19,7 @@ Future<void> showCreateTransactionDialog(
 }
 
 class _CreateTransactionDialog extends StatefulWidget {
-  final InvestmentTransaction? transactionToUpdate;
+  final TransactionDO? transactionToUpdate;
   final int investmentId;
 
   const _CreateTransactionDialog(
@@ -29,8 +29,8 @@ class _CreateTransactionDialog extends StatefulWidget {
   State<_CreateTransactionDialog> createState() => _CreateTransactionPage();
 }
 
-class _CreateTransactionPage extends PageState<CreateTransactionPageViewState,
-    _CreateTransactionDialog, CreateTransactionDialogPresenter> {
+class _CreateTransactionPage extends PageState<CreateTransactionViewState,
+    _CreateTransactionDialog, CreateTransactionPresenter> {
   final _valueController = TextEditingController();
   final _valueUpdatedDateController = TextEditingController();
 
@@ -38,7 +38,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionPageViewState,
   void initState() {
     super.initState();
 
-    InvestmentTransaction? transactionToUpdate = widget.transactionToUpdate;
+    TransactionDO? transactionToUpdate = widget.transactionToUpdate;
     if (transactionToUpdate != null) {
       _valueController.text = transactionToUpdate.amount.toString();
       _valueUpdatedDateController.text =
@@ -57,7 +57,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionPageViewState,
 
   @override
   Widget buildWidget(
-      BuildContext context, CreateTransactionPageViewState snapshot) {
+      BuildContext context, CreateTransactionViewState snapshot) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onTransactionCreated?.consume((_) {
         Navigator.of(context).pop();
@@ -108,7 +108,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionPageViewState,
   }
 
   @override
-  CreateTransactionDialogPresenter initializePresenter() {
-    return CreateTransactionDialogPresenter();
+  CreateTransactionPresenter initializePresenter() {
+    return CreateTransactionPresenter();
   }
 }

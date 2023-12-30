@@ -4,15 +4,15 @@ import 'package:wealth_wave/api/apis/goal_api.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
-import 'package:wealth_wave/domain/goal_do.dart';
+import 'package:wealth_wave/domain/models/goal.dart';
 
-class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
+class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
   final GoalApi _goalApi;
 
-  CreateGoalDialogPresenter({
+  CreateGoalPresenter({
     final GoalApi? goalApi,
   })  : _goalApi = goalApi ?? GoalApi(),
-        super(CreateGoalPageViewState());
+        super(CreateGoalViewState());
 
   void createGoal({int? goalIdToUpdate}) {
     var viewState = getViewState();
@@ -82,7 +82,7 @@ class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
     updateViewState((viewState) => viewState.importance = importance);
   }
 
-  void setGoal(GoalDO goalToUpdate) {
+  void setGoal(Goal goalToUpdate) {
     updateViewState((viewState) {
       viewState.name = goalToUpdate.name;
       viewState.amount = goalToUpdate.amount;
@@ -94,7 +94,7 @@ class CreateGoalDialogPresenter extends Presenter<CreateGoalPageViewState> {
   }
 }
 
-class CreateGoalPageViewState {
+class CreateGoalViewState {
   String name = '';
   double amount = 0.0;
   DateTime date = DateTime.now();

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/goal_do.dart';
-import 'package:wealth_wave/presentation/goals_page_presenter.dart';
+import 'package:wealth_wave/domain/models/goal.dart';
+import 'package:wealth_wave/presentation/goals_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';
+import 'package:wealth_wave/ui/widgets/tag_investment_dialog.dart';
+import 'package:wealth_wave/ui/widgets/tagged_investment_dialog.dart';
 
 class GoalsPage extends StatefulWidget {
   const GoalsPage({super.key});
@@ -12,8 +14,7 @@ class GoalsPage extends StatefulWidget {
   State<GoalsPage> createState() => _GoalsPage();
 }
 
-class _GoalsPage
-    extends PageState<GoalsPageViewState, GoalsPage, GoalsPagePresenter> {
+class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
   @override
   void initState() {
     super.initState();
@@ -21,14 +22,14 @@ class _GoalsPage
   }
 
   @override
-  Widget buildWidget(BuildContext context, GoalsPageViewState snapshot) {
-    List<GoalDO> goals = snapshot.goals;
+  Widget buildWidget(BuildContext context, GoalsViewState snapshot) {
+    List<Goal> goals = snapshot.goals;
     return Scaffold(
       body: Center(
           child: ListView.builder(
         itemCount: goals.length,
         itemBuilder: (context, index) {
-          GoalDO goal = goals[index];
+          Goal goal = goals[index];
           return Card(
               margin: const EdgeInsets.all(AppDimen.minPadding),
               child: Padding(
@@ -38,7 +39,7 @@ class _GoalsPage
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('${goal.name}'),
+                        Text(goal.name),
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
@@ -53,11 +54,19 @@ class _GoalsPage
                         ),
                         const Spacer(),
                         TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showTaggedInvestmentDialog(
+                                  context: context, goalId: goal.id);
+                            },
                             child: Text(
                                 '${goal.taggedInvestments.length} Tagged Investments')),
                         IconButton(
-                            onPressed: () {}, icon: const Icon(Icons.add))
+                            onPressed: () {
+                              showTagInvestmentDialog(
+                                      context: context, goalId: goal.id)
+                                  .then((value) => presenter.fetchGoals());
+                            },
+                            icon: const Icon(Icons.add))
                       ],
                     ),
                   ],
@@ -77,7 +86,7 @@ class _GoalsPage
   }
 
   @override
-  GoalsPagePresenter initializePresenter() {
-    return GoalsPagePresenter();
+  GoalsPresenter initializePresenter() {
+    return GoalsPresenter();
   }
 }

@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/view_transactions_dialog_presenter.dart';
+import 'package:wealth_wave/presentation/transactions_presenter.dart';
 import 'package:wealth_wave/ui/widgets/create_transaction_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
-Future<void> showViewTransactionsDialog(
+Future<void> showTransactionsDialog(
     {required final BuildContext context, required final int investmentId}) {
   return showDialog(
       context: context,
-      builder: (context) => _ViewTransactionsDialog(
+      builder: (context) => _TransactionsDialog(
             investmentId: investmentId,
           ));
 }
 
-class _ViewTransactionsDialog extends StatefulWidget {
+class _TransactionsDialog extends StatefulWidget {
   final int investmentId;
 
-  const _ViewTransactionsDialog({required this.investmentId});
+  const _TransactionsDialog({required this.investmentId});
 
   @override
-  State<_ViewTransactionsDialog> createState() => _ViewTransactionPage();
+  State<_TransactionsDialog> createState() => _TransactionPage();
 }
 
-class _ViewTransactionPage extends PageState<ViewTransactionsPageViewState,
-    _ViewTransactionsDialog, ViewTransactionsDialogPresenter> {
+class _TransactionPage extends PageState<TransactionsViewState,
+    _TransactionsDialog, TransactionsPresenter> {
   @override
   void initState() {
     super.initState();
@@ -33,8 +33,7 @@ class _ViewTransactionPage extends PageState<ViewTransactionsPageViewState,
   }
 
   @override
-  Widget buildWidget(
-      BuildContext context, ViewTransactionsPageViewState snapshot) {
+  Widget buildWidget(BuildContext context, TransactionsViewState snapshot) {
     return AlertDialog(
       title: const Text('Transactions'),
       content: SizedBox(
@@ -43,7 +42,7 @@ class _ViewTransactionPage extends PageState<ViewTransactionsPageViewState,
             shrinkWrap: true,
             itemCount: snapshot.transactions.length,
             itemBuilder: (context, index) {
-              InvestmentTransaction transaction = snapshot.transactions[index];
+              TransactionDO transaction = snapshot.transactions[index];
               return ListTile(
                 title: Text(
                     'Amount: ${transaction.amount.toString()} \nDate: ${formatDate(transaction.amountInvestedOn)}'),
@@ -81,7 +80,7 @@ class _ViewTransactionPage extends PageState<ViewTransactionsPageViewState,
   }
 
   @override
-  ViewTransactionsDialogPresenter initializePresenter() {
-    return ViewTransactionsDialogPresenter(widget.investmentId);
+  TransactionsPresenter initializePresenter() {
+    return TransactionsPresenter(widget.investmentId);
   }
 }
