@@ -14,6 +14,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   var _selectedIndex = 0;
+  var _isExtended = true;
 
   @override
   Widget build(BuildContext context) {
@@ -25,23 +26,31 @@ class _MainPageState extends State<MainPage> {
         body: SafeArea(
           child: Row(
             children: [
-              NavigationRail(
-                  extended: true,
-                  onDestinationSelected: (value) {
+              GestureDetector(
+                  onTap: () {
                     setState(() {
-                      _selectedIndex = value;
+                      _isExtended = !_isExtended;
                     });
                   },
-                  destinations: const [
-                    NavigationRailDestination(
-                        icon: Icon(Icons.bookmark), label: Text('Goals')),
-                    NavigationRailDestination(
-                        icon: Icon(Icons.monetization_on),
-                        label: Text('Investment')),
-                    NavigationRailDestination(
-                        icon: Icon(Icons.local_offer), label: Text('Baskets')),
-                  ],
-                  selectedIndex: _selectedIndex),
+                  child: NavigationRail(
+                      extended: _isExtended,
+                      onDestinationSelected: (value) {
+                        setState(() {
+                          _selectedIndex = value;
+                        });
+                      },
+                      destinations: const [
+                        NavigationRailDestination(
+                            icon: Icon(Icons.bookmark), label: Text('Goals')),
+                        NavigationRailDestination(
+                            icon: Icon(Icons.monetization_on),
+                            label: Text('Investment')),
+                        NavigationRailDestination(
+                            icon: Icon(Icons.local_offer),
+                            label: Text('Baskets')),
+                      ],
+                      selectedIndex: _selectedIndex)
+                      ),
               const VerticalDivider(thickness: 1, width: 1),
               Expanded(
                 child: Builder(
