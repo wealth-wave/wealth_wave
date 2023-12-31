@@ -75,6 +75,13 @@ class _TransactionPage extends PageState<TransactionsViewState,
             Navigator.of(context).pop();
           },
         ),
+        FilledButton(
+          child: const Text('Add Transaction'),
+          onPressed: () {
+            showCreateTransactionDialog(
+                context: context, investmentId: widget.investmentId);
+          },
+        ),
       ],
     );
   }

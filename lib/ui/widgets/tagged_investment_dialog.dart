@@ -79,6 +79,12 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
             Navigator.of(context).pop();
           },
         ),
+        FilledButton(
+          child: const Text('Tag Investment'),
+          onPressed: () {
+            showTagInvestmentDialog(context: context, goalId: widget.goalId);
+          },
+        ),
       ],
     );
   }

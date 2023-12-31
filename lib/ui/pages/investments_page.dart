@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/presentation/investments_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
-import 'package:wealth_wave/ui/widgets/create_transaction_dialog.dart';
 import 'package:wealth_wave/ui/widgets/transactions_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
@@ -33,85 +33,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
         itemCount: investments.length,
         itemBuilder: (context, index) {
           Investment investment = investments[index];
-          double? irr = investment.getIrr();
-          return Card(
-              child: Padding(
-                  padding: const EdgeInsets.all(AppDimen.minPadding),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('${investment.name} (${investment.basketName})'),
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              showCreateInvestmentDialog(
-                                  context: context,
-                                  investmentToUpdate: investment);
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              presenter.deleteInvestment(id: investment.id);
-                            },
-                          ),
-                          const Spacer(),
-                          TextButton(
-                              onPressed: () {
-                                showTransactionsDialog(
-                                        context: context,
-                                        investmentId: investment.id)
-                                    .then((value) =>
-                                        presenter.fetchInvestments());
-                              },
-                              child: Text(
-                                  '${investment.totalTransactions} transactions')),
-                          IconButton(
-                              onPressed: () {
-                                showCreateTransactionDialog(
-                                        context: context,
-                                        investmentId: investment.id)
-                                    .then((value) =>
-                                        presenter.fetchInvestments());
-                              },
-                              icon: const Icon(Icons.add))
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Invested'),
-                              Text('${investment.totalInvestedAmount}'),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Current Value'),
-                              Text('${investment.value}'),
-                              Text(
-                                formatDate(investment.valueUpdatedOn),
-                                style: Theme.of(context).textTheme.labelMedium,
-                              )
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Growth'),
-                              Text(irr != null ? formatToPercentage(irr) : '-'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  )));
+          return _investmentWidget(context: context, investment: investment);
         },
       )),
       floatingActionButton: FloatingActionButton(
@@ -128,5 +50,110 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
   @override
   InvestmentsPresenter initializePresenter() {
     return InvestmentsPresenter();
+  }
+
+  Widget _investmentWidget(
+      {required final BuildContext context,
+      required final Investment investment}) {
+    double? irr = investment.getIrr();
+    return Card(
+        margin: const EdgeInsets.all(AppDimen.defaultPadding),
+        child: Padding(
+          padding: const EdgeInsets.all(AppDimen.defaultPadding),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(investment.name,
+                          style: Theme.of(context).textTheme.titleMedium),
+                      const Text(' | '),
+                      Text('(${investment.basketName})'),
+                      const Text(' | '),
+                      Text(_getRiskLevel(investment.riskLevel)),
+                      PopupMenuButton<int>(
+                        onSelected: (value) {
+                          if (value == 1) {
+                            showCreateInvestmentDialog(
+                                    context: context,
+                                    investmentToUpdate: investment)
+                                .then((value) => presenter.fetchInvestments());
+                          } else if (value == 2) {
+                            presenter.deleteInvestment(id: investment.id);
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 1,
+                            child: Text('Edit'),
+                          ),
+                          const PopupMenuItem(
+                            value: 2,
+                            child: Text('Delete'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      showTransactionsDialog(
+                          context: context, investmentId: investment.id);
+                    },
+                    child:
+                        Text('${investment.transactions.length} transactions'),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('${investment.totalInvestedAmount}',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text('(Invested Amount)',
+                          style: Theme.of(context).textTheme.labelSmall),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(irr != null ? formatToPercentage(irr) : '-',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text('(Growth Rate)',
+                          style: Theme.of(context).textTheme.labelSmall),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('${investment.value}',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text(
+                          '(Value on ${formatDate(investment.valueUpdatedOn)})',
+                          style: Theme.of(context).textTheme.labelSmall),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
+  }
+
+  String _getRiskLevel(RiskLevel riskLevel) {
+    switch (riskLevel) {
+      case RiskLevel.low:
+        return 'Low';
+      case RiskLevel.medium:
+        return 'Medium';
+      case RiskLevel.high:
+        return 'High';
+    }
   }
 }
