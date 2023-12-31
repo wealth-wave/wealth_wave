@@ -79,7 +79,9 @@ class _TransactionPage extends PageState<TransactionsViewState,
           child: const Text('Add Transaction'),
           onPressed: () {
             showCreateTransactionDialog(
-                context: context, investmentId: widget.investmentId);
+                    context: context, investmentId: widget.investmentId)
+                .then((value) => presenter.getTransactions(
+                    investmentId: widget.investmentId));
           },
         ),
       ],

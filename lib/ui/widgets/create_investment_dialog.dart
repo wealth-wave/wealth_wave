@@ -42,6 +42,9 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
       _valueUpdatedDateController.text =
           DateFormat('dd-MM-yyyy').format(investmentToUpdate.valueUpdatedOn);
       presenter.setInvestment(investmentToUpdate);
+    } else {
+      _valueUpdatedDateController.text =
+          DateFormat('dd-MM-yyyy').format(DateTime.now());
     }
 
     _nameController.addListener(() {

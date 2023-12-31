@@ -114,7 +114,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('${investment.totalInvestedAmount}',
+                      Text(formatToCurrency(investment.totalInvestedAmount),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Invested Amount)',
                           style: Theme.of(context).textTheme.labelSmall),
@@ -132,7 +132,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('${investment.value}',
+                      Text(formatToCurrency(investment.value),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text(
                           '(Value on ${formatDate(investment.valueUpdatedOn)})',

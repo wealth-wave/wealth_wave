@@ -9,5 +9,10 @@ String formatDate(DateTime date) {
 }
 
 String formatToPercentage(double value) {
-  return '${(value * 100).toStringAsFixed(2)}%';
+  double percentage = value * 100;
+  return percentage == percentage.round() ? '${percentage.round()}%' : '${percentage.toStringAsFixed(2)}%';
+}
+
+String formatToCurrency(double value) {
+  return NumberFormat.currency(locale: 'en_IN', symbol: '\₹').format(value);
 }

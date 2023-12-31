@@ -44,6 +44,9 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
       _valueUpdatedDateController.text =
           DateFormat('dd-MM-yyyy').format(transactionToUpdate.amountInvestedOn);
       presenter.setTransaction(transactionToUpdate);
+    } else {
+      _valueUpdatedDateController.text =
+          DateFormat('dd-MM-yyyy').format(DateTime.now());
     }
 
     _valueController.addListener(() {

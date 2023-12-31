@@ -48,7 +48,7 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
               double sharePercentage = taggedInvestment.value;
               return ListTile(
                 title: Text(
-                    '%: ${formatToPercentage(sharePercentage)} of: ${investment.name}'),
+                    '${formatToPercentage(sharePercentage / 100)} of ${investment.name}'),
                 trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                   IconButton(
                     icon: const Icon(Icons.edit),
@@ -82,7 +82,8 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
         FilledButton(
           child: const Text('Tag Investment'),
           onPressed: () {
-            showTagInvestmentDialog(context: context, goalId: widget.goalId);
+            showTagInvestmentDialog(context: context, goalId: widget.goalId)
+                .then((value) => presenter.fetchTaggedInvestment());
           },
         ),
       ],

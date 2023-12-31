@@ -52,7 +52,7 @@ class Goal {
 
   double getInvestedValue() {
     return taggedInvestments.keys
-        .map((e) => e.value * (taggedInvestments[e] ?? 0))
+        .map((e) => (e.value / 100) * (taggedInvestments[e] ?? 0))
         .reduce((a, b) => a + b);
   }
 

@@ -42,10 +42,12 @@ class _TagInvestmentState extends PageState<TagInvestmentViewState,
     final double? sharePercentage = widget.sharePercentage;
 
     if (investmentId != null) {
-      presenter.onPercentageChanged(investmentId.toString());
+      presenter.onInvestmentSelected(investmentId);
     }
     if (sharePercentage != null) {
       _valueController.text = sharePercentage.toString();
+    } else {
+      _valueController.text = '100';
     }
 
     _valueController.addListener(() {

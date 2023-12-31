@@ -3,6 +3,7 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/presentation/baskets_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 class BasketsPage extends StatefulWidget {
   const BasketsPage({super.key});
@@ -141,7 +142,7 @@ class _BasketsPage
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('${basket.totalValue}',
+                      Text(formatToCurrency(basket.totalValue),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Invested Value)',
                           style: Theme.of(context).textTheme.labelSmall),

@@ -6,6 +6,7 @@ import 'package:wealth_wave/presentation/goals_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';
 import 'package:wealth_wave/ui/widgets/tagged_investment_dialog.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 class GoalsPage extends StatefulWidget {
   const GoalsPage({super.key});
@@ -94,7 +95,8 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                   TextButton(
                     onPressed: () {
                       showTaggedInvestmentDialog(
-                          context: context, goalId: goal.id);
+                              context: context, goalId: goal.id)
+                          .then((value) => presenter.fetchGoals());
                     },
                     child: Text(
                         '${goal.taggedInvestments.length} tagged investments'),
@@ -107,11 +109,11 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('${goal.getInvestedValue()}',
+                      Text(formatToCurrency(goal.getInvestedValue()),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Invested Amount)',
                           style: Theme.of(context).textTheme.labelSmall),
-                      Text('${goal.getIrr()}',
+                      Text(formatToPercentage(goal.getIrr()),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Growth Rate)',
                           style: Theme.of(context).textTheme.labelSmall),
@@ -128,11 +130,11 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('${goal.targetAmount}',
+                      Text(formatToCurrency(goal.targetAmount),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Target Amount)',
                           style: Theme.of(context).textTheme.labelSmall),
-                      Text('${goal.inflation}',
+                      Text(formatToPercentage(goal.inflation / 100),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Inflation)',
                           style: Theme.of(context).textTheme.labelSmall),
