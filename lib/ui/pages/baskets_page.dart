@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
+import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/presentation/baskets_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 
@@ -22,43 +22,19 @@ class _BasketsPage
   @override
   Widget buildWidget(
       final BuildContext context, final BasketsViewState snapshot) {
-    List<BasketDO> baskets = snapshot.baskets;
+    List<Basket> baskets = snapshot.baskets;
     return Scaffold(
       body: Center(
           child: ListView.builder(
         itemCount: baskets.length,
         itemBuilder: (context, index) {
-          BasketDO basket = baskets[index];
-          return Card(
-              child: ListTile(
-            title: Text(basket.name),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    _showBasketNameDialog(context).then((value) {
-                      if (value != null) {
-                        presenter.updateBasketName(id: basket.id, name: value);
-                      }
-                    });
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    presenter.deleteBasket(id: basket.id);
-                  },
-                ),
-              ],
-            ),
-          ));
+          Basket basket = baskets[index];
+          return _basketWidget(context: context, basket: basket);
         },
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showBasketNameDialog(context).then((value) {
+          _showBasketNameDialog(context: context).then((value) {
             if (value != null) {
               presenter.createBasket(name: value);
             }
@@ -77,8 +53,8 @@ class _BasketsPage
 
   final _textFieldController = TextEditingController();
 
-  Future<String?> _showBasketNameDialog(BuildContext context,
-      {String? name}) async {
+  Future<String?> _showBasketNameDialog(
+      {required final BuildContext context, final String? name}) async {
     if (name != null) {
       _textFieldController.text = name;
     }
@@ -116,5 +92,74 @@ class _BasketsPage
             ],
           );
         });
+  }
+
+  Widget _basketWidget(
+      {required final BuildContext context, required final Basket basket}) {
+    return Card(
+        margin: const EdgeInsets.all(AppDimen.defaultPadding),
+        child: Padding(
+          padding: const EdgeInsets.all(AppDimen.defaultPadding),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(basket.name,
+                          style: Theme.of(context).textTheme.titleMedium),
+                      PopupMenuButton<int>(
+                        onSelected: (value) {
+                          if (value == 1) {
+                            _showBasketNameDialog(
+                                    name: basket.name, context: context)
+                                .then((value) => presenter.fetchBaskets());
+                          } else if (value == 2) {
+                            presenter.deleteBasket(id: basket.id);
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 1,
+                            child: Text('Edit'),
+                          ),
+                          const PopupMenuItem(
+                            value: 2,
+                            child: Text('Delete'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('${basket.totalValue}',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text('(Invested Value)',
+                          style: Theme.of(context).textTheme.labelSmall),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('${basket.investmentCount}',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text('(Investments)',
+                          style: Theme.of(context).textTheme.labelSmall),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
   }
 }
