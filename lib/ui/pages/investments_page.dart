@@ -101,7 +101,8 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                   TextButton(
                     onPressed: () {
                       showTransactionsDialog(
-                          context: context, investmentId: investment.id);
+                              context: context, investmentId: investment.id)
+                          .then((value) => presenter.fetchInvestments());
                     },
                     child:
                         Text('${investment.transactions.length} transactions'),

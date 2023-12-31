@@ -51,13 +51,17 @@ class Goal {
   }
 
   double getInvestedValue() {
+    if(taggedInvestments.isEmpty){
+      return 0;
+    }
     return taggedInvestments.keys
         .map((e) => (e.value / 100) * (taggedInvestments[e] ?? 0))
         .reduce((a, b) => a + b);
   }
 
   double getProgress() {
-    return getInvestedValue() / targetAmount;
+    double progress = targetAmount > 0 ? getInvestedValue() / targetAmount : 0;
+    return progress;
   }
 
   double getYearsLeft() {
