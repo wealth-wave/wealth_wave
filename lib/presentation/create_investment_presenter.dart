@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
@@ -6,6 +5,8 @@ import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
+import 'package:wealth_wave/utils/utils.dart';
 
 class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
   final InvestmentApi _investmentApi;
@@ -85,8 +86,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
       viewState.name = investmentToUpdate.name;
       viewState.basketId = investmentToUpdate.basketId;
       viewState.value = investmentToUpdate.value;
-      viewState.valueUpdatedAt =
-          DateFormat('dd-MM-yyyy').format(investmentToUpdate.valueUpdatedOn);
+      viewState.valueUpdatedAt = formatDate(investmentToUpdate.valueUpdatedOn);
       viewState.riskLevel = investmentToUpdate.riskLevel;
     });
   }
@@ -97,7 +97,7 @@ class CreateInvestmentViewState {
   int? basketId;
   RiskLevel riskLevel = RiskLevel.medium;
   double value = 0.0;
-  String valueUpdatedAt = DateFormat('dd-MM-yyyy').format(DateTime.now());
+  String valueUpdatedAt = formatDate(DateTime.now());
   SingleEvent<void>? onInvestmentCreated;
   List<BasketDO> baskets = List.empty(growable: false);
 
@@ -107,21 +107,12 @@ class CreateInvestmentViewState {
     } else {
       return name.isNotEmpty &&
           value > 0 &&
-          _isValidDate(valueUpdatedAt) &&
+          isValidDate(valueUpdatedAt) &&
           basketId != null;
     }
   }
 
-  bool _isValidDate(dateText) {
-    try {
-      DateFormat('dd-MM-yyyy').parseStrict(dateText);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
   DateTime _getValueUpdatedAt() {
-    return DateFormat('dd-MM-yyyy').parse(valueUpdatedAt);
+    return parseDate(valueUpdatedAt);
   }
 }

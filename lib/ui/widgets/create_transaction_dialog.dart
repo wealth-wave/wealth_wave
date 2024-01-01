@@ -5,6 +5,7 @@ import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/create_transaction_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showCreateTransactionDialog(
     {required final BuildContext context,
@@ -42,11 +43,11 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
     if (transactionToUpdate != null) {
       _valueController.text = transactionToUpdate.amount.toString();
       _valueUpdatedDateController.text =
-          DateFormat('dd-MM-yyyy').format(transactionToUpdate.amountInvestedOn);
+          formatDate(transactionToUpdate.amountInvestedOn);
       presenter.setTransaction(transactionToUpdate);
     } else {
       _valueUpdatedDateController.text =
-          DateFormat('dd-MM-yyyy').format(DateTime.now());
+         formatDate(DateTime.now());
     }
 
     _valueController.addListener(() {
@@ -92,6 +93,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
         content: SingleChildScrollView(
           child: Column(children: <Widget>[
             TextFormField(
+              textInputAction: TextInputAction.next,
               controller: _valueController,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: const InputDecoration(
@@ -99,6 +101,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
             ),
             const SizedBox(height: AppDimen.minPadding),
             TextFormField(
+              textInputAction: TextInputAction.next,
               controller: _valueUpdatedDateController,
               inputFormatters: [
                 FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))

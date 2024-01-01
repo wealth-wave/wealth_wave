@@ -1,12 +1,12 @@
-import 'package:intl/intl.dart';
 import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
+import 'package:wealth_wave/utils/utils.dart';
 
-class CreateTransactionPresenter
-    extends Presenter<CreateTransactionViewState> {
+class CreateTransactionPresenter extends Presenter<CreateTransactionViewState> {
   final InvestmentApi _investmentApi;
 
   CreateTransactionPresenter(
@@ -55,31 +55,21 @@ class CreateTransactionPresenter
   void setTransaction(TransactionDO transactionToUpdate) {
     updateViewState((viewState) {
       viewState.amount = transactionToUpdate.amount;
-      viewState.investedDate =
-          DateFormat('dd-MM-yyyy').format(transactionToUpdate.amountInvestedOn);
+      viewState.investedDate = formatDate(transactionToUpdate.amountInvestedOn);
     });
   }
 }
 
 class CreateTransactionViewState {
   double amount = 0.0;
-  String investedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+  String investedDate = formatDate(DateTime.now());
   SingleEvent<void>? onTransactionCreated;
 
   bool isValid() {
-    return amount > 0 && _isDateValid();
+    return amount > 0 && isValidDate(investedDate);
   }
 
   DateTime getInvestedDate() {
-    return DateFormat('dd-MM-yyyy').parse(investedDate);
-  }
-
-  bool _isDateValid() {
-    try {
-      DateFormat('dd-MM-yyyy').parse(investedDate);
-      return true;
-    } catch (e) {
-      return false;
-    }
+    return parseDate(investedDate);
   }
 }

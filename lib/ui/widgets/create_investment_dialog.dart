@@ -6,6 +6,7 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/presentation/create_investment_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showCreateInvestmentDialog(
     {required final BuildContext context,
@@ -40,11 +41,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
       _nameController.text = investmentToUpdate.name;
       _valueController.text = investmentToUpdate.value.toString();
       _valueUpdatedDateController.text =
-          DateFormat('dd-MM-yyyy').format(investmentToUpdate.valueUpdatedOn);
+          formatDate(investmentToUpdate.valueUpdatedOn);
       presenter.setInvestment(investmentToUpdate);
     } else {
-      _valueUpdatedDateController.text =
-          DateFormat('dd-MM-yyyy').format(DateTime.now());
+      _valueUpdatedDateController.text = formatDate(DateTime.now());
     }
 
     _nameController.addListener(() {
@@ -76,6 +76,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
         content: SingleChildScrollView(
             child: Column(children: <Widget>[
           TextFormField(
+            textInputAction: TextInputAction.next,
             controller: _nameController,
             inputFormatters: [
               FilteringTextInputFormatter.deny(RegExp(r'[^a-zA-Z0-9\s]'))
@@ -85,6 +86,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
           ),
           const SizedBox(height: AppDimen.minPadding),
           TextFormField(
+            textInputAction: TextInputAction.next,
             controller: _valueController,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -93,6 +95,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
           ),
           const SizedBox(height: AppDimen.minPadding),
           TextFormField(
+            textInputAction: TextInputAction.next,
             controller: _valueUpdatedDateController,
             inputFormatters: [
               FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))

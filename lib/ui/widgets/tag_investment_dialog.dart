@@ -71,6 +71,7 @@ class _TagInvestmentState extends PageState<TagInvestmentViewState,
         content: SingleChildScrollView(
             child: Column(children: <Widget>[
           TextFormField(
+            textInputAction: TextInputAction.next,
             controller: _valueController,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],

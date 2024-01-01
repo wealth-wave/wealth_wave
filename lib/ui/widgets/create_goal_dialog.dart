@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
 import 'package:wealth_wave/presentation/create_goal_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
+import 'package:wealth_wave/utils/utils.dart';
 
 Future<void> showCreateGoalDialog(
     {required final BuildContext context, final Goal? goal}) {
@@ -39,18 +40,15 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
     if (goalToUpdate != null) {
       _nameController.text = goalToUpdate.name;
       _amountController.text = goalToUpdate.amount.toString();
-      _currentDateController.text =
-          DateFormat('dd-MM-yyyy').format(goalToUpdate.createdDate);
-      _targetDateController.text =
-          DateFormat('dd-MM-yyyy').format(goalToUpdate.targetDate);
+      _currentDateController.text = formatDate(goalToUpdate.createdDate);
+      _targetDateController.text = formatDate(goalToUpdate.targetDate);
       _inflationController.text = goalToUpdate.inflation.toString();
 
       presenter.setGoal(goalToUpdate);
     } else {
-      _currentDateController.text =
-          DateFormat('dd-MM-yyyy').format(DateTime.now());
-      _targetDateController.text = DateFormat('dd-MM-yyyy')
-          .format(DateTime.now().add(const Duration(days: 365)));
+      _currentDateController.text = formatDate(DateTime.now());
+      _targetDateController.text =
+          formatDate(DateTime.now().add(const Duration(days: 365)));
     }
 
     _nameController.addListener(() {
@@ -67,13 +65,11 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
     });
 
     _currentDateController.addListener(() {
-      presenter.dateChanged(
-          DateFormat('dd-MM-yyyy').parse(_currentDateController.text));
+      presenter.dateChanged(parseDate(_currentDateController.text));
     });
 
     _targetDateController.addListener(() {
-      presenter.targetDateChanged(
-          DateFormat('dd-MM-yyyy').parse(_targetDateController.text));
+      presenter.targetDateChanged(parseDate(_targetDateController.text));
     });
   }
 
@@ -93,6 +89,8 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             TextFormField(
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
               controller: _nameController,
               inputFormatters: [
@@ -103,6 +101,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
             ),
             const SizedBox(height: AppDimen.minPadding),
             TextFormField(
+              textInputAction: TextInputAction.next,
               controller: _amountController,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -111,6 +110,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
             ),
             const SizedBox(height: AppDimen.minPadding),
             TextFormField(
+              textInputAction: TextInputAction.next,
               controller: _currentDateController,
               inputFormatters: [
                 FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
@@ -120,6 +120,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
             ),
             const SizedBox(height: AppDimen.minPadding),
             TextFormField(
+              textInputAction: TextInputAction.next,
               controller: _targetDateController,
               inputFormatters: [
                 FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
@@ -130,6 +131,8 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
             ),
             const SizedBox(height: AppDimen.minPadding),
             TextFormField(
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.number,
               controller: _inflationController,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: const InputDecoration(
@@ -146,8 +149,8 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
                 ),
                 const SizedBox(width: 10), // Add some spacing
                 Text(
-                  NumberFormat('###.##').format(snapshot.getTargetAmount()),
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  formatToCurrency(snapshot.getTargetAmount()),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),

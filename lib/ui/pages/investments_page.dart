@@ -126,7 +126,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                     children: [
                       Text(irr != null ? formatToPercentage(irr) : '-',
                           style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Growth Rate)',
+                      Text('(Growth Per Yearl)',
                           style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),
