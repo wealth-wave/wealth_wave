@@ -45,12 +45,8 @@ class FetchGoalsUseCase {
     List<GoalInvestmentMappingDO> goalInvestmentMapping =
         await _goalApi.getGoalInvestmentMappings(goalId: id);
 
-    List<GoalInvestmentMappingDO> goalInvestmentOfGoal = goalInvestmentMapping
-        .where((goalInvestment) => goalInvestment.goalId == goal.id)
-        .toList();
-
     Map<Investment, double> investmentsOfGoal = {};
-    for (var goalInvestment in goalInvestmentOfGoal) {
+    for (var goalInvestment in goalInvestmentMapping) {
       Investment investment = investments.firstWhere(
           (investment) => investment.id == goalInvestment.investmentId);
       investmentsOfGoal[investment] = goalInvestment.sharePercentage;

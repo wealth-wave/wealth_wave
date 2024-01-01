@@ -12,7 +12,7 @@ class GoalApi {
   }
 
   Future<GoalDO> getGoal({required final int id}) async {
-    return _db.select(_db.goalTable).getSingle();
+    return (_db.select(_db.goalTable)..where((t) => t.id.equals(id))).getSingle();
   }
 
   Future<int> createGoal(
