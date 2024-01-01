@@ -8,11 +8,14 @@ class GoalApi {
   GoalApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
   Future<List<GoalDO>> getGoals() async {
-    return _db.select(_db.goalTable).get();
+    return (_db.select(_db.goalTable)
+          ..orderBy([(t) => OrderingTerm.asc(t.targetDate)]))
+        .get();
   }
 
   Future<GoalDO> getGoal({required final int id}) async {
-    return (_db.select(_db.goalTable)..where((t) => t.id.equals(id))).getSingle();
+    return (_db.select(_db.goalTable)..where((t) => t.id.equals(id)))
+        .getSingle();
   }
 
   Future<int> createGoal(

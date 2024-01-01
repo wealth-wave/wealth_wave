@@ -7,7 +7,9 @@ class BasketApi {
   BasketApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
   Future<List<BasketDO>> getBaskets() async {
-    return _db.select(_db.basketTable).get();
+    return (_db.select(_db.basketTable)
+          ..orderBy([(t) => OrderingTerm(expression: t.name)]))
+        .get();
   }
 
   Future<int> createBasket({required final String name}) async {

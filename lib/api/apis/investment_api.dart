@@ -8,19 +8,26 @@ class InvestmentApi {
   InvestmentApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
   Future<List<InvestmentDO>> getInvestments() async {
-    return _db.select(_db.investmentTable).get();
+    return (_db.select(_db.investmentTable)
+          ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+        .get();
   }
 
   Future<List<InvestmentEnrichedDO>> getEnrichedInvestments() async {
-    return _db.select(_db.investmentEnrichedView).get();
+    return (_db.select(_db.investmentEnrichedView)
+          ..orderBy([(t) => OrderingTerm.asc(t.name)]))
+        .get();
   }
 
   Future<List<TransactionDO>> getTransactions({final int? investmentId}) async {
     if (investmentId == null) {
-      return _db.select(_db.transactionTable).get();
+      return (_db.select(_db.transactionTable)
+            ..orderBy([(t) => OrderingTerm.desc(t.amountInvestedOn)]))
+          .get();
     } else {
       return (_db.select(_db.transactionTable)
-            ..where((t) => t.investmentId.equals(investmentId)))
+            ..where((t) => t.investmentId.equals(investmentId))
+            ..orderBy([(t) => OrderingTerm.desc(t.amountInvestedOn)]))
           .get();
     }
   }
