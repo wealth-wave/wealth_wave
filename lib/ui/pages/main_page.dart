@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wealth_wave/api/apis/backup_api.dart';
 import 'package:wealth_wave/ui/pages/baskets_page.dart';
 import 'package:wealth_wave/ui/pages/goals_page.dart';
 import 'package:wealth_wave/ui/pages/investments_page.dart';
@@ -22,6 +23,25 @@ class _MainPageState extends State<MainPage> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text("Wealth Wave"),
+          actions: [
+            PopupMenuButton<int>(
+              onSelected: (value) {
+                if (value == 1) {
+                  BackupApi().exportDatabase();
+                } else if (value == 2) {}
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 1,
+                  child: Text('Export'),
+                ),
+                const PopupMenuItem(
+                  value: 2,
+                  child: Text('Import'),
+                ),
+              ],
+            ),
+          ],
         ),
         body: SafeArea(
           child: Row(
@@ -49,8 +69,7 @@ class _MainPageState extends State<MainPage> {
                             icon: Icon(Icons.local_offer),
                             label: Text('Baskets')),
                       ],
-                      selectedIndex: _selectedIndex)
-                      ),
+                      selectedIndex: _selectedIndex)),
               const VerticalDivider(thickness: 1, width: 1),
               Expanded(
                 child: Builder(

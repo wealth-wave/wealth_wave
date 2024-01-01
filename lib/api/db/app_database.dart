@@ -124,6 +124,26 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  Future<Map<String, List<Map<String, dynamic>>>> getBackup() async {
+    final basketBackup =
+        await executor.runSelect('SELECT * FROM basket_table', []);
+    final investmentBackup =
+        await executor.runSelect('SELECT * FROM investment_table', []);
+    final transactionBackup =
+        await executor.runSelect('SELECT * FROM transaction_table', []);
+    final goalBackup = await executor.runSelect('SELECT * FROM goal_table', []);
+    final goalInvestmentBackup =
+        await executor.runSelect('SELECT * FROM goal_investment_table', []);
+
+    return {
+      'basket_table': basketBackup,
+      'investment_table': investmentBackup,
+      'transaction_table': transactionBackup,
+      'goal_table': goalBackup,
+      'goal_investment_table': goalInvestmentBackup,
+    };
+  }
 }
 
 DatabaseConnection connectOnWeb() {
