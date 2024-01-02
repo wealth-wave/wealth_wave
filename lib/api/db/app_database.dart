@@ -148,14 +148,14 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase._(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration =>
       MigrationStrategy(onUpgrade: (m, from, to) async {
-        if (from == 1 && to == 2) {
-          m.createView(goalInvestmentEnrichedMappingView);
-        }
+        //Place your migrations here
+      }, onCreate: (m) async {
+        m.createAll();
       });
 
   Future<Map<String, List<Map<String, dynamic>>>> getBackup() async {
