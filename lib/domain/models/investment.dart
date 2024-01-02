@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/domain/irr_calculator.dart';
@@ -35,6 +37,14 @@ class Investment {
       finalValue: value,
       finalDate: valueUpdatedOn,
     );
+  }
+
+  double getFutureValueOn(DateTime date) {
+    double? irr = getIrr();
+    if (irr == null) {
+      return value;
+    }
+    return value * pow(1 + irr, date.difference(valueUpdatedOn).inDays / 365);
   }
 
   static Investment from(

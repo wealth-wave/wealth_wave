@@ -115,16 +115,14 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                           style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),
+                  const SizedBox(width: AppDimen.minPadding), //
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(formatToCurrency(goal.getFutureValueOnTargetDate()),
                           style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Predicted Amount at Target Date)',
-                          style: Theme.of(context).textTheme.labelSmall),
-                      Text(formatToPercentage(goal.getIrr()),
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Growth Rate)',
+                      Text(
+                          '(At growth Rate of ${formatToPercentage(goal.getIrr())})',
                           style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),

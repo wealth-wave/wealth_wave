@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
@@ -61,15 +59,6 @@ class Goal {
         .reduce((a, b) => a + b);
   }
 
-  double getFutureValueOnTargetDate() {
-    double yearsLeft = getYearsLeft();
-    double growthRate = getIrr();
-    double value = getInvestedValue();
-
-    double progressedValue = value * pow(1 + growthRate, yearsLeft);
-    return progressedValue;
-  }
-
   double getProgress() {
     double progress = targetAmount > 0 ? getInvestedValue() / targetAmount : 0;
     return progress;
@@ -77,6 +66,15 @@ class Goal {
 
   double getYearsLeft() {
     return targetDate.difference(DateTime.now()).inDays.toDouble() / 365;
+  }
+
+  double getFutureValueOnTargetDate() {
+    if (taggedInvestments.isEmpty) {
+      return 0;
+    }
+    return taggedInvestments.entries
+        .map((e) => e.key.getFutureValueOn(targetDate) * e.value)
+        .reduce((a, b) => a + b);
   }
 
   static Goal from(
