@@ -150,14 +150,6 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-  @override
-  MigrationStrategy get migration =>
-      MigrationStrategy(onUpgrade: (m, from, to) async {
-        //Place your migrations here
-      }, onCreate: (m) async {
-        m.createAll();
-      });
-
   Future<Map<String, List<Map<String, dynamic>>>> getBackup() async {
     final basketBackup =
         await executor.runSelect('SELECT * FROM basket_table', []);
