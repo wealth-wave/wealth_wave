@@ -148,11 +148,15 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase._(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration =>
-      MigrationStrategy(onUpgrade: (m, from, to) async {});
+      MigrationStrategy(onUpgrade: (m, from, to) async {
+        if (from == 1 && to == 2) {
+          m.createView(goalInvestmentEnrichedMappingView);
+        }
+      });
 
   Future<Map<String, List<Map<String, dynamic>>>> getBackup() async {
     final basketBackup =
