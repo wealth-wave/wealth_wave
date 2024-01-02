@@ -53,6 +53,7 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
                     onPressed: () {
                       showTagInvestmentDialog(
                               context: context,
+                              idToUpdate: taggedInvestment.id,
                               goalId: widget.goalId,
                               investmentId: taggedInvestment.investmentId,
                               sharePercentage: taggedInvestment.sharePercentage)

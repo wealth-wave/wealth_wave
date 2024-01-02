@@ -7,6 +7,7 @@ import 'package:wealth_wave/ui/app_dimen.dart';
 Future<void> showTagGoalDialog({
   required final BuildContext context,
   required final int investmentId,
+  final int? idToUpdate,
   final int? goalId,
   final double? sharePercentage,
 }) {
@@ -14,17 +15,22 @@ Future<void> showTagGoalDialog({
       context: context,
       builder: (context) => _TagGoalDialog(
           goalId: goalId,
+          idToUpdate: idToUpdate,
           investmentId: investmentId,
           sharePercentage: sharePercentage));
 }
 
 class _TagGoalDialog extends StatefulWidget {
   final int investmentId;
+  final int? idToUpdate;
   final int? goalId;
   final double? sharePercentage;
 
   const _TagGoalDialog(
-      {required this.investmentId, this.goalId, this.sharePercentage});
+      {required this.investmentId,
+      this.idToUpdate,
+      this.goalId,
+      this.sharePercentage});
 
   @override
   State<_TagGoalDialog> createState() => _TagInvestmentState();
@@ -103,10 +109,10 @@ class _TagInvestmentState
           ElevatedButton(
             onPressed: snapshot.isValid()
                 ? () {
-                    presenter.tagGoal();
+                    presenter.tagGoal(idToUpdate: widget.idToUpdate);
                   }
                 : null,
-            child: widget.goalId != null
+            child: widget.idToUpdate != null
                 ? const Text('Update')
                 : const Text('Create'),
           ),

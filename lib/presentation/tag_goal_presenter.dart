@@ -24,7 +24,7 @@ class TagGoalPresenter extends Presenter<TagGoalViewState> {
     updateViewState((viewState) => viewState.goalId = goalId);
   }
 
-  void tagGoal() {
+  void tagGoal({int? idToUpdate}) {
     final int? goalId = getViewState().goalId;
     final double sharePercentage = getViewState().sharePercentage;
 
@@ -32,13 +32,21 @@ class TagGoalPresenter extends Presenter<TagGoalViewState> {
       return;
     }
 
-    _investmentApi
-        .createGoalInvestmentMap(
-            goalId: goalId,
-            investmentId: investmentId,
-            percentage: sharePercentage)
-        .then((_) => updateViewState(
-            (viewState) => viewState.onGoalTagged = SingleEvent(null)));
+    if (idToUpdate != null) {
+      _investmentApi
+          .updateGoalInvestmentMap(
+              id: idToUpdate, goalId: goalId, percentage: sharePercentage)
+          .then((_) => updateViewState(
+              (viewState) => viewState.onGoalTagged = SingleEvent(null)));
+    } else {
+      _investmentApi
+          .createGoalInvestmentMap(
+              investmentId: investmentId,
+              goalId: goalId,
+              percentage: sharePercentage)
+          .then((_) => updateViewState(
+              (viewState) => viewState.onGoalTagged = SingleEvent(null)));
+    }
   }
 
   void onPercentageChanged(String text) {
