@@ -73,7 +73,7 @@ class Goal {
       return 0;
     }
     return taggedInvestments.entries
-        .map((e) => e.key.getFutureValueOn(targetDate) * e.value)
+        .map((e) => e.key.getFutureValueOn(targetDate) * e.value / 100)
         .reduce((a, b) => a + b);
   }
 
