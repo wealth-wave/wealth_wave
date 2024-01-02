@@ -60,7 +60,8 @@ class Goal {
   }
 
   double getProgress() {
-    double progress = targetAmount > 0 ? getInvestedValue() / targetAmount : 0;
+    double progress =
+        targetAmount > 0 ? getFutureValueOnTargetDate() / targetAmount : 0;
     return progress;
   }
 
