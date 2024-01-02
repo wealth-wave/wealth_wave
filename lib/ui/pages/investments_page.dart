@@ -5,6 +5,7 @@ import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/presentation/investments_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
+import 'package:wealth_wave/ui/widgets/tagged_goal_dialog.dart';
 import 'package:wealth_wave/ui/widgets/transactions_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
@@ -98,15 +99,29 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                       ),
                     ],
                   ),
-                  TextButton(
-                    onPressed: () {
-                      showTransactionsDialog(
-                              context: context, investmentId: investment.id)
-                          .then((value) => presenter.fetchInvestments());
-                    },
-                    child:
-                        Text('${investment.transactions.length} transactions'),
-                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          showTransactionsDialog(
+                                  context: context, investmentId: investment.id)
+                              .then((value) => presenter.fetchInvestments());
+                        },
+                        child: Text(
+                            '${investment.transactions.length} transactions'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          showTaggedGoalDialog(
+                                  context: context, investmentId: investment.id)
+                              .then((value) => presenter.fetchInvestments());
+                        },
+                        child: Text(
+                            '${investment.taggedGoals.length} tagged goals'),
+                      ),
+                    ],
+                  )
                 ],
               ),
               Row(

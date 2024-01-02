@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/transactions_presenter.dart';
+import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_transaction_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
@@ -44,8 +45,15 @@ class _TransactionPage extends PageState<TransactionsViewState,
             itemBuilder: (context, index) {
               TransactionDO transaction = snapshot.transactions[index];
               return ListTile(
-                title: Text(
-                    'Amount: ${transaction.amount.toString()} \nDate: ${formatDate(transaction.amountInvestedOn)}'),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Date: ${formatDate(transaction.amountInvestedOn)}'),
+                    const SizedBox(
+                        height: AppDimen.minPadding), // Add some spacing
+                    Text('Amount: ${formatToCurrency(transaction.amount)}'),
+                  ],
+                ),
                 trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                   IconButton(
                     icon: const Icon(Icons.edit),
@@ -75,7 +83,7 @@ class _TransactionPage extends PageState<TransactionsViewState,
             Navigator.of(context).pop();
           },
         ),
-        FilledButton(
+        OutlinedButton(
           child: const Text('Add Transaction'),
           onPressed: () {
             showCreateTransactionDialog(

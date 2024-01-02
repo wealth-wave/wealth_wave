@@ -1,26 +1,22 @@
 import 'package:wealth_wave/api/apis/basket_api.dart';
+import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
-import 'package:wealth_wave/domain/usecases/fetch_investments_use_case.dart';
 
 class FetchBasketsUseCase {
   final BasketApi _basketApi;
-  final FetchInvestmentsUseCase _fetchInvestmentsUseCase;
+  final InvestmentApi _investmentApi;
 
-  FetchBasketsUseCase(
-      {BasketApi? basketApi, FetchInvestmentsUseCase? fetchInvestmentsUseCase})
+  FetchBasketsUseCase({BasketApi? basketApi, InvestmentApi? investmentApi})
       : _basketApi = basketApi ?? BasketApi(),
-        _fetchInvestmentsUseCase =
-            fetchInvestmentsUseCase ?? FetchInvestmentsUseCase();
+        _investmentApi = investmentApi ?? InvestmentApi();
 
   Future<List<Basket>> invoke() async {
     List<BasketDO> baskets = await _basketApi.getBaskets();
-    List<Investment> investments =
-        await _fetchInvestmentsUseCase.fetchInvestments();
+    List<InvestmentDO> investments = await _investmentApi.getInvestments();
 
     return baskets.map((basket) {
-      List<Investment> investmentsOfBasket = investments
+      List<InvestmentDO> investmentsOfBasket = investments
           .where((investment) => investment.basketId == basket.id)
           .toList();
 

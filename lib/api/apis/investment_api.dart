@@ -103,4 +103,39 @@ class InvestmentApi {
     return (_db.delete(_db.investmentTable)..where((t) => t.id.equals(id)))
         .go();
   }
+
+  Future<List<GoalInvestmentEnrichedMappingDO>> getGoalInvestmentMappings(
+      {final int? investmentId}) async {
+    if (investmentId != null) {
+      return (_db.select(_db.goalInvestmentEnrichedMappingView)
+            ..where((t) => t.investmentId.equals(investmentId)))
+          .get();
+    }
+    return _db.select(_db.goalInvestmentEnrichedMappingView).get();
+  }
+
+  Future<int> createGoalInvestmentMap(
+      {required final int goalId,
+      required final int investmentId,
+      required final double percentage}) async {
+    return _db.into(_db.goalInvestmentTable).insert(
+        GoalInvestmentTableCompanion.insert(
+            goalId: goalId,
+            investmentId: investmentId,
+            sharePercentage: percentage));
+  }
+
+  Future<int> updateGoalInvestmentMap(
+      {required final int id,
+      required final int goalId,
+      required final double percentage}) async {
+    return (_db.update(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
+        .write(GoalInvestmentTableCompanion(
+            goalId: Value(goalId), sharePercentage: Value(percentage)));
+  }
+
+  Future<int> deleteGoalInvestmentMap({required final int id}) async {
+    return (_db.delete(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
+        .go();
+  }
 }

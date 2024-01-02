@@ -637,6 +637,58 @@ Query? get query => (attachedDatabase.selectOnly(investment)..addColumns($column
       Set<String> get readTables => const {'investment_table', 'basket_table', 'transaction_table'};
     
 }
+class GoalInvestmentEnrichedMappingDO extends DataClass {
+final int id;
+final int goalId;
+final int investmentId;
+final double sharePercentage;
+final String? goalName;
+final String? investmentName;
+const GoalInvestmentEnrichedMappingDO({required this.id, required this.goalId, required this.investmentId, required this.sharePercentage, this.goalName, this.investmentName});factory GoalInvestmentEnrichedMappingDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+serializer ??= driftRuntimeOptions.defaultSerializer;
+return GoalInvestmentEnrichedMappingDO(id: serializer.fromJson<int>(json['id']),goalId: serializer.fromJson<int>(json['goalId']),investmentId: serializer.fromJson<int>(json['investmentId']),sharePercentage: serializer.fromJson<double>(json['sharePercentage']),goalName: serializer.fromJson<String?>(json['goalName']),investmentName: serializer.fromJson<String?>(json['investmentName']),);}
+@override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+serializer ??= driftRuntimeOptions.defaultSerializer;
+return <String, dynamic>{
+'id': serializer.toJson<int>(id),'goalId': serializer.toJson<int>(goalId),'investmentId': serializer.toJson<int>(investmentId),'sharePercentage': serializer.toJson<double>(sharePercentage),'goalName': serializer.toJson<String?>(goalName),'investmentName': serializer.toJson<String?>(investmentName),};}GoalInvestmentEnrichedMappingDO copyWith({int? id,int? goalId,int? investmentId,double? sharePercentage,Value<String?> goalName = const Value.absent(),Value<String?> investmentName = const Value.absent()}) => GoalInvestmentEnrichedMappingDO(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,sharePercentage: sharePercentage ?? this.sharePercentage,goalName: goalName.present ? goalName.value : this.goalName,investmentName: investmentName.present ? investmentName.value : this.investmentName,);@override
+String toString() {return (StringBuffer('GoalInvestmentEnrichedMappingDO(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('sharePercentage: $sharePercentage, ')..write('goalName: $goalName, ')..write('investmentName: $investmentName')..write(')')).toString();}
+@override
+ int get hashCode => Object.hash(id, goalId, investmentId, sharePercentage, goalName, investmentName);@override
+bool operator ==(Object other) => identical(this, other) || (other is GoalInvestmentEnrichedMappingDO && other.id == this.id && other.goalId == this.goalId && other.investmentId == this.investmentId && other.sharePercentage == this.sharePercentage && other.goalName == this.goalName && other.investmentName == this.investmentName);
+}class $GoalInvestmentEnrichedMappingViewView extends ViewInfo<$GoalInvestmentEnrichedMappingViewView, GoalInvestmentEnrichedMappingDO> implements HasResultSet {
+final String? _alias;
+@override final _$AppDatabase attachedDatabase;
+$GoalInvestmentEnrichedMappingViewView(this.attachedDatabase, [this._alias]);
+$GoalInvestmentTableTable get goalInvestment => attachedDatabase.goalInvestmentTable.createAlias('t0');
+$GoalTableTable get goal => attachedDatabase.goalTable.createAlias('t1');
+$InvestmentTableTable get investment => attachedDatabase.investmentTable.createAlias('t2');
+@override
+List<GeneratedColumn> get $columns => [id, goalId, investmentId, sharePercentage, goalName, investmentName];
+@override
+String get aliasedName => _alias ?? entityName;
+@override
+ String get entityName=> 'goal_investment_enriched_mapping_view';
+@override
+Map<SqlDialect, String>?get createViewStatements => null;
+@override
+$GoalInvestmentEnrichedMappingViewView get asDslTable => this;
+@override GoalInvestmentEnrichedMappingDO map(Map<String, dynamic> data, {String? tablePrefix})  {
+final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return GoalInvestmentEnrichedMappingDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, goalId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}GOAL_ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, sharePercentage: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}SHARE_PERCENTAGE'])!, goalName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}goal_name']), investmentName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}investment_name']), );
+}
+late final GeneratedColumn<int> id = GeneratedColumn<int>('ID', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.id, false), type: DriftSqlType.int);
+late final GeneratedColumn<int> goalId = GeneratedColumn<int>('GOAL_ID', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.goalId, false), type: DriftSqlType.int);
+late final GeneratedColumn<int> investmentId = GeneratedColumn<int>('INVESTMENT_ID', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.investmentId, false), type: DriftSqlType.int);
+late final GeneratedColumn<double> sharePercentage = GeneratedColumn<double>('SHARE_PERCENTAGE', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.sharePercentage, false), type: DriftSqlType.double);
+late final GeneratedColumn<String> goalName = GeneratedColumn<String>('goal_name', aliasedName, true, generatedAs: GeneratedAs(goal.name, false), type: DriftSqlType.string);
+late final GeneratedColumn<String> investmentName = GeneratedColumn<String>('investment_name', aliasedName, true, generatedAs: GeneratedAs(investment.name, false), type: DriftSqlType.string);
+@override
+$GoalInvestmentEnrichedMappingViewView createAlias(String alias) {
+return $GoalInvestmentEnrichedMappingViewView(attachedDatabase, alias);}@override
+Query? get query => (attachedDatabase.selectOnly(goalInvestment)..addColumns($columns)).join([ innerJoin(goal,goal.id.equalsExp(goalInvestment.goalId)), innerJoin(investment,investment.id.equalsExp(goalInvestment.investmentId)) ]);
+      @override
+      Set<String> get readTables => const {'goal_investment_table', 'goal_table', 'investment_table'};
+    
+}
 abstract class _$AppDatabase extends GeneratedDatabase{
 _$AppDatabase(QueryExecutor e): super(e);
 late final $BasketTableTable basketTable = $BasketTableTable(this);
@@ -645,8 +697,9 @@ late final $TransactionTableTable transactionTable = $TransactionTableTable(this
 late final $GoalTableTable goalTable = $GoalTableTable(this);
 late final $GoalInvestmentTableTable goalInvestmentTable = $GoalInvestmentTableTable(this);
 late final $InvestmentEnrichedViewView investmentEnrichedView = $InvestmentEnrichedViewView(this);
+late final $GoalInvestmentEnrichedMappingViewView goalInvestmentEnrichedMappingView = $GoalInvestmentEnrichedMappingViewView(this);
 @override
 Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
 @override
-List<DatabaseSchemaEntity> get allSchemaEntities => [basketTable, investmentTable, transactionTable, goalTable, goalInvestmentTable, investmentEnrichedView];
+List<DatabaseSchemaEntity> get allSchemaEntities => [basketTable, investmentTable, transactionTable, goalTable, goalInvestmentTable, investmentEnrichedView, goalInvestmentEnrichedMappingView];
 }

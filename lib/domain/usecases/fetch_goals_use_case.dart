@@ -18,11 +18,11 @@ class FetchGoalsUseCase {
     List<GoalDO> goals = await _goalApi.getGoals();
     List<Investment> investments =
         await _fetchInvestmentsUseCase.fetchInvestments();
-    List<GoalInvestmentMappingDO> goalInvestmentMappings =
+    List<GoalInvestmentEnrichedMappingDO> goalInvestmentMappings =
         await _goalApi.getGoalInvestmentMappings();
 
     return goals.map((goal) {
-      List<GoalInvestmentMappingDO> goalInvestmentOfGoal =
+      List<GoalInvestmentEnrichedMappingDO> goalInvestmentOfGoal =
           goalInvestmentMappings
               .where((goalInvestment) => goalInvestment.goalId == goal.id)
               .toList();
@@ -42,7 +42,7 @@ class FetchGoalsUseCase {
     GoalDO goal = await _goalApi.getGoal(id: id);
     List<Investment> investments =
         await _fetchInvestmentsUseCase.fetchInvestments();
-    List<GoalInvestmentMappingDO> goalInvestmentMapping =
+    List<GoalInvestmentEnrichedMappingDO> goalInvestmentMapping =
         await _goalApi.getGoalInvestmentMappings(goalId: id);
 
     Map<Investment, double> investmentsOfGoal = {};

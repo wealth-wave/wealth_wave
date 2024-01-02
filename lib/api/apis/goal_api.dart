@@ -71,34 +71,28 @@ class GoalApi {
             sharePercentage: percentage));
   }
 
-  Future<List<GoalInvestmentMappingDO>> getGoalInvestmentMappings(
+  Future<List<GoalInvestmentEnrichedMappingDO>> getGoalInvestmentMappings(
       {final int? goalId}) async {
     if (goalId != null) {
-      return (_db.select(_db.goalInvestmentTable)
+      return (_db.select(_db.goalInvestmentEnrichedMappingView)
             ..where((t) => t.goalId.equals(goalId)))
           .get();
     }
-    return _db.select(_db.goalInvestmentTable).get();
+    return _db.select(_db.goalInvestmentEnrichedMappingView).get();
   }
 
   Future<int> updateGoalInvestmentMap(
-      {required final int goalId,
+      {required final int id,
       required final int investmentId,
       required final double percentage}) async {
-    return (_db.update(_db.goalInvestmentTable)
-          ..where((t) =>
-              t.goalId.equals(goalId) & t.investmentId.equals(investmentId)))
+    return (_db.update(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
         .write(GoalInvestmentTableCompanion(
-            goalId: Value(goalId),
             investmentId: Value(investmentId),
             sharePercentage: Value(percentage)));
   }
 
-  Future<int> deleteGoalInvestmentMap(
-      {required final int goalId, required final int investmentId}) async {
-    return (_db.delete(_db.goalInvestmentTable)
-          ..where((t) =>
-              t.goalId.equals(goalId) & t.investmentId.equals(investmentId)))
+  Future<int> deleteGoalInvestmentMap({required final int id}) async {
+    return (_db.delete(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
         .go();
   }
 

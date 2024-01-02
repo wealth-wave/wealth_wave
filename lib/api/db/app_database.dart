@@ -104,6 +104,30 @@ abstract class InvestmentEnrichedView extends View {
         ..groupBy([investment.id]);
 }
 
+@DataClassName('GoalInvestmentEnrichedMappingDO')
+abstract class GoalInvestmentEnrichedMappingView extends View {
+  GoalInvestmentTable get goalInvestment;
+  GoalTable get goal;
+  InvestmentTable get investment;
+
+  Expression<String> get goalName => goal.name;
+  Expression<String> get investmentName => investment.name;
+
+  @override
+  Query as() => select([
+        goalInvestment.id,
+        goalInvestment.goalId,
+        goalInvestment.investmentId,
+        goalInvestment.sharePercentage,
+        goalName,
+        investmentName
+      ]).from(goalInvestment).join([
+        innerJoin(goal, goal.id.equalsExp(goalInvestment.goalId)),
+        innerJoin(
+            investment, investment.id.equalsExp(goalInvestment.investmentId)),
+      ]);
+}
+
 @DriftDatabase(tables: [
   BasketTable,
   InvestmentTable,
@@ -112,6 +136,7 @@ abstract class InvestmentEnrichedView extends View {
   GoalInvestmentTable,
 ], views: [
   InvestmentEnrichedView,
+  GoalInvestmentEnrichedMappingView,
 ])
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;
@@ -124,6 +149,10 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration =>
+      MigrationStrategy(onUpgrade: (m, from, to) async {});
 
   Future<Map<String, List<Map<String, dynamic>>>> getBackup() async {
     final basketBackup =

@@ -1,44 +1,25 @@
 import 'package:wealth_wave/api/apis/goal_api.dart';
+import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
-import 'package:wealth_wave/domain/usecases/fetch_goals_use_case.dart';
 
 class TaggedInvestmentPresenter extends Presenter<TaggedInvestmentsViewState> {
-  final FetchGoalsUseCase _fetchGoalsUseCase;
   final GoalApi _goalApi;
   final int goalId;
 
-  TaggedInvestmentPresenter(this.goalId,
-      {final FetchGoalsUseCase? fetchGoalsUseCase, final GoalApi? goalApi})
-      : _fetchGoalsUseCase = fetchGoalsUseCase ?? FetchGoalsUseCase(),
-        _goalApi = goalApi ?? GoalApi(),
+  TaggedInvestmentPresenter(this.goalId, {final GoalApi? goalApi})
+      : _goalApi = goalApi ?? GoalApi(),
         super(TaggedInvestmentsViewState(goalId: goalId));
 
   void fetchTaggedInvestment() {
-    _fetchGoalsUseCase.getGoal(goalId).then((goal) {
-      updateViewState((viewState) {
-        viewState.taggedInvestments = goal.taggedInvestments;
-      });
-    });
+    _goalApi
+        .getGoalInvestmentMappings(goalId: goalId)
+        .then((value) => updateViewState((viewState) {
+              viewState.taggedInvestments = value;
+            }));
   }
 
-  void updateTaggedInvestment(
-      int id, int investmentId, double sharePercentage) {
-    _goalApi
-        .updateGoalInvestmentMap(
-            goalId: goalId,
-            investmentId: investmentId,
-            percentage: sharePercentage)
-        .then((_) {
-      fetchTaggedInvestment();
-    });
-  }
-
-  void deleteTaggedInvestment(
-      {required final int goalId, required final int investmentId}) {
-    _goalApi
-        .deleteGoalInvestmentMap(goalId: goalId, investmentId: investmentId)
-        .then((_) {
+  void deleteTaggedInvestment({required final int id}) {
+    _goalApi.deleteGoalInvestmentMap(id: id).then((_) {
       fetchTaggedInvestment();
     });
   }
@@ -46,7 +27,7 @@ class TaggedInvestmentPresenter extends Presenter<TaggedInvestmentsViewState> {
 
 class TaggedInvestmentsViewState {
   final int goalId;
-  Map<Investment, double> taggedInvestments = {};
+  List<GoalInvestmentEnrichedMappingDO> taggedInvestments = [];
 
   TaggedInvestmentsViewState({required this.goalId});
 }

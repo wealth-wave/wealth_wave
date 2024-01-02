@@ -14,6 +14,7 @@ class Investment {
   final double totalInvestedAmount;
   final int totalTransactions;
   final List<Transaction> transactions;
+  final List<GoalInvestmentEnrichedMappingDO> taggedGoals;
 
   Investment(
       {required this.id,
@@ -25,7 +26,8 @@ class Investment {
       required this.basketName,
       required this.totalInvestedAmount,
       required this.totalTransactions,
-      required this.transactions});
+      required this.transactions,
+      required this.taggedGoals});
 
   double? getIrr() {
     return IRRCalculator().calculateIRR(
@@ -37,7 +39,9 @@ class Investment {
 
   static Investment from(
       {required final InvestmentEnrichedDO investment,
-      required final List<TransactionDO> transactions}) {
+      required final List<TransactionDO> transactions,
+      required final List<GoalInvestmentEnrichedMappingDO>
+          goalInvestmentMappings}) {
     return Investment(
         id: investment.id,
         name: investment.name,
@@ -50,6 +54,7 @@ class Investment {
         totalTransactions: investment.totalTransactions ?? 0,
         transactions: transactions
             .map((transaction) => Transaction.from(transaction: transaction))
-            .toList());
+            .toList(),
+        taggedGoals: goalInvestmentMappings);
   }
 }

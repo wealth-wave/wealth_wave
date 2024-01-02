@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/tagged_investment_presenter.dart';
-import 'package:wealth_wave/ui/widgets/tag_investment_dialog.dart';
+import 'package:wealth_wave/presentation/tagged_goals_presenter.dart';
+import 'package:wealth_wave/ui/widgets/tag_goal_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
-Future<void> showTaggedInvestmentDialog(
-    {required final BuildContext context, required final int goalId}) {
+Future<void> showTaggedGoalDialog(
+    {required final BuildContext context, required final int investmentId}) {
   return showDialog(
       context: context,
-      builder: (context) => _TaggedInvestmentWidget(
-            goalId: goalId,
+      builder: (context) => _TaggedGoalsWidget(
+            investmentId: investmentId,
           ));
 }
 
-class _TaggedInvestmentWidget extends StatefulWidget {
-  final int goalId;
+class _TaggedGoalsWidget extends StatefulWidget {
+  final int investmentId;
 
-  const _TaggedInvestmentWidget({required this.goalId});
+  const _TaggedGoalsWidget({required this.investmentId});
 
   @override
-  State<_TaggedInvestmentWidget> createState() => _TaggedInvestmentPage();
+  State<_TaggedGoalsWidget> createState() => _TaggedGoalsPage();
 }
 
-class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
-    _TaggedInvestmentWidget, TaggedInvestmentPresenter> {
+class _TaggedGoalsPage extends PageState<TaggedGoalsViewState,
+    _TaggedGoalsWidget, TaggedGoalsPresenter> {
   @override
   void initState() {
     super.initState();
@@ -32,29 +32,28 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
   }
 
   @override
-  Widget buildWidget(
-      BuildContext context, TaggedInvestmentsViewState snapshot) {
+  Widget buildWidget(BuildContext context, TaggedGoalsViewState snapshot) {
     return AlertDialog(
       title: const Text('Investments'),
       content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: snapshot.taggedInvestments.length,
+            itemCount: snapshot.taggedGoals.length,
             itemBuilder: (context, index) {
               GoalInvestmentEnrichedMappingDO taggedInvestment =
-                  snapshot.taggedInvestments.elementAt(index);
+                  snapshot.taggedGoals.elementAt(index);
               return ListTile(
                 title: Text(
-                    '${formatToPercentage(taggedInvestment.sharePercentage / 100)} of ${taggedInvestment.investmentName}'),
+                    '${formatToPercentage(taggedInvestment.sharePercentage / 100)} to ${taggedInvestment.goalName}'),
                 trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                   IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () {
-                      showTagInvestmentDialog(
+                      showTagGoalDialog(
                               context: context,
-                              goalId: widget.goalId,
-                              investmentId: taggedInvestment.investmentId,
+                              goalId: taggedInvestment.goalId,
+                              investmentId: widget.investmentId,
                               sharePercentage: taggedInvestment.sharePercentage)
                           .then((value) => presenter.fetchTaggedInvestment());
                     },
@@ -77,9 +76,10 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
           },
         ),
         OutlinedButton(
-          child: const Text('Tag Investment'),
+          child: const Text('Tag Goal'),
           onPressed: () {
-            showTagInvestmentDialog(context: context, goalId: widget.goalId)
+            showTagGoalDialog(
+                    context: context, investmentId: widget.investmentId)
                 .then((value) => presenter.fetchTaggedInvestment());
           },
         ),
@@ -88,7 +88,7 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
   }
 
   @override
-  TaggedInvestmentPresenter initializePresenter() {
-    return TaggedInvestmentPresenter(widget.goalId);
+  TaggedGoalsPresenter initializePresenter() {
+    return TaggedGoalsPresenter(widget.investmentId);
   }
 }
