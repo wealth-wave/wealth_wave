@@ -18,7 +18,7 @@ Future<void> showCreateGoalDialog(
 class _CreateGoalDialog extends StatefulWidget {
   final Goal? goalToUpdate;
 
-  const _CreateGoalDialog({super.key, this.goalToUpdate});
+  const _CreateGoalDialog({this.goalToUpdate});
 
   @override
   State<_CreateGoalDialog> createState() => _CreateGoalPage();
