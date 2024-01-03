@@ -101,15 +101,11 @@ class CreateInvestmentViewState {
   SingleEvent<void>? onInvestmentCreated;
   List<BasketDO> baskets = List.empty(growable: false);
 
-  bool isValid({int? investmentId}) {
-    if (investmentId != null) {
-      return name.isNotEmpty && basketId != null;
-    } else {
+  bool isValid() {
       return name.isNotEmpty &&
           value > 0 &&
           isValidDate(valueUpdatedAt) &&
           basketId != null;
-    }
   }
 
   DateTime _getValueUpdatedAt() {

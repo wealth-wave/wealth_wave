@@ -99,7 +99,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
               decoration: const InputDecoration(
                   labelText: 'Name', border: OutlineInputBorder()),
             ),
-            const SizedBox(height: AppDimen.minPadding),
+            const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _amountController,
@@ -108,7 +108,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
               decoration: const InputDecoration(
                   labelText: 'Amount', border: OutlineInputBorder()),
             ),
-            const SizedBox(height: AppDimen.minPadding),
+            const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _currentDateController,
@@ -118,7 +118,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
               decoration: const InputDecoration(
                   labelText: 'Date (DD-MM-YYYY)', border: OutlineInputBorder()),
             ),
-            const SizedBox(height: AppDimen.minPadding),
+            const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _targetDateController,
@@ -129,7 +129,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
                   labelText: 'Target Date (DD-MM-YYYY)',
                   border: OutlineInputBorder()),
             ),
-            const SizedBox(height: AppDimen.minPadding),
+            const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(
               textInputAction: TextInputAction.next,
               keyboardType: TextInputType.number,
@@ -139,7 +139,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
                   hintText: 'Inflation (0 - 100)',
                   border: OutlineInputBorder()),
             ),
-            const SizedBox(height: AppDimen.minPadding),
+            const SizedBox(height: AppDimen.defaultPadding),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -154,11 +154,10 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
                 ),
               ],
             ),
-            const SizedBox(height: AppDimen.minPadding),
+            const SizedBox(height: AppDimen.defaultPadding),
             DropdownButtonFormField<GoalImportance>(
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-              ),
+                  border: OutlineInputBorder(), labelText: 'Importance'),
               hint: const Text('Importance'),
               value: snapshot.importance,
               onChanged: (value) {

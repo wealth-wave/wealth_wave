@@ -67,9 +67,11 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                       Text(goal.name,
                           style: Theme.of(context).textTheme.titleMedium),
                       const Text(' | '),
-                      Text(_getImportance(goal.importance)),
+                      Text('${_getImportance(goal.importance)} Importance',
+                          style: Theme.of(context).textTheme.labelSmall),
                       const Text(' | '),
-                      Text('(${_getYearsLeft(goal.getYearsLeft())})'),
+                      Text('(${_getYearsLeft(goal.getYearsLeft())})',
+                          style: Theme.of(context).textTheme.labelSmall),
                       PopupMenuButton<int>(
                         onSelected: (value) {
                           if (value == 1) {

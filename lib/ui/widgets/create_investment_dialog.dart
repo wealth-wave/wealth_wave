@@ -83,7 +83,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
             decoration: const InputDecoration(
                 labelText: 'Name', border: OutlineInputBorder()),
           ),
-          const SizedBox(height: AppDimen.minPadding),
+          const SizedBox(height: AppDimen.defaultPadding),
           TextFormField(
             textInputAction: TextInputAction.next,
             controller: _valueController,
@@ -92,7 +92,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
             decoration: const InputDecoration(
                 labelText: 'Value', border: OutlineInputBorder()),
           ),
-          const SizedBox(height: AppDimen.minPadding),
+          const SizedBox(height: AppDimen.defaultPadding),
           TextFormField(
             textInputAction: TextInputAction.next,
             controller: _valueUpdatedDateController,
@@ -102,9 +102,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
             decoration: const InputDecoration(
                 labelText: 'Date (DD-MM-YYYY)', border: OutlineInputBorder()),
           ),
-          const SizedBox(height: AppDimen.minPadding),
+          const SizedBox(height: AppDimen.defaultPadding),
           DropdownButtonFormField<int>(
-              decoration: const InputDecoration(border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), labelText: 'Basket'),
               hint: const Text('Basket'),
               value: snapshot.basketId,
               onChanged: (value) {
@@ -118,11 +119,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                         child: Text(e.name),
                       ))
                   .toList()),
-          const SizedBox(height: AppDimen.minPadding),
+          const SizedBox(height: AppDimen.defaultPadding),
           DropdownButtonFormField<RiskLevel>(
             decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-            ),
+                border: OutlineInputBorder(), labelText: 'Risk Level'),
             hint: const Text('Risk Level'),
             value: snapshot.riskLevel,
             onChanged: (value) {
@@ -153,8 +153,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                 Navigator.pop(context);
               }),
           ElevatedButton(
-            onPressed: snapshot.isValid(
-                    investmentId: widget.investmentToUpdate?.id)
+            onPressed: snapshot.isValid()
                 ? () {
                     presenter.createInvestment(
                         investmentIdToUpdate: widget.investmentToUpdate?.id);

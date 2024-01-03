@@ -71,10 +71,10 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                     children: [
                       Text(investment.name,
                           style: Theme.of(context).textTheme.titleMedium),
-                      const Text(' | '),
                       Text('(${investment.basketName})'),
                       const Text(' | '),
-                      Text(_getRiskLevel(investment.riskLevel)),
+                      Text('${_getRiskLevel(investment.riskLevel)} Risk',
+                          style: Theme.of(context).textTheme.labelSmall),
                       PopupMenuButton<int>(
                         onSelected: (value) {
                           if (value == 1) {
