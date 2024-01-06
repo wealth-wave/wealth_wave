@@ -12,17 +12,20 @@ class BasketApi {
         .get();
   }
 
-  Future<int> createBasket({required final String name}) async {
-    return _db
-        .into(_db.basketTable)
-        .insert(BasketTableCompanion.insert(name: name));
+  Future<int> createBasket(
+      {required final String name, required final String? description}) async {
+    return _db.into(_db.basketTable).insert(BasketTableCompanion.insert(
+        name: name, description: Value(description)));
   }
 
-  Future<int> updateName(
-      {required final int id, required final String name}) async {
+  Future<int> updateBasket(
+      {required final int id,
+      required final String name,
+      required final String? description}) async {
     return (_db.update(_db.basketTable)..where((t) => t.id.equals(id)))
         .write(BasketTableCompanion(
       name: Value(name),
+      description: Value(description),
     ));
   }
 

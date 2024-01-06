@@ -22,14 +22,6 @@ class BasketsPresenter extends Presenter<BasketsViewState> {
             }));
   }
 
-  void createBasket({required final String name}) {
-    _basketApi.createBasket(name: name).then((_) => fetchBaskets());
-  }
-
-  void updateBasketName({required final int id, required final String name}) {
-    _basketApi.updateName(id: id, name: name).then((_) => fetchBaskets());
-  }
-
   void deleteBasket({required final int id}) {
     _basketApi.deleteBasket(id: id).then((_) => fetchBaskets());
   }

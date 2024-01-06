@@ -3,6 +3,7 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/presentation/baskets_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/ui/widgets/create_basket_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 class BasketsPage extends StatefulWidget {
@@ -35,10 +36,8 @@ class _BasketsPage
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showBasketNameDialog(context: context).then((value) {
-            if (value != null) {
-              presenter.createBasket(name: value);
-            }
+          showCreateBasketDialog(context: context).then((value) {
+            presenter.fetchBaskets();
           });
         },
         tooltip: 'Add',
@@ -50,49 +49,6 @@ class _BasketsPage
   @override
   BasketsPresenter initializePresenter() {
     return BasketsPresenter();
-  }
-
-  final _textFieldController = TextEditingController();
-
-  Future<String?> _showBasketNameDialog(
-      {required final BuildContext context, final String? name}) async {
-    if (name != null) {
-      _textFieldController.text = name;
-    }
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Add Basket',
-                style: Theme.of(context).textTheme.titleMedium),
-            content: Padding(
-                padding: const EdgeInsets.all(AppDimen.minPadding),
-                child: TextFormField(
-                  controller: _textFieldController,
-                  decoration: const InputDecoration(
-                      labelText: "Basket Name", border: OutlineInputBorder()),
-                )),
-            actions: <Widget>[
-              ElevatedButton(
-                  child: const Text("Cancel"),
-                  onPressed: () {
-                    _textFieldController.clear();
-                    Navigator.pop(context);
-                  }),
-              ElevatedButton(
-                  onPressed: () {
-                    var basketName = _textFieldController.text;
-                    _textFieldController.clear();
-                    if (basketName.isEmpty) {
-                      return;
-                    }
-                    Navigator.pop(context, basketName);
-                  },
-                  child:
-                      name == null ? const Text('Add') : const Text('Update')),
-            ],
-          );
-        });
   }
 
   Widget _basketWidget(
@@ -114,8 +70,8 @@ class _BasketsPage
                       PopupMenuButton<int>(
                         onSelected: (value) {
                           if (value == 1) {
-                            _showBasketNameDialog(
-                                    name: basket.name, context: context)
+                            showCreateBasketDialog(
+                                    basketToUpdate: basket, context: context)
                                 .then((value) => presenter.fetchBaskets());
                           } else if (value == 2) {
                             presenter.deleteBasket(id: basket.id);
@@ -134,6 +90,15 @@ class _BasketsPage
                       ),
                     ],
                   ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  basket.description != null
+                      ? Text(basket.description!,
+                          style: Theme.of(context).textTheme.bodyMedium)
+                      : Container(),
                 ],
               ),
               Row(
