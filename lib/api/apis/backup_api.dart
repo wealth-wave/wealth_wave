@@ -61,7 +61,13 @@ class BackupApi {
       await reader.onLoad.first;
 
       final jsonString = reader.result as String;
-      return json.decode(jsonString) as Map<String, List<Map<String, dynamic>>>;
+      final jsonMap = json.decode(jsonString);
+      final Map<String, List<Map<String, dynamic>>> map = {};
+      jsonMap.forEach((key, value) {
+        map[key] = List<Map<String, dynamic>>.from(value
+            .map((e) => Map<String, dynamic>.from(e as Map<dynamic, dynamic>)));
+      });
+      return map;
     } catch (e) {
       Logger().e(e.toString());
       return null;
