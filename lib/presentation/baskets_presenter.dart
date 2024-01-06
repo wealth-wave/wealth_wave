@@ -31,7 +31,7 @@ class BasketsPresenter extends Presenter<BasketsViewState> {
   }
 
   void deleteBasket({required final int id}) {
-    _basketApi.deleteBasket(id: id).then((_) => null);
+    _basketApi.deleteBasket(id: id).then((_) => fetchBaskets());
   }
 }
 

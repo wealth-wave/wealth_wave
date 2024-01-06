@@ -4,6 +4,7 @@ import 'package:wealth_wave/presentation/main_presenter.dart';
 import 'package:wealth_wave/ui/pages/baskets_page.dart';
 import 'package:wealth_wave/ui/pages/goals_page.dart';
 import 'package:wealth_wave/ui/pages/investments_page.dart';
+import 'package:wealth_wave/utils/dialog_utils.dart';
 
 class MainPage extends StatefulWidget {
   final List<String> path;
@@ -20,6 +21,12 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
 
   @override
   Widget buildWidget(BuildContext context, MainViewState snapshot) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      snapshot.onImportCompleted?.consume((p0) {
+        DialogUtils.showAppDialog(context: context, message: "Import complete");
+      });
+    });
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
