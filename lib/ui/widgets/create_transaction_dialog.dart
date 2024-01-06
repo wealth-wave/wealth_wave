@@ -31,6 +31,7 @@ class _CreateTransactionDialog extends StatefulWidget {
 
 class _CreateTransactionPage extends PageState<CreateTransactionViewState,
     _CreateTransactionDialog, CreateTransactionPresenter> {
+  final _descriptionController = TextEditingController();
   final _valueController = TextEditingController();
   final _valueUpdatedDateController = TextEditingController();
 
@@ -40,17 +41,21 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
 
     TransactionDO? transactionToUpdate = widget.transactionToUpdate;
     if (transactionToUpdate != null) {
+      _descriptionController.text = transactionToUpdate.description ?? '';
       _valueController.text = transactionToUpdate.amount.toString();
       _valueUpdatedDateController.text =
           formatDate(transactionToUpdate.amountInvestedOn);
       presenter.setTransaction(transactionToUpdate);
     } else {
-      _valueUpdatedDateController.text =
-         formatDate(DateTime.now());
+      _valueUpdatedDateController.text = formatDate(DateTime.now());
     }
 
     _valueController.addListener(() {
       presenter.onAmountChanged(_valueController.text);
+    });
+
+    _descriptionController.addListener(() {
+      presenter.onDescriptionChanged(_descriptionController.text);
     });
 
     _valueUpdatedDateController.addListener(() {
@@ -91,6 +96,12 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
         ],
         content: SingleChildScrollView(
           child: Column(children: <Widget>[
+            TextFormField(
+              textInputAction: TextInputAction.next,
+              controller: _descriptionController,
+              decoration: const InputDecoration(
+                  labelText: 'Description', border: OutlineInputBorder()),
+            ),
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _valueController,

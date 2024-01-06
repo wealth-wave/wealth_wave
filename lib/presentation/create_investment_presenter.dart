@@ -31,6 +31,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     }
 
     final name = viewState.name;
+    final description = viewState.description;
     final value = viewState.value;
     final valueUpdatedAt = viewState._getValueUpdatedAt();
     final basketId = viewState.basketId;
@@ -40,6 +41,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
       _investmentApi
           .updateInvestment(
               id: investmentIdToUpdate,
+              description: description,
               name: name,
               value: value,
               valueUpdatedAt: valueUpdatedAt,
@@ -51,6 +53,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
       _investmentApi
           .createInvestment(
               name: name,
+              description: description,
               value: value,
               valueUpdatedAt: valueUpdatedAt,
               basketId: basketId,
@@ -62,6 +65,10 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
 
   void nameChanged(String text) {
     updateViewState((viewState) => viewState.name = text);
+  }
+
+  void descriptionChanged(String text) {
+    updateViewState((viewState) => viewState.description = text);
   }
 
   void valueChanged(String text) {
@@ -94,6 +101,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
 
 class CreateInvestmentViewState {
   String name = '';
+  String? description;
   int? basketId;
   RiskLevel riskLevel = RiskLevel.medium;
   double value = 0.0;
@@ -102,10 +110,10 @@ class CreateInvestmentViewState {
   List<BasketDO> baskets = List.empty(growable: false);
 
   bool isValid() {
-      return name.isNotEmpty &&
-          value > 0 &&
-          isValidDate(valueUpdatedAt) &&
-          basketId != null;
+    return name.isNotEmpty &&
+        value > 0 &&
+        isValidDate(valueUpdatedAt) &&
+        basketId != null;
   }
 
   DateTime _getValueUpdatedAt() {

@@ -34,6 +34,7 @@ class InvestmentApi {
 
   Future<int> createInvestment({
     required final String name,
+    required final String? description,
     required final int? basketId,
     required final RiskLevel riskLevel,
     required final double value,
@@ -42,6 +43,7 @@ class InvestmentApi {
     return _db.into(_db.investmentTable).insert(InvestmentTableCompanion.insert(
         name: name,
         basketId: Value(basketId),
+        description: Value(description),
         value: value,
         riskLevel: riskLevel,
         valueUpdatedOn: valueUpdatedAt));
@@ -49,11 +51,13 @@ class InvestmentApi {
 
   Future<int> createTransaction(
       {required final int investmentId,
+      required final String? description,
       required final double amount,
       required final DateTime date}) async {
     return _db.into(_db.transactionTable).insert(
         TransactionTableCompanion.insert(
             investmentId: investmentId,
+            description: Value(description),
             amount: amount,
             amountInvestedOn: date));
   }
@@ -66,6 +70,7 @@ class InvestmentApi {
   Future<int> updateInvestment({
     required final int id,
     required final String name,
+    required final String? description,
     required final int? basketId,
     required final RiskLevel riskLevel,
     required final double value,
@@ -74,6 +79,7 @@ class InvestmentApi {
     return (_db.update(_db.investmentTable)..where((t) => t.id.equals(id)))
         .write(InvestmentTableCompanion(
             name: Value(name),
+            description: Value(description),
             basketId: Value(basketId),
             riskLevel: Value(riskLevel),
             value: Value(value),
@@ -83,11 +89,13 @@ class InvestmentApi {
   Future<int> updateTransaction(
       {required final int id,
       required final int investmentId,
+      required final String? description,
       required final double amount,
       required final DateTime date}) async {
     return (_db.update(_db.transactionTable)..where((t) => t.id.equals(id)))
         .write(TransactionTableCompanion(
       investmentId: Value(investmentId),
+      description: Value(description),
       amount: Value(amount),
       amountInvestedOn: Value(date),
     ));

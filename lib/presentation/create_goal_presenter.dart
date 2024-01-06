@@ -22,6 +22,7 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
     }
 
     final name = viewState.name;
+    final description = viewState.description;
     final amount = viewState.amount;
     final date = viewState.date;
     final targetAmount = viewState.getTargetAmount();
@@ -34,6 +35,7 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
           .update(
               id: goalIdToUpdate,
               name: name,
+              description: description,
               amount: amount,
               date: date,
               targetAmount: targetAmount,
@@ -46,6 +48,7 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
       _goalApi
           .createGoal(
               name: name,
+              description: description,
               amount: amount,
               date: date,
               targetAmount: targetAmount,
@@ -59,6 +62,10 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
 
   void nameChanged(String text) {
     updateViewState((viewState) => viewState.name = text);
+  }
+
+  void descriptionChanged(String text) {
+    updateViewState((viewState) => viewState.description = text);
   }
 
   void amountChanged(String text) {
@@ -85,6 +92,7 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
   void setGoal(Goal goalToUpdate) {
     updateViewState((viewState) {
       viewState.name = goalToUpdate.name;
+      viewState.description = goalToUpdate.description;
       viewState.amount = goalToUpdate.amount;
       viewState.inflation = goalToUpdate.inflation;
       viewState.importance = goalToUpdate.importance;
@@ -96,6 +104,7 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
 
 class CreateGoalViewState {
   String name = '';
+  String? description;
   double amount = 0.0;
   DateTime date = DateTime.now();
   DateTime targetDate = DateTime.now().add(const Duration(days: 365));

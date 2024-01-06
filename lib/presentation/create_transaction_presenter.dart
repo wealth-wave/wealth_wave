@@ -22,6 +22,7 @@ class CreateTransactionPresenter extends Presenter<CreateTransactionViewState> {
       return;
     }
 
+    final description = viewState.description;
     final amount = viewState.amount;
     final investedDate = viewState.getInvestedDate();
 
@@ -29,6 +30,7 @@ class CreateTransactionPresenter extends Presenter<CreateTransactionViewState> {
       _investmentApi
           .updateTransaction(
               id: transactionIdToUpdate,
+              description: description,
               investmentId: investmentId,
               amount: amount,
               date: investedDate)
@@ -37,10 +39,17 @@ class CreateTransactionPresenter extends Presenter<CreateTransactionViewState> {
     } else {
       _investmentApi
           .createTransaction(
-              investmentId: investmentId, amount: amount, date: investedDate)
+              investmentId: investmentId,
+              description: description,
+              amount: amount,
+              date: investedDate)
           .then((_) => updateViewState((viewState) =>
               viewState.onTransactionCreated = SingleEvent(null)));
     }
+  }
+
+  void onDescriptionChanged(String text) {
+    updateViewState((viewState) => viewState.description = text);
   }
 
   void onAmountChanged(String text) {
@@ -61,6 +70,7 @@ class CreateTransactionPresenter extends Presenter<CreateTransactionViewState> {
 }
 
 class CreateTransactionViewState {
+  String? description;
   double amount = 0.0;
   String investedDate = formatDate(DateTime.now());
   SingleEvent<void>? onTransactionCreated;

@@ -27,6 +27,7 @@ class _CreateGoalDialog extends StatefulWidget {
 class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
     CreateGoalPresenter> {
   final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
   final _currentDateController = TextEditingController();
   final _inflationController = TextEditingController();
@@ -39,6 +40,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
     Goal? goalToUpdate = widget.goalToUpdate;
     if (goalToUpdate != null) {
       _nameController.text = goalToUpdate.name;
+      _descriptionController.text = goalToUpdate.description ?? '';
       _amountController.text = goalToUpdate.amount.toString();
       _currentDateController.text = formatDate(goalToUpdate.createdDate);
       _targetDateController.text = formatDate(goalToUpdate.targetDate);
@@ -53,6 +55,10 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
 
     _nameController.addListener(() {
       presenter.nameChanged(_nameController.text);
+    });
+
+    _descriptionController.addListener(() {
+      presenter.descriptionChanged(_descriptionController.text);
     });
 
     _amountController.addListener(() {
@@ -98,6 +104,18 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
               ],
               decoration: const InputDecoration(
                   labelText: 'Name', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: AppDimen.defaultPadding),
+            TextFormField(
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.text,
+              textCapitalization: TextCapitalization.words,
+              controller: _descriptionController,
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[^a-zA-Z0-9\s]'))
+              ],
+              decoration: const InputDecoration(
+                  labelText: 'Description', border: OutlineInputBorder()),
             ),
             const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(

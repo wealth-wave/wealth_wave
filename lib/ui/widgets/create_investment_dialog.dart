@@ -28,6 +28,7 @@ class _CreateInvestmentDialog extends StatefulWidget {
 class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     _CreateInvestmentDialog, CreateInvestmentPresenter> {
   final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
   final _valueController = TextEditingController();
   final _valueUpdatedDateController = TextEditingController();
 
@@ -38,6 +39,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     Investment? investmentToUpdate = widget.investmentToUpdate;
     if (investmentToUpdate != null) {
       _nameController.text = investmentToUpdate.name;
+      _descriptionController.text = investmentToUpdate.description ?? '';
       _valueController.text = investmentToUpdate.value.toString();
       _valueUpdatedDateController.text =
           formatDate(investmentToUpdate.valueUpdatedOn);
@@ -48,6 +50,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
 
     _nameController.addListener(() {
       presenter.nameChanged(_nameController.text);
+    });
+
+    _descriptionController.addListener(() {
+      presenter.descriptionChanged(_descriptionController.text);
     });
 
     _valueController.addListener(() {
@@ -82,6 +88,16 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
             ],
             decoration: const InputDecoration(
                 labelText: 'Name', border: OutlineInputBorder()),
+          ),
+          const SizedBox(height: AppDimen.defaultPadding),
+          TextFormField(
+            textInputAction: TextInputAction.next,
+            controller: _descriptionController,
+            inputFormatters: [
+              FilteringTextInputFormatter.deny(RegExp(r'[^a-zA-Z0-9\s]'))
+            ],
+            decoration: const InputDecoration(
+                labelText: 'Desctiption', border: OutlineInputBorder()),
           ),
           const SizedBox(height: AppDimen.defaultPadding),
           TextFormField(

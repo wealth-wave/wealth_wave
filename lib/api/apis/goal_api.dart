@@ -20,6 +20,7 @@ class GoalApi {
 
   Future<int> createGoal(
       {required final String name,
+      required final String? description,
       required final double amount,
       required final DateTime date,
       required final double targetAmount,
@@ -29,6 +30,7 @@ class GoalApi {
     return _db.into(_db.goalTable).insert(GoalTableCompanion.insert(
         name: name,
         amount: amount,
+        description: Value(description),
         date: date,
         targetAmount: targetAmount,
         targetDate: targetDate,
@@ -39,6 +41,7 @@ class GoalApi {
   Future<int> update(
       {required final int id,
       required final String name,
+      required final String? description,
       required final double amount,
       required final DateTime date,
       required final double targetAmount,
@@ -48,6 +51,7 @@ class GoalApi {
     return (_db.update(_db.goalTable)..where((t) => t.id.equals(id))).write(
         GoalTableCompanion(
             name: Value(name),
+            description: Value(description),
             amount: Value(amount),
             date: Value(date),
             targetAmount: Value(targetAmount),
