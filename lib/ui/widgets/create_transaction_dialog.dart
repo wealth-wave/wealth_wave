@@ -73,7 +73,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
     });
 
     return AlertDialog(
-        title: Text('Create Investment',
+        title: Text('Create Transaction',
             style: Theme.of(context).textTheme.titleMedium),
         actions: [
           ElevatedButton(
@@ -102,6 +102,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
               decoration: const InputDecoration(
                   labelText: 'Description', border: OutlineInputBorder()),
             ),
+            const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _valueController,
@@ -109,7 +110,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
               decoration: const InputDecoration(
                   labelText: 'Amount', border: OutlineInputBorder()),
             ),
-            const SizedBox(height: AppDimen.minPadding),
+            const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _valueUpdatedDateController,

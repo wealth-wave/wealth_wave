@@ -48,7 +48,13 @@ class _TransactionPage extends PageState<TransactionsViewState,
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Date: ${formatDate(transaction.amountInvestedOn)}'),
+                    Row(
+                      children: [
+                        Text(formatDate(transaction.amountInvestedOn)),
+                        const Text(' | '),
+                        Text(transaction.description ?? ''),
+                      ],
+                    ),
                     const SizedBox(
                         height: AppDimen.minPadding), // Add some spacing
                     Text('Amount: ${formatToCurrency(transaction.amount)}'),
