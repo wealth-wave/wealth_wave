@@ -7,9 +7,21 @@ void main() {
     test('calculateIRR returns correct IRR', () {
       final calculator = IRRCalculator();
       final transactions = [
-        Transaction(id: 0, amount: 1000.0, createdOn: DateTime(2020, 1, 1)),
-        Transaction(id: 0, amount: 2000.0, createdOn: DateTime(2021, 1, 1)),
-        Transaction(id: 0, amount: 3000.0, createdOn: DateTime(2022, 1, 1)),
+        Transaction(
+            id: 0,
+            description: null,
+            amount: 1000.0,
+            createdOn: DateTime(2020, 1, 1)),
+        Transaction(
+            id: 0,
+            description: null,
+            amount: 2000.0,
+            createdOn: DateTime(2021, 1, 1)),
+        Transaction(
+            id: 0,
+            description: null,
+            amount: 3000.0,
+            createdOn: DateTime(2022, 1, 1)),
       ];
       const finalValue = 8000.0;
       final finalDate = DateTime(2023, 1, 1);

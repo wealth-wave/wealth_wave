@@ -5,6 +5,7 @@ import 'package:wealth_wave/domain/models/investment.dart';
 class Goal {
   final int id;
   final String name;
+  final String? description;
   final double amount;
   final DateTime createdDate;
   final double inflation;
@@ -16,6 +17,7 @@ class Goal {
   Goal(
       {required this.id,
       required this.name,
+      required this.description,
       required this.amount,
       required this.createdDate,
       required this.inflation,
@@ -87,6 +89,7 @@ class Goal {
       Goal(
           id: goal.id,
           name: goal.name,
+          description: goal.description,
           amount: goal.amount,
           createdDate: goal.date,
           inflation: goal.inflation,

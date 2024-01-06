@@ -8,6 +8,7 @@ import 'package:wealth_wave/domain/models/transaction.dart';
 class Investment {
   final int id;
   final String name;
+  final String? description;
   final RiskLevel riskLevel;
   final double value;
   final DateTime valueUpdatedOn;
@@ -21,6 +22,7 @@ class Investment {
   Investment(
       {required this.id,
       required this.name,
+      required this.description,
       required this.riskLevel,
       required this.value,
       required this.valueUpdatedOn,
@@ -55,6 +57,7 @@ class Investment {
     return Investment(
         id: investment.id,
         name: investment.name,
+        description: investment.description,
         riskLevel: investment.riskLevel,
         value: investment.value,
         valueUpdatedOn: investment.valueUpdatedOn,

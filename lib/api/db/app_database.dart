@@ -11,6 +11,8 @@ class BasketTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
   TextColumn get name => text().named('NAME').unique()();
+
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
 }
 
 @DataClassName('InvestmentDO')
@@ -18,6 +20,8 @@ class InvestmentTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
   TextColumn get name => text().named('NAME')();
+
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
 
   IntColumn get basketId =>
       integer().nullable().named('BASKET_ID').references(BasketTable, #id)();
@@ -38,6 +42,8 @@ class TransactionTable extends Table {
 
   RealColumn get amount => real().named('AMOUNT')();
 
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
+
   DateTimeColumn get amountInvestedOn =>
       dateTime().named('AMOUNT_INVESTED_ON')();
 }
@@ -47,6 +53,8 @@ class GoalTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
   TextColumn get name => text().named('NAME')();
+
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
 
   RealColumn get amount => real().named('AMOUNT')();
 
@@ -89,6 +97,7 @@ abstract class InvestmentEnrichedView extends View {
   Query as() => select([
         investment.id,
         investment.name,
+        investment.description,
         investment.riskLevel,
         investment.value,
         investment.valueUpdatedOn,
