@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wealth_wave/api/apis/backup_api.dart';
+import 'package:wealth_wave/core/page_state.dart';
+import 'package:wealth_wave/presentation/main_presenter.dart';
 import 'package:wealth_wave/ui/pages/baskets_page.dart';
 import 'package:wealth_wave/ui/pages/goals_page.dart';
 import 'package:wealth_wave/ui/pages/investments_page.dart';
@@ -13,12 +14,12 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
   var _selectedIndex = 0;
   var _isExtended = true;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWidget(BuildContext context, MainViewState snapshot) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -27,8 +28,10 @@ class _MainPageState extends State<MainPage> {
             PopupMenuButton<int>(
               onSelected: (value) {
                 if (value == 1) {
-                  BackupApi().exportDatabase();
-                } else if (value == 2) {}
+                  presenter.performBackup();
+                } else if (value == 2) {
+                  presenter.performImportFile();
+                }
               },
               itemBuilder: (context) => [
                 const PopupMenuItem(
@@ -90,6 +93,11 @@ class _MainPageState extends State<MainPage> {
             ],
           ),
         ));
+  }
+
+  @override
+  MainPresenter initializePresenter() {
+    return MainPresenter();
   }
 }
 

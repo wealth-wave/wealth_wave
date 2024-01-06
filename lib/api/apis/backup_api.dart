@@ -1,9 +1,9 @@
 import 'dart:convert';
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
-
+import 'dart:html';
 
 import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 
 class BackupApi {
@@ -11,21 +11,60 @@ class BackupApi {
 
   BackupApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
+  Future<void> importDatabase() async {
+    final file = await _pickFile();
+    if (file == null) {
+      return Future.error('No file selected');
+    }
+
+    final json = await _readJsonFromFile(file);
+
+    if (json == null) {
+      return Future.error('Not a json file');
+    }
+
+    await _db.loadBackup(json);
+  }
+
   Future<void> exportDatabase() async {
     final result = await _db.getBackup();
 
     final jsonString = json.encode(result);
 
-    final blob = html.Blob([Uint8List.fromList(utf8.encode(jsonString))]);
+    final blob = Blob([Uint8List.fromList(utf8.encode(jsonString))]);
 
-    final anchor = html.AnchorElement(href: html.Url.createObjectUrlFromBlob(blob))
+    final anchor = AnchorElement(href: Url.createObjectUrlFromBlob(blob))
       ..target = 'blank'
       ..download = 'wealth_app_data.json';
 
     // Trigger a click event to prompt the user to download the file
-    html.document.body?.append(anchor);
+    document.body?.append(anchor);
     anchor.click();
     // Clean up
-    html.Url.revokeObjectUrl(anchor.href!);
+    Url.revokeObjectUrl(anchor.href!);
+  }
+
+  Future<File?> _pickFile() async {
+    final input = FileUploadInputElement()..accept = 'application/json';
+    input.click();
+
+    await input.onChange.first;
+    return input.files?.isNotEmpty == true ? input.files![0] : null;
+  }
+
+  Future<Map<String, List<Map<String, dynamic>>>?> _readJsonFromFile(
+      File file) async {
+    try {
+      final reader = FileReader();
+      reader.readAsText(file);
+
+      await reader.onLoad.first;
+
+      final jsonString = reader.result as String;
+      return json.decode(jsonString) as Map<String, List<Map<String, dynamic>>>;
+    } catch (e) {
+      Logger().e(e.toString());
+      return null;
+    }
   }
 }

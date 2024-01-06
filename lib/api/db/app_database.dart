@@ -169,6 +169,28 @@ class AppDatabase extends _$AppDatabase {
       'goal_investment_table': goalInvestmentBackup,
     };
   }
+
+  Future<void> loadBackup(
+      Map<String, List<Map<String, dynamic>>> backup) async {
+    await transaction(() async {
+      for (var entry in backup.entries) {
+        var tableName = entry.key;
+        var tableDatas = entry.value;
+
+        for (var tableData in tableDatas) {
+          var columns = tableData.keys.join(', ');
+          var values = tableData.keys.map((key) => '?').join(', ');
+
+          await customInsert(
+            'INSERT INTO $tableName ($columns) VALUES ($values)',
+            variables: tableData.values
+                .map((value) => Variable.withString('$value'))
+                .toList(),
+          );
+        }
+      }
+    });
+  }
 }
 
 DatabaseConnection connectOnWeb() {
