@@ -48,6 +48,24 @@ class TransactionTable extends Table {
       dateTime().named('AMOUNT_INVESTED_ON')();
 }
 
+@DataClassName('SipDO')
+class SipTable extends Table {
+  IntColumn get id => integer().named('ID').autoIncrement()();
+
+  IntColumn get investmentId =>
+      integer().named('INVESTMENT_ID').references(InvestmentTable, #id)();
+
+  RealColumn get amount => real().named('AMOUNT')();
+
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
+
+  DateTimeColumn get startDate => dateTime().named('START_DATE')();
+
+  DateTimeColumn get endDate => dateTime().named('END_DATE')();
+
+  RealColumn get frequency => real().named('FREQUENCY')();
+}
+
 @DataClassName('GoalDO')
 class GoalTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
@@ -142,6 +160,7 @@ abstract class GoalInvestmentEnrichedMappingView extends View {
   InvestmentTable,
   TransactionTable,
   GoalTable,
+  SipTable,
   GoalInvestmentTable,
 ], views: [
   InvestmentEnrichedView,
@@ -169,6 +188,7 @@ class AppDatabase extends _$AppDatabase {
     final goalBackup = await executor.runSelect('SELECT * FROM goal_table', []);
     final goalInvestmentBackup =
         await executor.runSelect('SELECT * FROM goal_investment_table', []);
+    final sipBackup = await executor.runSelect('SELECT * FROM sip_table', []);
 
     return {
       'basket_table': basketBackup,
@@ -176,6 +196,7 @@ class AppDatabase extends _$AppDatabase {
       'transaction_table': transactionBackup,
       'goal_table': goalBackup,
       'goal_investment_table': goalInvestmentBackup,
+      'sip_table': sipBackup,
     };
   }
 

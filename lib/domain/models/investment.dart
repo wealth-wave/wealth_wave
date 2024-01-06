@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/domain/irr_calculator.dart';
+import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
 
 class Investment {
@@ -17,6 +18,7 @@ class Investment {
   final double totalInvestedAmount;
   final int totalTransactions;
   final List<Transaction> transactions;
+  final List<SIP> sips;
   final List<GoalInvestmentEnrichedMappingDO> taggedGoals;
 
   Investment(
@@ -31,6 +33,7 @@ class Investment {
       required this.totalInvestedAmount,
       required this.totalTransactions,
       required this.transactions,
+      required this.sips,
       required this.taggedGoals});
 
   double? getIrr() {
@@ -52,6 +55,7 @@ class Investment {
   static Investment from(
       {required final InvestmentEnrichedDO investment,
       required final List<TransactionDO> transactions,
+      required final List<SipDO> sips,
       required final List<GoalInvestmentEnrichedMappingDO>
           goalInvestmentMappings}) {
     return Investment(
@@ -68,6 +72,7 @@ class Investment {
         transactions: transactions
             .map((transaction) => Transaction.from(transaction: transaction))
             .toList(),
+        sips: sips.map((sip) => SIP.from(sip: sip)).toList(),
         taggedGoals: goalInvestmentMappings);
   }
 }

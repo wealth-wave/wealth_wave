@@ -12,12 +12,16 @@ class FetchInvestmentsUseCase {
     List<InvestmentEnrichedDO> investments =
         await _investmentApi.getEnrichedInvestments();
     List<TransactionDO> transactions = await _investmentApi.getTransactions();
+    List<SipDO> sips = await _investmentApi.getSips();
     List<GoalInvestmentEnrichedMappingDO> goalInvestmentMappings =
         await _investmentApi.getGoalInvestmentMappings();
 
     return investments
         .map((investment) => Investment.from(
             investment: investment,
+            sips: sips
+                .where((sip) => sip.investmentId == investment.id)
+                .toList(),
             transactions: transactions
                 .where(
                     (transaction) => transaction.investmentId == investment.id)

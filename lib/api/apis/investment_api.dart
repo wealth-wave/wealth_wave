@@ -32,6 +32,19 @@ class InvestmentApi {
     }
   }
 
+  Future<List<SipDO>> getSips({final int? investmentId}) async {
+    if (investmentId == null) {
+      return (_db.select(_db.sipTable)
+            ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
+          .get();
+    } else {
+      return (_db.select(_db.sipTable)
+            ..where((t) => t.investmentId.equals(investmentId))
+            ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
+          .get();
+    }
+  }
+
   Future<int> createInvestment({
     required final String name,
     required final String? description,

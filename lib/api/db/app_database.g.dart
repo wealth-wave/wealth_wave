@@ -512,6 +512,149 @@ return map;
 @override
 String toString() {return (StringBuffer('GoalTableCompanion(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('amount: $amount, ')..write('date: $date, ')..write('inflation: $inflation, ')..write('targetAmount: $targetAmount, ')..write('targetDate: $targetDate, ')..write('importance: $importance')..write(')')).toString();}
 }
+class $SipTableTable extends SipTable with TableInfo<$SipTableTable, SipDO>{
+@override final GeneratedDatabase attachedDatabase;
+final String? _alias;
+$SipTableTable(this.attachedDatabase, [this._alias]);
+static const VerificationMeta _idMeta = const VerificationMeta('id');
+@override
+late final GeneratedColumn<int> id = GeneratedColumn<int>('ID', aliasedName, false, hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+static const VerificationMeta _investmentIdMeta = const VerificationMeta('investmentId');
+@override
+late final GeneratedColumn<int> investmentId = GeneratedColumn<int>('INVESTMENT_ID', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true, defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES investment_table (ID)'));
+static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+@override
+late final GeneratedColumn<double> amount = GeneratedColumn<double>('AMOUNT', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
+static const VerificationMeta _descriptionMeta = const VerificationMeta('description');
+@override
+late final GeneratedColumn<String> description = GeneratedColumn<String>('DESCRIPTION', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+static const VerificationMeta _startDateMeta = const VerificationMeta('startDate');
+@override
+late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>('START_DATE', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
+static const VerificationMeta _endDateMeta = const VerificationMeta('endDate');
+@override
+late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>('END_DATE', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
+static const VerificationMeta _frequencyMeta = const VerificationMeta('frequency');
+@override
+late final GeneratedColumn<double> frequency = GeneratedColumn<double>('FREQUENCY', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
+@override
+List<GeneratedColumn> get $columns => [id, investmentId, amount, description, startDate, endDate, frequency];
+@override
+String get aliasedName => _alias ?? actualTableName;
+@override
+ String get actualTableName => $name;
+static const String $name = 'sip_table';
+@override
+VerificationContext validateIntegrity(Insertable<SipDO> instance, {bool isInserting = false}) {
+final context = VerificationContext();
+final data = instance.toColumns(true);
+if (data.containsKey('ID')) {
+context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));}if (data.containsKey('INVESTMENT_ID')) {
+context.handle(_investmentIdMeta, investmentId.isAcceptableOrUnknown(data['INVESTMENT_ID']!, _investmentIdMeta));} else if (isInserting) {
+context.missing(_investmentIdMeta);
+}
+if (data.containsKey('AMOUNT')) {
+context.handle(_amountMeta, amount.isAcceptableOrUnknown(data['AMOUNT']!, _amountMeta));} else if (isInserting) {
+context.missing(_amountMeta);
+}
+if (data.containsKey('DESCRIPTION')) {
+context.handle(_descriptionMeta, description.isAcceptableOrUnknown(data['DESCRIPTION']!, _descriptionMeta));}if (data.containsKey('START_DATE')) {
+context.handle(_startDateMeta, startDate.isAcceptableOrUnknown(data['START_DATE']!, _startDateMeta));} else if (isInserting) {
+context.missing(_startDateMeta);
+}
+if (data.containsKey('END_DATE')) {
+context.handle(_endDateMeta, endDate.isAcceptableOrUnknown(data['END_DATE']!, _endDateMeta));} else if (isInserting) {
+context.missing(_endDateMeta);
+}
+if (data.containsKey('FREQUENCY')) {
+context.handle(_frequencyMeta, frequency.isAcceptableOrUnknown(data['FREQUENCY']!, _frequencyMeta));} else if (isInserting) {
+context.missing(_frequencyMeta);
+}
+return context;
+}
+@override
+Set<GeneratedColumn> get $primaryKey => {id};
+@override SipDO map(Map<String, dynamic> data, {String? tablePrefix})  {
+final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return SipDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, amount: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), startDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}START_DATE'])!, endDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}END_DATE'])!, frequency: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}FREQUENCY'])!, );
+}
+@override
+$SipTableTable createAlias(String alias) {
+return $SipTableTable(attachedDatabase, alias);}}class SipDO extends DataClass implements Insertable<SipDO> {
+final int id;
+final int investmentId;
+final double amount;
+final String? description;
+final DateTime startDate;
+final DateTime endDate;
+final double frequency;
+const SipDO({required this.id, required this.investmentId, required this.amount, this.description, required this.startDate, required this.endDate, required this.frequency});@override
+Map<String, Expression> toColumns(bool nullToAbsent) {
+final map = <String, Expression> {};map['ID'] = Variable<int>(id);
+map['INVESTMENT_ID'] = Variable<int>(investmentId);
+map['AMOUNT'] = Variable<double>(amount);
+if (!nullToAbsent || description != null){map['DESCRIPTION'] = Variable<String>(description);
+}map['START_DATE'] = Variable<DateTime>(startDate);
+map['END_DATE'] = Variable<DateTime>(endDate);
+map['FREQUENCY'] = Variable<double>(frequency);
+return map; 
+}
+SipTableCompanion toCompanion(bool nullToAbsent) {
+return SipTableCompanion(id: Value(id),investmentId: Value(investmentId),amount: Value(amount),description: description == null && nullToAbsent ? const Value.absent() : Value(description),startDate: Value(startDate),endDate: Value(endDate),frequency: Value(frequency),);
+}
+factory SipDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+serializer ??= driftRuntimeOptions.defaultSerializer;
+return SipDO(id: serializer.fromJson<int>(json['id']),investmentId: serializer.fromJson<int>(json['investmentId']),amount: serializer.fromJson<double>(json['amount']),description: serializer.fromJson<String?>(json['description']),startDate: serializer.fromJson<DateTime>(json['startDate']),endDate: serializer.fromJson<DateTime>(json['endDate']),frequency: serializer.fromJson<double>(json['frequency']),);}
+@override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+serializer ??= driftRuntimeOptions.defaultSerializer;
+return <String, dynamic>{
+'id': serializer.toJson<int>(id),'investmentId': serializer.toJson<int>(investmentId),'amount': serializer.toJson<double>(amount),'description': serializer.toJson<String?>(description),'startDate': serializer.toJson<DateTime>(startDate),'endDate': serializer.toJson<DateTime>(endDate),'frequency': serializer.toJson<double>(frequency),};}SipDO copyWith({int? id,int? investmentId,double? amount,Value<String?> description = const Value.absent(),DateTime? startDate,DateTime? endDate,double? frequency}) => SipDO(id: id ?? this.id,investmentId: investmentId ?? this.investmentId,amount: amount ?? this.amount,description: description.present ? description.value : this.description,startDate: startDate ?? this.startDate,endDate: endDate ?? this.endDate,frequency: frequency ?? this.frequency,);@override
+String toString() {return (StringBuffer('SipDO(')..write('id: $id, ')..write('investmentId: $investmentId, ')..write('amount: $amount, ')..write('description: $description, ')..write('startDate: $startDate, ')..write('endDate: $endDate, ')..write('frequency: $frequency')..write(')')).toString();}
+@override
+ int get hashCode => Object.hash(id, investmentId, amount, description, startDate, endDate, frequency);@override
+bool operator ==(Object other) => identical(this, other) || (other is SipDO && other.id == this.id && other.investmentId == this.investmentId && other.amount == this.amount && other.description == this.description && other.startDate == this.startDate && other.endDate == this.endDate && other.frequency == this.frequency);
+}class SipTableCompanion extends UpdateCompanion<SipDO> {
+final Value<int> id;
+final Value<int> investmentId;
+final Value<double> amount;
+final Value<String?> description;
+final Value<DateTime> startDate;
+final Value<DateTime> endDate;
+final Value<double> frequency;
+const SipTableCompanion({this.id = const Value.absent(),this.investmentId = const Value.absent(),this.amount = const Value.absent(),this.description = const Value.absent(),this.startDate = const Value.absent(),this.endDate = const Value.absent(),this.frequency = const Value.absent(),});
+SipTableCompanion.insert({this.id = const Value.absent(),required int investmentId,required double amount,this.description = const Value.absent(),required DateTime startDate,required DateTime endDate,required double frequency,}): investmentId = Value(investmentId), amount = Value(amount), startDate = Value(startDate), endDate = Value(endDate), frequency = Value(frequency);
+static Insertable<SipDO> custom({Expression<int>? id, 
+Expression<int>? investmentId, 
+Expression<double>? amount, 
+Expression<String>? description, 
+Expression<DateTime>? startDate, 
+Expression<DateTime>? endDate, 
+Expression<double>? frequency, 
+}) {
+return RawValuesInsertable({if (id != null)'ID': id,if (investmentId != null)'INVESTMENT_ID': investmentId,if (amount != null)'AMOUNT': amount,if (description != null)'DESCRIPTION': description,if (startDate != null)'START_DATE': startDate,if (endDate != null)'END_DATE': endDate,if (frequency != null)'FREQUENCY': frequency,});
+}SipTableCompanion copyWith({Value<int>? id, Value<int>? investmentId, Value<double>? amount, Value<String?>? description, Value<DateTime>? startDate, Value<DateTime>? endDate, Value<double>? frequency}) {
+return SipTableCompanion(id: id ?? this.id,investmentId: investmentId ?? this.investmentId,amount: amount ?? this.amount,description: description ?? this.description,startDate: startDate ?? this.startDate,endDate: endDate ?? this.endDate,frequency: frequency ?? this.frequency,);
+}
+@override
+Map<String, Expression> toColumns(bool nullToAbsent) {
+final map = <String, Expression> {};if (id.present) {
+map['ID'] = Variable<int>(id.value);}
+if (investmentId.present) {
+map['INVESTMENT_ID'] = Variable<int>(investmentId.value);}
+if (amount.present) {
+map['AMOUNT'] = Variable<double>(amount.value);}
+if (description.present) {
+map['DESCRIPTION'] = Variable<String>(description.value);}
+if (startDate.present) {
+map['START_DATE'] = Variable<DateTime>(startDate.value);}
+if (endDate.present) {
+map['END_DATE'] = Variable<DateTime>(endDate.value);}
+if (frequency.present) {
+map['FREQUENCY'] = Variable<double>(frequency.value);}
+return map; 
+}
+@override
+String toString() {return (StringBuffer('SipTableCompanion(')..write('id: $id, ')..write('investmentId: $investmentId, ')..write('amount: $amount, ')..write('description: $description, ')..write('startDate: $startDate, ')..write('endDate: $endDate, ')..write('frequency: $frequency')..write(')')).toString();}
+}
 class $GoalInvestmentTableTable extends GoalInvestmentTable with TableInfo<$GoalInvestmentTableTable, GoalInvestmentMappingDO>{
 @override final GeneratedDatabase attachedDatabase;
 final String? _alias;
@@ -737,11 +880,12 @@ late final $BasketTableTable basketTable = $BasketTableTable(this);
 late final $InvestmentTableTable investmentTable = $InvestmentTableTable(this);
 late final $TransactionTableTable transactionTable = $TransactionTableTable(this);
 late final $GoalTableTable goalTable = $GoalTableTable(this);
+late final $SipTableTable sipTable = $SipTableTable(this);
 late final $GoalInvestmentTableTable goalInvestmentTable = $GoalInvestmentTableTable(this);
 late final $InvestmentEnrichedViewView investmentEnrichedView = $InvestmentEnrichedViewView(this);
 late final $GoalInvestmentEnrichedMappingViewView goalInvestmentEnrichedMappingView = $GoalInvestmentEnrichedMappingViewView(this);
 @override
 Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
 @override
-List<DatabaseSchemaEntity> get allSchemaEntities => [basketTable, investmentTable, transactionTable, goalTable, goalInvestmentTable, investmentEnrichedView, goalInvestmentEnrichedMappingView];
+List<DatabaseSchemaEntity> get allSchemaEntities => [basketTable, investmentTable, transactionTable, goalTable, sipTable, goalInvestmentTable, investmentEnrichedView, goalInvestmentEnrichedMappingView];
 }
