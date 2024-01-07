@@ -7,6 +7,7 @@ class SIP {
   final DateTime startDate;
   final DateTime endDate;
   final double frequency;
+  final DateTime? executedTill;
 
   SIP(
       {required this.id,
@@ -14,7 +15,8 @@ class SIP {
       required this.amount,
       required this.startDate,
       required this.endDate,
-      required this.frequency});
+      required this.frequency,
+      required this.executedTill});
 
   static SIP from({required final SipDO sip}) {
     return SIP(
@@ -23,6 +25,7 @@ class SIP {
         amount: sip.amount,
         startDate: sip.startDate,
         endDate: sip.endDate,
-        frequency: sip.frequency);
+        frequency: sip.frequency,
+        executedTill: sip.executedTill);
   }
 }

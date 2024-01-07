@@ -11,8 +11,9 @@ class Investment {
   final String name;
   final String? description;
   final RiskLevel riskLevel;
-  final double value;
-  final DateTime valueUpdatedOn;
+  final double? currentValue;
+  final double? irr;
+  final DateTime? currentValueUpdatedOn;
   final int basketId;
   final String basketName;
   final double totalInvestedAmount;
@@ -26,8 +27,9 @@ class Investment {
       required this.name,
       required this.description,
       required this.riskLevel,
-      required this.value,
-      required this.valueUpdatedOn,
+      required this.irr,
+      required this.currentValue,
+      required this.currentValueUpdatedOn,
       required this.basketId,
       required this.basketName,
       required this.totalInvestedAmount,
@@ -37,19 +39,40 @@ class Investment {
       required this.taggedGoals});
 
   double? getIrr() {
-    return IRRCalculator().calculateIRR(
-      transactions: transactions,
-      finalValue: value,
-      finalDate: valueUpdatedOn,
-    );
+    if (irr != null) {
+      return irr;
+    } else if (currentValue != null && currentValueUpdatedOn != null) {
+      return IRRCalculator().calculateIRR(
+        transactions: transactions,
+        finalValue: currentValue!,
+        finalDate: currentValueUpdatedOn!,
+      );
+    }
+
+    return null;
   }
 
   double getFutureValueOn(DateTime date) {
     double? irr = getIrr();
-    if (irr == null) {
-      return value;
+    if (currentValue != null) {
+      if (irr == null) {
+        return currentValue!;
+      } else {
+        return currentValue! *
+            pow(1 + irr, date.difference(currentValueUpdatedOn!).inDays / 365);
+      }
+    } else {
+      if (irr == null) {
+        return 0;
+      }
+      double futureValue = 0;
+      for (var transaction in transactions) {
+        double years = date.difference(transaction.createdOn).inDays / 365;
+        futureValue += transaction.amount / pow(1 + irr, years);
+      }
+
+      return futureValue;
     }
-    return value * pow(1 + irr, date.difference(valueUpdatedOn).inDays / 365);
   }
 
   static Investment from(

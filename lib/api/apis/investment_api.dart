@@ -66,17 +66,46 @@ class InvestmentApi {
       {required final int investmentId,
       required final String? description,
       required final double amount,
-      required final DateTime date}) async {
+      required final DateTime date,
+      final int? sipId}) async {
     return _db.into(_db.transactionTable).insert(
         TransactionTableCompanion.insert(
             investmentId: investmentId,
             description: Value(description),
             amount: amount,
+            sipId: Value(sipId),
             amountInvestedOn: date));
+  }
+
+  Future<int> createSip(
+      {required final int investmentId,
+      required final String? description,
+      required final double amount,
+      required final DateTime startDate,
+      required final DateTime endDate,
+      required final double frequency}) async {
+    return _db.into(_db.sipTable).insert(SipTableCompanion.insert(
+        investmentId: investmentId,
+        description: Value(description),
+        amount: amount,
+        startDate: startDate,
+        endDate: endDate,
+        frequency: frequency,
+        executedTill: const Value(null)));
   }
 
   Future<int> deleteTransaction({required final int id}) async {
     return (_db.delete(_db.transactionTable)..where((t) => t.id.equals(id)))
+        .go();
+  }
+
+  Future<int> deleteSip({required final int id}) async {
+    return (_db.delete(_db.sipTable)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<int> deleteSips({required final int investmentId}) async {
+    return (_db.delete(_db.sipTable)
+          ..where((t) => t.investmentId.equals(investmentId)))
         .go();
   }
 
@@ -112,6 +141,25 @@ class InvestmentApi {
       amount: Value(amount),
       amountInvestedOn: Value(date),
     ));
+  }
+
+  Future<int> updateSip(
+      {required final int id,
+      required final int investmentId,
+      required final String? description,
+      required final double amount,
+      required final DateTime startDate,
+      required final DateTime endDate,
+      required final double frequency}) async {
+    return (_db.update(_db.sipTable)..where((t) => t.id.equals(id))).write(
+        SipTableCompanion(
+            investmentId: Value(investmentId),
+            description: Value(description),
+            amount: Value(amount),
+            startDate: Value(startDate),
+            endDate: Value(endDate),
+            frequency: Value(frequency),
+            executedTill: const Value.absent()));
   }
 
   Future<int> deleteTransactions({required final int investmentId}) async {

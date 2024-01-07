@@ -26,11 +26,17 @@ class InvestmentTable extends Table {
   IntColumn get basketId =>
       integer().nullable().named('BASKET_ID').references(BasketTable, #id)();
 
-  RealColumn get value => real().named('VALUE')();
+  RealColumn get currentValue => real().nullable().named('CURRENT_VALUE')();
 
   TextColumn get riskLevel => textEnum<RiskLevel>().named('RISK_LEVEL')();
 
-  DateTimeColumn get valueUpdatedOn => dateTime().named('VALUE_UPDATED_ON')();
+  RealColumn get irr => real().nullable().named('IRR')();
+
+  DateTimeColumn get currentValueUpdatedOn =>
+      dateTime().named('CURRENT_VALUE_UPDATED_ON')();
+
+  DateTimeColumn get maturityDate =>
+      dateTime().nullable().named('MATURITY_DATE')();
 }
 
 @DataClassName('TransactionDO')
@@ -39,6 +45,9 @@ class TransactionTable extends Table {
 
   IntColumn get investmentId =>
       integer().named('INVESTMENT_ID').references(InvestmentTable, #id)();
+
+  IntColumn get sipId =>
+      integer().nullable().named('SIP_ID').references(SipTable, #id)();
 
   RealColumn get amount => real().named('AMOUNT')();
 
@@ -64,6 +73,9 @@ class SipTable extends Table {
   DateTimeColumn get endDate => dateTime().named('END_DATE')();
 
   RealColumn get frequency => real().named('FREQUENCY')();
+
+  DateTimeColumn get executedTill =>
+      dateTime().nullable().named('EXECUTED_TILL')();
 }
 
 @DataClassName('GoalDO')
@@ -105,11 +117,13 @@ abstract class InvestmentEnrichedView extends View {
   InvestmentTable get investment;
   BasketTable get basket;
   TransactionTable get transaction;
+  SipTable get sip;
 
   Expression<int> get basketId => basket.id;
   Expression<String> get basketName => basket.name;
   Expression<double> get totalInvestedAmount => transaction.amount.sum();
   Expression<int> get totalTransactions => transaction.id.count();
+  Expression<int> get totalSips => sip.id.count();
 
   @override
   Query as() => select([
@@ -117,16 +131,19 @@ abstract class InvestmentEnrichedView extends View {
         investment.name,
         investment.description,
         investment.riskLevel,
-        investment.value,
-        investment.valueUpdatedOn,
+        investment.irr,
+        investment.currentValue,
+        investment.currentValueUpdatedOn,
         basketId,
         basketName,
         totalInvestedAmount,
         totalTransactions,
+        totalSips
       ]).from(investment).join([
         innerJoin(basket, basket.id.equalsExp(investment.basketId)),
         leftOuterJoin(
             transaction, transaction.investmentId.equalsExp(investment.id)),
+        leftOuterJoin(sip, sip.investmentId.equalsExp(investment.id)),
       ])
         ..groupBy([investment.id]);
 }
