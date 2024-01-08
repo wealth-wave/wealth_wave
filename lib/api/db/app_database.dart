@@ -33,7 +33,7 @@ class InvestmentTable extends Table {
   RealColumn get irr => real().nullable().named('IRR')();
 
   DateTimeColumn get currentValueUpdatedOn =>
-      dateTime().named('CURRENT_VALUE_UPDATED_ON')();
+      dateTime().nullable().named('CURRENT_VALUE_UPDATED_ON')();
 
   DateTimeColumn get maturityDate =>
       dateTime().nullable().named('MATURITY_DATE')();
@@ -131,6 +131,7 @@ abstract class InvestmentEnrichedView extends View {
         investment.name,
         investment.description,
         investment.riskLevel,
+        investment.maturityDate,
         investment.irr,
         investment.currentValue,
         investment.currentValueUpdatedOn,
@@ -140,7 +141,7 @@ abstract class InvestmentEnrichedView extends View {
         totalTransactions,
         totalSips
       ]).from(investment).join([
-        innerJoin(basket, basket.id.equalsExp(investment.basketId)),
+        leftOuterJoin(basket, basket.id.equalsExp(investment.basketId)),
         leftOuterJoin(
             transaction, transaction.investmentId.equalsExp(investment.id)),
         leftOuterJoin(sip, sip.investmentId.equalsExp(investment.id)),

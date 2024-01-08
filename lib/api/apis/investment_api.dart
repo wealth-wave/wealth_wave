@@ -50,16 +50,20 @@ class InvestmentApi {
     required final String? description,
     required final int? basketId,
     required final RiskLevel riskLevel,
-    required final double value,
-    required final DateTime valueUpdatedAt,
+    required final double? currentValue,
+    required final DateTime? currentValueUpdatedAt,
+    required final double? irr,
+    required final DateTime? maturityDate,
   }) async {
     return _db.into(_db.investmentTable).insert(InvestmentTableCompanion.insert(
         name: name,
         basketId: Value(basketId),
         description: Value(description),
-        value: value,
-        riskLevel: riskLevel,
-        valueUpdatedOn: valueUpdatedAt));
+        currentValue: Value(currentValue),
+        irr: Value(irr),
+        maturityDate: Value(maturityDate),
+        currentValueUpdatedOn: Value(currentValueUpdatedAt),
+        riskLevel: riskLevel));
   }
 
   Future<int> createTransaction(
@@ -115,8 +119,10 @@ class InvestmentApi {
     required final String? description,
     required final int? basketId,
     required final RiskLevel riskLevel,
-    required final double value,
-    required final DateTime valueUpdatedAt,
+    required final double? currentValue,
+    required final double? irr,
+    required final DateTime? maturityDate,
+    required final DateTime currentValueUpdatedOn,
   }) async {
     return (_db.update(_db.investmentTable)..where((t) => t.id.equals(id)))
         .write(InvestmentTableCompanion(
@@ -124,8 +130,10 @@ class InvestmentApi {
             description: Value(description),
             basketId: Value(basketId),
             riskLevel: Value(riskLevel),
-            value: Value(value),
-            valueUpdatedOn: Value(valueUpdatedAt)));
+            currentValue: Value(currentValue),
+            irr: Value(irr),
+            maturityDate: Value(maturityDate),
+            currentValueUpdatedOn: Value(currentValueUpdatedOn)));
   }
 
   Future<int> updateTransaction(

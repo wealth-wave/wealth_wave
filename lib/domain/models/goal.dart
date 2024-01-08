@@ -26,16 +26,12 @@ class Goal {
       required this.importance,
       required this.taggedInvestments});
 
-  double getIrr() {
+  double getIrr({bool considerFutureTransactions = false}) {
     double totalValue = 0.0;
     double weightedSum = 0.0;
 
     for (var investment in taggedInvestments.keys) {
-      double share = taggedInvestments[investment] ?? 0;
-      double investedAmount = investment.value * share;
-      double growthRate = investment.getIrr() ?? 0;
-
-      totalValue += investedAmount;
+      totalValue += investment.getFutureValueOn(date);
       weightedSum += investedAmount * growthRate;
     }
 

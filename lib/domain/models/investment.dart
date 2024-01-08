@@ -14,8 +14,9 @@ class Investment {
   final double? currentValue;
   final double? irr;
   final DateTime? currentValueUpdatedOn;
-  final int basketId;
-  final String basketName;
+  final DateTime? maturityDate;
+  final int? basketId;
+  final String? basketName;
   final double totalInvestedAmount;
   final int totalTransactions;
   final List<Transaction> transactions;
@@ -32,6 +33,7 @@ class Investment {
       required this.currentValueUpdatedOn,
       required this.basketId,
       required this.basketName,
+      required this.maturityDate,
       required this.totalInvestedAmount,
       required this.totalTransactions,
       required this.transactions,
@@ -52,7 +54,7 @@ class Investment {
     return null;
   }
 
-  double getFutureValueOn(DateTime date) {
+  double getFutureValueOn({required DateTime date, required bool considerFutureTransactions}) {
     double? irr = getIrr();
     if (currentValue != null) {
       if (irr == null) {
@@ -67,8 +69,13 @@ class Investment {
       }
       double futureValue = 0;
       for (var transaction in transactions) {
+        //TODO consider maturity date of investment
+        //TODO filter transaction above the date given.
         double years = date.difference(transaction.createdOn).inDays / 365;
         futureValue += transaction.amount / pow(1 + irr, years);
+      }
+      for(var sip in sips) {
+        //Include future value of sip.
       }
 
       return futureValue;
@@ -86,8 +93,10 @@ class Investment {
         name: investment.name,
         description: investment.description,
         riskLevel: investment.riskLevel,
-        value: investment.value,
-        valueUpdatedOn: investment.valueUpdatedOn,
+        maturityDate: investment.maturityDate,
+        currentValue: investment.currentValue,
+        currentValueUpdatedOn: investment.currentValueUpdatedOn,
+        irr: investment.irr,
         basketId: investment.basketId ?? 0,
         basketName: investment.basketName ?? '',
         totalInvestedAmount: investment.totalInvestedAmount ?? 0,
