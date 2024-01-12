@@ -31,8 +31,8 @@ class Goal {
     double weightedSum = 0.0;
 
     for (var investment in taggedInvestments.keys) {
-      totalValue += investment.getFutureValueOn(date);
-      weightedSum += investedAmount * growthRate;
+      //totalValue += investment.getFutureValueOn(date: targetDate, considerFutureTransactions: false);
+      //weightedSum += investedAmount * growthRate;
     }
 
     if (totalValue == 0.0) {
@@ -52,9 +52,10 @@ class Goal {
     if (taggedInvestments.isEmpty) {
       return 0;
     }
-    return taggedInvestments.keys
-        .map((e) => (e.value / 100) * (taggedInvestments[e] ?? 0))
-        .reduce((a, b) => a + b);
+    // return taggedInvestments.keys
+    //     .map((e) => (e.value / 100) * (taggedInvestments[e] ?? 0))
+    //     .reduce((a, b) => a + b);
+    return 0;
   }
 
   double getProgress() {
@@ -74,9 +75,10 @@ class Goal {
     if (taggedInvestments.isEmpty) {
       return 0;
     }
-    return taggedInvestments.entries
-        .map((e) => e.key.getFutureValueOn(targetDate) * e.value / 100)
-        .reduce((a, b) => a + b);
+    // return taggedInvestments.entries
+    //     .map((e) => e.key.getFutureValueOn(targetDate) * e.value / 100)
+    //     .reduce((a, b) => a + b);
+    return 0;
   }
 
   static Goal from(

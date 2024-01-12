@@ -148,11 +148,11 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(formatToCurrency(investment.value),
-                          style: Theme.of(context).textTheme.bodyMedium),
                       Text(
-                          '(Value on ${formatDate(investment.valueUpdatedOn)})',
-                          style: Theme.of(context).textTheme.labelSmall),
+                          investment.currentValue != null
+                              ? formatToCurrency(investment.currentValue!)
+                              : '',
+                          style: Theme.of(context).textTheme.bodyMedium),
                     ],
                   ),
                 ],

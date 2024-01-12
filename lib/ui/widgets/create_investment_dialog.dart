@@ -40,9 +40,11 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     if (investmentToUpdate != null) {
       _nameController.text = investmentToUpdate.name;
       _descriptionController.text = investmentToUpdate.description ?? '';
-      _valueController.text = investmentToUpdate.value.toString();
+      _valueController.text = investmentToUpdate.currentValue.toString();
       _valueUpdatedDateController.text =
-          formatDate(investmentToUpdate.valueUpdatedOn);
+          investmentToUpdate.currentValueUpdatedOn != null
+              ? formatDate(investmentToUpdate.currentValueUpdatedOn!)
+              : '';
       presenter.setInvestment(investmentToUpdate);
     } else {
       _valueUpdatedDateController.text = formatDate(DateTime.now());

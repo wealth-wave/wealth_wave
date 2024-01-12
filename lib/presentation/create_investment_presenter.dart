@@ -36,6 +36,8 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     final valueUpdatedAt = viewState._getValueUpdatedAt();
     final basketId = viewState.basketId;
     final riskLevel = viewState.riskLevel;
+    final irr = viewState.irr;
+    final maturityDate = viewState.getMaturityDate();
 
     if (investmentIdToUpdate != null) {
       _investmentApi
@@ -43,10 +45,12 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
               id: investmentIdToUpdate,
               description: description,
               name: name,
-              value: value,
-              valueUpdatedAt: valueUpdatedAt,
+              currentValue: value,
+              currentValueUpdatedOn: valueUpdatedAt,
               basketId: basketId,
-              riskLevel: riskLevel)
+              riskLevel: riskLevel,
+              irr: irr,
+              maturityDate: maturityDate)
           .then((_) => updateViewState((viewState) =>
               viewState.onInvestmentCreated = SingleEvent(null)));
     } else {
@@ -54,10 +58,12 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
           .createInvestment(
               name: name,
               description: description,
-              value: value,
-              valueUpdatedAt: valueUpdatedAt,
+              currentValue: value,
+              currentValueUpdatedAt: valueUpdatedAt,
               basketId: basketId,
-              riskLevel: riskLevel)
+              riskLevel: riskLevel,
+              irr: irr,
+              maturityDate: maturityDate)
           .then((investmentId) => updateViewState((viewState) =>
               viewState.onInvestmentCreated = SingleEvent(null)));
     }
@@ -92,8 +98,11 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     updateViewState((viewState) {
       viewState.name = investmentToUpdate.name;
       viewState.basketId = investmentToUpdate.basketId;
-      viewState.value = investmentToUpdate.value;
-      viewState.valueUpdatedAt = formatDate(investmentToUpdate.valueUpdatedOn);
+      viewState.value = investmentToUpdate.currentValue;
+      viewState.valueUpdatedAt =
+          investmentToUpdate.currentValueUpdatedOn != null
+              ? formatDate(investmentToUpdate.currentValueUpdatedOn!)
+              : null;
       viewState.riskLevel = investmentToUpdate.riskLevel;
     });
   }
@@ -103,20 +112,23 @@ class CreateInvestmentViewState {
   String name = '';
   String? description;
   int? basketId;
+  double? irr;
   RiskLevel riskLevel = RiskLevel.medium;
-  double value = 0.0;
-  String valueUpdatedAt = formatDate(DateTime.now());
+  double? value;
+  String? valueUpdatedAt;
+  String? maturityDate;
   SingleEvent<void>? onInvestmentCreated;
   List<BasketDO> baskets = List.empty(growable: false);
 
   bool isValid() {
-    return name.isNotEmpty &&
-        value > 0 &&
-        isValidDate(valueUpdatedAt) &&
-        basketId != null;
+    return name.isNotEmpty && basketId != null;
   }
 
-  DateTime _getValueUpdatedAt() {
-    return parseDate(valueUpdatedAt);
+  DateTime? _getValueUpdatedAt() {
+    return valueUpdatedAt != null ? parseDate(valueUpdatedAt!) : null;
+  }
+
+  DateTime? getMaturityDate() {
+    return maturityDate != null ? parseDate(maturityDate!) : null;
   }
 }

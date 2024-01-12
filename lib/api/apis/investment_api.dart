@@ -122,7 +122,7 @@ class InvestmentApi {
     required final double? currentValue,
     required final double? irr,
     required final DateTime? maturityDate,
-    required final DateTime currentValueUpdatedOn,
+    required final DateTime? currentValueUpdatedOn,
   }) async {
     return (_db.update(_db.investmentTable)..where((t) => t.id.equals(id)))
         .write(InvestmentTableCompanion(
