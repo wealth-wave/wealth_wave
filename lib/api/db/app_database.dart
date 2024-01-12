@@ -211,10 +211,10 @@ class AppDatabase extends _$AppDatabase {
     return {
       'basket_table': basketBackup,
       'investment_table': investmentBackup,
+      'sip_table': sipBackup,
       'transaction_table': transactionBackup,
       'goal_table': goalBackup,
       'goal_investment_table': goalInvestmentBackup,
-      'sip_table': sipBackup,
     };
   }
 
