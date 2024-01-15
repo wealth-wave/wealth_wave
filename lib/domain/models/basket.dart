@@ -5,13 +5,15 @@ class Basket {
   final int id;
   final String name;
   final String? description;
-  final List<Investment> investments;
+  final int investmentCount;
+  final double investedValue;
 
   Basket(
       {required this.id,
       required this.name,
       required this.description,
-      required this.investments});
+      required this.investmentCount,
+      required this.investedValue});
 
   static Basket from(
       {required final BasketDO basket,

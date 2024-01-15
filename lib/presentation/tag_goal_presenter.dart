@@ -16,7 +16,7 @@ class TagGoalPresenter extends Presenter<TagGoalViewState> {
         super(TagGoalViewState(investmentId: investmentId));
 
   void getGoals() {
-    _goalApi.getGoals().then(
+    _goalApi.get().then(
         (goals) => updateViewState((viewState) => viewState.goals = goals));
   }
 

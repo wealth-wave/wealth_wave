@@ -3,6 +3,7 @@ import 'package:drift/wasm.dart';
 import 'package:flutter/foundation.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
+import 'package:wealth_wave/contract/sip_frequency.dart';
 
 part 'app_database.g.dart';
 
@@ -26,22 +27,24 @@ class InvestmentTable extends Table {
   IntColumn get basketId =>
       integer().nullable().named('BASKET_ID').references(BasketTable, #id)();
 
-  RealColumn get currentValue => real().nullable().named('CURRENT_VALUE')();
+  RealColumn get value => real().nullable().named('VALUE')();
 
-  TextColumn get riskLevel => textEnum<RiskLevel>().named('RISK_LEVEL')();
+  DateTimeColumn get valueUpdatedOn =>
+      dateTime().nullable().named('VALUE_UPDATED_ON')();
 
   RealColumn get irr => real().nullable().named('IRR')();
 
-  DateTimeColumn get currentValueUpdatedOn =>
-      dateTime().nullable().named('CURRENT_VALUE_UPDATED_ON')();
-
   DateTimeColumn get maturityDate =>
       dateTime().nullable().named('MATURITY_DATE')();
+
+  TextColumn get riskLevel => textEnum<RiskLevel>().named('RISK_LEVEL')();
 }
 
 @DataClassName('TransactionDO')
 class TransactionTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
+
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
 
   IntColumn get investmentId =>
       integer().named('INVESTMENT_ID').references(InvestmentTable, #id)();
@@ -51,28 +54,25 @@ class TransactionTable extends Table {
 
   RealColumn get amount => real().named('AMOUNT')();
 
-  TextColumn get description => text().nullable().named('DESCRIPTION')();
-
-  DateTimeColumn get amountInvestedOn =>
-      dateTime().named('AMOUNT_INVESTED_ON')();
+  DateTimeColumn get createdOn => dateTime().named('CREATED_ON')();
 }
 
 @DataClassName('SipDO')
 class SipTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
+
   IntColumn get investmentId =>
       integer().named('INVESTMENT_ID').references(InvestmentTable, #id)();
 
   RealColumn get amount => real().named('AMOUNT')();
 
-  TextColumn get description => text().nullable().named('DESCRIPTION')();
-
   DateTimeColumn get startDate => dateTime().named('START_DATE')();
 
-  DateTimeColumn get endDate => dateTime().named('END_DATE')();
+  DateTimeColumn get endDate => dateTime().nullable().named('END_DATE')();
 
-  RealColumn get frequency => real().named('FREQUENCY')();
+  TextColumn get frequency => textEnum<SipFrequency>().named('FREQUENCY')();
 
   DateTimeColumn get executedTill =>
       dateTime().nullable().named('EXECUTED_TILL')();
@@ -88,18 +88,16 @@ class GoalTable extends Table {
 
   RealColumn get amount => real().named('AMOUNT')();
 
-  DateTimeColumn get date => dateTime().named('DATE')();
+  DateTimeColumn get amountUpdatedOn => dateTime().named('AMOUNT_UPDATED_ON')();
 
   RealColumn get inflation => real().named('INFLATION')();
 
-  RealColumn get targetAmount => real().named('TARGET_AMOUNT')();
-
-  DateTimeColumn get targetDate => dateTime().named('TARGET_DATE')();
+  DateTimeColumn get maturityDate => dateTime().named('MATURITY_DATE')();
 
   TextColumn get importance => textEnum<GoalImportance>().named('IMPORTANCE')();
 }
 
-@DataClassName('GoalInvestmentMappingDO')
+@DataClassName('GoalInvestmentDO')
 class GoalInvestmentTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -109,7 +107,7 @@ class GoalInvestmentTable extends Table {
   IntColumn get investmentId =>
       integer().named('INVESTMENT_ID').references(GoalTable, #id)();
 
-  RealColumn get sharePercentage => real().named('SHARE_PERCENTAGE')();
+  RealColumn get split => real().named('SPLIT')();
 }
 
 @DataClassName('InvestmentEnrichedDO')
@@ -133,8 +131,8 @@ abstract class InvestmentEnrichedView extends View {
         investment.riskLevel,
         investment.maturityDate,
         investment.irr,
-        investment.currentValue,
-        investment.currentValueUpdatedOn,
+        investment.value,
+        investment.valueUpdatedOn,
         basketId,
         basketName,
         totalInvestedAmount,
@@ -149,8 +147,8 @@ abstract class InvestmentEnrichedView extends View {
         ..groupBy([investment.id]);
 }
 
-@DataClassName('GoalInvestmentEnrichedMappingDO')
-abstract class GoalInvestmentEnrichedMappingView extends View {
+@DataClassName('GoalInvestmentEnrichedDO')
+abstract class GoalInvestmentEnrichedView extends View {
   GoalInvestmentTable get goalInvestment;
   GoalTable get goal;
   InvestmentTable get investment;
@@ -163,7 +161,7 @@ abstract class GoalInvestmentEnrichedMappingView extends View {
         goalInvestment.id,
         goalInvestment.goalId,
         goalInvestment.investmentId,
-        goalInvestment.sharePercentage,
+        goalInvestment.split,
         goalName,
         investmentName
       ]).from(goalInvestment).join([
@@ -182,7 +180,7 @@ abstract class GoalInvestmentEnrichedMappingView extends View {
   GoalInvestmentTable,
 ], views: [
   InvestmentEnrichedView,
-  GoalInvestmentEnrichedMappingView,
+  GoalInvestmentEnrichedView,
 ])
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;

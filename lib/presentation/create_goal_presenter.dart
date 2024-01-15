@@ -46,7 +46,7 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
               (viewState) => viewState.onGoalCreated = SingleEvent(null)));
     } else {
       _goalApi
-          .createGoal(
+          .create(
               name: name,
               description: description,
               amount: amount,

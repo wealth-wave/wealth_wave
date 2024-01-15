@@ -10,13 +10,13 @@ class MainPresenter extends Presenter<MainViewState> {
         super(MainViewState());
 
   void performImportFile() {
-    _backupApi.importDatabase().then((value) => updateViewState((viewState) {
+    _backupApi.import().then((value) => updateViewState((viewState) {
           viewState.onImportCompleted = SingleEvent(null);
         }));
   }
 
   void performBackup() {
-    _backupApi.exportDatabase().then((value) => updateViewState((viewState) {
+    _backupApi.export().then((value) => updateViewState((viewState) {
           viewState.onBackupCompleted = SingleEvent(null);
         }));
   }

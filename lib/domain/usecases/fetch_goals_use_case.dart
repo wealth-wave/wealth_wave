@@ -15,7 +15,7 @@ class FetchGoalsUseCase {
             fetchInvestmentsUseCase ?? FetchInvestmentsUseCase();
 
   Future<List<Goal>> invoke() async {
-    List<GoalDO> goals = await _goalApi.getGoals();
+    List<GoalDO> goals = await _goalApi.get();
     List<Investment> investments =
         await _fetchInvestmentsUseCase.fetchInvestments();
     List<GoalInvestmentEnrichedMappingDO> goalInvestmentMappings =

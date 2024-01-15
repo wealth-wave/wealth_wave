@@ -110,23 +110,23 @@ late final GeneratedColumn<String> description = GeneratedColumn<String>('DESCRI
 static const VerificationMeta _basketIdMeta = const VerificationMeta('basketId');
 @override
 late final GeneratedColumn<int> basketId = GeneratedColumn<int>('BASKET_ID', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES basket_table (ID)'));
-static const VerificationMeta _currentValueMeta = const VerificationMeta('currentValue');
+static const VerificationMeta _valueMeta = const VerificationMeta('value');
 @override
-late final GeneratedColumn<double> currentValue = GeneratedColumn<double>('CURRENT_VALUE', aliasedName, true, type: DriftSqlType.double, requiredDuringInsert: false);
-static const VerificationMeta _riskLevelMeta = const VerificationMeta('riskLevel');
+late final GeneratedColumn<double> value = GeneratedColumn<double>('VALUE', aliasedName, true, type: DriftSqlType.double, requiredDuringInsert: false);
+static const VerificationMeta _valueUpdatedOnMeta = const VerificationMeta('valueUpdatedOn');
 @override
-late final GeneratedColumnWithTypeConverter<RiskLevel, String> riskLevel = GeneratedColumn<String>('RISK_LEVEL', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true).withConverter<RiskLevel>($InvestmentTableTable.$converterriskLevel);
+late final GeneratedColumn<DateTime> valueUpdatedOn = GeneratedColumn<DateTime>('VALUE_UPDATED_ON', aliasedName, true, type: DriftSqlType.dateTime, requiredDuringInsert: false);
 static const VerificationMeta _irrMeta = const VerificationMeta('irr');
 @override
 late final GeneratedColumn<double> irr = GeneratedColumn<double>('IRR', aliasedName, true, type: DriftSqlType.double, requiredDuringInsert: false);
-static const VerificationMeta _currentValueUpdatedOnMeta = const VerificationMeta('currentValueUpdatedOn');
-@override
-late final GeneratedColumn<DateTime> currentValueUpdatedOn = GeneratedColumn<DateTime>('CURRENT_VALUE_UPDATED_ON', aliasedName, true, type: DriftSqlType.dateTime, requiredDuringInsert: false);
 static const VerificationMeta _maturityDateMeta = const VerificationMeta('maturityDate');
 @override
 late final GeneratedColumn<DateTime> maturityDate = GeneratedColumn<DateTime>('MATURITY_DATE', aliasedName, true, type: DriftSqlType.dateTime, requiredDuringInsert: false);
+static const VerificationMeta _riskLevelMeta = const VerificationMeta('riskLevel');
 @override
-List<GeneratedColumn> get $columns => [id, name, description, basketId, currentValue, riskLevel, irr, currentValueUpdatedOn, maturityDate];
+late final GeneratedColumnWithTypeConverter<RiskLevel, String> riskLevel = GeneratedColumn<String>('RISK_LEVEL', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true).withConverter<RiskLevel>($InvestmentTableTable.$converterriskLevel);
+@override
+List<GeneratedColumn> get $columns => [id, name, description, basketId, value, valueUpdatedOn, irr, maturityDate, riskLevel];
 @override
 String get aliasedName => _alias ?? actualTableName;
 @override
@@ -143,16 +143,16 @@ context.missing(_nameMeta);
 }
 if (data.containsKey('DESCRIPTION')) {
 context.handle(_descriptionMeta, description.isAcceptableOrUnknown(data['DESCRIPTION']!, _descriptionMeta));}if (data.containsKey('BASKET_ID')) {
-context.handle(_basketIdMeta, basketId.isAcceptableOrUnknown(data['BASKET_ID']!, _basketIdMeta));}if (data.containsKey('CURRENT_VALUE')) {
-context.handle(_currentValueMeta, currentValue.isAcceptableOrUnknown(data['CURRENT_VALUE']!, _currentValueMeta));}context.handle(_riskLevelMeta, const VerificationResult.success());if (data.containsKey('IRR')) {
-context.handle(_irrMeta, irr.isAcceptableOrUnknown(data['IRR']!, _irrMeta));}if (data.containsKey('CURRENT_VALUE_UPDATED_ON')) {
-context.handle(_currentValueUpdatedOnMeta, currentValueUpdatedOn.isAcceptableOrUnknown(data['CURRENT_VALUE_UPDATED_ON']!, _currentValueUpdatedOnMeta));}if (data.containsKey('MATURITY_DATE')) {
-context.handle(_maturityDateMeta, maturityDate.isAcceptableOrUnknown(data['MATURITY_DATE']!, _maturityDateMeta));}return context;
+context.handle(_basketIdMeta, basketId.isAcceptableOrUnknown(data['BASKET_ID']!, _basketIdMeta));}if (data.containsKey('VALUE')) {
+context.handle(_valueMeta, value.isAcceptableOrUnknown(data['VALUE']!, _valueMeta));}if (data.containsKey('VALUE_UPDATED_ON')) {
+context.handle(_valueUpdatedOnMeta, valueUpdatedOn.isAcceptableOrUnknown(data['VALUE_UPDATED_ON']!, _valueUpdatedOnMeta));}if (data.containsKey('IRR')) {
+context.handle(_irrMeta, irr.isAcceptableOrUnknown(data['IRR']!, _irrMeta));}if (data.containsKey('MATURITY_DATE')) {
+context.handle(_maturityDateMeta, maturityDate.isAcceptableOrUnknown(data['MATURITY_DATE']!, _maturityDateMeta));}context.handle(_riskLevelMeta, const VerificationResult.success());return context;
 }
 @override
 Set<GeneratedColumn> get $primaryKey => {id};
 @override InvestmentDO map(Map<String, dynamic> data, {String? tablePrefix})  {
-final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return InvestmentDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}NAME'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), basketId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}BASKET_ID']), currentValue: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}CURRENT_VALUE']), riskLevel: $InvestmentTableTable.$converterriskLevel.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!), irr: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}IRR']), currentValueUpdatedOn: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}CURRENT_VALUE_UPDATED_ON']), maturityDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}MATURITY_DATE']), );
+final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return InvestmentDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}NAME'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), basketId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}BASKET_ID']), value: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}VALUE']), valueUpdatedOn: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}VALUE_UPDATED_ON']), irr: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}IRR']), maturityDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}MATURITY_DATE']), riskLevel: $InvestmentTableTable.$converterriskLevel.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!), );
 }
 @override
 $InvestmentTableTable createAlias(String alias) {
@@ -161,63 +161,63 @@ final int id;
 final String name;
 final String? description;
 final int? basketId;
-final double? currentValue;
-final RiskLevel riskLevel;
+final double? value;
+final DateTime? valueUpdatedOn;
 final double? irr;
-final DateTime? currentValueUpdatedOn;
 final DateTime? maturityDate;
-const InvestmentDO({required this.id, required this.name, this.description, this.basketId, this.currentValue, required this.riskLevel, this.irr, this.currentValueUpdatedOn, this.maturityDate});@override
+final RiskLevel riskLevel;
+const InvestmentDO({required this.id, required this.name, this.description, this.basketId, this.value, this.valueUpdatedOn, this.irr, this.maturityDate, required this.riskLevel});@override
 Map<String, Expression> toColumns(bool nullToAbsent) {
 final map = <String, Expression> {};map['ID'] = Variable<int>(id);
 map['NAME'] = Variable<String>(name);
 if (!nullToAbsent || description != null){map['DESCRIPTION'] = Variable<String>(description);
 }if (!nullToAbsent || basketId != null){map['BASKET_ID'] = Variable<int>(basketId);
-}if (!nullToAbsent || currentValue != null){map['CURRENT_VALUE'] = Variable<double>(currentValue);
-}{map['RISK_LEVEL'] = Variable<String>($InvestmentTableTable.$converterriskLevel.toSql(riskLevel));
+}if (!nullToAbsent || value != null){map['VALUE'] = Variable<double>(value);
+}if (!nullToAbsent || valueUpdatedOn != null){map['VALUE_UPDATED_ON'] = Variable<DateTime>(valueUpdatedOn);
 }if (!nullToAbsent || irr != null){map['IRR'] = Variable<double>(irr);
-}if (!nullToAbsent || currentValueUpdatedOn != null){map['CURRENT_VALUE_UPDATED_ON'] = Variable<DateTime>(currentValueUpdatedOn);
 }if (!nullToAbsent || maturityDate != null){map['MATURITY_DATE'] = Variable<DateTime>(maturityDate);
+}{map['RISK_LEVEL'] = Variable<String>($InvestmentTableTable.$converterriskLevel.toSql(riskLevel));
 }return map; 
 }
 InvestmentTableCompanion toCompanion(bool nullToAbsent) {
-return InvestmentTableCompanion(id: Value(id),name: Value(name),description: description == null && nullToAbsent ? const Value.absent() : Value(description),basketId: basketId == null && nullToAbsent ? const Value.absent() : Value(basketId),currentValue: currentValue == null && nullToAbsent ? const Value.absent() : Value(currentValue),riskLevel: Value(riskLevel),irr: irr == null && nullToAbsent ? const Value.absent() : Value(irr),currentValueUpdatedOn: currentValueUpdatedOn == null && nullToAbsent ? const Value.absent() : Value(currentValueUpdatedOn),maturityDate: maturityDate == null && nullToAbsent ? const Value.absent() : Value(maturityDate),);
+return InvestmentTableCompanion(id: Value(id),name: Value(name),description: description == null && nullToAbsent ? const Value.absent() : Value(description),basketId: basketId == null && nullToAbsent ? const Value.absent() : Value(basketId),value: value == null && nullToAbsent ? const Value.absent() : Value(value),valueUpdatedOn: valueUpdatedOn == null && nullToAbsent ? const Value.absent() : Value(valueUpdatedOn),irr: irr == null && nullToAbsent ? const Value.absent() : Value(irr),maturityDate: maturityDate == null && nullToAbsent ? const Value.absent() : Value(maturityDate),riskLevel: Value(riskLevel),);
 }
 factory InvestmentDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
-return InvestmentDO(id: serializer.fromJson<int>(json['id']),name: serializer.fromJson<String>(json['name']),description: serializer.fromJson<String?>(json['description']),basketId: serializer.fromJson<int?>(json['basketId']),currentValue: serializer.fromJson<double?>(json['currentValue']),riskLevel: $InvestmentTableTable.$converterriskLevel.fromJson(serializer.fromJson<String>(json['riskLevel'])),irr: serializer.fromJson<double?>(json['irr']),currentValueUpdatedOn: serializer.fromJson<DateTime?>(json['currentValueUpdatedOn']),maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),);}
+return InvestmentDO(id: serializer.fromJson<int>(json['id']),name: serializer.fromJson<String>(json['name']),description: serializer.fromJson<String?>(json['description']),basketId: serializer.fromJson<int?>(json['basketId']),value: serializer.fromJson<double?>(json['value']),valueUpdatedOn: serializer.fromJson<DateTime?>(json['valueUpdatedOn']),irr: serializer.fromJson<double?>(json['irr']),maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),riskLevel: $InvestmentTableTable.$converterriskLevel.fromJson(serializer.fromJson<String>(json['riskLevel'])),);}
 @override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
 return <String, dynamic>{
-'id': serializer.toJson<int>(id),'name': serializer.toJson<String>(name),'description': serializer.toJson<String?>(description),'basketId': serializer.toJson<int?>(basketId),'currentValue': serializer.toJson<double?>(currentValue),'riskLevel': serializer.toJson<String>($InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),'irr': serializer.toJson<double?>(irr),'currentValueUpdatedOn': serializer.toJson<DateTime?>(currentValueUpdatedOn),'maturityDate': serializer.toJson<DateTime?>(maturityDate),};}InvestmentDO copyWith({int? id,String? name,Value<String?> description = const Value.absent(),Value<int?> basketId = const Value.absent(),Value<double?> currentValue = const Value.absent(),RiskLevel? riskLevel,Value<double?> irr = const Value.absent(),Value<DateTime?> currentValueUpdatedOn = const Value.absent(),Value<DateTime?> maturityDate = const Value.absent()}) => InvestmentDO(id: id ?? this.id,name: name ?? this.name,description: description.present ? description.value : this.description,basketId: basketId.present ? basketId.value : this.basketId,currentValue: currentValue.present ? currentValue.value : this.currentValue,riskLevel: riskLevel ?? this.riskLevel,irr: irr.present ? irr.value : this.irr,currentValueUpdatedOn: currentValueUpdatedOn.present ? currentValueUpdatedOn.value : this.currentValueUpdatedOn,maturityDate: maturityDate.present ? maturityDate.value : this.maturityDate,);@override
-String toString() {return (StringBuffer('InvestmentDO(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('basketId: $basketId, ')..write('currentValue: $currentValue, ')..write('riskLevel: $riskLevel, ')..write('irr: $irr, ')..write('currentValueUpdatedOn: $currentValueUpdatedOn, ')..write('maturityDate: $maturityDate')..write(')')).toString();}
+'id': serializer.toJson<int>(id),'name': serializer.toJson<String>(name),'description': serializer.toJson<String?>(description),'basketId': serializer.toJson<int?>(basketId),'value': serializer.toJson<double?>(value),'valueUpdatedOn': serializer.toJson<DateTime?>(valueUpdatedOn),'irr': serializer.toJson<double?>(irr),'maturityDate': serializer.toJson<DateTime?>(maturityDate),'riskLevel': serializer.toJson<String>($InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),};}InvestmentDO copyWith({int? id,String? name,Value<String?> description = const Value.absent(),Value<int?> basketId = const Value.absent(),Value<double?> value = const Value.absent(),Value<DateTime?> valueUpdatedOn = const Value.absent(),Value<double?> irr = const Value.absent(),Value<DateTime?> maturityDate = const Value.absent(),RiskLevel? riskLevel}) => InvestmentDO(id: id ?? this.id,name: name ?? this.name,description: description.present ? description.value : this.description,basketId: basketId.present ? basketId.value : this.basketId,value: value.present ? value.value : this.value,valueUpdatedOn: valueUpdatedOn.present ? valueUpdatedOn.value : this.valueUpdatedOn,irr: irr.present ? irr.value : this.irr,maturityDate: maturityDate.present ? maturityDate.value : this.maturityDate,riskLevel: riskLevel ?? this.riskLevel,);@override
+String toString() {return (StringBuffer('InvestmentDO(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('basketId: $basketId, ')..write('value: $value, ')..write('valueUpdatedOn: $valueUpdatedOn, ')..write('irr: $irr, ')..write('maturityDate: $maturityDate, ')..write('riskLevel: $riskLevel')..write(')')).toString();}
 @override
- int get hashCode => Object.hash(id, name, description, basketId, currentValue, riskLevel, irr, currentValueUpdatedOn, maturityDate);@override
-bool operator ==(Object other) => identical(this, other) || (other is InvestmentDO && other.id == this.id && other.name == this.name && other.description == this.description && other.basketId == this.basketId && other.currentValue == this.currentValue && other.riskLevel == this.riskLevel && other.irr == this.irr && other.currentValueUpdatedOn == this.currentValueUpdatedOn && other.maturityDate == this.maturityDate);
+ int get hashCode => Object.hash(id, name, description, basketId, value, valueUpdatedOn, irr, maturityDate, riskLevel);@override
+bool operator ==(Object other) => identical(this, other) || (other is InvestmentDO && other.id == this.id && other.name == this.name && other.description == this.description && other.basketId == this.basketId && other.value == this.value && other.valueUpdatedOn == this.valueUpdatedOn && other.irr == this.irr && other.maturityDate == this.maturityDate && other.riskLevel == this.riskLevel);
 }class InvestmentTableCompanion extends UpdateCompanion<InvestmentDO> {
 final Value<int> id;
 final Value<String> name;
 final Value<String?> description;
 final Value<int?> basketId;
-final Value<double?> currentValue;
-final Value<RiskLevel> riskLevel;
+final Value<double?> value;
+final Value<DateTime?> valueUpdatedOn;
 final Value<double?> irr;
-final Value<DateTime?> currentValueUpdatedOn;
 final Value<DateTime?> maturityDate;
-const InvestmentTableCompanion({this.id = const Value.absent(),this.name = const Value.absent(),this.description = const Value.absent(),this.basketId = const Value.absent(),this.currentValue = const Value.absent(),this.riskLevel = const Value.absent(),this.irr = const Value.absent(),this.currentValueUpdatedOn = const Value.absent(),this.maturityDate = const Value.absent(),});
-InvestmentTableCompanion.insert({this.id = const Value.absent(),required String name,this.description = const Value.absent(),this.basketId = const Value.absent(),this.currentValue = const Value.absent(),required RiskLevel riskLevel,this.irr = const Value.absent(),this.currentValueUpdatedOn = const Value.absent(),this.maturityDate = const Value.absent(),}): name = Value(name), riskLevel = Value(riskLevel);
+final Value<RiskLevel> riskLevel;
+const InvestmentTableCompanion({this.id = const Value.absent(),this.name = const Value.absent(),this.description = const Value.absent(),this.basketId = const Value.absent(),this.value = const Value.absent(),this.valueUpdatedOn = const Value.absent(),this.irr = const Value.absent(),this.maturityDate = const Value.absent(),this.riskLevel = const Value.absent(),});
+InvestmentTableCompanion.insert({this.id = const Value.absent(),required String name,this.description = const Value.absent(),this.basketId = const Value.absent(),this.value = const Value.absent(),this.valueUpdatedOn = const Value.absent(),this.irr = const Value.absent(),this.maturityDate = const Value.absent(),required RiskLevel riskLevel,}): name = Value(name), riskLevel = Value(riskLevel);
 static Insertable<InvestmentDO> custom({Expression<int>? id, 
 Expression<String>? name, 
 Expression<String>? description, 
 Expression<int>? basketId, 
-Expression<double>? currentValue, 
-Expression<String>? riskLevel, 
+Expression<double>? value, 
+Expression<DateTime>? valueUpdatedOn, 
 Expression<double>? irr, 
-Expression<DateTime>? currentValueUpdatedOn, 
 Expression<DateTime>? maturityDate, 
+Expression<String>? riskLevel, 
 }) {
-return RawValuesInsertable({if (id != null)'ID': id,if (name != null)'NAME': name,if (description != null)'DESCRIPTION': description,if (basketId != null)'BASKET_ID': basketId,if (currentValue != null)'CURRENT_VALUE': currentValue,if (riskLevel != null)'RISK_LEVEL': riskLevel,if (irr != null)'IRR': irr,if (currentValueUpdatedOn != null)'CURRENT_VALUE_UPDATED_ON': currentValueUpdatedOn,if (maturityDate != null)'MATURITY_DATE': maturityDate,});
-}InvestmentTableCompanion copyWith({Value<int>? id, Value<String>? name, Value<String?>? description, Value<int?>? basketId, Value<double?>? currentValue, Value<RiskLevel>? riskLevel, Value<double?>? irr, Value<DateTime?>? currentValueUpdatedOn, Value<DateTime?>? maturityDate}) {
-return InvestmentTableCompanion(id: id ?? this.id,name: name ?? this.name,description: description ?? this.description,basketId: basketId ?? this.basketId,currentValue: currentValue ?? this.currentValue,riskLevel: riskLevel ?? this.riskLevel,irr: irr ?? this.irr,currentValueUpdatedOn: currentValueUpdatedOn ?? this.currentValueUpdatedOn,maturityDate: maturityDate ?? this.maturityDate,);
+return RawValuesInsertable({if (id != null)'ID': id,if (name != null)'NAME': name,if (description != null)'DESCRIPTION': description,if (basketId != null)'BASKET_ID': basketId,if (value != null)'VALUE': value,if (valueUpdatedOn != null)'VALUE_UPDATED_ON': valueUpdatedOn,if (irr != null)'IRR': irr,if (maturityDate != null)'MATURITY_DATE': maturityDate,if (riskLevel != null)'RISK_LEVEL': riskLevel,});
+}InvestmentTableCompanion copyWith({Value<int>? id, Value<String>? name, Value<String?>? description, Value<int?>? basketId, Value<double?>? value, Value<DateTime?>? valueUpdatedOn, Value<double?>? irr, Value<DateTime?>? maturityDate, Value<RiskLevel>? riskLevel}) {
+return InvestmentTableCompanion(id: id ?? this.id,name: name ?? this.name,description: description ?? this.description,basketId: basketId ?? this.basketId,value: value ?? this.value,valueUpdatedOn: valueUpdatedOn ?? this.valueUpdatedOn,irr: irr ?? this.irr,maturityDate: maturityDate ?? this.maturityDate,riskLevel: riskLevel ?? this.riskLevel,);
 }
 @override
 Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -229,20 +229,20 @@ if (description.present) {
 map['DESCRIPTION'] = Variable<String>(description.value);}
 if (basketId.present) {
 map['BASKET_ID'] = Variable<int>(basketId.value);}
-if (currentValue.present) {
-map['CURRENT_VALUE'] = Variable<double>(currentValue.value);}
-if (riskLevel.present) {
-map['RISK_LEVEL'] = Variable<String>($InvestmentTableTable.$converterriskLevel.toSql(riskLevel.value));}
+if (value.present) {
+map['VALUE'] = Variable<double>(value.value);}
+if (valueUpdatedOn.present) {
+map['VALUE_UPDATED_ON'] = Variable<DateTime>(valueUpdatedOn.value);}
 if (irr.present) {
 map['IRR'] = Variable<double>(irr.value);}
-if (currentValueUpdatedOn.present) {
-map['CURRENT_VALUE_UPDATED_ON'] = Variable<DateTime>(currentValueUpdatedOn.value);}
 if (maturityDate.present) {
 map['MATURITY_DATE'] = Variable<DateTime>(maturityDate.value);}
+if (riskLevel.present) {
+map['RISK_LEVEL'] = Variable<String>($InvestmentTableTable.$converterriskLevel.toSql(riskLevel.value));}
 return map; 
 }
 @override
-String toString() {return (StringBuffer('InvestmentTableCompanion(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('basketId: $basketId, ')..write('currentValue: $currentValue, ')..write('riskLevel: $riskLevel, ')..write('irr: $irr, ')..write('currentValueUpdatedOn: $currentValueUpdatedOn, ')..write('maturityDate: $maturityDate')..write(')')).toString();}
+String toString() {return (StringBuffer('InvestmentTableCompanion(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('basketId: $basketId, ')..write('value: $value, ')..write('valueUpdatedOn: $valueUpdatedOn, ')..write('irr: $irr, ')..write('maturityDate: $maturityDate, ')..write('riskLevel: $riskLevel')..write(')')).toString();}
 }
 class $SipTableTable extends SipTable with TableInfo<$SipTableTable, SipDO>{
 @override final GeneratedDatabase attachedDatabase;
@@ -251,29 +251,29 @@ $SipTableTable(this.attachedDatabase, [this._alias]);
 static const VerificationMeta _idMeta = const VerificationMeta('id');
 @override
 late final GeneratedColumn<int> id = GeneratedColumn<int>('ID', aliasedName, false, hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+static const VerificationMeta _descriptionMeta = const VerificationMeta('description');
+@override
+late final GeneratedColumn<String> description = GeneratedColumn<String>('DESCRIPTION', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
 static const VerificationMeta _investmentIdMeta = const VerificationMeta('investmentId');
 @override
 late final GeneratedColumn<int> investmentId = GeneratedColumn<int>('INVESTMENT_ID', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true, defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES investment_table (ID)'));
 static const VerificationMeta _amountMeta = const VerificationMeta('amount');
 @override
 late final GeneratedColumn<double> amount = GeneratedColumn<double>('AMOUNT', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
-static const VerificationMeta _descriptionMeta = const VerificationMeta('description');
-@override
-late final GeneratedColumn<String> description = GeneratedColumn<String>('DESCRIPTION', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
 static const VerificationMeta _startDateMeta = const VerificationMeta('startDate');
 @override
 late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>('START_DATE', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
 static const VerificationMeta _endDateMeta = const VerificationMeta('endDate');
 @override
-late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>('END_DATE', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
+late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>('END_DATE', aliasedName, true, type: DriftSqlType.dateTime, requiredDuringInsert: false);
 static const VerificationMeta _frequencyMeta = const VerificationMeta('frequency');
 @override
-late final GeneratedColumn<double> frequency = GeneratedColumn<double>('FREQUENCY', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
+late final GeneratedColumnWithTypeConverter<SipFrequency, String> frequency = GeneratedColumn<String>('FREQUENCY', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true).withConverter<SipFrequency>($SipTableTable.$converterfrequency);
 static const VerificationMeta _executedTillMeta = const VerificationMeta('executedTill');
 @override
 late final GeneratedColumn<DateTime> executedTill = GeneratedColumn<DateTime>('EXECUTED_TILL', aliasedName, true, type: DriftSqlType.dateTime, requiredDuringInsert: false);
 @override
-List<GeneratedColumn> get $columns => [id, investmentId, amount, description, startDate, endDate, frequency, executedTill];
+List<GeneratedColumn> get $columns => [id, description, investmentId, amount, startDate, endDate, frequency, executedTill];
 @override
 String get aliasedName => _alias ?? actualTableName;
 @override
@@ -284,7 +284,8 @@ VerificationContext validateIntegrity(Insertable<SipDO> instance, {bool isInsert
 final context = VerificationContext();
 final data = instance.toColumns(true);
 if (data.containsKey('ID')) {
-context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));}if (data.containsKey('INVESTMENT_ID')) {
+context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));}if (data.containsKey('DESCRIPTION')) {
+context.handle(_descriptionMeta, description.isAcceptableOrUnknown(data['DESCRIPTION']!, _descriptionMeta));}if (data.containsKey('INVESTMENT_ID')) {
 context.handle(_investmentIdMeta, investmentId.isAcceptableOrUnknown(data['INVESTMENT_ID']!, _investmentIdMeta));} else if (isInserting) {
 context.missing(_investmentIdMeta);
 }
@@ -292,110 +293,102 @@ if (data.containsKey('AMOUNT')) {
 context.handle(_amountMeta, amount.isAcceptableOrUnknown(data['AMOUNT']!, _amountMeta));} else if (isInserting) {
 context.missing(_amountMeta);
 }
-if (data.containsKey('DESCRIPTION')) {
-context.handle(_descriptionMeta, description.isAcceptableOrUnknown(data['DESCRIPTION']!, _descriptionMeta));}if (data.containsKey('START_DATE')) {
+if (data.containsKey('START_DATE')) {
 context.handle(_startDateMeta, startDate.isAcceptableOrUnknown(data['START_DATE']!, _startDateMeta));} else if (isInserting) {
 context.missing(_startDateMeta);
 }
 if (data.containsKey('END_DATE')) {
-context.handle(_endDateMeta, endDate.isAcceptableOrUnknown(data['END_DATE']!, _endDateMeta));} else if (isInserting) {
-context.missing(_endDateMeta);
-}
-if (data.containsKey('FREQUENCY')) {
-context.handle(_frequencyMeta, frequency.isAcceptableOrUnknown(data['FREQUENCY']!, _frequencyMeta));} else if (isInserting) {
-context.missing(_frequencyMeta);
-}
-if (data.containsKey('EXECUTED_TILL')) {
+context.handle(_endDateMeta, endDate.isAcceptableOrUnknown(data['END_DATE']!, _endDateMeta));}context.handle(_frequencyMeta, const VerificationResult.success());if (data.containsKey('EXECUTED_TILL')) {
 context.handle(_executedTillMeta, executedTill.isAcceptableOrUnknown(data['EXECUTED_TILL']!, _executedTillMeta));}return context;
 }
 @override
 Set<GeneratedColumn> get $primaryKey => {id};
 @override SipDO map(Map<String, dynamic> data, {String? tablePrefix})  {
-final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return SipDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, amount: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), startDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}START_DATE'])!, endDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}END_DATE'])!, frequency: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}FREQUENCY'])!, executedTill: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}EXECUTED_TILL']), );
+final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return SipDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, amount: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!, startDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}START_DATE'])!, endDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}END_DATE']), frequency: $SipTableTable.$converterfrequency.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}FREQUENCY'])!), executedTill: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}EXECUTED_TILL']), );
 }
 @override
 $SipTableTable createAlias(String alias) {
-return $SipTableTable(attachedDatabase, alias);}}class SipDO extends DataClass implements Insertable<SipDO> {
+return $SipTableTable(attachedDatabase, alias);}static JsonTypeConverter2<SipFrequency,String,String> $converterfrequency = const EnumNameConverter<SipFrequency>(SipFrequency.values);}class SipDO extends DataClass implements Insertable<SipDO> {
 final int id;
+final String? description;
 final int investmentId;
 final double amount;
-final String? description;
 final DateTime startDate;
-final DateTime endDate;
-final double frequency;
+final DateTime? endDate;
+final SipFrequency frequency;
 final DateTime? executedTill;
-const SipDO({required this.id, required this.investmentId, required this.amount, this.description, required this.startDate, required this.endDate, required this.frequency, this.executedTill});@override
+const SipDO({required this.id, this.description, required this.investmentId, required this.amount, required this.startDate, this.endDate, required this.frequency, this.executedTill});@override
 Map<String, Expression> toColumns(bool nullToAbsent) {
 final map = <String, Expression> {};map['ID'] = Variable<int>(id);
-map['INVESTMENT_ID'] = Variable<int>(investmentId);
-map['AMOUNT'] = Variable<double>(amount);
 if (!nullToAbsent || description != null){map['DESCRIPTION'] = Variable<String>(description);
-}map['START_DATE'] = Variable<DateTime>(startDate);
-map['END_DATE'] = Variable<DateTime>(endDate);
-map['FREQUENCY'] = Variable<double>(frequency);
-if (!nullToAbsent || executedTill != null){map['EXECUTED_TILL'] = Variable<DateTime>(executedTill);
+}map['INVESTMENT_ID'] = Variable<int>(investmentId);
+map['AMOUNT'] = Variable<double>(amount);
+map['START_DATE'] = Variable<DateTime>(startDate);
+if (!nullToAbsent || endDate != null){map['END_DATE'] = Variable<DateTime>(endDate);
+}{map['FREQUENCY'] = Variable<String>($SipTableTable.$converterfrequency.toSql(frequency));
+}if (!nullToAbsent || executedTill != null){map['EXECUTED_TILL'] = Variable<DateTime>(executedTill);
 }return map; 
 }
 SipTableCompanion toCompanion(bool nullToAbsent) {
-return SipTableCompanion(id: Value(id),investmentId: Value(investmentId),amount: Value(amount),description: description == null && nullToAbsent ? const Value.absent() : Value(description),startDate: Value(startDate),endDate: Value(endDate),frequency: Value(frequency),executedTill: executedTill == null && nullToAbsent ? const Value.absent() : Value(executedTill),);
+return SipTableCompanion(id: Value(id),description: description == null && nullToAbsent ? const Value.absent() : Value(description),investmentId: Value(investmentId),amount: Value(amount),startDate: Value(startDate),endDate: endDate == null && nullToAbsent ? const Value.absent() : Value(endDate),frequency: Value(frequency),executedTill: executedTill == null && nullToAbsent ? const Value.absent() : Value(executedTill),);
 }
 factory SipDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
-return SipDO(id: serializer.fromJson<int>(json['id']),investmentId: serializer.fromJson<int>(json['investmentId']),amount: serializer.fromJson<double>(json['amount']),description: serializer.fromJson<String?>(json['description']),startDate: serializer.fromJson<DateTime>(json['startDate']),endDate: serializer.fromJson<DateTime>(json['endDate']),frequency: serializer.fromJson<double>(json['frequency']),executedTill: serializer.fromJson<DateTime?>(json['executedTill']),);}
+return SipDO(id: serializer.fromJson<int>(json['id']),description: serializer.fromJson<String?>(json['description']),investmentId: serializer.fromJson<int>(json['investmentId']),amount: serializer.fromJson<double>(json['amount']),startDate: serializer.fromJson<DateTime>(json['startDate']),endDate: serializer.fromJson<DateTime?>(json['endDate']),frequency: $SipTableTable.$converterfrequency.fromJson(serializer.fromJson<String>(json['frequency'])),executedTill: serializer.fromJson<DateTime?>(json['executedTill']),);}
 @override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
 return <String, dynamic>{
-'id': serializer.toJson<int>(id),'investmentId': serializer.toJson<int>(investmentId),'amount': serializer.toJson<double>(amount),'description': serializer.toJson<String?>(description),'startDate': serializer.toJson<DateTime>(startDate),'endDate': serializer.toJson<DateTime>(endDate),'frequency': serializer.toJson<double>(frequency),'executedTill': serializer.toJson<DateTime?>(executedTill),};}SipDO copyWith({int? id,int? investmentId,double? amount,Value<String?> description = const Value.absent(),DateTime? startDate,DateTime? endDate,double? frequency,Value<DateTime?> executedTill = const Value.absent()}) => SipDO(id: id ?? this.id,investmentId: investmentId ?? this.investmentId,amount: amount ?? this.amount,description: description.present ? description.value : this.description,startDate: startDate ?? this.startDate,endDate: endDate ?? this.endDate,frequency: frequency ?? this.frequency,executedTill: executedTill.present ? executedTill.value : this.executedTill,);@override
-String toString() {return (StringBuffer('SipDO(')..write('id: $id, ')..write('investmentId: $investmentId, ')..write('amount: $amount, ')..write('description: $description, ')..write('startDate: $startDate, ')..write('endDate: $endDate, ')..write('frequency: $frequency, ')..write('executedTill: $executedTill')..write(')')).toString();}
+'id': serializer.toJson<int>(id),'description': serializer.toJson<String?>(description),'investmentId': serializer.toJson<int>(investmentId),'amount': serializer.toJson<double>(amount),'startDate': serializer.toJson<DateTime>(startDate),'endDate': serializer.toJson<DateTime?>(endDate),'frequency': serializer.toJson<String>($SipTableTable.$converterfrequency.toJson(frequency)),'executedTill': serializer.toJson<DateTime?>(executedTill),};}SipDO copyWith({int? id,Value<String?> description = const Value.absent(),int? investmentId,double? amount,DateTime? startDate,Value<DateTime?> endDate = const Value.absent(),SipFrequency? frequency,Value<DateTime?> executedTill = const Value.absent()}) => SipDO(id: id ?? this.id,description: description.present ? description.value : this.description,investmentId: investmentId ?? this.investmentId,amount: amount ?? this.amount,startDate: startDate ?? this.startDate,endDate: endDate.present ? endDate.value : this.endDate,frequency: frequency ?? this.frequency,executedTill: executedTill.present ? executedTill.value : this.executedTill,);@override
+String toString() {return (StringBuffer('SipDO(')..write('id: $id, ')..write('description: $description, ')..write('investmentId: $investmentId, ')..write('amount: $amount, ')..write('startDate: $startDate, ')..write('endDate: $endDate, ')..write('frequency: $frequency, ')..write('executedTill: $executedTill')..write(')')).toString();}
 @override
- int get hashCode => Object.hash(id, investmentId, amount, description, startDate, endDate, frequency, executedTill);@override
-bool operator ==(Object other) => identical(this, other) || (other is SipDO && other.id == this.id && other.investmentId == this.investmentId && other.amount == this.amount && other.description == this.description && other.startDate == this.startDate && other.endDate == this.endDate && other.frequency == this.frequency && other.executedTill == this.executedTill);
+ int get hashCode => Object.hash(id, description, investmentId, amount, startDate, endDate, frequency, executedTill);@override
+bool operator ==(Object other) => identical(this, other) || (other is SipDO && other.id == this.id && other.description == this.description && other.investmentId == this.investmentId && other.amount == this.amount && other.startDate == this.startDate && other.endDate == this.endDate && other.frequency == this.frequency && other.executedTill == this.executedTill);
 }class SipTableCompanion extends UpdateCompanion<SipDO> {
 final Value<int> id;
+final Value<String?> description;
 final Value<int> investmentId;
 final Value<double> amount;
-final Value<String?> description;
 final Value<DateTime> startDate;
-final Value<DateTime> endDate;
-final Value<double> frequency;
+final Value<DateTime?> endDate;
+final Value<SipFrequency> frequency;
 final Value<DateTime?> executedTill;
-const SipTableCompanion({this.id = const Value.absent(),this.investmentId = const Value.absent(),this.amount = const Value.absent(),this.description = const Value.absent(),this.startDate = const Value.absent(),this.endDate = const Value.absent(),this.frequency = const Value.absent(),this.executedTill = const Value.absent(),});
-SipTableCompanion.insert({this.id = const Value.absent(),required int investmentId,required double amount,this.description = const Value.absent(),required DateTime startDate,required DateTime endDate,required double frequency,this.executedTill = const Value.absent(),}): investmentId = Value(investmentId), amount = Value(amount), startDate = Value(startDate), endDate = Value(endDate), frequency = Value(frequency);
+const SipTableCompanion({this.id = const Value.absent(),this.description = const Value.absent(),this.investmentId = const Value.absent(),this.amount = const Value.absent(),this.startDate = const Value.absent(),this.endDate = const Value.absent(),this.frequency = const Value.absent(),this.executedTill = const Value.absent(),});
+SipTableCompanion.insert({this.id = const Value.absent(),this.description = const Value.absent(),required int investmentId,required double amount,required DateTime startDate,this.endDate = const Value.absent(),required SipFrequency frequency,this.executedTill = const Value.absent(),}): investmentId = Value(investmentId), amount = Value(amount), startDate = Value(startDate), frequency = Value(frequency);
 static Insertable<SipDO> custom({Expression<int>? id, 
+Expression<String>? description, 
 Expression<int>? investmentId, 
 Expression<double>? amount, 
-Expression<String>? description, 
 Expression<DateTime>? startDate, 
 Expression<DateTime>? endDate, 
-Expression<double>? frequency, 
+Expression<String>? frequency, 
 Expression<DateTime>? executedTill, 
 }) {
-return RawValuesInsertable({if (id != null)'ID': id,if (investmentId != null)'INVESTMENT_ID': investmentId,if (amount != null)'AMOUNT': amount,if (description != null)'DESCRIPTION': description,if (startDate != null)'START_DATE': startDate,if (endDate != null)'END_DATE': endDate,if (frequency != null)'FREQUENCY': frequency,if (executedTill != null)'EXECUTED_TILL': executedTill,});
-}SipTableCompanion copyWith({Value<int>? id, Value<int>? investmentId, Value<double>? amount, Value<String?>? description, Value<DateTime>? startDate, Value<DateTime>? endDate, Value<double>? frequency, Value<DateTime?>? executedTill}) {
-return SipTableCompanion(id: id ?? this.id,investmentId: investmentId ?? this.investmentId,amount: amount ?? this.amount,description: description ?? this.description,startDate: startDate ?? this.startDate,endDate: endDate ?? this.endDate,frequency: frequency ?? this.frequency,executedTill: executedTill ?? this.executedTill,);
+return RawValuesInsertable({if (id != null)'ID': id,if (description != null)'DESCRIPTION': description,if (investmentId != null)'INVESTMENT_ID': investmentId,if (amount != null)'AMOUNT': amount,if (startDate != null)'START_DATE': startDate,if (endDate != null)'END_DATE': endDate,if (frequency != null)'FREQUENCY': frequency,if (executedTill != null)'EXECUTED_TILL': executedTill,});
+}SipTableCompanion copyWith({Value<int>? id, Value<String?>? description, Value<int>? investmentId, Value<double>? amount, Value<DateTime>? startDate, Value<DateTime?>? endDate, Value<SipFrequency>? frequency, Value<DateTime?>? executedTill}) {
+return SipTableCompanion(id: id ?? this.id,description: description ?? this.description,investmentId: investmentId ?? this.investmentId,amount: amount ?? this.amount,startDate: startDate ?? this.startDate,endDate: endDate ?? this.endDate,frequency: frequency ?? this.frequency,executedTill: executedTill ?? this.executedTill,);
 }
 @override
 Map<String, Expression> toColumns(bool nullToAbsent) {
 final map = <String, Expression> {};if (id.present) {
 map['ID'] = Variable<int>(id.value);}
+if (description.present) {
+map['DESCRIPTION'] = Variable<String>(description.value);}
 if (investmentId.present) {
 map['INVESTMENT_ID'] = Variable<int>(investmentId.value);}
 if (amount.present) {
 map['AMOUNT'] = Variable<double>(amount.value);}
-if (description.present) {
-map['DESCRIPTION'] = Variable<String>(description.value);}
 if (startDate.present) {
 map['START_DATE'] = Variable<DateTime>(startDate.value);}
 if (endDate.present) {
 map['END_DATE'] = Variable<DateTime>(endDate.value);}
 if (frequency.present) {
-map['FREQUENCY'] = Variable<double>(frequency.value);}
+map['FREQUENCY'] = Variable<String>($SipTableTable.$converterfrequency.toSql(frequency.value));}
 if (executedTill.present) {
 map['EXECUTED_TILL'] = Variable<DateTime>(executedTill.value);}
 return map; 
 }
 @override
-String toString() {return (StringBuffer('SipTableCompanion(')..write('id: $id, ')..write('investmentId: $investmentId, ')..write('amount: $amount, ')..write('description: $description, ')..write('startDate: $startDate, ')..write('endDate: $endDate, ')..write('frequency: $frequency, ')..write('executedTill: $executedTill')..write(')')).toString();}
+String toString() {return (StringBuffer('SipTableCompanion(')..write('id: $id, ')..write('description: $description, ')..write('investmentId: $investmentId, ')..write('amount: $amount, ')..write('startDate: $startDate, ')..write('endDate: $endDate, ')..write('frequency: $frequency, ')..write('executedTill: $executedTill')..write(')')).toString();}
 }
 class $TransactionTableTable extends TransactionTable with TableInfo<$TransactionTableTable, TransactionDO>{
 @override final GeneratedDatabase attachedDatabase;
@@ -404,6 +397,9 @@ $TransactionTableTable(this.attachedDatabase, [this._alias]);
 static const VerificationMeta _idMeta = const VerificationMeta('id');
 @override
 late final GeneratedColumn<int> id = GeneratedColumn<int>('ID', aliasedName, false, hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+static const VerificationMeta _descriptionMeta = const VerificationMeta('description');
+@override
+late final GeneratedColumn<String> description = GeneratedColumn<String>('DESCRIPTION', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
 static const VerificationMeta _investmentIdMeta = const VerificationMeta('investmentId');
 @override
 late final GeneratedColumn<int> investmentId = GeneratedColumn<int>('INVESTMENT_ID', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true, defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES investment_table (ID)'));
@@ -413,14 +409,11 @@ late final GeneratedColumn<int> sipId = GeneratedColumn<int>('SIP_ID', aliasedNa
 static const VerificationMeta _amountMeta = const VerificationMeta('amount');
 @override
 late final GeneratedColumn<double> amount = GeneratedColumn<double>('AMOUNT', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
-static const VerificationMeta _descriptionMeta = const VerificationMeta('description');
+static const VerificationMeta _createdOnMeta = const VerificationMeta('createdOn');
 @override
-late final GeneratedColumn<String> description = GeneratedColumn<String>('DESCRIPTION', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
-static const VerificationMeta _amountInvestedOnMeta = const VerificationMeta('amountInvestedOn');
+late final GeneratedColumn<DateTime> createdOn = GeneratedColumn<DateTime>('CREATED_ON', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
 @override
-late final GeneratedColumn<DateTime> amountInvestedOn = GeneratedColumn<DateTime>('AMOUNT_INVESTED_ON', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
-@override
-List<GeneratedColumn> get $columns => [id, investmentId, sipId, amount, description, amountInvestedOn];
+List<GeneratedColumn> get $columns => [id, description, investmentId, sipId, amount, createdOn];
 @override
 String get aliasedName => _alias ?? actualTableName;
 @override
@@ -431,7 +424,8 @@ VerificationContext validateIntegrity(Insertable<TransactionDO> instance, {bool 
 final context = VerificationContext();
 final data = instance.toColumns(true);
 if (data.containsKey('ID')) {
-context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));}if (data.containsKey('INVESTMENT_ID')) {
+context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));}if (data.containsKey('DESCRIPTION')) {
+context.handle(_descriptionMeta, description.isAcceptableOrUnknown(data['DESCRIPTION']!, _descriptionMeta));}if (data.containsKey('INVESTMENT_ID')) {
 context.handle(_investmentIdMeta, investmentId.isAcceptableOrUnknown(data['INVESTMENT_ID']!, _investmentIdMeta));} else if (isInserting) {
 context.missing(_investmentIdMeta);
 }
@@ -440,89 +434,88 @@ context.handle(_sipIdMeta, sipId.isAcceptableOrUnknown(data['SIP_ID']!, _sipIdMe
 context.handle(_amountMeta, amount.isAcceptableOrUnknown(data['AMOUNT']!, _amountMeta));} else if (isInserting) {
 context.missing(_amountMeta);
 }
-if (data.containsKey('DESCRIPTION')) {
-context.handle(_descriptionMeta, description.isAcceptableOrUnknown(data['DESCRIPTION']!, _descriptionMeta));}if (data.containsKey('AMOUNT_INVESTED_ON')) {
-context.handle(_amountInvestedOnMeta, amountInvestedOn.isAcceptableOrUnknown(data['AMOUNT_INVESTED_ON']!, _amountInvestedOnMeta));} else if (isInserting) {
-context.missing(_amountInvestedOnMeta);
+if (data.containsKey('CREATED_ON')) {
+context.handle(_createdOnMeta, createdOn.isAcceptableOrUnknown(data['CREATED_ON']!, _createdOnMeta));} else if (isInserting) {
+context.missing(_createdOnMeta);
 }
 return context;
 }
 @override
 Set<GeneratedColumn> get $primaryKey => {id};
 @override TransactionDO map(Map<String, dynamic> data, {String? tablePrefix})  {
-final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return TransactionDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, sipId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}SIP_ID']), amount: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), amountInvestedOn: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}AMOUNT_INVESTED_ON'])!, );
+final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return TransactionDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, sipId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}SIP_ID']), amount: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!, createdOn: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}CREATED_ON'])!, );
 }
 @override
 $TransactionTableTable createAlias(String alias) {
 return $TransactionTableTable(attachedDatabase, alias);}}class TransactionDO extends DataClass implements Insertable<TransactionDO> {
 final int id;
+final String? description;
 final int investmentId;
 final int? sipId;
 final double amount;
-final String? description;
-final DateTime amountInvestedOn;
-const TransactionDO({required this.id, required this.investmentId, this.sipId, required this.amount, this.description, required this.amountInvestedOn});@override
+final DateTime createdOn;
+const TransactionDO({required this.id, this.description, required this.investmentId, this.sipId, required this.amount, required this.createdOn});@override
 Map<String, Expression> toColumns(bool nullToAbsent) {
 final map = <String, Expression> {};map['ID'] = Variable<int>(id);
-map['INVESTMENT_ID'] = Variable<int>(investmentId);
+if (!nullToAbsent || description != null){map['DESCRIPTION'] = Variable<String>(description);
+}map['INVESTMENT_ID'] = Variable<int>(investmentId);
 if (!nullToAbsent || sipId != null){map['SIP_ID'] = Variable<int>(sipId);
 }map['AMOUNT'] = Variable<double>(amount);
-if (!nullToAbsent || description != null){map['DESCRIPTION'] = Variable<String>(description);
-}map['AMOUNT_INVESTED_ON'] = Variable<DateTime>(amountInvestedOn);
+map['CREATED_ON'] = Variable<DateTime>(createdOn);
 return map; 
 }
 TransactionTableCompanion toCompanion(bool nullToAbsent) {
-return TransactionTableCompanion(id: Value(id),investmentId: Value(investmentId),sipId: sipId == null && nullToAbsent ? const Value.absent() : Value(sipId),amount: Value(amount),description: description == null && nullToAbsent ? const Value.absent() : Value(description),amountInvestedOn: Value(amountInvestedOn),);
+return TransactionTableCompanion(id: Value(id),description: description == null && nullToAbsent ? const Value.absent() : Value(description),investmentId: Value(investmentId),sipId: sipId == null && nullToAbsent ? const Value.absent() : Value(sipId),amount: Value(amount),createdOn: Value(createdOn),);
 }
 factory TransactionDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
-return TransactionDO(id: serializer.fromJson<int>(json['id']),investmentId: serializer.fromJson<int>(json['investmentId']),sipId: serializer.fromJson<int?>(json['sipId']),amount: serializer.fromJson<double>(json['amount']),description: serializer.fromJson<String?>(json['description']),amountInvestedOn: serializer.fromJson<DateTime>(json['amountInvestedOn']),);}
+return TransactionDO(id: serializer.fromJson<int>(json['id']),description: serializer.fromJson<String?>(json['description']),investmentId: serializer.fromJson<int>(json['investmentId']),sipId: serializer.fromJson<int?>(json['sipId']),amount: serializer.fromJson<double>(json['amount']),createdOn: serializer.fromJson<DateTime>(json['createdOn']),);}
 @override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
 return <String, dynamic>{
-'id': serializer.toJson<int>(id),'investmentId': serializer.toJson<int>(investmentId),'sipId': serializer.toJson<int?>(sipId),'amount': serializer.toJson<double>(amount),'description': serializer.toJson<String?>(description),'amountInvestedOn': serializer.toJson<DateTime>(amountInvestedOn),};}TransactionDO copyWith({int? id,int? investmentId,Value<int?> sipId = const Value.absent(),double? amount,Value<String?> description = const Value.absent(),DateTime? amountInvestedOn}) => TransactionDO(id: id ?? this.id,investmentId: investmentId ?? this.investmentId,sipId: sipId.present ? sipId.value : this.sipId,amount: amount ?? this.amount,description: description.present ? description.value : this.description,amountInvestedOn: amountInvestedOn ?? this.amountInvestedOn,);@override
-String toString() {return (StringBuffer('TransactionDO(')..write('id: $id, ')..write('investmentId: $investmentId, ')..write('sipId: $sipId, ')..write('amount: $amount, ')..write('description: $description, ')..write('amountInvestedOn: $amountInvestedOn')..write(')')).toString();}
+'id': serializer.toJson<int>(id),'description': serializer.toJson<String?>(description),'investmentId': serializer.toJson<int>(investmentId),'sipId': serializer.toJson<int?>(sipId),'amount': serializer.toJson<double>(amount),'createdOn': serializer.toJson<DateTime>(createdOn),};}TransactionDO copyWith({int? id,Value<String?> description = const Value.absent(),int? investmentId,Value<int?> sipId = const Value.absent(),double? amount,DateTime? createdOn}) => TransactionDO(id: id ?? this.id,description: description.present ? description.value : this.description,investmentId: investmentId ?? this.investmentId,sipId: sipId.present ? sipId.value : this.sipId,amount: amount ?? this.amount,createdOn: createdOn ?? this.createdOn,);@override
+String toString() {return (StringBuffer('TransactionDO(')..write('id: $id, ')..write('description: $description, ')..write('investmentId: $investmentId, ')..write('sipId: $sipId, ')..write('amount: $amount, ')..write('createdOn: $createdOn')..write(')')).toString();}
 @override
- int get hashCode => Object.hash(id, investmentId, sipId, amount, description, amountInvestedOn);@override
-bool operator ==(Object other) => identical(this, other) || (other is TransactionDO && other.id == this.id && other.investmentId == this.investmentId && other.sipId == this.sipId && other.amount == this.amount && other.description == this.description && other.amountInvestedOn == this.amountInvestedOn);
+ int get hashCode => Object.hash(id, description, investmentId, sipId, amount, createdOn);@override
+bool operator ==(Object other) => identical(this, other) || (other is TransactionDO && other.id == this.id && other.description == this.description && other.investmentId == this.investmentId && other.sipId == this.sipId && other.amount == this.amount && other.createdOn == this.createdOn);
 }class TransactionTableCompanion extends UpdateCompanion<TransactionDO> {
 final Value<int> id;
+final Value<String?> description;
 final Value<int> investmentId;
 final Value<int?> sipId;
 final Value<double> amount;
-final Value<String?> description;
-final Value<DateTime> amountInvestedOn;
-const TransactionTableCompanion({this.id = const Value.absent(),this.investmentId = const Value.absent(),this.sipId = const Value.absent(),this.amount = const Value.absent(),this.description = const Value.absent(),this.amountInvestedOn = const Value.absent(),});
-TransactionTableCompanion.insert({this.id = const Value.absent(),required int investmentId,this.sipId = const Value.absent(),required double amount,this.description = const Value.absent(),required DateTime amountInvestedOn,}): investmentId = Value(investmentId), amount = Value(amount), amountInvestedOn = Value(amountInvestedOn);
+final Value<DateTime> createdOn;
+const TransactionTableCompanion({this.id = const Value.absent(),this.description = const Value.absent(),this.investmentId = const Value.absent(),this.sipId = const Value.absent(),this.amount = const Value.absent(),this.createdOn = const Value.absent(),});
+TransactionTableCompanion.insert({this.id = const Value.absent(),this.description = const Value.absent(),required int investmentId,this.sipId = const Value.absent(),required double amount,required DateTime createdOn,}): investmentId = Value(investmentId), amount = Value(amount), createdOn = Value(createdOn);
 static Insertable<TransactionDO> custom({Expression<int>? id, 
+Expression<String>? description, 
 Expression<int>? investmentId, 
 Expression<int>? sipId, 
 Expression<double>? amount, 
-Expression<String>? description, 
-Expression<DateTime>? amountInvestedOn, 
+Expression<DateTime>? createdOn, 
 }) {
-return RawValuesInsertable({if (id != null)'ID': id,if (investmentId != null)'INVESTMENT_ID': investmentId,if (sipId != null)'SIP_ID': sipId,if (amount != null)'AMOUNT': amount,if (description != null)'DESCRIPTION': description,if (amountInvestedOn != null)'AMOUNT_INVESTED_ON': amountInvestedOn,});
-}TransactionTableCompanion copyWith({Value<int>? id, Value<int>? investmentId, Value<int?>? sipId, Value<double>? amount, Value<String?>? description, Value<DateTime>? amountInvestedOn}) {
-return TransactionTableCompanion(id: id ?? this.id,investmentId: investmentId ?? this.investmentId,sipId: sipId ?? this.sipId,amount: amount ?? this.amount,description: description ?? this.description,amountInvestedOn: amountInvestedOn ?? this.amountInvestedOn,);
+return RawValuesInsertable({if (id != null)'ID': id,if (description != null)'DESCRIPTION': description,if (investmentId != null)'INVESTMENT_ID': investmentId,if (sipId != null)'SIP_ID': sipId,if (amount != null)'AMOUNT': amount,if (createdOn != null)'CREATED_ON': createdOn,});
+}TransactionTableCompanion copyWith({Value<int>? id, Value<String?>? description, Value<int>? investmentId, Value<int?>? sipId, Value<double>? amount, Value<DateTime>? createdOn}) {
+return TransactionTableCompanion(id: id ?? this.id,description: description ?? this.description,investmentId: investmentId ?? this.investmentId,sipId: sipId ?? this.sipId,amount: amount ?? this.amount,createdOn: createdOn ?? this.createdOn,);
 }
 @override
 Map<String, Expression> toColumns(bool nullToAbsent) {
 final map = <String, Expression> {};if (id.present) {
 map['ID'] = Variable<int>(id.value);}
+if (description.present) {
+map['DESCRIPTION'] = Variable<String>(description.value);}
 if (investmentId.present) {
 map['INVESTMENT_ID'] = Variable<int>(investmentId.value);}
 if (sipId.present) {
 map['SIP_ID'] = Variable<int>(sipId.value);}
 if (amount.present) {
 map['AMOUNT'] = Variable<double>(amount.value);}
-if (description.present) {
-map['DESCRIPTION'] = Variable<String>(description.value);}
-if (amountInvestedOn.present) {
-map['AMOUNT_INVESTED_ON'] = Variable<DateTime>(amountInvestedOn.value);}
+if (createdOn.present) {
+map['CREATED_ON'] = Variable<DateTime>(createdOn.value);}
 return map; 
 }
 @override
-String toString() {return (StringBuffer('TransactionTableCompanion(')..write('id: $id, ')..write('investmentId: $investmentId, ')..write('sipId: $sipId, ')..write('amount: $amount, ')..write('description: $description, ')..write('amountInvestedOn: $amountInvestedOn')..write(')')).toString();}
+String toString() {return (StringBuffer('TransactionTableCompanion(')..write('id: $id, ')..write('description: $description, ')..write('investmentId: $investmentId, ')..write('sipId: $sipId, ')..write('amount: $amount, ')..write('createdOn: $createdOn')..write(')')).toString();}
 }
 class $GoalTableTable extends GoalTable with TableInfo<$GoalTableTable, GoalDO>{
 @override final GeneratedDatabase attachedDatabase;
@@ -540,23 +533,20 @@ late final GeneratedColumn<String> description = GeneratedColumn<String>('DESCRI
 static const VerificationMeta _amountMeta = const VerificationMeta('amount');
 @override
 late final GeneratedColumn<double> amount = GeneratedColumn<double>('AMOUNT', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
-static const VerificationMeta _dateMeta = const VerificationMeta('date');
+static const VerificationMeta _amountUpdatedOnMeta = const VerificationMeta('amountUpdatedOn');
 @override
-late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>('DATE', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
+late final GeneratedColumn<DateTime> amountUpdatedOn = GeneratedColumn<DateTime>('AMOUNT_UPDATED_ON', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
 static const VerificationMeta _inflationMeta = const VerificationMeta('inflation');
 @override
 late final GeneratedColumn<double> inflation = GeneratedColumn<double>('INFLATION', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
-static const VerificationMeta _targetAmountMeta = const VerificationMeta('targetAmount');
+static const VerificationMeta _maturityDateMeta = const VerificationMeta('maturityDate');
 @override
-late final GeneratedColumn<double> targetAmount = GeneratedColumn<double>('TARGET_AMOUNT', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
-static const VerificationMeta _targetDateMeta = const VerificationMeta('targetDate');
-@override
-late final GeneratedColumn<DateTime> targetDate = GeneratedColumn<DateTime>('TARGET_DATE', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
+late final GeneratedColumn<DateTime> maturityDate = GeneratedColumn<DateTime>('MATURITY_DATE', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
 static const VerificationMeta _importanceMeta = const VerificationMeta('importance');
 @override
 late final GeneratedColumnWithTypeConverter<GoalImportance, String> importance = GeneratedColumn<String>('IMPORTANCE', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true).withConverter<GoalImportance>($GoalTableTable.$converterimportance);
 @override
-List<GeneratedColumn> get $columns => [id, name, description, amount, date, inflation, targetAmount, targetDate, importance];
+List<GeneratedColumn> get $columns => [id, name, description, amount, amountUpdatedOn, inflation, maturityDate, importance];
 @override
 String get aliasedName => _alias ?? actualTableName;
 @override
@@ -576,28 +566,24 @@ context.handle(_descriptionMeta, description.isAcceptableOrUnknown(data['DESCRIP
 context.handle(_amountMeta, amount.isAcceptableOrUnknown(data['AMOUNT']!, _amountMeta));} else if (isInserting) {
 context.missing(_amountMeta);
 }
-if (data.containsKey('DATE')) {
-context.handle(_dateMeta, date.isAcceptableOrUnknown(data['DATE']!, _dateMeta));} else if (isInserting) {
-context.missing(_dateMeta);
+if (data.containsKey('AMOUNT_UPDATED_ON')) {
+context.handle(_amountUpdatedOnMeta, amountUpdatedOn.isAcceptableOrUnknown(data['AMOUNT_UPDATED_ON']!, _amountUpdatedOnMeta));} else if (isInserting) {
+context.missing(_amountUpdatedOnMeta);
 }
 if (data.containsKey('INFLATION')) {
 context.handle(_inflationMeta, inflation.isAcceptableOrUnknown(data['INFLATION']!, _inflationMeta));} else if (isInserting) {
 context.missing(_inflationMeta);
 }
-if (data.containsKey('TARGET_AMOUNT')) {
-context.handle(_targetAmountMeta, targetAmount.isAcceptableOrUnknown(data['TARGET_AMOUNT']!, _targetAmountMeta));} else if (isInserting) {
-context.missing(_targetAmountMeta);
-}
-if (data.containsKey('TARGET_DATE')) {
-context.handle(_targetDateMeta, targetDate.isAcceptableOrUnknown(data['TARGET_DATE']!, _targetDateMeta));} else if (isInserting) {
-context.missing(_targetDateMeta);
+if (data.containsKey('MATURITY_DATE')) {
+context.handle(_maturityDateMeta, maturityDate.isAcceptableOrUnknown(data['MATURITY_DATE']!, _maturityDateMeta));} else if (isInserting) {
+context.missing(_maturityDateMeta);
 }
 context.handle(_importanceMeta, const VerificationResult.success());return context;
 }
 @override
 Set<GeneratedColumn> get $primaryKey => {id};
 @override GoalDO map(Map<String, dynamic> data, {String? tablePrefix})  {
-final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return GoalDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}NAME'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), amount: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!, date: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}DATE'])!, inflation: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}INFLATION'])!, targetAmount: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}TARGET_AMOUNT'])!, targetDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}TARGET_DATE'])!, importance: $GoalTableTable.$converterimportance.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}IMPORTANCE'])!), );
+final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return GoalDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}NAME'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), amount: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!, amountUpdatedOn: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}AMOUNT_UPDATED_ON'])!, inflation: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}INFLATION'])!, maturityDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}MATURITY_DATE'])!, importance: $GoalTableTable.$converterimportance.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}IMPORTANCE'])!), );
 }
 @override
 $GoalTableTable createAlias(String alias) {
@@ -606,63 +592,59 @@ final int id;
 final String name;
 final String? description;
 final double amount;
-final DateTime date;
+final DateTime amountUpdatedOn;
 final double inflation;
-final double targetAmount;
-final DateTime targetDate;
+final DateTime maturityDate;
 final GoalImportance importance;
-const GoalDO({required this.id, required this.name, this.description, required this.amount, required this.date, required this.inflation, required this.targetAmount, required this.targetDate, required this.importance});@override
+const GoalDO({required this.id, required this.name, this.description, required this.amount, required this.amountUpdatedOn, required this.inflation, required this.maturityDate, required this.importance});@override
 Map<String, Expression> toColumns(bool nullToAbsent) {
 final map = <String, Expression> {};map['ID'] = Variable<int>(id);
 map['NAME'] = Variable<String>(name);
 if (!nullToAbsent || description != null){map['DESCRIPTION'] = Variable<String>(description);
 }map['AMOUNT'] = Variable<double>(amount);
-map['DATE'] = Variable<DateTime>(date);
+map['AMOUNT_UPDATED_ON'] = Variable<DateTime>(amountUpdatedOn);
 map['INFLATION'] = Variable<double>(inflation);
-map['TARGET_AMOUNT'] = Variable<double>(targetAmount);
-map['TARGET_DATE'] = Variable<DateTime>(targetDate);
+map['MATURITY_DATE'] = Variable<DateTime>(maturityDate);
 {map['IMPORTANCE'] = Variable<String>($GoalTableTable.$converterimportance.toSql(importance));
 }return map; 
 }
 GoalTableCompanion toCompanion(bool nullToAbsent) {
-return GoalTableCompanion(id: Value(id),name: Value(name),description: description == null && nullToAbsent ? const Value.absent() : Value(description),amount: Value(amount),date: Value(date),inflation: Value(inflation),targetAmount: Value(targetAmount),targetDate: Value(targetDate),importance: Value(importance),);
+return GoalTableCompanion(id: Value(id),name: Value(name),description: description == null && nullToAbsent ? const Value.absent() : Value(description),amount: Value(amount),amountUpdatedOn: Value(amountUpdatedOn),inflation: Value(inflation),maturityDate: Value(maturityDate),importance: Value(importance),);
 }
 factory GoalDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
-return GoalDO(id: serializer.fromJson<int>(json['id']),name: serializer.fromJson<String>(json['name']),description: serializer.fromJson<String?>(json['description']),amount: serializer.fromJson<double>(json['amount']),date: serializer.fromJson<DateTime>(json['date']),inflation: serializer.fromJson<double>(json['inflation']),targetAmount: serializer.fromJson<double>(json['targetAmount']),targetDate: serializer.fromJson<DateTime>(json['targetDate']),importance: $GoalTableTable.$converterimportance.fromJson(serializer.fromJson<String>(json['importance'])),);}
+return GoalDO(id: serializer.fromJson<int>(json['id']),name: serializer.fromJson<String>(json['name']),description: serializer.fromJson<String?>(json['description']),amount: serializer.fromJson<double>(json['amount']),amountUpdatedOn: serializer.fromJson<DateTime>(json['amountUpdatedOn']),inflation: serializer.fromJson<double>(json['inflation']),maturityDate: serializer.fromJson<DateTime>(json['maturityDate']),importance: $GoalTableTable.$converterimportance.fromJson(serializer.fromJson<String>(json['importance'])),);}
 @override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
 return <String, dynamic>{
-'id': serializer.toJson<int>(id),'name': serializer.toJson<String>(name),'description': serializer.toJson<String?>(description),'amount': serializer.toJson<double>(amount),'date': serializer.toJson<DateTime>(date),'inflation': serializer.toJson<double>(inflation),'targetAmount': serializer.toJson<double>(targetAmount),'targetDate': serializer.toJson<DateTime>(targetDate),'importance': serializer.toJson<String>($GoalTableTable.$converterimportance.toJson(importance)),};}GoalDO copyWith({int? id,String? name,Value<String?> description = const Value.absent(),double? amount,DateTime? date,double? inflation,double? targetAmount,DateTime? targetDate,GoalImportance? importance}) => GoalDO(id: id ?? this.id,name: name ?? this.name,description: description.present ? description.value : this.description,amount: amount ?? this.amount,date: date ?? this.date,inflation: inflation ?? this.inflation,targetAmount: targetAmount ?? this.targetAmount,targetDate: targetDate ?? this.targetDate,importance: importance ?? this.importance,);@override
-String toString() {return (StringBuffer('GoalDO(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('amount: $amount, ')..write('date: $date, ')..write('inflation: $inflation, ')..write('targetAmount: $targetAmount, ')..write('targetDate: $targetDate, ')..write('importance: $importance')..write(')')).toString();}
+'id': serializer.toJson<int>(id),'name': serializer.toJson<String>(name),'description': serializer.toJson<String?>(description),'amount': serializer.toJson<double>(amount),'amountUpdatedOn': serializer.toJson<DateTime>(amountUpdatedOn),'inflation': serializer.toJson<double>(inflation),'maturityDate': serializer.toJson<DateTime>(maturityDate),'importance': serializer.toJson<String>($GoalTableTable.$converterimportance.toJson(importance)),};}GoalDO copyWith({int? id,String? name,Value<String?> description = const Value.absent(),double? amount,DateTime? amountUpdatedOn,double? inflation,DateTime? maturityDate,GoalImportance? importance}) => GoalDO(id: id ?? this.id,name: name ?? this.name,description: description.present ? description.value : this.description,amount: amount ?? this.amount,amountUpdatedOn: amountUpdatedOn ?? this.amountUpdatedOn,inflation: inflation ?? this.inflation,maturityDate: maturityDate ?? this.maturityDate,importance: importance ?? this.importance,);@override
+String toString() {return (StringBuffer('GoalDO(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('amount: $amount, ')..write('amountUpdatedOn: $amountUpdatedOn, ')..write('inflation: $inflation, ')..write('maturityDate: $maturityDate, ')..write('importance: $importance')..write(')')).toString();}
 @override
- int get hashCode => Object.hash(id, name, description, amount, date, inflation, targetAmount, targetDate, importance);@override
-bool operator ==(Object other) => identical(this, other) || (other is GoalDO && other.id == this.id && other.name == this.name && other.description == this.description && other.amount == this.amount && other.date == this.date && other.inflation == this.inflation && other.targetAmount == this.targetAmount && other.targetDate == this.targetDate && other.importance == this.importance);
+ int get hashCode => Object.hash(id, name, description, amount, amountUpdatedOn, inflation, maturityDate, importance);@override
+bool operator ==(Object other) => identical(this, other) || (other is GoalDO && other.id == this.id && other.name == this.name && other.description == this.description && other.amount == this.amount && other.amountUpdatedOn == this.amountUpdatedOn && other.inflation == this.inflation && other.maturityDate == this.maturityDate && other.importance == this.importance);
 }class GoalTableCompanion extends UpdateCompanion<GoalDO> {
 final Value<int> id;
 final Value<String> name;
 final Value<String?> description;
 final Value<double> amount;
-final Value<DateTime> date;
+final Value<DateTime> amountUpdatedOn;
 final Value<double> inflation;
-final Value<double> targetAmount;
-final Value<DateTime> targetDate;
+final Value<DateTime> maturityDate;
 final Value<GoalImportance> importance;
-const GoalTableCompanion({this.id = const Value.absent(),this.name = const Value.absent(),this.description = const Value.absent(),this.amount = const Value.absent(),this.date = const Value.absent(),this.inflation = const Value.absent(),this.targetAmount = const Value.absent(),this.targetDate = const Value.absent(),this.importance = const Value.absent(),});
-GoalTableCompanion.insert({this.id = const Value.absent(),required String name,this.description = const Value.absent(),required double amount,required DateTime date,required double inflation,required double targetAmount,required DateTime targetDate,required GoalImportance importance,}): name = Value(name), amount = Value(amount), date = Value(date), inflation = Value(inflation), targetAmount = Value(targetAmount), targetDate = Value(targetDate), importance = Value(importance);
+const GoalTableCompanion({this.id = const Value.absent(),this.name = const Value.absent(),this.description = const Value.absent(),this.amount = const Value.absent(),this.amountUpdatedOn = const Value.absent(),this.inflation = const Value.absent(),this.maturityDate = const Value.absent(),this.importance = const Value.absent(),});
+GoalTableCompanion.insert({this.id = const Value.absent(),required String name,this.description = const Value.absent(),required double amount,required DateTime amountUpdatedOn,required double inflation,required DateTime maturityDate,required GoalImportance importance,}): name = Value(name), amount = Value(amount), amountUpdatedOn = Value(amountUpdatedOn), inflation = Value(inflation), maturityDate = Value(maturityDate), importance = Value(importance);
 static Insertable<GoalDO> custom({Expression<int>? id, 
 Expression<String>? name, 
 Expression<String>? description, 
 Expression<double>? amount, 
-Expression<DateTime>? date, 
+Expression<DateTime>? amountUpdatedOn, 
 Expression<double>? inflation, 
-Expression<double>? targetAmount, 
-Expression<DateTime>? targetDate, 
+Expression<DateTime>? maturityDate, 
 Expression<String>? importance, 
 }) {
-return RawValuesInsertable({if (id != null)'ID': id,if (name != null)'NAME': name,if (description != null)'DESCRIPTION': description,if (amount != null)'AMOUNT': amount,if (date != null)'DATE': date,if (inflation != null)'INFLATION': inflation,if (targetAmount != null)'TARGET_AMOUNT': targetAmount,if (targetDate != null)'TARGET_DATE': targetDate,if (importance != null)'IMPORTANCE': importance,});
-}GoalTableCompanion copyWith({Value<int>? id, Value<String>? name, Value<String?>? description, Value<double>? amount, Value<DateTime>? date, Value<double>? inflation, Value<double>? targetAmount, Value<DateTime>? targetDate, Value<GoalImportance>? importance}) {
-return GoalTableCompanion(id: id ?? this.id,name: name ?? this.name,description: description ?? this.description,amount: amount ?? this.amount,date: date ?? this.date,inflation: inflation ?? this.inflation,targetAmount: targetAmount ?? this.targetAmount,targetDate: targetDate ?? this.targetDate,importance: importance ?? this.importance,);
+return RawValuesInsertable({if (id != null)'ID': id,if (name != null)'NAME': name,if (description != null)'DESCRIPTION': description,if (amount != null)'AMOUNT': amount,if (amountUpdatedOn != null)'AMOUNT_UPDATED_ON': amountUpdatedOn,if (inflation != null)'INFLATION': inflation,if (maturityDate != null)'MATURITY_DATE': maturityDate,if (importance != null)'IMPORTANCE': importance,});
+}GoalTableCompanion copyWith({Value<int>? id, Value<String>? name, Value<String?>? description, Value<double>? amount, Value<DateTime>? amountUpdatedOn, Value<double>? inflation, Value<DateTime>? maturityDate, Value<GoalImportance>? importance}) {
+return GoalTableCompanion(id: id ?? this.id,name: name ?? this.name,description: description ?? this.description,amount: amount ?? this.amount,amountUpdatedOn: amountUpdatedOn ?? this.amountUpdatedOn,inflation: inflation ?? this.inflation,maturityDate: maturityDate ?? this.maturityDate,importance: importance ?? this.importance,);
 }
 @override
 Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -674,22 +656,20 @@ if (description.present) {
 map['DESCRIPTION'] = Variable<String>(description.value);}
 if (amount.present) {
 map['AMOUNT'] = Variable<double>(amount.value);}
-if (date.present) {
-map['DATE'] = Variable<DateTime>(date.value);}
+if (amountUpdatedOn.present) {
+map['AMOUNT_UPDATED_ON'] = Variable<DateTime>(amountUpdatedOn.value);}
 if (inflation.present) {
 map['INFLATION'] = Variable<double>(inflation.value);}
-if (targetAmount.present) {
-map['TARGET_AMOUNT'] = Variable<double>(targetAmount.value);}
-if (targetDate.present) {
-map['TARGET_DATE'] = Variable<DateTime>(targetDate.value);}
+if (maturityDate.present) {
+map['MATURITY_DATE'] = Variable<DateTime>(maturityDate.value);}
 if (importance.present) {
 map['IMPORTANCE'] = Variable<String>($GoalTableTable.$converterimportance.toSql(importance.value));}
 return map; 
 }
 @override
-String toString() {return (StringBuffer('GoalTableCompanion(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('amount: $amount, ')..write('date: $date, ')..write('inflation: $inflation, ')..write('targetAmount: $targetAmount, ')..write('targetDate: $targetDate, ')..write('importance: $importance')..write(')')).toString();}
+String toString() {return (StringBuffer('GoalTableCompanion(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('amount: $amount, ')..write('amountUpdatedOn: $amountUpdatedOn, ')..write('inflation: $inflation, ')..write('maturityDate: $maturityDate, ')..write('importance: $importance')..write(')')).toString();}
 }
-class $GoalInvestmentTableTable extends GoalInvestmentTable with TableInfo<$GoalInvestmentTableTable, GoalInvestmentMappingDO>{
+class $GoalInvestmentTableTable extends GoalInvestmentTable with TableInfo<$GoalInvestmentTableTable, GoalInvestmentDO>{
 @override final GeneratedDatabase attachedDatabase;
 final String? _alias;
 $GoalInvestmentTableTable(this.attachedDatabase, [this._alias]);
@@ -702,18 +682,18 @@ late final GeneratedColumn<int> goalId = GeneratedColumn<int>('GOAL_ID', aliased
 static const VerificationMeta _investmentIdMeta = const VerificationMeta('investmentId');
 @override
 late final GeneratedColumn<int> investmentId = GeneratedColumn<int>('INVESTMENT_ID', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true, defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES goal_table (ID)'));
-static const VerificationMeta _sharePercentageMeta = const VerificationMeta('sharePercentage');
+static const VerificationMeta _splitMeta = const VerificationMeta('split');
 @override
-late final GeneratedColumn<double> sharePercentage = GeneratedColumn<double>('SHARE_PERCENTAGE', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
+late final GeneratedColumn<double> split = GeneratedColumn<double>('SPLIT', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
 @override
-List<GeneratedColumn> get $columns => [id, goalId, investmentId, sharePercentage];
+List<GeneratedColumn> get $columns => [id, goalId, investmentId, split];
 @override
 String get aliasedName => _alias ?? actualTableName;
 @override
  String get actualTableName => $name;
 static const String $name = 'goal_investment_table';
 @override
-VerificationContext validateIntegrity(Insertable<GoalInvestmentMappingDO> instance, {bool isInserting = false}) {
+VerificationContext validateIntegrity(Insertable<GoalInvestmentDO> instance, {bool isInserting = false}) {
 final context = VerificationContext();
 final data = instance.toColumns(true);
 if (data.containsKey('ID')) {
@@ -725,61 +705,61 @@ if (data.containsKey('INVESTMENT_ID')) {
 context.handle(_investmentIdMeta, investmentId.isAcceptableOrUnknown(data['INVESTMENT_ID']!, _investmentIdMeta));} else if (isInserting) {
 context.missing(_investmentIdMeta);
 }
-if (data.containsKey('SHARE_PERCENTAGE')) {
-context.handle(_sharePercentageMeta, sharePercentage.isAcceptableOrUnknown(data['SHARE_PERCENTAGE']!, _sharePercentageMeta));} else if (isInserting) {
-context.missing(_sharePercentageMeta);
+if (data.containsKey('SPLIT')) {
+context.handle(_splitMeta, split.isAcceptableOrUnknown(data['SPLIT']!, _splitMeta));} else if (isInserting) {
+context.missing(_splitMeta);
 }
 return context;
 }
 @override
 Set<GeneratedColumn> get $primaryKey => {id};
-@override GoalInvestmentMappingDO map(Map<String, dynamic> data, {String? tablePrefix})  {
-final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return GoalInvestmentMappingDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, goalId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}GOAL_ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, sharePercentage: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}SHARE_PERCENTAGE'])!, );
+@override GoalInvestmentDO map(Map<String, dynamic> data, {String? tablePrefix})  {
+final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return GoalInvestmentDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, goalId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}GOAL_ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, split: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}SPLIT'])!, );
 }
 @override
 $GoalInvestmentTableTable createAlias(String alias) {
-return $GoalInvestmentTableTable(attachedDatabase, alias);}}class GoalInvestmentMappingDO extends DataClass implements Insertable<GoalInvestmentMappingDO> {
+return $GoalInvestmentTableTable(attachedDatabase, alias);}}class GoalInvestmentDO extends DataClass implements Insertable<GoalInvestmentDO> {
 final int id;
 final int goalId;
 final int investmentId;
-final double sharePercentage;
-const GoalInvestmentMappingDO({required this.id, required this.goalId, required this.investmentId, required this.sharePercentage});@override
+final double split;
+const GoalInvestmentDO({required this.id, required this.goalId, required this.investmentId, required this.split});@override
 Map<String, Expression> toColumns(bool nullToAbsent) {
 final map = <String, Expression> {};map['ID'] = Variable<int>(id);
 map['GOAL_ID'] = Variable<int>(goalId);
 map['INVESTMENT_ID'] = Variable<int>(investmentId);
-map['SHARE_PERCENTAGE'] = Variable<double>(sharePercentage);
+map['SPLIT'] = Variable<double>(split);
 return map; 
 }
 GoalInvestmentTableCompanion toCompanion(bool nullToAbsent) {
-return GoalInvestmentTableCompanion(id: Value(id),goalId: Value(goalId),investmentId: Value(investmentId),sharePercentage: Value(sharePercentage),);
+return GoalInvestmentTableCompanion(id: Value(id),goalId: Value(goalId),investmentId: Value(investmentId),split: Value(split),);
 }
-factory GoalInvestmentMappingDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+factory GoalInvestmentDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
-return GoalInvestmentMappingDO(id: serializer.fromJson<int>(json['id']),goalId: serializer.fromJson<int>(json['goalId']),investmentId: serializer.fromJson<int>(json['investmentId']),sharePercentage: serializer.fromJson<double>(json['sharePercentage']),);}
+return GoalInvestmentDO(id: serializer.fromJson<int>(json['id']),goalId: serializer.fromJson<int>(json['goalId']),investmentId: serializer.fromJson<int>(json['investmentId']),split: serializer.fromJson<double>(json['split']),);}
 @override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
 return <String, dynamic>{
-'id': serializer.toJson<int>(id),'goalId': serializer.toJson<int>(goalId),'investmentId': serializer.toJson<int>(investmentId),'sharePercentage': serializer.toJson<double>(sharePercentage),};}GoalInvestmentMappingDO copyWith({int? id,int? goalId,int? investmentId,double? sharePercentage}) => GoalInvestmentMappingDO(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,sharePercentage: sharePercentage ?? this.sharePercentage,);@override
-String toString() {return (StringBuffer('GoalInvestmentMappingDO(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('sharePercentage: $sharePercentage')..write(')')).toString();}
+'id': serializer.toJson<int>(id),'goalId': serializer.toJson<int>(goalId),'investmentId': serializer.toJson<int>(investmentId),'split': serializer.toJson<double>(split),};}GoalInvestmentDO copyWith({int? id,int? goalId,int? investmentId,double? split}) => GoalInvestmentDO(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,split: split ?? this.split,);@override
+String toString() {return (StringBuffer('GoalInvestmentDO(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('split: $split')..write(')')).toString();}
 @override
- int get hashCode => Object.hash(id, goalId, investmentId, sharePercentage);@override
-bool operator ==(Object other) => identical(this, other) || (other is GoalInvestmentMappingDO && other.id == this.id && other.goalId == this.goalId && other.investmentId == this.investmentId && other.sharePercentage == this.sharePercentage);
-}class GoalInvestmentTableCompanion extends UpdateCompanion<GoalInvestmentMappingDO> {
+ int get hashCode => Object.hash(id, goalId, investmentId, split);@override
+bool operator ==(Object other) => identical(this, other) || (other is GoalInvestmentDO && other.id == this.id && other.goalId == this.goalId && other.investmentId == this.investmentId && other.split == this.split);
+}class GoalInvestmentTableCompanion extends UpdateCompanion<GoalInvestmentDO> {
 final Value<int> id;
 final Value<int> goalId;
 final Value<int> investmentId;
-final Value<double> sharePercentage;
-const GoalInvestmentTableCompanion({this.id = const Value.absent(),this.goalId = const Value.absent(),this.investmentId = const Value.absent(),this.sharePercentage = const Value.absent(),});
-GoalInvestmentTableCompanion.insert({this.id = const Value.absent(),required int goalId,required int investmentId,required double sharePercentage,}): goalId = Value(goalId), investmentId = Value(investmentId), sharePercentage = Value(sharePercentage);
-static Insertable<GoalInvestmentMappingDO> custom({Expression<int>? id, 
+final Value<double> split;
+const GoalInvestmentTableCompanion({this.id = const Value.absent(),this.goalId = const Value.absent(),this.investmentId = const Value.absent(),this.split = const Value.absent(),});
+GoalInvestmentTableCompanion.insert({this.id = const Value.absent(),required int goalId,required int investmentId,required double split,}): goalId = Value(goalId), investmentId = Value(investmentId), split = Value(split);
+static Insertable<GoalInvestmentDO> custom({Expression<int>? id, 
 Expression<int>? goalId, 
 Expression<int>? investmentId, 
-Expression<double>? sharePercentage, 
+Expression<double>? split, 
 }) {
-return RawValuesInsertable({if (id != null)'ID': id,if (goalId != null)'GOAL_ID': goalId,if (investmentId != null)'INVESTMENT_ID': investmentId,if (sharePercentage != null)'SHARE_PERCENTAGE': sharePercentage,});
-}GoalInvestmentTableCompanion copyWith({Value<int>? id, Value<int>? goalId, Value<int>? investmentId, Value<double>? sharePercentage}) {
-return GoalInvestmentTableCompanion(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,sharePercentage: sharePercentage ?? this.sharePercentage,);
+return RawValuesInsertable({if (id != null)'ID': id,if (goalId != null)'GOAL_ID': goalId,if (investmentId != null)'INVESTMENT_ID': investmentId,if (split != null)'SPLIT': split,});
+}GoalInvestmentTableCompanion copyWith({Value<int>? id, Value<int>? goalId, Value<int>? investmentId, Value<double>? split}) {
+return GoalInvestmentTableCompanion(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,split: split ?? this.split,);
 }
 @override
 Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -789,12 +769,12 @@ if (goalId.present) {
 map['GOAL_ID'] = Variable<int>(goalId.value);}
 if (investmentId.present) {
 map['INVESTMENT_ID'] = Variable<int>(investmentId.value);}
-if (sharePercentage.present) {
-map['SHARE_PERCENTAGE'] = Variable<double>(sharePercentage.value);}
+if (split.present) {
+map['SPLIT'] = Variable<double>(split.value);}
 return map; 
 }
 @override
-String toString() {return (StringBuffer('GoalInvestmentTableCompanion(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('sharePercentage: $sharePercentage')..write(')')).toString();}
+String toString() {return (StringBuffer('GoalInvestmentTableCompanion(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('split: $split')..write(')')).toString();}
 }
 class InvestmentEnrichedDO extends DataClass {
 final int id;
@@ -803,24 +783,24 @@ final String? description;
 final RiskLevel riskLevel;
 final DateTime? maturityDate;
 final double? irr;
-final double? currentValue;
-final DateTime? currentValueUpdatedOn;
+final double? value;
+final DateTime? valueUpdatedOn;
 final int? basketId;
 final String? basketName;
 final double? totalInvestedAmount;
 final int? totalTransactions;
 final int? totalSips;
-const InvestmentEnrichedDO({required this.id, required this.name, this.description, required this.riskLevel, this.maturityDate, this.irr, this.currentValue, this.currentValueUpdatedOn, this.basketId, this.basketName, this.totalInvestedAmount, this.totalTransactions, this.totalSips});factory InvestmentEnrichedDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+const InvestmentEnrichedDO({required this.id, required this.name, this.description, required this.riskLevel, this.maturityDate, this.irr, this.value, this.valueUpdatedOn, this.basketId, this.basketName, this.totalInvestedAmount, this.totalTransactions, this.totalSips});factory InvestmentEnrichedDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
-return InvestmentEnrichedDO(id: serializer.fromJson<int>(json['id']),name: serializer.fromJson<String>(json['name']),description: serializer.fromJson<String?>(json['description']),riskLevel: $InvestmentTableTable.$converterriskLevel.fromJson(serializer.fromJson<String>(json['riskLevel'])),maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),irr: serializer.fromJson<double?>(json['irr']),currentValue: serializer.fromJson<double?>(json['currentValue']),currentValueUpdatedOn: serializer.fromJson<DateTime?>(json['currentValueUpdatedOn']),basketId: serializer.fromJson<int?>(json['basketId']),basketName: serializer.fromJson<String?>(json['basketName']),totalInvestedAmount: serializer.fromJson<double?>(json['totalInvestedAmount']),totalTransactions: serializer.fromJson<int?>(json['totalTransactions']),totalSips: serializer.fromJson<int?>(json['totalSips']),);}
+return InvestmentEnrichedDO(id: serializer.fromJson<int>(json['id']),name: serializer.fromJson<String>(json['name']),description: serializer.fromJson<String?>(json['description']),riskLevel: $InvestmentTableTable.$converterriskLevel.fromJson(serializer.fromJson<String>(json['riskLevel'])),maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),irr: serializer.fromJson<double?>(json['irr']),value: serializer.fromJson<double?>(json['value']),valueUpdatedOn: serializer.fromJson<DateTime?>(json['valueUpdatedOn']),basketId: serializer.fromJson<int?>(json['basketId']),basketName: serializer.fromJson<String?>(json['basketName']),totalInvestedAmount: serializer.fromJson<double?>(json['totalInvestedAmount']),totalTransactions: serializer.fromJson<int?>(json['totalTransactions']),totalSips: serializer.fromJson<int?>(json['totalSips']),);}
 @override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
 return <String, dynamic>{
-'id': serializer.toJson<int>(id),'name': serializer.toJson<String>(name),'description': serializer.toJson<String?>(description),'riskLevel': serializer.toJson<String>($InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),'maturityDate': serializer.toJson<DateTime?>(maturityDate),'irr': serializer.toJson<double?>(irr),'currentValue': serializer.toJson<double?>(currentValue),'currentValueUpdatedOn': serializer.toJson<DateTime?>(currentValueUpdatedOn),'basketId': serializer.toJson<int?>(basketId),'basketName': serializer.toJson<String?>(basketName),'totalInvestedAmount': serializer.toJson<double?>(totalInvestedAmount),'totalTransactions': serializer.toJson<int?>(totalTransactions),'totalSips': serializer.toJson<int?>(totalSips),};}InvestmentEnrichedDO copyWith({int? id,String? name,Value<String?> description = const Value.absent(),RiskLevel? riskLevel,Value<DateTime?> maturityDate = const Value.absent(),Value<double?> irr = const Value.absent(),Value<double?> currentValue = const Value.absent(),Value<DateTime?> currentValueUpdatedOn = const Value.absent(),Value<int?> basketId = const Value.absent(),Value<String?> basketName = const Value.absent(),Value<double?> totalInvestedAmount = const Value.absent(),Value<int?> totalTransactions = const Value.absent(),Value<int?> totalSips = const Value.absent()}) => InvestmentEnrichedDO(id: id ?? this.id,name: name ?? this.name,description: description.present ? description.value : this.description,riskLevel: riskLevel ?? this.riskLevel,maturityDate: maturityDate.present ? maturityDate.value : this.maturityDate,irr: irr.present ? irr.value : this.irr,currentValue: currentValue.present ? currentValue.value : this.currentValue,currentValueUpdatedOn: currentValueUpdatedOn.present ? currentValueUpdatedOn.value : this.currentValueUpdatedOn,basketId: basketId.present ? basketId.value : this.basketId,basketName: basketName.present ? basketName.value : this.basketName,totalInvestedAmount: totalInvestedAmount.present ? totalInvestedAmount.value : this.totalInvestedAmount,totalTransactions: totalTransactions.present ? totalTransactions.value : this.totalTransactions,totalSips: totalSips.present ? totalSips.value : this.totalSips,);@override
-String toString() {return (StringBuffer('InvestmentEnrichedDO(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('riskLevel: $riskLevel, ')..write('maturityDate: $maturityDate, ')..write('irr: $irr, ')..write('currentValue: $currentValue, ')..write('currentValueUpdatedOn: $currentValueUpdatedOn, ')..write('basketId: $basketId, ')..write('basketName: $basketName, ')..write('totalInvestedAmount: $totalInvestedAmount, ')..write('totalTransactions: $totalTransactions, ')..write('totalSips: $totalSips')..write(')')).toString();}
+'id': serializer.toJson<int>(id),'name': serializer.toJson<String>(name),'description': serializer.toJson<String?>(description),'riskLevel': serializer.toJson<String>($InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),'maturityDate': serializer.toJson<DateTime?>(maturityDate),'irr': serializer.toJson<double?>(irr),'value': serializer.toJson<double?>(value),'valueUpdatedOn': serializer.toJson<DateTime?>(valueUpdatedOn),'basketId': serializer.toJson<int?>(basketId),'basketName': serializer.toJson<String?>(basketName),'totalInvestedAmount': serializer.toJson<double?>(totalInvestedAmount),'totalTransactions': serializer.toJson<int?>(totalTransactions),'totalSips': serializer.toJson<int?>(totalSips),};}InvestmentEnrichedDO copyWith({int? id,String? name,Value<String?> description = const Value.absent(),RiskLevel? riskLevel,Value<DateTime?> maturityDate = const Value.absent(),Value<double?> irr = const Value.absent(),Value<double?> value = const Value.absent(),Value<DateTime?> valueUpdatedOn = const Value.absent(),Value<int?> basketId = const Value.absent(),Value<String?> basketName = const Value.absent(),Value<double?> totalInvestedAmount = const Value.absent(),Value<int?> totalTransactions = const Value.absent(),Value<int?> totalSips = const Value.absent()}) => InvestmentEnrichedDO(id: id ?? this.id,name: name ?? this.name,description: description.present ? description.value : this.description,riskLevel: riskLevel ?? this.riskLevel,maturityDate: maturityDate.present ? maturityDate.value : this.maturityDate,irr: irr.present ? irr.value : this.irr,value: value.present ? value.value : this.value,valueUpdatedOn: valueUpdatedOn.present ? valueUpdatedOn.value : this.valueUpdatedOn,basketId: basketId.present ? basketId.value : this.basketId,basketName: basketName.present ? basketName.value : this.basketName,totalInvestedAmount: totalInvestedAmount.present ? totalInvestedAmount.value : this.totalInvestedAmount,totalTransactions: totalTransactions.present ? totalTransactions.value : this.totalTransactions,totalSips: totalSips.present ? totalSips.value : this.totalSips,);@override
+String toString() {return (StringBuffer('InvestmentEnrichedDO(')..write('id: $id, ')..write('name: $name, ')..write('description: $description, ')..write('riskLevel: $riskLevel, ')..write('maturityDate: $maturityDate, ')..write('irr: $irr, ')..write('value: $value, ')..write('valueUpdatedOn: $valueUpdatedOn, ')..write('basketId: $basketId, ')..write('basketName: $basketName, ')..write('totalInvestedAmount: $totalInvestedAmount, ')..write('totalTransactions: $totalTransactions, ')..write('totalSips: $totalSips')..write(')')).toString();}
 @override
- int get hashCode => Object.hash(id, name, description, riskLevel, maturityDate, irr, currentValue, currentValueUpdatedOn, basketId, basketName, totalInvestedAmount, totalTransactions, totalSips);@override
-bool operator ==(Object other) => identical(this, other) || (other is InvestmentEnrichedDO && other.id == this.id && other.name == this.name && other.description == this.description && other.riskLevel == this.riskLevel && other.maturityDate == this.maturityDate && other.irr == this.irr && other.currentValue == this.currentValue && other.currentValueUpdatedOn == this.currentValueUpdatedOn && other.basketId == this.basketId && other.basketName == this.basketName && other.totalInvestedAmount == this.totalInvestedAmount && other.totalTransactions == this.totalTransactions && other.totalSips == this.totalSips);
+ int get hashCode => Object.hash(id, name, description, riskLevel, maturityDate, irr, value, valueUpdatedOn, basketId, basketName, totalInvestedAmount, totalTransactions, totalSips);@override
+bool operator ==(Object other) => identical(this, other) || (other is InvestmentEnrichedDO && other.id == this.id && other.name == this.name && other.description == this.description && other.riskLevel == this.riskLevel && other.maturityDate == this.maturityDate && other.irr == this.irr && other.value == this.value && other.valueUpdatedOn == this.valueUpdatedOn && other.basketId == this.basketId && other.basketName == this.basketName && other.totalInvestedAmount == this.totalInvestedAmount && other.totalTransactions == this.totalTransactions && other.totalSips == this.totalSips);
 }class $InvestmentEnrichedViewView extends ViewInfo<$InvestmentEnrichedViewView, InvestmentEnrichedDO> implements HasResultSet {
 final String? _alias;
 @override final _$AppDatabase attachedDatabase;
@@ -830,7 +810,7 @@ $BasketTableTable get basket => attachedDatabase.basketTable.createAlias('t1');
 $TransactionTableTable get transaction => attachedDatabase.transactionTable.createAlias('t2');
 $SipTableTable get sip => attachedDatabase.sipTable.createAlias('t3');
 @override
-List<GeneratedColumn> get $columns => [id, name, description, riskLevel, maturityDate, irr, currentValue, currentValueUpdatedOn, basketId, basketName, totalInvestedAmount, totalTransactions, totalSips];
+List<GeneratedColumn> get $columns => [id, name, description, riskLevel, maturityDate, irr, value, valueUpdatedOn, basketId, basketName, totalInvestedAmount, totalTransactions, totalSips];
 @override
 String get aliasedName => _alias ?? entityName;
 @override
@@ -840,7 +820,7 @@ Map<SqlDialect, String>?get createViewStatements => null;
 @override
 $InvestmentEnrichedViewView get asDslTable => this;
 @override InvestmentEnrichedDO map(Map<String, dynamic> data, {String? tablePrefix})  {
-final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return InvestmentEnrichedDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}NAME'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), riskLevel: $InvestmentTableTable.$converterriskLevel.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!), maturityDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}MATURITY_DATE']), irr: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}IRR']), currentValue: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}CURRENT_VALUE']), currentValueUpdatedOn: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}CURRENT_VALUE_UPDATED_ON']), basketId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}basket_id']), basketName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}basket_name']), totalInvestedAmount: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}total_invested_amount']), totalTransactions: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}total_transactions']), totalSips: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}total_sips']), );
+final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return InvestmentEnrichedDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}NAME'])!, description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']), riskLevel: $InvestmentTableTable.$converterriskLevel.fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!), maturityDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}MATURITY_DATE']), irr: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}IRR']), value: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}VALUE']), valueUpdatedOn: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}VALUE_UPDATED_ON']), basketId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}basket_id']), basketName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}basket_name']), totalInvestedAmount: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}total_invested_amount']), totalTransactions: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}total_transactions']), totalSips: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}total_sips']), );
 }
 late final GeneratedColumn<int> id = GeneratedColumn<int>('ID', aliasedName, false, generatedAs: GeneratedAs(investment.id, false), type: DriftSqlType.int);
 late final GeneratedColumn<String> name = GeneratedColumn<String>('NAME', aliasedName, false, generatedAs: GeneratedAs(investment.name, false), type: DriftSqlType.string);
@@ -848,8 +828,8 @@ late final GeneratedColumn<String> description = GeneratedColumn<String>('DESCRI
 late final GeneratedColumnWithTypeConverter<RiskLevel, String> riskLevel = GeneratedColumn<String>('RISK_LEVEL', aliasedName, false, generatedAs: GeneratedAs(investment.riskLevel, false), type: DriftSqlType.string).withConverter<RiskLevel>($InvestmentTableTable.$converterriskLevel);
 late final GeneratedColumn<DateTime> maturityDate = GeneratedColumn<DateTime>('MATURITY_DATE', aliasedName, true, generatedAs: GeneratedAs(investment.maturityDate, false), type: DriftSqlType.dateTime);
 late final GeneratedColumn<double> irr = GeneratedColumn<double>('IRR', aliasedName, true, generatedAs: GeneratedAs(investment.irr, false), type: DriftSqlType.double);
-late final GeneratedColumn<double> currentValue = GeneratedColumn<double>('CURRENT_VALUE', aliasedName, true, generatedAs: GeneratedAs(investment.currentValue, false), type: DriftSqlType.double);
-late final GeneratedColumn<DateTime> currentValueUpdatedOn = GeneratedColumn<DateTime>('CURRENT_VALUE_UPDATED_ON', aliasedName, true, generatedAs: GeneratedAs(investment.currentValueUpdatedOn, false), type: DriftSqlType.dateTime);
+late final GeneratedColumn<double> value = GeneratedColumn<double>('VALUE', aliasedName, true, generatedAs: GeneratedAs(investment.value, false), type: DriftSqlType.double);
+late final GeneratedColumn<DateTime> valueUpdatedOn = GeneratedColumn<DateTime>('VALUE_UPDATED_ON', aliasedName, true, generatedAs: GeneratedAs(investment.valueUpdatedOn, false), type: DriftSqlType.dateTime);
 late final GeneratedColumn<int> basketId = GeneratedColumn<int>('basket_id', aliasedName, true, generatedAs: GeneratedAs(basket.id, false), type: DriftSqlType.int);
 late final GeneratedColumn<String> basketName = GeneratedColumn<String>('basket_name', aliasedName, true, generatedAs: GeneratedAs(basket.name, false), type: DriftSqlType.string);
 late final GeneratedColumn<double> totalInvestedAmount = GeneratedColumn<double>('total_invested_amount', aliasedName, true, generatedAs: GeneratedAs(transaction.amount.sum(), false), type: DriftSqlType.double);
@@ -863,53 +843,53 @@ Query? get query => (attachedDatabase.selectOnly(investment)..addColumns($column
       Set<String> get readTables => const {'investment_table', 'basket_table', 'transaction_table', 'sip_table'};
     
 }
-class GoalInvestmentEnrichedMappingDO extends DataClass {
+class GoalInvestmentEnrichedDO extends DataClass {
 final int id;
 final int goalId;
 final int investmentId;
-final double sharePercentage;
+final double split;
 final String? goalName;
 final String? investmentName;
-const GoalInvestmentEnrichedMappingDO({required this.id, required this.goalId, required this.investmentId, required this.sharePercentage, this.goalName, this.investmentName});factory GoalInvestmentEnrichedMappingDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+const GoalInvestmentEnrichedDO({required this.id, required this.goalId, required this.investmentId, required this.split, this.goalName, this.investmentName});factory GoalInvestmentEnrichedDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
-return GoalInvestmentEnrichedMappingDO(id: serializer.fromJson<int>(json['id']),goalId: serializer.fromJson<int>(json['goalId']),investmentId: serializer.fromJson<int>(json['investmentId']),sharePercentage: serializer.fromJson<double>(json['sharePercentage']),goalName: serializer.fromJson<String?>(json['goalName']),investmentName: serializer.fromJson<String?>(json['investmentName']),);}
+return GoalInvestmentEnrichedDO(id: serializer.fromJson<int>(json['id']),goalId: serializer.fromJson<int>(json['goalId']),investmentId: serializer.fromJson<int>(json['investmentId']),split: serializer.fromJson<double>(json['split']),goalName: serializer.fromJson<String?>(json['goalName']),investmentName: serializer.fromJson<String?>(json['investmentName']),);}
 @override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
 return <String, dynamic>{
-'id': serializer.toJson<int>(id),'goalId': serializer.toJson<int>(goalId),'investmentId': serializer.toJson<int>(investmentId),'sharePercentage': serializer.toJson<double>(sharePercentage),'goalName': serializer.toJson<String?>(goalName),'investmentName': serializer.toJson<String?>(investmentName),};}GoalInvestmentEnrichedMappingDO copyWith({int? id,int? goalId,int? investmentId,double? sharePercentage,Value<String?> goalName = const Value.absent(),Value<String?> investmentName = const Value.absent()}) => GoalInvestmentEnrichedMappingDO(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,sharePercentage: sharePercentage ?? this.sharePercentage,goalName: goalName.present ? goalName.value : this.goalName,investmentName: investmentName.present ? investmentName.value : this.investmentName,);@override
-String toString() {return (StringBuffer('GoalInvestmentEnrichedMappingDO(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('sharePercentage: $sharePercentage, ')..write('goalName: $goalName, ')..write('investmentName: $investmentName')..write(')')).toString();}
+'id': serializer.toJson<int>(id),'goalId': serializer.toJson<int>(goalId),'investmentId': serializer.toJson<int>(investmentId),'split': serializer.toJson<double>(split),'goalName': serializer.toJson<String?>(goalName),'investmentName': serializer.toJson<String?>(investmentName),};}GoalInvestmentEnrichedDO copyWith({int? id,int? goalId,int? investmentId,double? split,Value<String?> goalName = const Value.absent(),Value<String?> investmentName = const Value.absent()}) => GoalInvestmentEnrichedDO(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,split: split ?? this.split,goalName: goalName.present ? goalName.value : this.goalName,investmentName: investmentName.present ? investmentName.value : this.investmentName,);@override
+String toString() {return (StringBuffer('GoalInvestmentEnrichedDO(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('split: $split, ')..write('goalName: $goalName, ')..write('investmentName: $investmentName')..write(')')).toString();}
 @override
- int get hashCode => Object.hash(id, goalId, investmentId, sharePercentage, goalName, investmentName);@override
-bool operator ==(Object other) => identical(this, other) || (other is GoalInvestmentEnrichedMappingDO && other.id == this.id && other.goalId == this.goalId && other.investmentId == this.investmentId && other.sharePercentage == this.sharePercentage && other.goalName == this.goalName && other.investmentName == this.investmentName);
-}class $GoalInvestmentEnrichedMappingViewView extends ViewInfo<$GoalInvestmentEnrichedMappingViewView, GoalInvestmentEnrichedMappingDO> implements HasResultSet {
+ int get hashCode => Object.hash(id, goalId, investmentId, split, goalName, investmentName);@override
+bool operator ==(Object other) => identical(this, other) || (other is GoalInvestmentEnrichedDO && other.id == this.id && other.goalId == this.goalId && other.investmentId == this.investmentId && other.split == this.split && other.goalName == this.goalName && other.investmentName == this.investmentName);
+}class $GoalInvestmentEnrichedViewView extends ViewInfo<$GoalInvestmentEnrichedViewView, GoalInvestmentEnrichedDO> implements HasResultSet {
 final String? _alias;
 @override final _$AppDatabase attachedDatabase;
-$GoalInvestmentEnrichedMappingViewView(this.attachedDatabase, [this._alias]);
+$GoalInvestmentEnrichedViewView(this.attachedDatabase, [this._alias]);
 $GoalInvestmentTableTable get goalInvestment => attachedDatabase.goalInvestmentTable.createAlias('t0');
 $GoalTableTable get goal => attachedDatabase.goalTable.createAlias('t1');
 $InvestmentTableTable get investment => attachedDatabase.investmentTable.createAlias('t2');
 @override
-List<GeneratedColumn> get $columns => [id, goalId, investmentId, sharePercentage, goalName, investmentName];
+List<GeneratedColumn> get $columns => [id, goalId, investmentId, split, goalName, investmentName];
 @override
 String get aliasedName => _alias ?? entityName;
 @override
- String get entityName=> 'goal_investment_enriched_mapping_view';
+ String get entityName=> 'goal_investment_enriched_view';
 @override
 Map<SqlDialect, String>?get createViewStatements => null;
 @override
-$GoalInvestmentEnrichedMappingViewView get asDslTable => this;
-@override GoalInvestmentEnrichedMappingDO map(Map<String, dynamic> data, {String? tablePrefix})  {
-final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return GoalInvestmentEnrichedMappingDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, goalId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}GOAL_ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, sharePercentage: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}SHARE_PERCENTAGE'])!, goalName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}goal_name']), investmentName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}investment_name']), );
+$GoalInvestmentEnrichedViewView get asDslTable => this;
+@override GoalInvestmentEnrichedDO map(Map<String, dynamic> data, {String? tablePrefix})  {
+final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return GoalInvestmentEnrichedDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, goalId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}GOAL_ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, split: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}SPLIT'])!, goalName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}goal_name']), investmentName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}investment_name']), );
 }
 late final GeneratedColumn<int> id = GeneratedColumn<int>('ID', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.id, false), type: DriftSqlType.int);
 late final GeneratedColumn<int> goalId = GeneratedColumn<int>('GOAL_ID', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.goalId, false), type: DriftSqlType.int);
 late final GeneratedColumn<int> investmentId = GeneratedColumn<int>('INVESTMENT_ID', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.investmentId, false), type: DriftSqlType.int);
-late final GeneratedColumn<double> sharePercentage = GeneratedColumn<double>('SHARE_PERCENTAGE', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.sharePercentage, false), type: DriftSqlType.double);
+late final GeneratedColumn<double> split = GeneratedColumn<double>('SPLIT', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.split, false), type: DriftSqlType.double);
 late final GeneratedColumn<String> goalName = GeneratedColumn<String>('goal_name', aliasedName, true, generatedAs: GeneratedAs(goal.name, false), type: DriftSqlType.string);
 late final GeneratedColumn<String> investmentName = GeneratedColumn<String>('investment_name', aliasedName, true, generatedAs: GeneratedAs(investment.name, false), type: DriftSqlType.string);
 @override
-$GoalInvestmentEnrichedMappingViewView createAlias(String alias) {
-return $GoalInvestmentEnrichedMappingViewView(attachedDatabase, alias);}@override
+$GoalInvestmentEnrichedViewView createAlias(String alias) {
+return $GoalInvestmentEnrichedViewView(attachedDatabase, alias);}@override
 Query? get query => (attachedDatabase.selectOnly(goalInvestment)..addColumns($columns)).join([ innerJoin(goal,goal.id.equalsExp(goalInvestment.goalId)), innerJoin(investment,investment.id.equalsExp(goalInvestment.investmentId)) ]);
       @override
       Set<String> get readTables => const {'goal_investment_table', 'goal_table', 'investment_table'};
@@ -924,9 +904,9 @@ late final $TransactionTableTable transactionTable = $TransactionTableTable(this
 late final $GoalTableTable goalTable = $GoalTableTable(this);
 late final $GoalInvestmentTableTable goalInvestmentTable = $GoalInvestmentTableTable(this);
 late final $InvestmentEnrichedViewView investmentEnrichedView = $InvestmentEnrichedViewView(this);
-late final $GoalInvestmentEnrichedMappingViewView goalInvestmentEnrichedMappingView = $GoalInvestmentEnrichedMappingViewView(this);
+late final $GoalInvestmentEnrichedViewView goalInvestmentEnrichedView = $GoalInvestmentEnrichedViewView(this);
 @override
 Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
 @override
-List<DatabaseSchemaEntity> get allSchemaEntities => [basketTable, investmentTable, sipTable, transactionTable, goalTable, goalInvestmentTable, investmentEnrichedView, goalInvestmentEnrichedMappingView];
+List<DatabaseSchemaEntity> get allSchemaEntities => [basketTable, investmentTable, sipTable, transactionTable, goalTable, goalInvestmentTable, investmentEnrichedView, goalInvestmentEnrichedView];
 }

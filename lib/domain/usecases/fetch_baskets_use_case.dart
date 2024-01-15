@@ -15,7 +15,7 @@ class FetchBasketsUseCase {
             fetchInvestmentsUseCase ?? FetchInvestmentsUseCase();
 
   Future<List<Basket>> invoke() async {
-    List<BasketDO> baskets = await _basketApi.getBaskets();
+    List<BasketDO> baskets = await _basketApi.get();
     List<Investment> investments =
         await _fetchInvestmentsUseCase.fetchInvestments();
 

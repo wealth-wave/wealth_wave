@@ -21,7 +21,7 @@ class GoalsPresenter extends Presenter<GoalsViewState> {
   }
 
   void deleteGoal({required final int id}) {
-    _goalApi.deleteGoal(id: id).then((_) => fetchGoals());
+    _goalApi.deleteBy(id: id).then((_) => fetchGoals());
   }
 }
 

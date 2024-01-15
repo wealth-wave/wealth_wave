@@ -22,11 +22,11 @@ class CreateBasketPresenter extends Presenter<CreateBasketViewState> {
 
     if (basketId != null) {
       _basketApi
-          .updateBasket(id: basketId, name: name, description: description)
+          .update(id: basketId, name: name, description: description)
           .then((_) => updateViewState(
               (viewState) => viewState.onBasketCreated = SingleEvent(null)));
     } else {
-      _basketApi.createBasket(name: name, description: description).then((_) =>
+      _basketApi.create(name: name, description: description).then((_) =>
           updateViewState(
               (viewState) => viewState.onBasketCreated = SingleEvent(null)));
     }

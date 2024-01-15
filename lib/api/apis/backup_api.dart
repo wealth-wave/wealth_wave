@@ -11,7 +11,7 @@ class BackupApi {
 
   BackupApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
 
-  Future<void> importDatabase() async {
+  Future<void> import() async {
     final file = await _pickFile();
     if (file == null) {
       return Future.error('No file selected');
@@ -26,7 +26,7 @@ class BackupApi {
     await _db.loadBackup(json);
   }
 
-  Future<void> exportDatabase() async {
+  Future<void> export() async {
     final result = await _db.getBackup();
 
     final jsonString = json.encode(result);

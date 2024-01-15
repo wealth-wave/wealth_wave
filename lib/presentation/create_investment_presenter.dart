@@ -19,7 +19,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
         super(CreateInvestmentViewState());
 
   void getBaskets() {
-    _basketApi.getBaskets().then(
+    _basketApi.get().then(
         (value) => updateViewState((viewState) => viewState.baskets = value));
   }
 
