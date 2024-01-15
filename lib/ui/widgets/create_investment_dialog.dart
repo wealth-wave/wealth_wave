@@ -102,24 +102,37 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                 labelText: 'Desctiption', border: OutlineInputBorder()),
           ),
           const SizedBox(height: AppDimen.defaultPadding),
-          TextFormField(
-            textInputAction: TextInputAction.next,
-            controller: _valueController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: const InputDecoration(
-                labelText: 'Value', border: OutlineInputBorder()),
-          ),
-          const SizedBox(height: AppDimen.defaultPadding),
-          TextFormField(
-            textInputAction: TextInputAction.next,
-            controller: _valueUpdatedDateController,
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
-            ],
-            decoration: const InputDecoration(
-                labelText: 'Date (DD-MM-YYYY)', border: OutlineInputBorder()),
-          ),
+          Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).dividerColor),
+                  borderRadius: BorderRadius.circular(AppDimen.defaultPadding)),
+              child: Padding(
+                padding: const EdgeInsets.all(AppDimen.minPadding),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      controller: _valueController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: const InputDecoration(
+                          labelText: 'Current Value',
+                          border: OutlineInputBorder()),
+                    ),
+                    const SizedBox(height: AppDimen.minPadding),
+                    const Text('Or'),
+                    const SizedBox(height: AppDimen.minPadding),
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      controller: _valueController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: const InputDecoration(
+                          labelText: 'IRR %', border: OutlineInputBorder()),
+                    )
+                  ],
+                ),
+              )),
           const SizedBox(height: AppDimen.defaultPadding),
           DropdownButtonFormField<int>(
               decoration: const InputDecoration(

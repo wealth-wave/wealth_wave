@@ -1,0 +1,58 @@
+@startuml
+
+class Basket {
+  - id: Int
+  - name: String
+  - description: String
+}
+
+class Investment {
+  - id: Int
+  - name: String
+  - description: String
+  - basketId: Int
+  - currentValue: Real
+  - riskLevel: String
+  - irr: Real
+  - currentValueUpdatedOn: DateTime
+  - maturityDate: DateTime
+}
+
+class Transaction {
+  - id: Int
+  - investmentId: Int
+  - sipId: Int
+  - amount: Real
+  - description: String
+  - amountInvestedOn: DateTime
+}
+
+class Sip {
+  - id: Int
+  - investmentId: Int
+  - amount: Real
+  - description: String
+  - startDate: DateTime
+  - endDate: DateTime
+  - frequency: Real
+  - executedTill: DateTime
+}
+
+class Goal {
+  - id: Int
+  - name: String
+  - description: String
+  - amount: Real
+  - date: DateTime
+  - inflation: Real
+  - targetAmount: Real
+  - targetDate: DateTime
+  - importance: String
+}
+
+Basket "1" -- "0..*" Investment : contains
+Investment "1" -- "0..*" Transaction : contains
+Investment "1" -- "0..*" Sip : contains
+Goal "1" -- "*..*" Investment : contains
+
+@enduml
