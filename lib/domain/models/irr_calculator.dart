@@ -1,17 +1,17 @@
 import 'dart:math';
 
-import 'package:wealth_wave/domain/models/transaction.dart';
+import 'package:wealth_wave/domain/models/payment.dart';
 
 class IRRCalculator {
   double? calculateIRR(
-      {required final List<Transaction> transactions,
+      {required final List<Payment> payments,
       required final double value,
       required final DateTime valueUpdatedOn}) {
-    if (transactions.isEmpty) return null;
+    if (payments.isEmpty) return null;
 
-    transactions.sort((a, b) => a.createdOn.compareTo(b.createdOn));
-    DateTime initialDate = transactions.first.createdOn;
-    List<_CashFlow> cashFlows = transactions
+    payments.sort((a, b) => a.createdOn.compareTo(b.createdOn));
+    DateTime initialDate = payments.first.createdOn;
+    List<_CashFlow> cashFlows = payments
         .map((transaction) => _CashFlow(
             amount: -transaction.amount,
             years: transaction.createdOn.difference(initialDate).inDays / 365))
@@ -37,12 +37,12 @@ class IRRCalculator {
   }
 
   double calculateTransactedValueOnIRR(
-      {required final List<Transaction> transactions,
+      {required final List<Payment> payments,
       required final double irr,
       required final DateTime date}) {
     double futureValue = 0;
 
-    for (var transaction in transactions) {
+    for (var transaction in payments) {
       double years = date.difference(transaction.createdOn).inDays / 365;
       futureValue += transaction.amount / pow(1 + irr, years);
     }

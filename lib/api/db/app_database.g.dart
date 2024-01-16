@@ -843,58 +843,6 @@ Query? get query => (attachedDatabase.selectOnly(investment)..addColumns($column
       Set<String> get readTables => const {'investment_table', 'basket_table', 'transaction_table', 'sip_table'};
     
 }
-class GoalInvestmentEnrichedDO extends DataClass {
-final int id;
-final int goalId;
-final int investmentId;
-final double split;
-final String? goalName;
-final String? investmentName;
-const GoalInvestmentEnrichedDO({required this.id, required this.goalId, required this.investmentId, required this.split, this.goalName, this.investmentName});factory GoalInvestmentEnrichedDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
-serializer ??= driftRuntimeOptions.defaultSerializer;
-return GoalInvestmentEnrichedDO(id: serializer.fromJson<int>(json['id']),goalId: serializer.fromJson<int>(json['goalId']),investmentId: serializer.fromJson<int>(json['investmentId']),split: serializer.fromJson<double>(json['split']),goalName: serializer.fromJson<String?>(json['goalName']),investmentName: serializer.fromJson<String?>(json['investmentName']),);}
-@override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-serializer ??= driftRuntimeOptions.defaultSerializer;
-return <String, dynamic>{
-'id': serializer.toJson<int>(id),'goalId': serializer.toJson<int>(goalId),'investmentId': serializer.toJson<int>(investmentId),'split': serializer.toJson<double>(split),'goalName': serializer.toJson<String?>(goalName),'investmentName': serializer.toJson<String?>(investmentName),};}GoalInvestmentEnrichedDO copyWith({int? id,int? goalId,int? investmentId,double? split,Value<String?> goalName = const Value.absent(),Value<String?> investmentName = const Value.absent()}) => GoalInvestmentEnrichedDO(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,split: split ?? this.split,goalName: goalName.present ? goalName.value : this.goalName,investmentName: investmentName.present ? investmentName.value : this.investmentName,);@override
-String toString() {return (StringBuffer('GoalInvestmentEnrichedDO(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('split: $split, ')..write('goalName: $goalName, ')..write('investmentName: $investmentName')..write(')')).toString();}
-@override
- int get hashCode => Object.hash(id, goalId, investmentId, split, goalName, investmentName);@override
-bool operator ==(Object other) => identical(this, other) || (other is GoalInvestmentEnrichedDO && other.id == this.id && other.goalId == this.goalId && other.investmentId == this.investmentId && other.split == this.split && other.goalName == this.goalName && other.investmentName == this.investmentName);
-}class $GoalInvestmentEnrichedViewView extends ViewInfo<$GoalInvestmentEnrichedViewView, GoalInvestmentEnrichedDO> implements HasResultSet {
-final String? _alias;
-@override final _$AppDatabase attachedDatabase;
-$GoalInvestmentEnrichedViewView(this.attachedDatabase, [this._alias]);
-$GoalInvestmentTableTable get goalInvestment => attachedDatabase.goalInvestmentTable.createAlias('t0');
-$GoalTableTable get goal => attachedDatabase.goalTable.createAlias('t1');
-$InvestmentTableTable get investment => attachedDatabase.investmentTable.createAlias('t2');
-@override
-List<GeneratedColumn> get $columns => [id, goalId, investmentId, split, goalName, investmentName];
-@override
-String get aliasedName => _alias ?? entityName;
-@override
- String get entityName=> 'goal_investment_enriched_view';
-@override
-Map<SqlDialect, String>?get createViewStatements => null;
-@override
-$GoalInvestmentEnrichedViewView get asDslTable => this;
-@override GoalInvestmentEnrichedDO map(Map<String, dynamic> data, {String? tablePrefix})  {
-final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return GoalInvestmentEnrichedDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, goalId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}GOAL_ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, split: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}SPLIT'])!, goalName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}goal_name']), investmentName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}investment_name']), );
-}
-late final GeneratedColumn<int> id = GeneratedColumn<int>('ID', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.id, false), type: DriftSqlType.int);
-late final GeneratedColumn<int> goalId = GeneratedColumn<int>('GOAL_ID', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.goalId, false), type: DriftSqlType.int);
-late final GeneratedColumn<int> investmentId = GeneratedColumn<int>('INVESTMENT_ID', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.investmentId, false), type: DriftSqlType.int);
-late final GeneratedColumn<double> split = GeneratedColumn<double>('SPLIT', aliasedName, false, generatedAs: GeneratedAs(goalInvestment.split, false), type: DriftSqlType.double);
-late final GeneratedColumn<String> goalName = GeneratedColumn<String>('goal_name', aliasedName, true, generatedAs: GeneratedAs(goal.name, false), type: DriftSqlType.string);
-late final GeneratedColumn<String> investmentName = GeneratedColumn<String>('investment_name', aliasedName, true, generatedAs: GeneratedAs(investment.name, false), type: DriftSqlType.string);
-@override
-$GoalInvestmentEnrichedViewView createAlias(String alias) {
-return $GoalInvestmentEnrichedViewView(attachedDatabase, alias);}@override
-Query? get query => (attachedDatabase.selectOnly(goalInvestment)..addColumns($columns)).join([ innerJoin(goal,goal.id.equalsExp(goalInvestment.goalId)), innerJoin(investment,investment.id.equalsExp(goalInvestment.investmentId)) ]);
-      @override
-      Set<String> get readTables => const {'goal_investment_table', 'goal_table', 'investment_table'};
-    
-}
 abstract class _$AppDatabase extends GeneratedDatabase{
 _$AppDatabase(QueryExecutor e): super(e);
 late final $BasketTableTable basketTable = $BasketTableTable(this);
@@ -904,9 +852,8 @@ late final $TransactionTableTable transactionTable = $TransactionTableTable(this
 late final $GoalTableTable goalTable = $GoalTableTable(this);
 late final $GoalInvestmentTableTable goalInvestmentTable = $GoalInvestmentTableTable(this);
 late final $InvestmentEnrichedViewView investmentEnrichedView = $InvestmentEnrichedViewView(this);
-late final $GoalInvestmentEnrichedViewView goalInvestmentEnrichedView = $GoalInvestmentEnrichedViewView(this);
 @override
 Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
 @override
-List<DatabaseSchemaEntity> get allSchemaEntities => [basketTable, investmentTable, sipTable, transactionTable, goalTable, goalInvestmentTable, investmentEnrichedView, goalInvestmentEnrichedView];
+List<DatabaseSchemaEntity> get allSchemaEntities => [basketTable, investmentTable, sipTable, transactionTable, goalTable, goalInvestmentTable, investmentEnrichedView];
 }

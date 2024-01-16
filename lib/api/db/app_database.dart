@@ -147,30 +147,6 @@ abstract class InvestmentEnrichedView extends View {
         ..groupBy([investment.id]);
 }
 
-@DataClassName('GoalInvestmentEnrichedDO')
-abstract class GoalInvestmentEnrichedView extends View {
-  GoalInvestmentTable get goalInvestment;
-  GoalTable get goal;
-  InvestmentTable get investment;
-
-  Expression<String> get goalName => goal.name;
-  Expression<String> get investmentName => investment.name;
-
-  @override
-  Query as() => select([
-        goalInvestment.id,
-        goalInvestment.goalId,
-        goalInvestment.investmentId,
-        goalInvestment.split,
-        goalName,
-        investmentName
-      ]).from(goalInvestment).join([
-        innerJoin(goal, goal.id.equalsExp(goalInvestment.goalId)),
-        innerJoin(
-            investment, investment.id.equalsExp(goalInvestment.investmentId)),
-      ]);
-}
-
 @DriftDatabase(tables: [
   BasketTable,
   InvestmentTable,
@@ -179,8 +155,7 @@ abstract class GoalInvestmentEnrichedView extends View {
   SipTable,
   GoalInvestmentTable,
 ], views: [
-  InvestmentEnrichedView,
-  GoalInvestmentEnrichedView,
+  InvestmentEnrichedView
 ])
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;

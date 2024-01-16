@@ -37,6 +37,11 @@ class SipApi {
     }
   }
 
+  Future<SipDO> getById({required final int id}) async {
+    return (_db.select(_db.sipTable)..where((t) => t.id.equals(id)))
+        .getSingle();
+  }
+
   Future<int> update(
       {required final int id,
       required final int investmentId,

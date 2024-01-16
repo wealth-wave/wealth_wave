@@ -27,7 +27,7 @@ void main() {
       final finalDate = DateTime(2023, 1, 1);
 
       final irr = calculator.calculateIRR(
-          transactions: transactions,
+          payments: transactions,
           value: finalValue,
           valueUpdatedOn: finalDate);
 

@@ -27,7 +27,7 @@ class InvestmentService {
             maturityDate: maturityDate,
             irr: irr,
             valueUpdatedOn: valueUpdatedOn)
-        .then((investmentId) => _investmentApi.getBy(id: investmentId))
+        .then((investmentId) => _investmentApi.getById(id: investmentId))
         .then((investmentDO) => Investment.from(investmentDO: investmentDO));
   }
 
@@ -38,7 +38,7 @@ class InvestmentService {
   }
 
   Future<Investment> getBy({required final int id}) async {
-    return _investmentApi.getBy(id: id).then((investmentDO) {
+    return _investmentApi.getById(id: id).then((investmentDO) {
       return Investment.from(investmentDO: investmentDO);
     });
   }
@@ -55,7 +55,7 @@ class InvestmentService {
             maturityDate: investment.maturityDate,
             riskLevel: investment.riskLevel,
             basketId: investment.basketId)
-        .then((value) => _investmentApi.getBy(id: investment.id))
+        .then((value) => _investmentApi.getById(id: investment.id))
         .then((investmentDO) => Investment.from(investmentDO: investmentDO));
   }
 

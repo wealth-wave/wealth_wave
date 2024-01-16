@@ -13,7 +13,7 @@ class Basket {
       {required this.id,
       required this.name,
       required this.description,
-      InvestmentApi? investmentApi})
+      final InvestmentApi? investmentApi})
       : _investmentApi = investmentApi ?? InvestmentApi();
 
   Future<int> getTotalInvestments() {
@@ -29,6 +29,22 @@ class Basket {
             .map((investment) => investment.getTotalInvestedAmount())))
         .then((investedAmounts) =>
             investedAmounts.reduce((value, element) => value + element));
+  }
+
+  Future<double> getValue({final bool considerFuturePayments = false}) async {
+    return _investmentApi
+        .getBy(basketId: id)
+        .then((investments) => investments
+            .map((investmentDO) => Investment.from(investmentDO: investmentDO)))
+        .then((investments) => Future.wait(investments
+            .map((investment) => investment.getValueOn(date: DateTime.now(), considerFuturePayments: considerFuturePayments))))
+        .then((values) => values.reduce((value, element) => value + element));
+  }
+
+  Future<List<Investment>> getInvestments() {
+    return _investmentApi.getBy(basketId: id).then((investments) => investments
+        .map((investmentDO) => Investment.from(investmentDO: investmentDO))
+        .toList());
   }
 
   static Basket from({required final BasketDO basketDO}) {

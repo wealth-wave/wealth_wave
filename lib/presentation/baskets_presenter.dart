@@ -1,4 +1,3 @@
-import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/domain/services/basket_service.dart';
@@ -17,7 +16,7 @@ class BasketsPresenter extends Presenter<BasketsViewState> {
   }
 
   void deleteBasket({required final int id}) {
-    _basketApi.deleteBasket(id: id).then((_) => fetchBaskets());
+    _basketService.deleteBy(id: id).then((_) => fetchBaskets());
   }
 }
 

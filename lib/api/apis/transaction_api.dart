@@ -21,17 +21,21 @@ class TransactionApi {
             createdOn: createdOn));
   }
 
-  Future<List<TransactionDO>> getBy({final int? investmentId}) async {
-    if (investmentId == null) {
-      return (_db.select(_db.transactionTable)
-            ..orderBy([(t) => OrderingTerm.desc(t.createdOn)]))
-          .get();
-    } else {
+  Future<List<TransactionDO>> getBy(
+      {final int? investmentId, final int? sipId}) async {
+    if (investmentId != null) {
       return (_db.select(_db.transactionTable)
             ..where((t) => t.investmentId.equals(investmentId))
             ..orderBy([(t) => OrderingTerm.desc(t.createdOn)]))
           .get();
+    } else if (sipId != null) {
+      return (_db.select(_db.transactionTable)
+            ..where((t) => t.sipId.equals(sipId))
+            ..orderBy([(t) => OrderingTerm.desc(t.createdOn)]))
+          .get();
     }
+
+    throw Exception('Invalid getBy call');
   }
 
   Future<int> update(

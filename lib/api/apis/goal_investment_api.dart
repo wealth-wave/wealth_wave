@@ -15,18 +15,18 @@ class GoalInvestmentApi {
             goalId: goalId, investmentId: investmentId, split: split));
   }
 
-  Future<List<GoalInvestmentEnrichedDO>> getBy(
+  Future<List<GoalInvestmentDO>> getBy(
       {final int? goalId, final int? investmentId}) async {
     if (goalId != null) {
-      return (_db.select(_db.goalInvestmentEnrichedView)
+      return (_db.select(_db.goalInvestmentTable)
             ..where((t) => t.goalId.equals(goalId)))
           .get();
     } else if (investmentId != null) {
-      return (_db.select(_db.goalInvestmentEnrichedView)
+      return (_db.select(_db.goalInvestmentTable)
             ..where((t) => t.investmentId.equals(investmentId)))
           .get();
     }
-    return _db.select(_db.goalInvestmentEnrichedView).get();
+    throw Exception('Invalid getBy call');
   }
 
   Future<int> update(
