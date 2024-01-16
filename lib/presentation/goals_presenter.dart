@@ -1,7 +1,7 @@
 import 'package:wealth_wave/api/apis/goal_api.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
-import 'package:wealth_wave/domain/usecases/fetch_goals_use_case.dart';
+import 'package:wealth_wave/domain/services/goal_service.dart';
 
 class GoalsPresenter extends Presenter<GoalsViewState> {
   final GoalApi _goalApi;

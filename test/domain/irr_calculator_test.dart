@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:wealth_wave/domain/irr_calculator.dart';
+import 'package:wealth_wave/domain/models/irr_calculator.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
 
 void main() {
@@ -28,8 +28,8 @@ void main() {
 
       final irr = calculator.calculateIRR(
           transactions: transactions,
-          finalValue: finalValue,
-          finalDate: finalDate);
+          value: finalValue,
+          valueUpdatedOn: finalDate);
 
       expect(irr, closeTo(0.2, 0.02)); // Expected IRR is 20%, tolerance is 1%
     });

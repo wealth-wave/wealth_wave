@@ -1,7 +1,7 @@
 import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
-import 'package:wealth_wave/domain/usecases/fetch_investments_use_case.dart';
+import 'package:wealth_wave/domain/services/investment_service.dart';
 
 class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
   final InvestmentApi _investmentApi;

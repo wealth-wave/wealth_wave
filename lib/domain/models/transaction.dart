@@ -12,11 +12,11 @@ class Transaction {
       required this.amount,
       required this.createdOn});
 
-  static Transaction from({required final TransactionDO transaction}) {
+  static Transaction from({required final TransactionDO transactionDO}) {
     return Transaction(
-        id: transaction.id,
-        description: transaction.description,
-        amount: transaction.amount,
-        createdOn: transaction.amountInvestedOn);
+        id: transactionDO.id,
+        description: transactionDO.description,
+        amount: transactionDO.amount,
+        createdOn: transactionDO.createdOn);
   }
 }

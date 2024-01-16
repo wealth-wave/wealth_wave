@@ -1,3 +1,4 @@
+import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 
@@ -5,33 +6,35 @@ class Basket {
   final int id;
   final String name;
   final String? description;
-  final int investmentCount;
-  final double investedValue;
+
+  final InvestmentApi _investmentApi;
 
   Basket(
       {required this.id,
       required this.name,
       required this.description,
-      required this.investmentCount,
-      required this.investedValue});
+      InvestmentApi? investmentApi})
+      : _investmentApi = investmentApi ?? InvestmentApi();
 
-  static Basket from(
-      {required final BasketDO basket,
-      required final List<Investment> investments}) {
+  Future<int> getTotalInvestments() {
+    return _investmentApi.getBy(basketId: id).then((value) => value.length);
+  }
+
+  Future<double> getInvestedValue() async {
+    return _investmentApi
+        .getBy(basketId: id)
+        .then((investments) => investments
+            .map((investmentDO) => Investment.from(investmentDO: investmentDO)))
+        .then((investments) => Future.wait(investments
+            .map((investment) => investment.getTotalInvestedAmount())))
+        .then((investedAmounts) =>
+            investedAmounts.reduce((value, element) => value + element));
+  }
+
+  static Basket from({required final BasketDO basketDO}) {
     return Basket(
-        id: basket.id,
-        name: basket.name,
-        description: basket.description,
-        investments: investments);
-  }
-
-  double get totalValue {
-    return investments.fold(0, (previousValue, investment) {
-      return previousValue + investment.totalInvestedAmount;
-    });
-  }
-
-  int get investmentCount {
-    return investments.length;
+        id: basketDO.id,
+        name: basketDO.name,
+        description: basketDO.description);
   }
 }

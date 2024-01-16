@@ -18,6 +18,11 @@ class BasketApi {
         .get();
   }
 
+  Future<BasketDO> getBy({required final int id}) async {
+    return (_db.select(_db.basketTable)..where((t) => t.id.equals(id)))
+        .getSingle();
+  }
+
   Future<int> update(
       {required final int id,
       required final String name,

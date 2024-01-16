@@ -5,8 +5,8 @@ import 'package:wealth_wave/domain/models/transaction.dart';
 class IRRCalculator {
   double? calculateIRR(
       {required final List<Transaction> transactions,
-      required final double finalValue,
-      required final DateTime finalDate}) {
+      required final double value,
+      required final DateTime valueUpdatedOn}) {
     if (transactions.isEmpty) return null;
 
     transactions.sort((a, b) => a.createdOn.compareTo(b.createdOn));
@@ -18,8 +18,8 @@ class IRRCalculator {
         .toList();
 
     cashFlows.add(_CashFlow(
-        amount: finalValue,
-        years: finalDate.difference(initialDate).inDays / 365));
+        amount: value,
+        years: valueUpdatedOn.difference(initialDate).inDays / 365));
 
     double guess = 0.1; // Initial guess for IRR
     for (int i = 0; i < 100; i++) {
@@ -34,6 +34,30 @@ class IRRCalculator {
       guess -= f / df; // Newton-Raphson update
     }
     return null;
+  }
+
+  double calculateTransactedValueOnIRR(
+      {required final List<Transaction> transactions,
+      required final double irr,
+      required final DateTime date}) {
+    double futureValue = 0;
+
+    for (var transaction in transactions) {
+      double years = date.difference(transaction.createdOn).inDays / 365;
+      futureValue += transaction.amount / pow(1 + irr, years);
+    }
+
+    return futureValue;
+  }
+
+  double calculateValueOnIRR({
+    required final double irr,
+    required final DateTime date,
+    required final double value,
+    required final DateTime valueUpdatedOn,
+  }) {
+    double years = date.difference(valueUpdatedOn).inDays / 365;
+    return value / pow(1 + irr, years);
   }
 }
 

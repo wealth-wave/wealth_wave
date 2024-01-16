@@ -21,7 +21,7 @@ class TransactionApi {
             createdOn: createdOn));
   }
 
-  Future<List<TransactionDO>> get({final int? investmentId}) async {
+  Future<List<TransactionDO>> getBy({final int? investmentId}) async {
     if (investmentId == null) {
       return (_db.select(_db.transactionTable)
             ..orderBy([(t) => OrderingTerm.desc(t.createdOn)]))

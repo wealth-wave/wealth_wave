@@ -40,6 +40,21 @@ class InvestmentApi {
         .get();
   }
 
+  Future<InvestmentDO> getById({required final int id}) async {
+    return (_db.select(_db.investmentTable)..where((t) => t.id.equals(id)))
+        .getSingle();
+  }
+
+  Future<List<InvestmentDO>> getBy({final int? basketId}) async {
+    if (basketId != null) {
+      return (_db.select(_db.investmentTable)
+            ..where((t) => t.basketId.equals(basketId)))
+          .get();
+    }
+
+    throw Exception('basketId is null');
+  }
+
   Future<int> update({
     required final int id,
     required final String name,
