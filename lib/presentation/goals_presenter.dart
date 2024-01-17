@@ -1,30 +1,63 @@
-import 'package:wealth_wave/api/apis/goal_api.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/services/goal_service.dart';
 
 class GoalsPresenter extends Presenter<GoalsViewState> {
-  final GoalApi _goalApi;
-  final FetchGoalsUseCase _fetchGoalsUseCase;
+  final GoalService _goalService;
 
-  GoalsPresenter({
-    final GoalApi? goalApi,
-    final FetchGoalsUseCase? fetchGoalsUseCase,
-  })  : _goalApi = goalApi ?? GoalApi(),
-        _fetchGoalsUseCase = fetchGoalsUseCase ?? FetchGoalsUseCase(),
+  GoalsPresenter({final GoalService? goalService})
+      : _goalService = goalService ?? GoalService(),
         super(GoalsViewState());
 
   void fetchGoals() {
-    _fetchGoalsUseCase.invoke().then((goals) => updateViewState((viewState) {
-          viewState.goals = goals;
-        }));
+    _goalService
+        .get()
+        .then((goals) => Future.wait(goals.map((goal) async {
+              final valueOnMaturity = await goal.getValueOnMaturity();
+              final investments = await goal.getInvestments();
+              final maturityAmount = await goal.getMaturityAmount();
+
+              return GoalVO(
+                  id: goal.id,
+                  name: goal.name,
+                  description: goal.description,
+                  goal: goal,
+                  maturityAmount: maturityAmount,
+                  maturityDate: goal.maturityDate,
+                  valueOnMaturity: valueOnMaturity,
+                  investments: investments);
+            })))
+        .then((goalVOs) =>
+            updateViewState((viewState) => viewState.goals = goalVOs));
   }
 
   void deleteGoal({required final int id}) {
-    _goalApi.deleteBy(id: id).then((_) => fetchGoals());
+    _goalService.deleteBy(id: id).then((_) => fetchGoals());
   }
 }
 
 class GoalsViewState {
-  List<Goal> goals = [];
+  List<GoalVO> goals = [];
+}
+
+class GoalVO {
+  final int id;
+  final String name;
+  final String? description;
+  final double maturityAmount;
+  final DateTime maturityDate;
+  final double valueOnMaturity;
+  final Goal goal;
+  final Map<Investment, double> investments;
+
+  GoalVO(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.maturityAmount,
+      required this.maturityDate,
+      required this.valueOnMaturity,
+      required this.goal,
+      required this.investments});
 }

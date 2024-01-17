@@ -1,52 +1,33 @@
-import 'package:wealth_wave/api/apis/goal_api.dart';
-import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/domain/models/goal.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
 
 class TagInvestmentPresenter extends Presenter<TagInvestmentViewState> {
-  final GoalApi _goalApi;
-  final InvestmentApi _investmentApi;
-  final int goalId;
+  final Goal _goal;
 
-  TagInvestmentPresenter(this.goalId,
-      {final InvestmentApi? investmentApi, final GoalApi? goalApi})
-      : _investmentApi = investmentApi ?? InvestmentApi(),
-        _goalApi = goalApi ?? GoalApi(),
-        super(TagInvestmentViewState(goalId: goalId));
-
-  void getInvestments() {
-    _investmentApi.getInvestments().then((investments) =>
-        updateViewState((viewState) => viewState.investments = investments));
-  }
+  TagInvestmentPresenter({required final Goal goal})
+      : _goal = goal,
+        super(TagInvestmentViewState());
 
   void onInvestmentSelected(int? investmentId) {
     updateViewState((viewState) => viewState.investmentId = investmentId);
   }
 
-  void tagInvestment({int? id}) {
-    final int? investmentId = getViewState().investmentId;
+  void tagInvestment({required final Investment investment}) {
     final double sharePercentage = getViewState().sharePercentage;
+    _goal.tagInvestment(investment: investment, split: sharePercentage).then(
+        (_) => updateViewState(
+            (viewState) => viewState.onInvestmentTagged = SingleEvent(null)));
+  }
 
-    if (investmentId == null) {
-      return;
-    }
-
-    if (id != null) {
-      _goalApi
-          .updateGoalInvestmentMap(
-              id: id, investmentId: investmentId, percentage: sharePercentage)
-          .then((_) => updateViewState(
-              (viewState) => viewState.onInvestmentTagged = SingleEvent(null)));
-    } else {
-      _goalApi
-          .createGoalInvestmentMap(
-              goalId: goalId,
-              investmentId: investmentId,
-              percentage: sharePercentage)
-          .then((_) => updateViewState(
-              (viewState) => viewState.onInvestmentTagged = SingleEvent(null)));
-    }
+  void updateTaggedInvestment({required final Investment investment}) {
+    final double sharePercentage = getViewState().sharePercentage;
+    _goal
+        .updateTaggedInvestment(investment: investment, split: sharePercentage)
+        .then((_) => updateViewState(
+            (viewState) => viewState.onInvestmentTagged = SingleEvent(null)));
   }
 
   void onPercentageChanged(String text) {
@@ -56,13 +37,10 @@ class TagInvestmentPresenter extends Presenter<TagInvestmentViewState> {
 }
 
 class TagInvestmentViewState {
-  final int goalId;
   int? investmentId;
   double sharePercentage = 100;
   List<InvestmentDO> investments = [];
   SingleEvent<void>? onInvestmentTagged;
-
-  TagInvestmentViewState({required this.goalId});
 
   bool isValid() {
     return investmentId != null && sharePercentage > 0;

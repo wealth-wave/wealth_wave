@@ -1,21 +1,19 @@
-import 'package:wealth_wave/api/apis/basket_api.dart';
-import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 import 'package:wealth_wave/utils/utils.dart';
 
-class CreateTransactionPresenter extends Presenter<CreateTransactionViewState> {
-  final InvestmentApi _investmentApi;
+class CreateInvestmentTransactionPresenter
+    extends Presenter<CreateTransactionViewState> {
+  final Investment _investment;
 
-  CreateTransactionPresenter(
-      {final InvestmentApi? investmentApi, final BasketApi? basketApi})
-      : _investmentApi = investmentApi ?? InvestmentApi(),
+  CreateInvestmentTransactionPresenter({required final Investment investment})
+      : _investment = investment,
         super(CreateTransactionViewState());
 
-  void createTransaction(
-      {required final int investmentId, final int? transactionIdToUpdate}) {
+  void createTransaction({final int? transactionIdToUpdate}) {
     var viewState = getViewState();
 
     if (!viewState.isValid()) {
@@ -27,22 +25,18 @@ class CreateTransactionPresenter extends Presenter<CreateTransactionViewState> {
     final investedDate = viewState.getInvestedDate();
 
     if (transactionIdToUpdate != null) {
-      _investmentApi
+      _investment
           .updateTransaction(
-              id: transactionIdToUpdate,
+              transactionId: transactionIdToUpdate,
               description: description,
-              investmentId: investmentId,
               amount: amount,
-              date: investedDate)
+              createdOn: investedDate)
           .then((_) => updateViewState((viewState) =>
               viewState.onTransactionCreated = SingleEvent(null)));
     } else {
-      _investmentApi
+      _investment
           .createTransaction(
-              investmentId: investmentId,
-              description: description,
-              amount: amount,
-              date: investedDate)
+              description: description, amount: amount, createdOn: investedDate)
           .then((_) => updateViewState((viewState) =>
               viewState.onTransactionCreated = SingleEvent(null)));
     }
@@ -64,7 +58,7 @@ class CreateTransactionPresenter extends Presenter<CreateTransactionViewState> {
   void setTransaction(TransactionDO transactionToUpdate) {
     updateViewState((viewState) {
       viewState.amount = transactionToUpdate.amount;
-      viewState.investedDate = formatDate(transactionToUpdate.amountInvestedOn);
+      viewState.investedDate = formatDate(transactionToUpdate.createdOn);
     });
   }
 }

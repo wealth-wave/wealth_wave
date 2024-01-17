@@ -1,35 +1,29 @@
-import 'package:wealth_wave/api/apis/basket_api.dart';
-import 'package:wealth_wave/api/apis/investment_api.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/domain/models/transaction.dart';
 
-class TransactionsPresenter extends Presenter<TransactionsViewState> {
-  final InvestmentApi _investmentApi;
-  final int investmentId;
+class InvestmentTransactionsPresenter extends Presenter<TransactionsViewState> {
+  final Investment _investment;
 
-  TransactionsPresenter(this.investmentId,
-      {final InvestmentApi? investmentApi, final BasketApi? basketApi})
-      : _investmentApi = investmentApi ?? InvestmentApi(),
-        super(TransactionsViewState(investmentId: investmentId));
+  InvestmentTransactionsPresenter({required final Investment investment})
+      : _investment = investment,
+        super(TransactionsViewState());
 
-  void getTransactions({required final int investmentId}) {
-    _investmentApi
-        .getTransactions(investmentId: investmentId)
+  void getTransactions() {
+    _investment
+        .getTransactions()
         .then((transactions) => updateViewState((viewState) {
               viewState.transactions = transactions;
             }));
   }
 
-  void deleteTransaction({required final int id}) {
-    _investmentApi
-        .deleteTransaction(id: id)
-        .then((_) => getTransactions(investmentId: investmentId));
+  void deleteTransaction({required final Transaction transaction}) {
+    _investment
+        .deleteTransaction(transaction: transaction)
+        .then((_) => getTransactions());
   }
 }
 
 class TransactionsViewState {
-  final int investmentId;
-  List<TransactionDO> transactions = [];
-
-  TransactionsViewState({required this.investmentId});
+  List<Transaction> transactions = [];
 }

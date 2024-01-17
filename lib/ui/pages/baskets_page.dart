@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/presentation/baskets_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_basket_dialog.dart';
@@ -24,14 +23,14 @@ class _BasketsPage
   @override
   Widget buildWidget(
       final BuildContext context, final BasketsViewState snapshot) {
-    List<Basket> baskets = snapshot.baskets;
+    List<BasketVO> basketVOs = snapshot.baskets;
     return Scaffold(
       body: Center(
           child: ListView.builder(
-        itemCount: baskets.length,
+        itemCount: basketVOs.length,
         itemBuilder: (context, index) {
-          Basket basket = baskets[index];
-          return _basketWidget(context: context, basket: basket);
+          BasketVO basketVO = basketVOs[index];
+          return _basketWidget(context: context, basketVO: basketVO);
         },
       )),
       floatingActionButton: FloatingActionButton(
@@ -52,7 +51,7 @@ class _BasketsPage
   }
 
   Widget _basketWidget(
-      {required final BuildContext context, required final Basket basket}) {
+      {required final BuildContext context, required final BasketVO basketVO}) {
     return Card(
         margin: const EdgeInsets.all(AppDimen.defaultPadding),
         child: Padding(
@@ -65,16 +64,17 @@ class _BasketsPage
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(basket.name,
+                      Text(basketVO.name,
                           style: Theme.of(context).textTheme.titleMedium),
                       PopupMenuButton<int>(
                         onSelected: (value) {
                           if (value == 1) {
                             showCreateBasketDialog(
-                                    basketToUpdate: basket, context: context)
+                                    basketToUpdate: basketVO.basket,
+                                    context: context)
                                 .then((value) => presenter.fetchBaskets());
                           } else if (value == 2) {
-                            presenter.deleteBasket(id: basket.id);
+                            presenter.deleteBasket(id: basketVO.id);
                           }
                         },
                         itemBuilder: (context) => [
@@ -95,8 +95,8 @@ class _BasketsPage
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  basket.description != null
-                      ? Text(basket.description!,
+                  basketVO.description != null
+                      ? Text(basketVO.description!,
                           style: Theme.of(context).textTheme.bodyMedium)
                       : Container(),
                 ],
@@ -107,7 +107,7 @@ class _BasketsPage
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(formatToCurrency(basket.totalValue),
+                      Text(formatToCurrency(basketVO.totalInvestedAmount),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Invested Value)',
                           style: Theme.of(context).textTheme.labelSmall),
@@ -116,7 +116,7 @@ class _BasketsPage
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('${basket.investmentCount}',
+                      Text('${basketVO.totalInvesments}',
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Investments)',
                           style: Theme.of(context).textTheme.labelSmall),

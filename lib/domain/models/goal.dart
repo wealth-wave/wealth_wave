@@ -5,6 +5,7 @@ import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/domain/models/irr_calculator.dart';
 
 class Goal {
   final int id;
@@ -18,6 +19,7 @@ class Goal {
 
   final GoalInvestmentApi _goalInvestmentApi;
   final InvestmentApi _investmentApi;
+  final IRRCalculator _irrCalculator;
 
   Goal(
       {required this.id,
@@ -29,9 +31,11 @@ class Goal {
       required this.amountUpdatedOn,
       required this.importance,
       final GoalInvestmentApi? goalInvestmentApi,
-      final InvestmentApi? investmentApi})
+      final InvestmentApi? investmentApi,
+      final IRRCalculator? irrCalculator})
       : _goalInvestmentApi = goalInvestmentApi ?? GoalInvestmentApi(),
-        _investmentApi = investmentApi ?? InvestmentApi();
+        _investmentApi = investmentApi ?? InvestmentApi(),
+        _irrCalculator = irrCalculator ?? IRRCalculator();
 
   Future<Map<Investment, double>> getInvestments() async {
     return _goalInvestmentApi
@@ -57,6 +61,14 @@ class Goal {
                 .then((investment) => investment.getTotalInvestedAmount())
                 .then((amount) => amount * goalInvestment.split))))
         .then((amounts) => amounts.reduce((value, element) => value + element));
+  }
+
+  Future<double> getMaturityAmount() {
+    return Future(() => _irrCalculator.calculateValueOnIRR(
+        irr: inflation,
+        date: maturityDate,
+        value: amount,
+        valueUpdatedOn: amountUpdatedOn));
   }
 
   Future<double> getValueOnMaturity() async {

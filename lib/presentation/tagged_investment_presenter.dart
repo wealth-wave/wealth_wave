@@ -1,33 +1,27 @@
-import 'package:wealth_wave/api/apis/goal_api.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
+import 'package:wealth_wave/domain/models/goal.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
 
 class TaggedInvestmentPresenter extends Presenter<TaggedInvestmentsViewState> {
-  final GoalApi _goalApi;
-  final int goalId;
+  final Goal _goal;
 
-  TaggedInvestmentPresenter(this.goalId, {final GoalApi? goalApi})
-      : _goalApi = goalApi ?? GoalApi(),
-        super(TaggedInvestmentsViewState(goalId: goalId));
+  TaggedInvestmentPresenter({required final Goal goal})
+      : _goal = goal,
+        super(TaggedInvestmentsViewState());
 
   void fetchTaggedInvestment() {
-    _goalApi
-        .getGoalInvestmentMappings(goalId: goalId)
-        .then((value) => updateViewState((viewState) {
-              viewState.taggedInvestments = value;
-            }));
+    _goal.getInvestments().then((value) => updateViewState((viewState) {
+          viewState.taggedInvestments = value;
+        }));
   }
 
-  void deleteTaggedInvestment({required final int id}) {
-    _goalApi.deleteGoalInvestmentMap(id: id).then((_) {
+  void deleteTaggedInvestment({required final Investment investment}) {
+    _goal.deleteTaggedInvestment(investment: investment).then((_) {
       fetchTaggedInvestment();
     });
   }
 }
 
 class TaggedInvestmentsViewState {
-  final int goalId;
-  List<GoalInvestmentEnrichedMappingDO> taggedInvestments = [];
-
-  TaggedInvestmentsViewState({required this.goalId});
+  Map<Investment, double> taggedInvestments = {};
 }

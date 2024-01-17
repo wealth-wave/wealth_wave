@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/create_transaction_presenter.dart';
+import 'package:wealth_wave/presentation/create_investment_transaction_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
@@ -30,7 +30,7 @@ class _CreateTransactionDialog extends StatefulWidget {
 }
 
 class _CreateTransactionPage extends PageState<CreateTransactionViewState,
-    _CreateTransactionDialog, CreateTransactionPresenter> {
+    _CreateTransactionDialog, CreateInvestmentTransactionPresenter> {
   final _descriptionController = TextEditingController();
   final _valueController = TextEditingController();
   final _valueUpdatedDateController = TextEditingController();
@@ -125,7 +125,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
   }
 
   @override
-  CreateTransactionPresenter initializePresenter() {
-    return CreateTransactionPresenter();
+  CreateInvestmentTransactionPresenter initializePresenter() {
+    return CreateInvestmentTransactionPresenter();
   }
 }

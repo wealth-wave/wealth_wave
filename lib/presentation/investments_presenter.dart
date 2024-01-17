@@ -1,22 +1,16 @@
-import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
 
 class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
-  final InvestmentApi _investmentApi;
-  final FetchInvestmentsUseCase _fetchInvestmentsUseCase;
+  final InvestmentService _investmentService;
 
-  InvestmentsPresenter(
-      {final InvestmentApi? investmentApi,
-      final FetchInvestmentsUseCase? fetchInvestmentsUseCase})
-      : _investmentApi = investmentApi ?? InvestmentApi(),
-        _fetchInvestmentsUseCase =
-            fetchInvestmentsUseCase ?? FetchInvestmentsUseCase(),
+  InvestmentsPresenter({final InvestmentService? investmentService})
+      : _investmentService = investmentService ?? InvestmentService(),
         super(InvestmentsViewState());
 
   void fetchInvestments() {
-    _fetchInvestmentsUseCase.fetchInvestments().then((investments) {
+    _investmentService.get().then((investments) {
       updateViewState((viewState) {
         viewState.investments = investments;
       });
@@ -24,10 +18,7 @@ class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
   }
 
   void deleteInvestment({required final int id}) {
-    _investmentApi
-        .deleteSips(investmentId: id)
-        .then((value) => _investmentApi.deleteTransactions(investmentId: id))
-        .then((value) => _investmentApi.deleteInvestment(id: id));
+    _investmentService.deleteBy(id: id).then((value) => fetchInvestments());
   }
 }
 

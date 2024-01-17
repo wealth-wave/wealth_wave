@@ -25,7 +25,7 @@ class _TransactionsDialog extends StatefulWidget {
 }
 
 class _TransactionPage extends PageState<TransactionsViewState,
-    _TransactionsDialog, TransactionsPresenter> {
+    _TransactionsDialog, InvestmentTransactionsPresenter> {
   @override
   void initState() {
     super.initState();
@@ -103,7 +103,7 @@ class _TransactionPage extends PageState<TransactionsViewState,
   }
 
   @override
-  TransactionsPresenter initializePresenter() {
-    return TransactionsPresenter(widget.investmentId);
+  InvestmentTransactionsPresenter initializePresenter() {
+    return InvestmentTransactionsPresenter(widget.investmentId);
   }
 }

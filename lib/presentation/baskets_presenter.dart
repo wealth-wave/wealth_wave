@@ -10,9 +10,20 @@ class BasketsPresenter extends Presenter<BasketsViewState> {
         super(BasketsViewState());
 
   void fetchBaskets() {
-    _basketService.get().then((baskets) => updateViewState((viewState) {
-          viewState.baskets = baskets;
-        }));
+    _basketService
+        .get()
+        .then((baskets) => Future.wait(baskets.map((basket) => Future.wait([
+              basket.getTotalInvestments(),
+              basket.getInvestedValue(),
+            ]).then((results) => BasketVO(
+                id: basket.id,
+                name: basket.name,
+                description: basket.description,
+                totalInvestedAmount: results[1].toDouble(),
+                totalInvesments: results[0].toInt(),
+                basket: basket)))))
+        .then((basketVOs) =>
+            updateViewState((viewState) => viewState.baskets = basketVOs));
   }
 
   void deleteBasket({required final int id}) {
@@ -21,5 +32,22 @@ class BasketsPresenter extends Presenter<BasketsViewState> {
 }
 
 class BasketsViewState {
-  List<Basket> baskets = [];
+  List<BasketVO> baskets = [];
+}
+
+class BasketVO {
+  final int id;
+  final String name;
+  final String? description;
+  final double totalInvestedAmount;
+  final int totalInvesments;
+  final Basket basket;
+
+  BasketVO(
+      {required this.totalInvestedAmount,
+      required this.totalInvesments,
+      required this.id,
+      required this.name,
+      required this.description,
+      required this.basket});
 }

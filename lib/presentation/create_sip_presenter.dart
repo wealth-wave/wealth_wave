@@ -1,17 +1,16 @@
-import 'package:wealth_wave/api/apis/basket_api.dart';
-import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
+import 'package:wealth_wave/contract/sip_frequency.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 import 'package:wealth_wave/utils/utils.dart';
 
 class CreateSipPresenter extends Presenter<CreateSipViewState> {
-  final InvestmentApi _investmentApi;
+  final Investment _investment;
 
-  CreateSipPresenter(
-      {final InvestmentApi? investmentApi, final BasketApi? basketApi})
-      : _investmentApi = investmentApi ?? InvestmentApi(),
+  CreateSipPresenter({required Investment investment})
+      : _investment = investment,
         super(CreateSipViewState());
 
   void createSip({required final int investmentId, final int? sipIdToUpdate}) {
@@ -28,11 +27,10 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     final frequency = viewState.frequency;
 
     if (sipIdToUpdate != null) {
-      _investmentApi
+      _investment
           .updateSip(
-              id: sipIdToUpdate,
+              sipId: sipIdToUpdate,
               description: description,
-              investmentId: investmentId,
               amount: amount,
               startDate: startDate,
               endDate: endDate,
@@ -40,9 +38,8 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
           .then((_) => updateViewState(
               (viewState) => viewState.onSipCreated = SingleEvent(null)));
     } else {
-      _investmentApi
+      _investment
           .createSip(
-              investmentId: investmentId,
               description: description,
               amount: amount,
               startDate: startDate,
@@ -70,9 +67,8 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     updateViewState((viewState) => viewState.endDate = date);
   }
 
-  void onFrequencyChanged(String text) {
-    updateViewState(
-        (viewState) => viewState.frequency = double.tryParse(text) ?? 0);
+  void onFrequencyChanged(SipFrequency frequency) {
+    updateViewState((viewState) => viewState.frequency = frequency);
   }
 
   void setSip(SipDO sipToUpdate) {
@@ -80,7 +76,8 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
       viewState.description = sipToUpdate.description;
       viewState.amount = sipToUpdate.amount;
       viewState.startDate = formatDate(sipToUpdate.startDate);
-      viewState.endDate = formatDate(sipToUpdate.endDate);
+      viewState.endDate =
+          sipToUpdate.endDate != null ? formatDate(sipToUpdate.endDate!) : '';
       viewState.frequency = sipToUpdate.frequency;
     });
   }
@@ -91,7 +88,7 @@ class CreateSipViewState {
   double amount = 0.0;
   String startDate = formatDate(DateTime.now());
   String endDate = formatDate(DateTime.now().add(const Duration(days: 365)));
-  double frequency = 1.0;
+  SipFrequency frequency = SipFrequency.monthly;
   SingleEvent<void>? onSipCreated;
 
   bool isValid() {

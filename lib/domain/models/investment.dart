@@ -113,7 +113,7 @@ class Investment {
     return null;
   }
 
-  Future<Map<Goal, double>> getInvestments() async {
+  Future<Map<Goal, double>> getGoals() async {
     return _goalInvestmentApi
         .getBy(goalId: id)
         .then((goalInvestments) => Future.wait(goalInvestments.map(
@@ -131,7 +131,7 @@ class Investment {
   }
 
   Future<SIP> createSip(
-      {required final String description,
+      {required final String? description,
       required final double amount,
       required final DateTime startDate,
       required final DateTime? endDate,
@@ -150,7 +150,7 @@ class Investment {
 
   Future<SIP> updateSip(
       {required final int sipId,
-      required final String description,
+      required final String? description,
       required final double amount,
       required final DateTime startDate,
       required final DateTime? endDate,
@@ -173,7 +173,7 @@ class Investment {
   }
 
   Future<Transaction> createTransaction(
-      {required final String description,
+      {required final String? description,
       required final double amount,
       required final DateTime createdOn}) async {
     return _transactionApi
@@ -187,9 +187,9 @@ class Investment {
             (transactionDO) => Transaction.from(transactionDO: transactionDO));
   }
 
-  Future<Transaction> updateTransactions(
+  Future<Transaction> updateTransaction(
       {required final int transactionId,
-      required final String description,
+      required final String? description,
       required final double amount,
       required final DateTime createdOn}) async {
     return _transactionApi
@@ -204,8 +204,9 @@ class Investment {
             (transactionDO) => Transaction.from(transactionDO: transactionDO));
   }
 
-  Future<void> deleteTransaction({required final int transactionId}) async {
-    return _transactionApi.deleteBy(id: transactionId).then((count) => Void);
+  Future<void> deleteTransaction(
+      {required final Transaction transaction}) async {
+    return _transactionApi.deleteBy(id: transaction.id).then((count) => Void);
   }
 
   Future<MapEntry<Goal, double>> tagGoal(
