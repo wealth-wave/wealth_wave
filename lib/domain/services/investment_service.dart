@@ -10,8 +10,8 @@ class InvestmentService {
 
   Future<Investment> create(
       {required final String name,
-      required final String description,
-      required final int basketId,
+      required final String? description,
+      required final int? basketId,
       required final RiskLevel riskLevel,
       required final double? value,
       required final DateTime? valueUpdatedOn,
@@ -43,19 +43,28 @@ class InvestmentService {
     });
   }
 
-  Future<Investment> update(Investment investment) {
+  Future<Investment> update(
+      {required final int id,
+      required final String name,
+      required final String? description,
+      required final int? basketId,
+      required final RiskLevel riskLevel,
+      required final double? value,
+      required final DateTime? valueUpdatedOn,
+      required final double? irr,
+      required final DateTime? maturityDate}) {
     return _investmentApi
         .update(
-            id: investment.id,
-            name: investment.name,
-            description: investment.description,
-            value: investment.value,
-            valueUpdatedOn: investment.valueUpdatedOn,
-            irr: investment.irr,
-            maturityDate: investment.maturityDate,
-            riskLevel: investment.riskLevel,
-            basketId: investment.basketId)
-        .then((value) => _investmentApi.getById(id: investment.id))
+            id: id,
+            name: name,
+            description: description,
+            value: value,
+            valueUpdatedOn: valueUpdatedOn,
+            irr: irr,
+            maturityDate: maturityDate,
+            riskLevel: riskLevel,
+            basketId: basketId)
+        .then((value) => _investmentApi.getById(id: id))
         .then((investmentDO) => Investment.from(investmentDO: investmentDO));
   }
 

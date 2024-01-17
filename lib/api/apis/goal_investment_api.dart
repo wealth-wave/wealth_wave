@@ -29,12 +29,18 @@ class GoalInvestmentApi {
     throw Exception('Invalid getBy call');
   }
 
+  Future<GoalInvestmentDO> getById({required final int id}) async {
+    return (_db.select(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
+        .getSingle();
+  }
+
   Future<int> update(
-      {required final int id,
-      required final int goalId,
+      {required final int goalId,
       required final int investmentId,
       required final double split}) async {
-    return (_db.update(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
+    return (_db.update(_db.goalInvestmentTable)
+          ..where((t) =>
+              t.goalId.equals(goalId) & t.investmentId.equals(investmentId)))
         .write(GoalInvestmentTableCompanion(
             investmentId: Value(investmentId),
             goalId: Value(goalId),
@@ -47,13 +53,10 @@ class GoalInvestmentApi {
       return (_db.delete(_db.goalInvestmentTable)
             ..where((t) => t.id.equals(id)))
           .go();
-    } else if (goalId != null) {
+    } else if (goalId != null && investmentId != null) {
       return (_db.delete(_db.goalInvestmentTable)
-            ..where((t) => t.goalId.equals(goalId)))
-          .go();
-    } else if (investmentId != null) {
-      return (_db.delete(_db.goalInvestmentTable)
-            ..where((t) => t.investmentId.equals(investmentId)))
+            ..where((t) =>
+                t.goalId.equals(goalId) & t.investmentId.equals(investmentId)))
           .go();
     }
     throw Exception('Invalid deleteBy call');

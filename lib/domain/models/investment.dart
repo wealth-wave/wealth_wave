@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/api/apis/goal_api.dart';
 import 'package:wealth_wave/api/apis/goal_investment_api.dart';
@@ -5,6 +7,7 @@ import 'package:wealth_wave/api/apis/sip_api.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
+import 'package:wealth_wave/contract/sip_frequency.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
 import 'package:wealth_wave/domain/models/irr_calculator.dart';
@@ -125,6 +128,104 @@ class Investment {
     return _sipApi
         .getBy(investmentId: id)
         .then((sips) => sips.map((sipDO) => SIP.from(sipDO: sipDO)).toList());
+  }
+
+  Future<SIP> createSip(
+      {required final String description,
+      required final double amount,
+      required final DateTime startDate,
+      required final DateTime? endDate,
+      required final SipFrequency frequency}) async {
+    return _sipApi
+        .create(
+            investmentId: id,
+            description: description,
+            amount: amount,
+            startDate: startDate,
+            endDate: endDate,
+            frequency: frequency)
+        .then((id) => _sipApi.getById(id: id))
+        .then((sipDO) => SIP.from(sipDO: sipDO));
+  }
+
+  Future<SIP> updateSip(
+      {required final int sipId,
+      required final String description,
+      required final double amount,
+      required final DateTime startDate,
+      required final DateTime? endDate,
+      required final SipFrequency frequency}) async {
+    return _sipApi
+        .update(
+            id: sipId,
+            investmentId: id,
+            description: description,
+            amount: amount,
+            startDate: startDate,
+            endDate: endDate,
+            frequency: frequency)
+        .then((count) => _sipApi.getById(id: sipId))
+        .then((sipDO) => SIP.from(sipDO: sipDO));
+  }
+
+  Future<void> deleteSIP({required final int sipId}) async {
+    return _sipApi.delete(id: sipId).then((count) => Void);
+  }
+
+  Future<Transaction> createTransaction(
+      {required final String description,
+      required final double amount,
+      required final DateTime createdOn}) async {
+    return _transactionApi
+        .create(
+            investmentId: id,
+            description: description,
+            amount: amount,
+            createdOn: createdOn)
+        .then((id) => _transactionApi.getById(id: id))
+        .then(
+            (transactionDO) => Transaction.from(transactionDO: transactionDO));
+  }
+
+  Future<Transaction> updateTransactions(
+      {required final int transactionId,
+      required final String description,
+      required final double amount,
+      required final DateTime createdOn}) async {
+    return _transactionApi
+        .update(
+            id: transactionId,
+            investmentId: id,
+            description: description,
+            amount: amount,
+            createdOn: createdOn)
+        .then((count) => _transactionApi.getById(id: transactionId))
+        .then(
+            (transactionDO) => Transaction.from(transactionDO: transactionDO));
+  }
+
+  Future<void> deleteTransaction({required final int transactionId}) async {
+    return _transactionApi.deleteBy(id: transactionId).then((count) => Void);
+  }
+
+  Future<MapEntry<Goal, double>> tagGoal(
+      {required final Goal goal, required final double split}) async {
+    return _goalInvestmentApi
+        .create(goalId: goal.id, investmentId: id, split: split)
+        .then((goalInvestmentDO) => MapEntry(goal, split));
+  }
+
+  Future<MapEntry<Goal, double>> updateTaggedGoal(
+      {required final Goal goal, required final double split}) async {
+    return _goalInvestmentApi
+        .update(goalId: goal.id, investmentId: id, split: split)
+        .then((goalInvestmentDO) => MapEntry(goal, split));
+  }
+
+  Future<void> deleteTaggedGoal({required final Goal goal}) {
+    return _goalInvestmentApi
+        .deleteBy(goalId: goal.id, investmentId: id)
+        .then((count) => Void);
   }
 
   static Investment from({required final InvestmentDO investmentDO}) {

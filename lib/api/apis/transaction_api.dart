@@ -38,18 +38,25 @@ class TransactionApi {
     throw Exception('Invalid getBy call');
   }
 
+  Future<TransactionDO> getById({required final int id}) async {
+    return (_db.select(_db.transactionTable)..where((t) => t.id.equals(id)))
+        .getSingle();
+  }
+
   Future<int> update(
       {required final int id,
       required final int investmentId,
       required final String? description,
       required final double amount,
-      required final DateTime createdOn}) async {
+      required final DateTime createdOn,
+      final int? sipId}) async {
     return (_db.update(_db.transactionTable)..where((t) => t.id.equals(id)))
         .write(TransactionTableCompanion(
       investmentId: Value(investmentId),
       description: Value(description),
       amount: Value(amount),
       createdOn: Value(createdOn),
+      sipId: Value(sipId),
     ));
   }
 

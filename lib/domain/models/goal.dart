@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:wealth_wave/api/apis/goal_investment_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
@@ -42,6 +44,55 @@ class Goal {
                 .then((investment) =>
                     MapEntry(investment, goalInvestment.split)))))
         .then((entries) => Map.fromEntries(entries));
+  }
+
+  Future<double> getInvestedAmount() async {
+    return _goalInvestmentApi
+        .getBy(goalId: id)
+        .then((goalInvestments) => Future.wait(goalInvestments.map(
+            (goalInvestment) => _investmentApi
+                .getById(id: goalInvestment.investmentId)
+                .then((investmentDO) =>
+                    Investment.from(investmentDO: investmentDO))
+                .then((investment) => investment.getTotalInvestedAmount())
+                .then((amount) => amount * goalInvestment.split))))
+        .then((amounts) => amounts.reduce((value, element) => value + element));
+  }
+
+  Future<double> getValueOnMaturity() async {
+    return _goalInvestmentApi
+        .getBy(goalId: id)
+        .then((goalInvestments) => Future.wait(goalInvestments.map(
+            (goalInvestment) => _investmentApi
+                .getById(id: goalInvestment.investmentId)
+                .then((investmentDO) =>
+                    Investment.from(investmentDO: investmentDO))
+                .then((investment) => investment.getValueOn(
+                    date: maturityDate, considerFuturePayments: true))
+                .then((amount) => amount * goalInvestment.split))))
+        .then((amounts) => amounts.reduce((value, element) => value + element));
+  }
+
+  Future<MapEntry<Investment, double>> tagInvestment(
+      {required final Investment investment,
+      required final double split}) async {
+    return _goalInvestmentApi
+        .create(goalId: id, investmentId: investment.id, split: split)
+        .then((goalInvestmentDO) => MapEntry(investment, split));
+  }
+
+  Future<MapEntry<Investment, double>> updateTaggedInvestment(
+      {required final Investment investment,
+      required final double split}) async {
+    return _goalInvestmentApi
+        .update(goalId: id, investmentId: investment.id, split: split)
+        .then((goalInvestmentDO) => MapEntry(investment, split));
+  }
+
+  Future<void> deleteTaggedInvestment({required final Investment investment}) {
+    return _goalInvestmentApi
+        .deleteBy(goalId: id, investmentId: investment.id)
+        .then((count) => Void);
   }
 
   static Goal from({required final GoalDO goalDO}) {

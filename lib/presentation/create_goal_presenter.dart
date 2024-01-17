@@ -1,17 +1,17 @@
 import 'dart:math';
 
-import 'package:wealth_wave/api/apis/goal_api.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
+import 'package:wealth_wave/domain/services/goal_service.dart';
 
 class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
-  final GoalApi _goalApi;
+  final GoalService _goalService;
 
   CreateGoalPresenter({
-    final GoalApi? goalApi,
-  })  : _goalApi = goalApi ?? GoalApi(),
+    final GoalService? goalService,
+  })  : _goalService = goalService ?? GoalService(),
         super(CreateGoalViewState());
 
   void createGoal({int? goalIdToUpdate}) {
@@ -25,34 +25,31 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
     final description = viewState.description;
     final amount = viewState.amount;
     final date = viewState.date;
-    final targetAmount = viewState.getTargetAmount();
     final targetDate = viewState.targetDate;
     final inflation = viewState.inflation;
     final importance = viewState.importance;
 
     if (goalIdToUpdate != null) {
-      _goalApi
+      _goalService
           .update(
               id: goalIdToUpdate,
               name: name,
               description: description,
               amount: amount,
-              date: date,
-              targetAmount: targetAmount,
-              targetDate: targetDate,
+              amountUpdatedOn: date,
+              maturityDate: targetDate,
               inflation: inflation,
               importance: importance)
           .then((_) => updateViewState(
               (viewState) => viewState.onGoalCreated = SingleEvent(null)));
     } else {
-      _goalApi
+      _goalService
           .create(
               name: name,
               description: description,
               amount: amount,
-              date: date,
-              targetAmount: targetAmount,
-              targetDate: targetDate,
+              amountUpdatedOn: date,
+              maturityDate: targetDate,
               inflation: inflation,
               importance: importance)
           .then((_) => updateViewState(
@@ -96,8 +93,8 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
       viewState.amount = goalToUpdate.amount;
       viewState.inflation = goalToUpdate.inflation;
       viewState.importance = goalToUpdate.importance;
-      viewState.date = goalToUpdate.createdDate;
-      viewState.targetDate = goalToUpdate.targetDate;
+      viewState.date = goalToUpdate.amountUpdatedOn;
+      viewState.targetDate = goalToUpdate.maturityDate;
     });
   }
 }

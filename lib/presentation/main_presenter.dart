@@ -1,22 +1,22 @@
-import 'package:wealth_wave/api/apis/backup_api.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/domain/services/backup_service.dart';
 
 class MainPresenter extends Presenter<MainViewState> {
-  final BackupApi _backupApi;
+  final BackupService _backupService;
 
-  MainPresenter({final BackupApi? backupApi})
-      : _backupApi = backupApi ?? BackupApi(),
+  MainPresenter({final BackupService? backupService})
+      : _backupService = backupService ?? BackupService(),
         super(MainViewState());
 
   void performImportFile() {
-    _backupApi.import().then((value) => updateViewState((viewState) {
+    _backupService.import().then((value) => updateViewState((viewState) {
           viewState.onImportCompleted = SingleEvent(null);
         }));
   }
 
   void performBackup() {
-    _backupApi.export().then((value) => updateViewState((viewState) {
+    _backupService.export().then((value) => updateViewState((viewState) {
           viewState.onBackupCompleted = SingleEvent(null);
         }));
   }

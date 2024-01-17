@@ -9,8 +9,9 @@ class GoalService {
 
   Future<Goal> create({
     required final String name,
-    required final String description,
+    required final String? description,
     required final double amount,
+    required final DateTime amountUpdatedOn,
     required final DateTime maturityDate,
     required final double inflation,
     required final GoalImportance importance,
@@ -20,7 +21,7 @@ class GoalService {
             name: name,
             description: description,
             amount: amount,
-            amountUpdatedOn: DateTime.now(),
+            amountUpdatedOn: amountUpdatedOn,
             maturityDate: maturityDate,
             inflation: inflation,
             importance: importance)
@@ -39,18 +40,27 @@ class GoalService {
     });
   }
 
-  Future<Goal> update(Goal goal) {
+  Future<Goal> update({
+    required final int id,
+    required final String name,
+    required final String? description,
+    required final double amount,
+    required final DateTime amountUpdatedOn,
+    required final DateTime maturityDate,
+    required final double inflation,
+    required final GoalImportance importance,
+  }) {
     return _goalApi
         .update(
-            id: goal.id,
-            name: goal.name,
-            description: goal.description,
-            amount: goal.amount,
-            amountUpdatedOn: goal.amountUpdatedOn,
-            maturityDate: goal.maturityDate,
-            inflation: goal.inflation,
-            importance: goal.importance)
-        .then((value) => _goalApi.getBy(id: goal.id))
+            id: id,
+            name: name,
+            description: description,
+            amount: amount,
+            amountUpdatedOn: amountUpdatedOn,
+            maturityDate: maturityDate,
+            inflation: inflation,
+            importance: importance)
+        .then((value) => _goalApi.getBy(id: id))
         .then((goalDO) => Goal.from(goalDO: goalDO));
   }
 

@@ -12,7 +12,7 @@ class SipApi {
       required final String? description,
       required final double amount,
       required final DateTime startDate,
-      required final DateTime endDate,
+      required final DateTime? endDate,
       required final SipFrequency frequency}) async {
     return _db.into(_db.sipTable).insert(SipTableCompanion.insert(
         investmentId: investmentId,
@@ -48,7 +48,7 @@ class SipApi {
       required final String? description,
       required final double amount,
       required final DateTime startDate,
-      required final DateTime endDate,
+      required final DateTime? endDate,
       required final SipFrequency frequency}) async {
     return (_db.update(_db.sipTable)..where((t) => t.id.equals(id))).write(
         SipTableCompanion(

@@ -1,25 +1,26 @@
-import 'package:wealth_wave/api/apis/basket_api.dart';
-import 'package:wealth_wave/api/apis/investment_api.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/domain/services/basket_service.dart';
+import 'package:wealth_wave/domain/services/investment_service.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 import 'package:wealth_wave/utils/utils.dart';
 
 class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
-  final InvestmentApi _investmentApi;
-  final BasketApi _basketApi;
+  final InvestmentService _investmentService;
+  final BasketService _basketService;
 
   CreateInvestmentPresenter(
-      {final InvestmentApi? investmentApi, final BasketApi? basketApi})
-      : _investmentApi = investmentApi ?? InvestmentApi(),
-        _basketApi = basketApi ?? BasketApi(),
+      {final InvestmentService? investmentService,
+      final BasketService? basketService})
+      : _investmentService = investmentService ?? InvestmentService(),
+        _basketService = basketService ?? BasketService(),
         super(CreateInvestmentViewState());
 
   void getBaskets() {
-    _basketApi.get().then(
+    _basketService.get().then(
         (value) => updateViewState((viewState) => viewState.baskets = value));
   }
 
@@ -40,13 +41,13 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     final maturityDate = viewState.getMaturityDate();
 
     if (investmentIdToUpdate != null) {
-      _investmentApi
-          .updateInvestment(
+      _investmentService
+          .update(
               id: investmentIdToUpdate,
               description: description,
               name: name,
-              currentValue: value,
-              currentValueUpdatedOn: valueUpdatedAt,
+              value: value,
+              valueUpdatedOn: valueUpdatedAt,
               basketId: basketId,
               riskLevel: riskLevel,
               irr: irr,
@@ -54,12 +55,12 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
           .then((_) => updateViewState((viewState) =>
               viewState.onInvestmentCreated = SingleEvent(null)));
     } else {
-      _investmentApi
-          .createInvestment(
+      _investmentService
+          .create(
               name: name,
               description: description,
-              currentValue: value,
-              currentValueUpdatedAt: valueUpdatedAt,
+              value: value,
+              valueUpdatedOn: valueUpdatedAt,
               basketId: basketId,
               riskLevel: riskLevel,
               irr: irr,
@@ -98,11 +99,10 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     updateViewState((viewState) {
       viewState.name = investmentToUpdate.name;
       viewState.basketId = investmentToUpdate.basketId;
-      viewState.value = investmentToUpdate.currentValue;
-      viewState.valueUpdatedAt =
-          investmentToUpdate.currentValueUpdatedOn != null
-              ? formatDate(investmentToUpdate.currentValueUpdatedOn!)
-              : null;
+      viewState.value = investmentToUpdate.value;
+      viewState.valueUpdatedAt = investmentToUpdate.valueUpdatedOn != null
+          ? formatDate(investmentToUpdate.valueUpdatedOn!)
+          : null;
       viewState.riskLevel = investmentToUpdate.riskLevel;
     });
   }
@@ -118,7 +118,7 @@ class CreateInvestmentViewState {
   String? valueUpdatedAt;
   String? maturityDate;
   SingleEvent<void>? onInvestmentCreated;
-  List<BasketDO> baskets = List.empty(growable: false);
+  List<Basket> baskets = List.empty(growable: false);
 
   bool isValid() {
     return name.isNotEmpty && basketId != null;
