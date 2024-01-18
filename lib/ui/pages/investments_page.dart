@@ -79,7 +79,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                           if (value == 1) {
                             showCreateInvestmentDialog(
                                     context: context,
-                                    investmentToUpdate: investmentVO.investment)
+                                    investmentIdToUpdate: investmentVO.id)
                                 .then((value) => presenter.fetchInvestments());
                           } else if (value == 2) {
                             presenter.deleteInvestment(id: investmentVO.id);

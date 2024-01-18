@@ -79,12 +79,21 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
   }
 
   void valueChanged(String text) {
-    updateViewState(
-        (viewState) => viewState.value = double.tryParse(text) ?? 0);
+    updateViewState((viewState) {
+      viewState.value = double.tryParse(text);
+      if (text.isNotEmpty) {
+        viewState.irr = null;
+      }
+    });
   }
 
   void valueUpdatedDateChanged(String date) {
-    updateViewState((viewState) => viewState.valueUpdatedAt = date);
+    updateViewState((viewState) {
+      viewState.valueUpdatedAt = date;
+      if (date.isNotEmpty) {
+        viewState.irr = null;
+      }
+    });
   }
 
   void baskedIdChanged(int baskedIt) {
@@ -93,6 +102,16 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
 
   void riskLevelChanged(RiskLevel riskLevel) {
     updateViewState((viewState) => viewState.riskLevel = riskLevel);
+  }
+
+  void irrChanged(String irr) {
+    updateViewState((viewState) {
+      viewState.irr = double.tryParse(irr);
+      if (irr.isNotEmpty) {
+        viewState.valueUpdatedAt = '';
+        viewState.value = null;
+      }
+    });
   }
 
   void setInvestment(Investment investmentToUpdate) {
@@ -105,6 +124,12 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
           : null;
       viewState.riskLevel = investmentToUpdate.riskLevel;
     });
+  }
+
+  void fetchInvestment({required int id}) {
+    _investmentService
+        .getBy(id: id)
+        .then((investment) => setInvestment(investment));
   }
 }
 
@@ -121,7 +146,8 @@ class CreateInvestmentViewState {
   List<Basket> baskets = List.empty(growable: false);
 
   bool isValid() {
-    return name.isNotEmpty && basketId != null;
+    return name.isNotEmpty &&
+        ((value != null && _getValueUpdatedAt() != null) || irr != null);
   }
 
   DateTime? _getValueUpdatedAt() {

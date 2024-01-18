@@ -2,24 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/presentation/create_investment_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showCreateInvestmentDialog(
-    {required final BuildContext context,
-    final Investment? investmentToUpdate}) {
+    {required final BuildContext context, final int? investmentIdToUpdate}) {
   return showDialog(
       context: context,
       builder: (context) =>
-          _CreateInvestmentDialog(investmentToUpdate: investmentToUpdate));
+          _CreateInvestmentDialog(investmentIdToUpdate: investmentIdToUpdate));
 }
 
 class _CreateInvestmentDialog extends StatefulWidget {
-  final Investment? investmentToUpdate;
+  final int? investmentIdToUpdate;
 
-  const _CreateInvestmentDialog({this.investmentToUpdate});
+  const _CreateInvestmentDialog({this.investmentIdToUpdate});
 
   @override
   State<_CreateInvestmentDialog> createState() => _CreateInvestmentPage();
@@ -29,6 +27,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     _CreateInvestmentDialog, CreateInvestmentPresenter> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _irrController = TextEditingController();
   final _valueController = TextEditingController();
   final _valueUpdatedDateController = TextEditingController();
 
@@ -36,16 +35,9 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
   void initState() {
     super.initState();
 
-    Investment? investmentToUpdate = widget.investmentToUpdate;
-    if (investmentToUpdate != null) {
-      _nameController.text = investmentToUpdate.name;
-      _descriptionController.text = investmentToUpdate.description ?? '';
-      _valueController.text = investmentToUpdate.value.toString();
-      _valueUpdatedDateController.text =
-          investmentToUpdate.valueUpdatedOn != null
-              ? formatDate(investmentToUpdate.valueUpdatedOn!)
-              : '';
-      presenter.setInvestment(investmentToUpdate);
+    int? investmentIdToUpdate = widget.investmentIdToUpdate;
+    if (investmentIdToUpdate != null) {
+      presenter.fetchInvestment(id: investmentIdToUpdate);
     } else {
       _valueUpdatedDateController.text = formatDate(DateTime.now());
     }
@@ -64,6 +56,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
 
     _valueUpdatedDateController.addListener(() {
       presenter.valueUpdatedDateChanged(_valueUpdatedDateController.text);
+    });
+
+    _irrController.addListener(() {
+      presenter.irrChanged(_irrController.text);
     });
 
     presenter.getBaskets();
@@ -119,12 +115,23 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                           labelText: 'Current Value',
                           border: OutlineInputBorder()),
                     ),
+                    const SizedBox(height: AppDimen.defaultPadding),
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      controller: _valueUpdatedDateController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
+                      ],
+                      decoration: const InputDecoration(
+                          labelText: 'Updated Date (DD-MM-YYYY)',
+                          border: OutlineInputBorder()),
+                    ),
                     const SizedBox(height: AppDimen.minPadding),
                     const Text('Or'),
                     const SizedBox(height: AppDimen.minPadding),
                     TextFormField(
                       textInputAction: TextInputAction.next,
-                      controller: _valueController,
+                      controller: _irrController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: const InputDecoration(
@@ -187,10 +194,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
             onPressed: snapshot.isValid()
                 ? () {
                     presenter.createInvestment(
-                        investmentIdToUpdate: widget.investmentToUpdate?.id);
+                        investmentIdToUpdate: widget.investmentIdToUpdate);
                   }
                 : null,
-            child: widget.investmentToUpdate != null
+            child: widget.investmentIdToUpdate != null
                 ? const Text('Update')
                 : const Text('Create'),
           ),

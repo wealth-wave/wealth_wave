@@ -44,7 +44,6 @@ class InvestmentVO {
   final DateTime? valueUpdatedOn;
   final DateTime? maturityDate;
   final Basket? basket;
-  final Investment investment;
   final List<Transaction> transactions;
   final Map<Goal, double> goals;
 
@@ -64,7 +63,6 @@ class InvestmentVO {
       required this.investedValue,
       required this.currentValue,
       required this.maturityDate,
-      required this.investment,
       required this.transactions,
       required this.goals});
 
@@ -83,7 +81,6 @@ class InvestmentVO {
         basket: await investment.getBasket(),
         transactions: await investment.getTransactions(),
         goals: await investment.getGoals(),
-        maturityDate: investment.maturityDate,
-        investment: investment);
+        maturityDate: investment.maturityDate);
   }
 }

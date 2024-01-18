@@ -7,7 +7,6 @@ import 'package:wealth_wave/domain/services/investment_service.dart';
 class TagInvestmentPresenter extends Presenter<TagInvestmentViewState> {
   final int _goalId;
   final GoalService _goalService;
-  final InvestmentService _investmentService;
 
   TagInvestmentPresenter(
       {required final int goalId,
@@ -15,7 +14,6 @@ class TagInvestmentPresenter extends Presenter<TagInvestmentViewState> {
       final InvestmentService? investmentService})
       : _goalId = goalId,
         _goalService = goalService ?? GoalService(),
-        _investmentService = investmentService ?? InvestmentService(),
         super(TagInvestmentViewState());
 
   void onInvestmentSelected(int? investmentId) {
