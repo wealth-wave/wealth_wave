@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:wealth_wave/domain/models/payment.dart';
 
 class IRRCalculator {
-  double? calculateIRR(
+  double calculateIRR(
       {required final List<Payment> payments,
       required final double value,
       required final DateTime valueUpdatedOn}) {
-    if (payments.isEmpty) return null;
+    if (payments.isEmpty) return 0.0;
 
     payments.sort((a, b) => a.createdOn.compareTo(b.createdOn));
     DateTime initialDate = payments.first.createdOn;
@@ -33,7 +33,7 @@ class IRRCalculator {
       if (f.abs() < 1e-6) return guess; // Convergence tolerance
       guess -= f / df; // Newton-Raphson update
     }
-    return null;
+    return 0.0;
   }
 
   double calculateTransactedValueOnIRR(

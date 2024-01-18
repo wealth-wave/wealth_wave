@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/models/goal.dart';
 import 'package:wealth_wave/presentation/goals_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';
@@ -24,14 +23,14 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
 
   @override
   Widget buildWidget(BuildContext context, GoalsViewState snapshot) {
-    List<Goal> goals = snapshot.goals;
+    List<GoalVO> goalVOs = snapshot.goalVOs;
     return Scaffold(
       body: Center(
           child: ListView.builder(
-        itemCount: goals.length,
+        itemCount: goalVOs.length,
         itemBuilder: (context, index) {
-          Goal goal = goals[index];
-          return _goalWidget(context: context, goal: goal);
+          GoalVO goalVO = goalVOs[index];
+          return _goalWidget(context: context, goalVO: goalVO);
         },
       )),
       floatingActionButton: FloatingActionButton(
@@ -51,7 +50,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
   }
 
   Widget _goalWidget(
-      {required final BuildContext context, required final Goal goal}) {
+      {required final BuildContext context, required final GoalVO goalVO}) {
     return Card(
         margin: const EdgeInsets.all(AppDimen.defaultPadding),
         child: Padding(
@@ -64,21 +63,22 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(goal.name,
+                      Text(goalVO.name,
                           style: Theme.of(context).textTheme.titleMedium),
                       const Text(' | '),
-                      Text('${_getImportance(goal.importance)} Importance',
+                      Text('${_getImportance(goalVO.importance)} Importance',
                           style: Theme.of(context).textTheme.labelSmall),
                       const Text(' | '),
-                      Text('(${_getYearsLeft(goal.getYearsLeft())})',
+                      Text('(${_getYearsLeft(goalVO.yearsLeft)})',
                           style: Theme.of(context).textTheme.labelSmall),
                       PopupMenuButton<int>(
                         onSelected: (value) {
                           if (value == 1) {
-                            showCreateGoalDialog(context: context, goal: goal)
+                            showCreateGoalDialog(
+                                    context: context, goal: goalVO.goal)
                                 .then((value) => presenter.fetchGoals());
                           } else if (value == 2) {
-                            presenter.deleteGoal(id: goal.id);
+                            presenter.deleteGoal(id: goalVO.id);
                           }
                         },
                         itemBuilder: (context) => [
@@ -97,11 +97,11 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                   TextButton(
                     onPressed: () {
                       showTaggedInvestmentDialog(
-                              context: context, goalId: goal.id)
+                              context: context, goalId: goalVO.id)
                           .then((value) => presenter.fetchGoals());
                     },
-                    child: Text(
-                        '${goal.taggedInvestments.length} tagged investments'),
+                    child:
+                        Text('${goalVO.investments.length} tagged investments'),
                   ),
                 ],
               ),
@@ -111,7 +111,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(formatToCurrency(goal.getInvestedValue()),
+                      Text(formatToCurrency(goalVO.investedAmount),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Invested Amount)',
                           style: Theme.of(context).textTheme.labelSmall),
@@ -121,10 +121,10 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(formatToCurrency(goal.getFutureValueOnTargetDate()),
+                      Text(formatToCurrency(goalVO.valueOnMaturity),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text(
-                          '(At growth Rate of ${formatToPercentage(goal.getIrr())})',
+                          '(At growth Rate of ${formatToPercentage(goalVO.irr)})',
                           style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),
@@ -133,17 +133,17 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                           padding:
                               const EdgeInsets.all(AppDimen.defaultPadding),
                           child: LinearProgressIndicator(
-                            value: goal.getProgress(),
+                            value: goalVO.progress,
                             semanticsLabel: 'Investment progress',
                           ))),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(formatToCurrency(goal.targetAmount),
+                      Text(formatToCurrency(goalVO.maturityAmount),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Target Amount)',
                           style: Theme.of(context).textTheme.labelSmall),
-                      Text(formatToPercentage(goal.inflation / 100),
+                      Text(formatToPercentage(goalVO.inflation / 100),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Inflation)',
                           style: Theme.of(context).textTheme.labelSmall),

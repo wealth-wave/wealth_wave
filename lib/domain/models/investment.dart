@@ -83,9 +83,6 @@ class Investment {
     if (value != null && valueUpdatedOn != null) {
       final irr = _irrCalculator.calculateIRR(
           payments: payments, value: value!, valueUpdatedOn: valueUpdatedOn!);
-      if (irr == null) {
-        return value!;
-      }
       return _irrCalculator.calculateValueOnIRR(
           irr: irr, date: date, value: value!, valueUpdatedOn: valueUpdatedOn!);
     } else if (irr != null) {
@@ -227,6 +224,25 @@ class Investment {
     return _goalInvestmentApi
         .deleteBy(goalId: goal.id, investmentId: id)
         .then((count) => Void);
+  }
+
+  Future<double> getIRR() async {
+    if (irr != null) {
+      return Future(() => irr!);
+    } else if (value != null && valueUpdatedOn != null) {
+      List<Payment> payments = await getTransactions().then((transactions) =>
+          transactions
+              .map((transaction) => Payment.from(transaction: transaction))
+              .toList(growable: true));
+
+      return getValueOn(date: DateTime.now()).then((valueOn) =>
+          _irrCalculator.calculateIRR(
+              payments: payments,
+              value: value!,
+              valueUpdatedOn: valueUpdatedOn!));
+    } else {
+      return Future.error('IRR is null');
+    }
   }
 
   static Investment from({required final InvestmentDO investmentDO}) {

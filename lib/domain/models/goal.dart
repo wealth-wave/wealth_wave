@@ -107,6 +107,27 @@ class Goal {
         .then((count) => Void);
   }
 
+  Future<double> getIRR() async {
+    return _goalInvestmentApi
+        .getBy(goalId: id)
+        .then((goalInvestments) => Future.wait(goalInvestments.map(
+            (goalInvestment) => _investmentApi
+                .getById(id: goalInvestment.investmentId)
+                .then((investmentDO) =>
+                    Investment.from(investmentDO: investmentDO))
+                .then((investment) async => {
+                      'value': investment.value,
+                      'irr': await investment.getIRR(),
+                    }))))
+        .then((investmentData) {
+      var totalValue = investmentData.fold(
+          0.0, (sum, investment) => sum + investment['value']!);
+      var weightedIRRSum = investmentData.fold(0.0,
+          (sum, investment) => sum + investment['value']! * investment['irr']!);
+      return weightedIRRSum / totalValue;
+    });
+  }
+
   static Goal from({required final GoalDO goalDO}) {
     return Goal(
         id: goalDO.id,
