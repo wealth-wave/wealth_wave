@@ -41,23 +41,23 @@ class _SipsPage extends PageState<SipsViewState, _SipsDialog, SipsPresenter> {
           width: double.maxFinite,
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: snapshot.sips.length,
+            itemCount: snapshot.sipVOs.length,
             itemBuilder: (context, index) {
-              SipDO sip = snapshot.sips[index];
+              SIPVO sipVO = snapshot.sipVOs[index];
               return ListTile(
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Text(formatDate(sip.startDate)),
+                        Text(formatDate(sipVO.startDate)),
                         const Text(' | '),
-                        Text(sip.description ?? ''),
+                        Text(sipVO.description ?? ''),
                       ],
                     ),
                     const SizedBox(
                         height: AppDimen.minPadding), // Add some spacing
-                    Text('Amount: ${formatToCurrency(sip.amount)}'),
+                    Text('Amount: ${formatToCurrency(sipVO.amount)}'),
                   ],
                 ),
                 trailing: Row(mainAxisSize: MainAxisSize.min, children: [

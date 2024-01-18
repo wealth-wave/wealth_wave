@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/create_sip_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
@@ -9,20 +8,20 @@ import 'package:wealth_wave/utils/ui_utils.dart';
 Future<void> showCreateSipDialog(
     {required final BuildContext context,
     required final int investmentId,
-    final SipDO? sipToUpdate}) {
+    final int? sipIdToUpdate}) {
   return showDialog(
       context: context,
       builder: (context) => _CreateSipDialog(
-            sipToUpdate: sipToUpdate,
+            sipIdToUpdate: sipIdToUpdate,
             investmentId: investmentId,
           ));
 }
 
 class _CreateSipDialog extends StatefulWidget {
-  final SipDO? sipToUpdate;
+  final int? sipIdToUpdate;
   final int investmentId;
 
-  const _CreateSipDialog({this.sipToUpdate, required this.investmentId});
+  const _CreateSipDialog({this.sipIdToUpdate, required this.investmentId});
 
   @override
   State<_CreateSipDialog> createState() => _CreateTransactionPage();
@@ -39,14 +38,9 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
   void initState() {
     super.initState();
 
-    SipDO? sipToUpdate = widget.sipToUpdate;
-    if (sipToUpdate != null) {
-      _descriptionController.text = sipToUpdate.description ?? '';
-      _valueController.text = sipToUpdate.amount.toString();
-      _startDateController.text = formatDate(sipToUpdate.startDate);
-      final endDate = sipToUpdate.endDate;
-      _endDateController.text = endDate != null ? formatDate(endDate) : '';
-      presenter.setSip(sipToUpdate);
+    int? sipIdToUpdate = widget.sipIdToUpdate;
+    if (sipIdToUpdate != null) {
+      presenter.fetchSip(id: sipIdToUpdate);
     } else {
       _startDateController.text = formatDate(DateTime.now());
     }

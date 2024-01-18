@@ -1,16 +1,20 @@
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/domain/services/investment_service.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 import 'package:wealth_wave/utils/utils.dart';
 
 class CreateInvestmentTransactionPresenter
     extends Presenter<CreateTransactionViewState> {
-  final Investment _investment;
+  final int _investmentId;
+  final InvestmentService _investmentService;
 
-  CreateInvestmentTransactionPresenter({required final Investment investment})
-      : _investment = investment,
+  CreateInvestmentTransactionPresenter(
+      {required final int investmentId,
+      final InvestmentService? investmentService})
+      : _investmentId = investmentId,
+        _investmentService = investmentService ?? InvestmentService(),
         super(CreateTransactionViewState());
 
   void createTransaction({final int? transactionIdToUpdate}) {
@@ -24,22 +28,26 @@ class CreateInvestmentTransactionPresenter
     final amount = viewState.amount;
     final investedDate = viewState.getInvestedDate();
 
-    if (transactionIdToUpdate != null) {
-      _investment
-          .updateTransaction(
-              transactionId: transactionIdToUpdate,
-              description: description,
-              amount: amount,
-              createdOn: investedDate)
-          .then((_) => updateViewState((viewState) =>
-              viewState.onTransactionCreated = SingleEvent(null)));
-    } else {
-      _investment
-          .createTransaction(
-              description: description, amount: amount, createdOn: investedDate)
-          .then((_) => updateViewState((viewState) =>
-              viewState.onTransactionCreated = SingleEvent(null)));
-    }
+    _investmentService.getBy(id: _investmentId).then((investment) {
+      if (transactionIdToUpdate != null) {
+        investment
+            .updateTransaction(
+                transactionId: transactionIdToUpdate,
+                description: description,
+                amount: amount,
+                createdOn: investedDate)
+            .then((_) => updateViewState((viewState) =>
+                viewState.onTransactionCreated = SingleEvent(null)));
+      } else {
+        investment
+            .createTransaction(
+                description: description,
+                amount: amount,
+                createdOn: investedDate)
+            .then((_) => updateViewState((viewState) =>
+                viewState.onTransactionCreated = SingleEvent(null)));
+      }
+    });
   }
 
   void onDescriptionChanged(String text) {

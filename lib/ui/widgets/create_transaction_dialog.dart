@@ -44,7 +44,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
       _descriptionController.text = transactionToUpdate.description ?? '';
       _valueController.text = transactionToUpdate.amount.toString();
       _valueUpdatedDateController.text =
-          formatDate(transactionToUpdate.amountInvestedOn);
+          formatDate(transactionToUpdate.createdOn);
       presenter.setTransaction(transactionToUpdate);
     } else {
       _valueUpdatedDateController.text = formatDate(DateTime.now());
@@ -85,7 +85,6 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
             onPressed: snapshot.isValid()
                 ? () {
                     presenter.createTransaction(
-                        investmentId: widget.investmentId,
                         transactionIdToUpdate: widget.transactionToUpdate?.id);
                   }
                 : null,
@@ -126,6 +125,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
 
   @override
   CreateInvestmentTransactionPresenter initializePresenter() {
-    return CreateInvestmentTransactionPresenter();
+    return CreateInvestmentTransactionPresenter(
+        investmentId: widget.investmentId);
   }
 }

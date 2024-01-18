@@ -1,20 +1,24 @@
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/sip_frequency.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
+import 'package:wealth_wave/domain/services/sip_service.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 import 'package:wealth_wave/utils/utils.dart';
 
 class CreateSipPresenter extends Presenter<CreateSipViewState> {
   final int _investmentId;
   final InvestmentService _investmentService;
+  final SipService _sipService;
 
   CreateSipPresenter(
       {required final int investmentId,
-      final InvestmentService? investmentService})
+      final InvestmentService? investmentService,
+      final SipService? sipService})
       : _investmentId = investmentId,
         _investmentService = investmentService ?? InvestmentService(),
+        _sipService = sipService ?? SipService(),
         super(CreateSipViewState());
 
   void createSip({required final int investmentId, final int? sipIdToUpdate}) {
@@ -77,7 +81,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     updateViewState((viewState) => viewState.frequency = frequency);
   }
 
-  void setSip(SipDO sipToUpdate) {
+  void setSip(SIP sipToUpdate) {
     updateViewState((viewState) {
       viewState.description = sipToUpdate.description;
       viewState.amount = sipToUpdate.amount;
@@ -86,6 +90,10 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
           sipToUpdate.endDate != null ? formatDate(sipToUpdate.endDate!) : '';
       viewState.frequency = sipToUpdate.frequency;
     });
+  }
+
+  void fetchSip({required int id}) {
+    _sipService.getBy(id: id).then((sip) => setSip(sip));
   }
 }
 
