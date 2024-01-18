@@ -3,6 +3,7 @@ import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
 
@@ -44,11 +45,13 @@ class InvestmentVO {
   final DateTime? valueUpdatedOn;
   final DateTime? maturityDate;
   final Basket? basket;
+  final List<SIP> sips;
   final List<Transaction> transactions;
   final Map<Goal, double> goals;
 
   String? get basketName => basket?.name;
   int get transactionCount => transactions.length;
+  int get sipCount => sips.length;
   int get goalCount => goals.length;
 
   InvestmentVO(
@@ -64,6 +67,7 @@ class InvestmentVO {
       required this.currentValue,
       required this.maturityDate,
       required this.transactions,
+      required this.sips,
       required this.goals});
 
   static Future<InvestmentVO> from(
@@ -80,6 +84,7 @@ class InvestmentVO {
         valueUpdatedOn: investment.valueUpdatedOn,
         basket: await investment.getBasket(),
         transactions: await investment.getTransactions(),
+        sips: await investment.getSips(),
         goals: await investment.getGoals(),
         maturityDate: investment.maturityDate);
   }

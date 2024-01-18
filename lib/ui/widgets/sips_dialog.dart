@@ -3,7 +3,6 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/sips_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_sip_dialog.dart';
-import 'package:wealth_wave/ui/widgets/create_transaction_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showSipsDialog(
@@ -35,7 +34,7 @@ class _SipsPage extends PageState<SipsViewState, _SipsDialog, SipsPresenter> {
   @override
   Widget buildWidget(BuildContext context, SipsViewState snapshot) {
     return AlertDialog(
-      title: const Text('Transactions'),
+      title: const Text('Sips'),
       content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
@@ -88,9 +87,9 @@ class _SipsPage extends PageState<SipsViewState, _SipsDialog, SipsPresenter> {
           },
         ),
         OutlinedButton(
-          child: const Text('Add Transaction'),
+          child: const Text('Add SIP'),
           onPressed: () {
-            showCreateTransactionDialog(
+            showCreateSipDialog(
                     context: context, investmentId: widget.investmentId)
                 .then((value) => presenter.getSips());
           },

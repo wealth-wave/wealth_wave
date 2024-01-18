@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wealth_wave/contract/sip_frequency.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/create_sip_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
@@ -125,6 +126,44 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
               decoration: const InputDecoration(
                   labelText: 'End Date (DD-MM-YYYY)',
                   border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: AppDimen.defaultPadding),
+            DropdownButtonFormField<SipFrequency>(
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), labelText: 'Frequency'),
+              hint: const Text('Frequency'),
+              value: snapshot.frequency,
+              onChanged: (value) {
+                if (value != null) {
+                  presenter.onFrequencyChanged(value);
+                }
+              },
+              items: const [
+                DropdownMenuItem(
+                  value: SipFrequency.daily,
+                  child: Text('Daily'),
+                ),
+                DropdownMenuItem(
+                  value: SipFrequency.weekly,
+                  child: Text('Weekly'),
+                ),
+                DropdownMenuItem(
+                  value: SipFrequency.biweekly,
+                  child: Text('Bi Weekly'),
+                ),
+                DropdownMenuItem(
+                  value: SipFrequency.monthly,
+                  child: Text('Monthly'),
+                ),
+                DropdownMenuItem(
+                  value: SipFrequency.quarterly,
+                  child: Text('Quarterly'),
+                ),
+                DropdownMenuItem(
+                  value: SipFrequency.yearly,
+                  child: Text('Yearly'),
+                ),
+              ],
             ),
           ]),
         ));
