@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/presentation/investments_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
@@ -27,14 +26,15 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
   @override
   Widget buildWidget(
       final BuildContext context, final InvestmentsViewState snapshot) {
-    List<Investment> investments = snapshot.investments;
+    List<InvestmentVO> investmentVOs = snapshot.investmentVOs;
     return Scaffold(
       body: Center(
           child: ListView.builder(
-        itemCount: investments.length,
+        itemCount: investmentVOs.length,
         itemBuilder: (context, index) {
-          Investment investment = investments[index];
-          return _investmentWidget(context: context, investment: investment);
+          InvestmentVO investmentVO = investmentVOs[index];
+          return _investmentWidget(
+              context: context, investmentVO: investmentVO);
         },
       )),
       floatingActionButton: FloatingActionButton(
@@ -55,8 +55,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
 
   Widget _investmentWidget(
       {required final BuildContext context,
-      required final Investment investment}) {
-    double? irr = investment.getIrr();
+      required final InvestmentVO investmentVO}) {
     return Card(
         margin: const EdgeInsets.all(AppDimen.defaultPadding),
         child: Padding(
@@ -69,21 +68,21 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(investment.name,
+                      Text(investmentVO.name,
                           style: Theme.of(context).textTheme.titleMedium),
-                      Text('(${investment.basketName})'),
+                      Text('(${investmentVO.basketName})'),
                       const Text(' | '),
-                      Text('${_getRiskLevel(investment.riskLevel)} Risk',
+                      Text('${_getRiskLevel(investmentVO.riskLevel)} Risk',
                           style: Theme.of(context).textTheme.labelSmall),
                       PopupMenuButton<int>(
                         onSelected: (value) {
                           if (value == 1) {
                             showCreateInvestmentDialog(
                                     context: context,
-                                    investmentToUpdate: investment)
+                                    investmentToUpdate: investmentVO.investment)
                                 .then((value) => presenter.fetchInvestments());
                           } else if (value == 2) {
-                            presenter.deleteInvestment(id: investment.id);
+                            presenter.deleteInvestment(id: investmentVO.id);
                           }
                         },
                         itemBuilder: (context) => [
@@ -105,20 +104,21 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                       TextButton(
                         onPressed: () {
                           showTransactionsDialog(
-                                  context: context, investmentId: investment.id)
+                                  context: context,
+                                  investmentId: investmentVO.id)
                               .then((value) => presenter.fetchInvestments());
                         },
                         child: Text(
-                            '${investment.transactions.length} transactions'),
+                            '${investmentVO.transactionCount} transactions'),
                       ),
                       TextButton(
                         onPressed: () {
                           showTaggedGoalDialog(
-                                  context: context, investmentId: investment.id)
+                                  context: context,
+                                  investmentId: investmentVO.id)
                               .then((value) => presenter.fetchInvestments());
                         },
-                        child: Text(
-                            '${investment.taggedGoals.length} tagged goals'),
+                        child: Text('${investmentVO.goalCount} tagged goals'),
                       ),
                     ],
                   )
@@ -130,7 +130,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(formatToCurrency(investment.totalInvestedAmount),
+                      Text(formatToCurrency(investmentVO.investedValue),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Invested Amount)',
                           style: Theme.of(context).textTheme.labelSmall),
@@ -139,7 +139,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(irr != null ? formatToPercentage(irr) : '-',
+                      Text(formatToPercentage(investmentVO.irr),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Growth Per Yearl)',
                           style: Theme.of(context).textTheme.labelSmall),
@@ -148,10 +148,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                          investment.currentValue != null
-                              ? formatToCurrency(investment.currentValue!)
-                              : '',
+                      Text(formatToCurrency(investmentVO.currentValue),
                           style: Theme.of(context).textTheme.bodyMedium),
                     ],
                   ),
