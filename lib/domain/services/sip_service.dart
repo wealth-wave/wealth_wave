@@ -11,4 +11,13 @@ class SipService {
       return SIP.from(sipDO: sipDO);
     });
   }
+
+  Future<void> performSipTransactions() {
+    return _sipApi
+        .getAll()
+        .then((sipDOs) =>
+            Future.wait(sipDOs.map((sipDO) => SIP.from(sipDO: sipDO))))
+        .then((sips) => sips.map((sip) => sip.performSipTransactions()))
+        .then((_) => {});
+  }
 }

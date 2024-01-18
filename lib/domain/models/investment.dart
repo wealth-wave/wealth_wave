@@ -122,9 +122,8 @@ class Investment {
   }
 
   Future<List<SIP>> getSips() async {
-    return _sipApi
-        .getBy(investmentId: id)
-        .then((sips) => sips.map((sipDO) => SIP.from(sipDO: sipDO)).toList());
+    return _sipApi.getBy(investmentId: id).then(
+        (sips) => Future.wait(sips.map((sipDO) => SIP.from(sipDO: sipDO))));
   }
 
   Future<SIP> createSip(
@@ -142,7 +141,8 @@ class Investment {
             endDate: endDate,
             frequency: frequency)
         .then((id) => _sipApi.getById(id: id))
-        .then((sipDO) => SIP.from(sipDO: sipDO));
+        .then((sipDO) => SIP.from(sipDO: sipDO))
+        .then((sip) => sip.performSipTransactions().then((_) => sip));
   }
 
   Future<SIP> updateSip(
@@ -162,7 +162,11 @@ class Investment {
             endDate: endDate,
             frequency: frequency)
         .then((count) => _sipApi.getById(id: sipId))
-        .then((sipDO) => SIP.from(sipDO: sipDO));
+        .then((sipDO) => SIP.from(sipDO: sipDO))
+        .then((sip) => sip
+            .deleteTransactions()
+            .then((_) => sip.performSipTransactions().then((_) => sip)));
+    ;
   }
 
   Future<void> deleteSIP({required final int sipId}) async {

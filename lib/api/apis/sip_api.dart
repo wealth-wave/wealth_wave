@@ -24,6 +24,12 @@ class SipApi {
         executedTill: const Value(null)));
   }
 
+  Future<List<SipDO>> getAll() async {
+    return (_db.select(_db.sipTable)
+          ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
+        .get();
+  }
+
   Future<List<SipDO>> getBy({final int? investmentId}) async {
     if (investmentId == null) {
       return (_db.select(_db.sipTable)

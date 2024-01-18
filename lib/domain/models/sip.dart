@@ -36,7 +36,7 @@ class SIP {
   Future<List<Payment>> getFuturePayment({required final DateTime till}) {
     return Future(() {
       List<Payment> payments = [];
-      for (var i = startDate;
+      for (var i = executedTill ?? startDate;
           i.isBefore(endDate ?? till);
           i = i.add(getDuration(frequency))) {
         payments.add(Payment(amount: amount, createdOn: i));
@@ -99,7 +99,15 @@ class SIP {
     return _transactionApi.deleteBy(sipId: id).then((count) => {});
   }
 
-  static SIP from({required final SipDO sipDO}) {
+  Future<void> performSipTransactions() {
+    return getFuturePayment(till: DateTime.now()).then((payments) =>
+        Future.wait(payments.map((payment) => createTransaction(
+            description: 'SIP',
+            amount: payment.amount,
+            createdOn: payment.createdOn))));
+  }
+
+  static Future<SIP> from({required final SipDO sipDO}) async {
     return SIP(
         id: sipDO.id,
         investmentId: sipDO.investmentId,
