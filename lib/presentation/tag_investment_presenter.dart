@@ -1,33 +1,56 @@
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
-import 'package:wealth_wave/domain/models/goal.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/domain/services/goal_service.dart';
+import 'package:wealth_wave/domain/services/investment_service.dart';
 
 class TagInvestmentPresenter extends Presenter<TagInvestmentViewState> {
-  final Goal _goal;
+  final int _goalId;
+  final GoalService _goalService;
+  final InvestmentService _investmentService;
 
-  TagInvestmentPresenter({required final Goal goal})
-      : _goal = goal,
+  TagInvestmentPresenter(
+      {required final int goalId,
+      final GoalService? goalService,
+      final InvestmentService? investmentService})
+      : _goalId = goalId,
+        _goalService = goalService ?? GoalService(),
+        _investmentService = investmentService ?? InvestmentService(),
         super(TagInvestmentViewState());
 
   void onInvestmentSelected(int? investmentId) {
     updateViewState((viewState) => viewState.investmentId = investmentId);
   }
 
-  void tagInvestment({required final Investment investment}) {
+  void fetchInvesments() {}
+
+  void tagInvestment() {
     final double sharePercentage = getViewState().sharePercentage;
-    _goal.tagInvestment(investment: investment, split: sharePercentage).then(
-        (_) => updateViewState(
-            (viewState) => viewState.onInvestmentTagged = SingleEvent(null)));
+    final int? investmentId = getViewState().investmentId;
+
+    if (investmentId != null && sharePercentage > 0) {
+      _goalService
+          .getBy(id: _goalId)
+          .then((goal) => goal.tagInvestment(
+              investmentId: investmentId, split: sharePercentage))
+          .then((_) => updateViewState(
+              (viewState) => viewState.onInvestmentTagged = SingleEvent(null)));
+    }
   }
 
-  void updateTaggedInvestment({required final Investment investment}) {
+  void updateTaggedInvestment(
+      {required final int id, required final int investmentId}) {
     final double sharePercentage = getViewState().sharePercentage;
-    _goal
-        .updateTaggedInvestment(investment: investment, split: sharePercentage)
-        .then((_) => updateViewState(
-            (viewState) => viewState.onInvestmentTagged = SingleEvent(null)));
+    final int? investmentId = getViewState().investmentId;
+
+    if (investmentId != null && sharePercentage > 0) {
+      _goalService
+          .getBy(id: _goalId)
+          .then((goal) => goal.updateTaggedInvestment(
+              id: id, investmentId: investmentId, split: sharePercentage))
+          .then((_) => updateViewState(
+              (viewState) => viewState.onInvestmentTagged = SingleEvent(null)));
+    }
   }
 
   void onPercentageChanged(String text) {

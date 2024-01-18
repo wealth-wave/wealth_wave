@@ -1,29 +1,78 @@
+import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/domain/services/investment_service.dart';
 
 class TaggedGoalsPresenter extends Presenter<TaggedGoalsViewState> {
-  final Investment _investment;
+  final int _investmentId;
+  final InvestmentService _investmentService;
 
-  TaggedGoalsPresenter({required final Investment investment})
-      : _investment = investment,
+  TaggedGoalsPresenter(
+      {required final int investmentId,
+      final InvestmentService? investmentService})
+      : _investmentId = investmentId,
+        _investmentService = investmentService ?? InvestmentService(),
         super(TaggedGoalsViewState());
 
   void fetchTaggedInvestment() {
-    _investment.getGoals().then((value) => updateViewState((viewState) {
-          viewState.taggedGoals = value;
-        }));
+    _investmentService
+        .getBy(id: _investmentId)
+        .then((investment) => investment.getGoals())
+        .then((taggedGoals) => Future.wait(taggedGoals.entries.toList().map(
+            (taggedGoal) => TagggedGoalVO.from(
+                goal: taggedGoal.key, split: taggedGoal.value))))
+        .then((taggedGoalVOs) => updateViewState((viewState) {
+              viewState.taggedGoalVOs = taggedGoalVOs;
+            }));
   }
 
-  void deleteTaggedInvestment({required final Goal goal}) {
-    _investment.deleteTaggedGoal(goal: goal).then((_) {
-      fetchTaggedInvestment();
-    });
+  void deleteTaggedInvestment({required final int goalId}) {
+    _investmentService
+        .getBy(id: _investmentId)
+        .then((investment) => investment.deleteTaggedGoal(goalId: goalId))
+        .then((value) => fetchTaggedInvestment());
   }
 }
 
 class TaggedGoalsViewState {
-  Map<Goal, double> taggedGoals = {};
+  List<TagggedGoalVO> taggedGoalVOs = [];
 
   TaggedGoalsViewState();
+}
+
+class TagggedGoalVO {
+  final int id;
+  final String name;
+  final String? description;
+  final double amount;
+  final DateTime amountUpdatedOn;
+  final DateTime maturityDate;
+  final double inflation;
+  final GoalImportance importance;
+  final double split;
+
+  TagggedGoalVO(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.amount,
+      required this.amountUpdatedOn,
+      required this.maturityDate,
+      required this.inflation,
+      required this.importance,
+      required this.split});
+
+  static Future<TagggedGoalVO> from(
+      {required final Goal goal, required final double split}) async {
+    return Future.value(TagggedGoalVO(
+        id: goal.id,
+        name: goal.name,
+        description: goal.description,
+        amount: goal.amount,
+        amountUpdatedOn: goal.amountUpdatedOn,
+        maturityDate: goal.maturityDate,
+        inflation: goal.inflation,
+        importance: goal.importance,
+        split: split));
+  }
 }

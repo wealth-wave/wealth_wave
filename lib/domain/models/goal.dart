@@ -85,25 +85,25 @@ class Goal {
         .then((amounts) => amounts.reduce((value, element) => value + element));
   }
 
-  Future<MapEntry<Investment, double>> tagInvestment(
-      {required final Investment investment,
-      required final double split}) async {
+  Future<void> tagInvestment(
+      {required final int investmentId, required final double split}) async {
     return _goalInvestmentApi
-        .create(goalId: id, investmentId: investment.id, split: split)
-        .then((goalInvestmentDO) => MapEntry(investment, split));
+        .create(goalId: id, investmentId: investmentId, split: split)
+        .then((goalInvestmentDO) => Void);
   }
 
-  Future<MapEntry<Investment, double>> updateTaggedInvestment(
-      {required final Investment investment,
+  Future<void> updateTaggedInvestment(
+      {required final int id,
+      required final int investmentId,
       required final double split}) async {
     return _goalInvestmentApi
-        .update(goalId: id, investmentId: investment.id, split: split)
-        .then((goalInvestmentDO) => MapEntry(investment, split));
+        .update(id: id, goalId: id, investmentId: investmentId, split: split)
+        .then((goalInvestmentDO) => Void);
   }
 
-  Future<void> deleteTaggedInvestment({required final Investment investment}) {
+  Future<void> deleteTaggedInvestment({required final int investmentId}) {
     return _goalInvestmentApi
-        .deleteBy(goalId: id, investmentId: investment.id)
+        .deleteBy(goalId: id, investmentId: investmentId)
         .then((count) => Void);
   }
 

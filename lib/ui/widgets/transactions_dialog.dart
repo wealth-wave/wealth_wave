@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/transactions_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
@@ -30,7 +29,7 @@ class _TransactionPage extends PageState<TransactionsViewState,
   void initState() {
     super.initState();
 
-    presenter.getTransactions(investmentId: widget.investmentId);
+    presenter.getTransactions();
   }
 
   @override
@@ -43,14 +42,14 @@ class _TransactionPage extends PageState<TransactionsViewState,
             shrinkWrap: true,
             itemCount: snapshot.transactions.length,
             itemBuilder: (context, index) {
-              TransactionDO transaction = snapshot.transactions[index];
+              TransactionVO transaction = snapshot.transactions[index];
               return ListTile(
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Text(formatDate(transaction.amountInvestedOn)),
+                        Text(formatDate(transaction.createdOn)),
                         const Text(' | '),
                         Text(transaction.description ?? ''),
                       ],
@@ -67,9 +66,8 @@ class _TransactionPage extends PageState<TransactionsViewState,
                       showCreateTransactionDialog(
                               context: context,
                               investmentId: widget.investmentId,
-                              transactionToUpdate: transaction)
-                          .then((value) => presenter.getTransactions(
-                              investmentId: widget.investmentId));
+                              transactionIdToUpdate: transaction.id)
+                          .then((value) => presenter.getTransactions());
                     },
                   ),
                   IconButton(
@@ -94,8 +92,7 @@ class _TransactionPage extends PageState<TransactionsViewState,
           onPressed: () {
             showCreateTransactionDialog(
                     context: context, investmentId: widget.investmentId)
-                .then((value) => presenter.getTransactions(
-                    investmentId: widget.investmentId));
+                .then((value) => presenter.getTransactions());
           },
         ),
       ],
@@ -104,6 +101,6 @@ class _TransactionPage extends PageState<TransactionsViewState,
 
   @override
   InvestmentTransactionsPresenter initializePresenter() {
-    return InvestmentTransactionsPresenter(widget.investmentId);
+    return InvestmentTransactionsPresenter(investmentId: widget.investmentId);
   }
 }

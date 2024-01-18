@@ -1,7 +1,8 @@
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/domain/models/transaction.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
+import 'package:wealth_wave/domain/services/transaction_service.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 import 'package:wealth_wave/utils/utils.dart';
 
@@ -9,12 +10,15 @@ class CreateInvestmentTransactionPresenter
     extends Presenter<CreateTransactionViewState> {
   final int _investmentId;
   final InvestmentService _investmentService;
+  final TransactionService _transactionService;
 
   CreateInvestmentTransactionPresenter(
       {required final int investmentId,
-      final InvestmentService? investmentService})
+      final InvestmentService? investmentService,
+      final TransactionService? transactionService})
       : _investmentId = investmentId,
         _investmentService = investmentService ?? InvestmentService(),
+        _transactionService = transactionService ?? TransactionService(),
         super(CreateTransactionViewState());
 
   void createTransaction({final int? transactionIdToUpdate}) {
@@ -63,11 +67,17 @@ class CreateInvestmentTransactionPresenter
     updateViewState((viewState) => viewState.investedDate = date);
   }
 
-  void setTransaction(TransactionDO transactionToUpdate) {
+  void setTransaction(Transaction transactionToUpdate) {
     updateViewState((viewState) {
       viewState.amount = transactionToUpdate.amount;
       viewState.investedDate = formatDate(transactionToUpdate.createdOn);
     });
+  }
+
+  void fetchTransaction({required int id}) {
+    _transactionService
+        .getBy(id: id)
+        .then((transaction) => setTransaction(transaction));
   }
 }
 

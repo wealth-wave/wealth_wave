@@ -60,7 +60,7 @@ class _TagInvestmentState extends PageState<TagInvestmentViewState,
       presenter.onPercentageChanged(_valueController.text);
     });
 
-    presenter.getInvestments();
+    presenter.fetchInvesments();
   }
 
   @override
@@ -110,7 +110,7 @@ class _TagInvestmentState extends PageState<TagInvestmentViewState,
           ElevatedButton(
             onPressed: snapshot.isValid()
                 ? () {
-                    presenter.tagInvestment(id: widget.idToUpdate);
+                    presenter.tagInvestment();
                   }
                 : null,
             child: widget.idToUpdate != null
@@ -122,6 +122,6 @@ class _TagInvestmentState extends PageState<TagInvestmentViewState,
 
   @override
   TagInvestmentPresenter initializePresenter() {
-    return TagInvestmentPresenter(widget.goalId);
+    return TagInvestmentPresenter(goalId: widget.goalId);
   }
 }

@@ -202,27 +202,29 @@ class Investment {
   }
 
   Future<void> deleteTransaction(
-      {required final Transaction transaction}) async {
-    return _transactionApi.deleteBy(id: transaction.id).then((count) => Void);
+      {required final int id}) async {
+    return _transactionApi.deleteBy(id: id).then((count) => Void);
   }
 
-  Future<MapEntry<Goal, double>> tagGoal(
-      {required final Goal goal, required final double split}) async {
+  Future<void> tagGoal(
+      {required final int goalId, required final double split}) async {
     return _goalInvestmentApi
-        .create(goalId: goal.id, investmentId: id, split: split)
-        .then((goalInvestmentDO) => MapEntry(goal, split));
+        .create(goalId: goalId, investmentId: id, split: split)
+        .then((goalInvestmentDO) => Void);
   }
 
-  Future<MapEntry<Goal, double>> updateTaggedGoal(
-      {required final Goal goal, required final double split}) async {
+  Future<void> updateTaggedGoal(
+      {required final int id,
+      required final int goalId,
+      required final double split}) async {
     return _goalInvestmentApi
-        .update(goalId: goal.id, investmentId: id, split: split)
-        .then((goalInvestmentDO) => MapEntry(goal, split));
+        .update(id: id, goalId: goalId, investmentId: id, split: split)
+        .then((goalInvestmentDO) => Void);
   }
 
-  Future<void> deleteTaggedGoal({required final Goal goal}) {
+  Future<void> deleteTaggedGoal({required final int goalId}) {
     return _goalInvestmentApi
-        .deleteBy(goalId: goal.id, investmentId: id)
+        .deleteBy(goalId: goalId, investmentId: id)
         .then((count) => Void);
   }
 

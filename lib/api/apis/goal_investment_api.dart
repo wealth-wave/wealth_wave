@@ -35,12 +35,11 @@ class GoalInvestmentApi {
   }
 
   Future<int> update(
-      {required final int goalId,
+      {required final int id,
+      required final int goalId,
       required final int investmentId,
       required final double split}) async {
-    return (_db.update(_db.goalInvestmentTable)
-          ..where((t) =>
-              t.goalId.equals(goalId) & t.investmentId.equals(investmentId)))
+    return (_db.update(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
         .write(GoalInvestmentTableCompanion(
             investmentId: Value(investmentId),
             goalId: Value(goalId),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/tagged_investment_presenter.dart';
 import 'package:wealth_wave/ui/widgets/tag_investment_dialog.dart';
@@ -40,13 +39,13 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
           width: double.maxFinite,
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: snapshot.taggedInvestments.length,
+            itemCount: snapshot.taggedInvestmentVOs.length,
             itemBuilder: (context, index) {
-              GoalInvestmentEnrichedMappingDO taggedInvestment =
-                  snapshot.taggedInvestments.elementAt(index);
+              TaggedInvestmentVO taggedInvestment =
+                  snapshot.taggedInvestmentVOs.elementAt(index);
               return ListTile(
                 title: Text(
-                    '${formatToPercentage(taggedInvestment.sharePercentage / 100)} of ${taggedInvestment.investmentName}'),
+                    '${formatToPercentage(taggedInvestment.split / 100)} of ${taggedInvestment.name}'),
                 trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                   IconButton(
                     icon: const Icon(Icons.edit),
@@ -55,15 +54,16 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
                               context: context,
                               idToUpdate: taggedInvestment.id,
                               goalId: widget.goalId,
-                              investmentId: taggedInvestment.investmentId,
-                              sharePercentage: taggedInvestment.sharePercentage)
+                              investmentId: taggedInvestment.id,
+                              sharePercentage: taggedInvestment.split)
                           .then((value) => presenter.fetchTaggedInvestment());
                     },
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {
-                      presenter.deleteTaggedInvestment(id: taggedInvestment.id);
+                      presenter.deleteTaggedInvestment(
+                          investmentId: taggedInvestment.id);
                     },
                   )
                 ]),
@@ -90,6 +90,6 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
 
   @override
   TaggedInvestmentPresenter initializePresenter() {
-    return TaggedInvestmentPresenter(widget.goalId);
+    return TaggedInvestmentPresenter(goalId: widget.goalId);
   }
 }

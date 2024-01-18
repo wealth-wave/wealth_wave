@@ -80,10 +80,10 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
                 ? () {
                     presenter.createSip(
                         investmentId: widget.investmentId,
-                        sipIdToUpdate: widget.sipToUpdate?.id);
+                        sipIdToUpdate: widget.sipIdToUpdate);
                   }
                 : null,
-            child: widget.sipToUpdate != null
+            child: widget.sipIdToUpdate != null
                 ? const Text('Update')
                 : const Text('Create'),
           ),

@@ -60,7 +60,7 @@ class _TagInvestmentState
       presenter.onPercentageChanged(_valueController.text);
     });
 
-    presenter.getGoals();
+    presenter.fetchGoals();
   }
 
   @override
@@ -87,7 +87,7 @@ class _TagInvestmentState
           DropdownButtonFormField<int>(
               decoration: const InputDecoration(border: OutlineInputBorder()),
               hint: const Text('Goal'),
-              value: snapshot.investmentId,
+              value: snapshot.goalId,
               onChanged: (value) {
                 if (value != null) {
                   presenter.onGoalSelected(value);
@@ -109,7 +109,7 @@ class _TagInvestmentState
           ElevatedButton(
             onPressed: snapshot.isValid()
                 ? () {
-                    presenter.tagGoal(idToUpdate: widget.idToUpdate);
+                    presenter.tagGoal();
                   }
                 : null,
             child: widget.idToUpdate != null
@@ -121,6 +121,6 @@ class _TagInvestmentState
 
   @override
   TagGoalPresenter initializePresenter() {
-    return TagGoalPresenter(widget.investmentId);
+    return TagGoalPresenter(investmentId: widget.investmentId);
   }
 }

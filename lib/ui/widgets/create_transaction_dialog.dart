@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
+import 'package:wealth_wave/domain/services/transaction_service.dart';
 import 'package:wealth_wave/presentation/create_investment_transaction_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
@@ -9,21 +9,25 @@ import 'package:wealth_wave/utils/ui_utils.dart';
 Future<void> showCreateTransactionDialog(
     {required final BuildContext context,
     required final int investmentId,
-    final TransactionDO? transactionToUpdate}) {
+    final int? transactionIdToUpdate}) {
   return showDialog(
       context: context,
       builder: (context) => _CreateTransactionDialog(
-            transactionToUpdate: transactionToUpdate,
+            transactionIdToUpdate: transactionIdToUpdate,
             investmentId: investmentId,
           ));
 }
 
 class _CreateTransactionDialog extends StatefulWidget {
-  final TransactionDO? transactionToUpdate;
-  final int investmentId;
+  final int? _transactionIdToUpdate;
+  final int _investmentId;
 
   const _CreateTransactionDialog(
-      {this.transactionToUpdate, required this.investmentId});
+      {final int? transactionIdToUpdate,
+      required final int investmentId,
+      final TransactionService? transactionService})
+      : _transactionIdToUpdate = transactionIdToUpdate,
+        _investmentId = investmentId;
 
   @override
   State<_CreateTransactionDialog> createState() => _CreateTransactionPage();
@@ -39,13 +43,9 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
   void initState() {
     super.initState();
 
-    TransactionDO? transactionToUpdate = widget.transactionToUpdate;
-    if (transactionToUpdate != null) {
-      _descriptionController.text = transactionToUpdate.description ?? '';
-      _valueController.text = transactionToUpdate.amount.toString();
-      _valueUpdatedDateController.text =
-          formatDate(transactionToUpdate.createdOn);
-      presenter.setTransaction(transactionToUpdate);
+    int? transactionIdToUpdate = widget._transactionIdToUpdate;
+    if (transactionIdToUpdate != null) {
+      presenter.fetchTransaction(id: transactionIdToUpdate);
     } else {
       _valueUpdatedDateController.text = formatDate(DateTime.now());
     }
@@ -85,10 +85,10 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
             onPressed: snapshot.isValid()
                 ? () {
                     presenter.createTransaction(
-                        transactionIdToUpdate: widget.transactionToUpdate?.id);
+                        transactionIdToUpdate: widget._transactionIdToUpdate);
                   }
                 : null,
-            child: widget.transactionToUpdate != null
+            child: widget._transactionIdToUpdate != null
                 ? const Text('Update')
                 : const Text('Create'),
           ),
@@ -126,6 +126,6 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
   @override
   CreateInvestmentTransactionPresenter initializePresenter() {
     return CreateInvestmentTransactionPresenter(
-        investmentId: widget.investmentId);
+        investmentId: widget._investmentId);
   }
 }

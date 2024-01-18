@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/sips_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
@@ -67,14 +66,14 @@ class _SipsPage extends PageState<SipsViewState, _SipsDialog, SipsPresenter> {
                       showCreateSipDialog(
                               context: context,
                               investmentId: widget.investmentId,
-                              sipToUpdate: sip)
+                              sipIdToUpdate: sipVO.id)
                           .then((value) => presenter.getSips());
                     },
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {
-                      presenter.deleteSip(id: sip.id);
+                      presenter.deleteSip(id: sipVO.id);
                     },
                   )
                 ]),
@@ -93,8 +92,7 @@ class _SipsPage extends PageState<SipsViewState, _SipsDialog, SipsPresenter> {
           onPressed: () {
             showCreateTransactionDialog(
                     context: context, investmentId: widget.investmentId)
-                .then((value) =>
-                    presenter.getSips(investmentId: widget.investmentId));
+                .then((value) => presenter.getSips());
           },
         ),
       ],
@@ -103,6 +101,6 @@ class _SipsPage extends PageState<SipsViewState, _SipsDialog, SipsPresenter> {
 
   @override
   SipsPresenter initializePresenter() {
-    return SipsPresenter(widget.investmentId);
+    return SipsPresenter(investmentId: widget.investmentId);
   }
 }
