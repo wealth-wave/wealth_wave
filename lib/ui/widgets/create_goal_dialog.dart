@@ -42,8 +42,8 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
       _nameController.text = goalToUpdate.name;
       _descriptionController.text = goalToUpdate.description ?? '';
       _amountController.text = goalToUpdate.amount.toString();
-      _currentDateController.text = formatDate(goalToUpdate.createdDate);
-      _targetDateController.text = formatDate(goalToUpdate.targetDate);
+      _currentDateController.text = formatDate(goalToUpdate.amountUpdatedOn);
+      _targetDateController.text = formatDate(goalToUpdate.maturityDate);
       _inflationController.text = goalToUpdate.inflation.toString();
 
       presenter.setGoal(goalToUpdate);

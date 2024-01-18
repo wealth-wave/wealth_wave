@@ -70,7 +70,7 @@ class _BasketsPage
                         onSelected: (value) {
                           if (value == 1) {
                             showCreateBasketDialog(
-                                    basketToUpdate: basketVO.basket,
+                                    basketIdTOUpdate: basketVO.id,
                                     context: context)
                                 .then((value) => presenter.fetchBaskets());
                           } else if (value == 2) {

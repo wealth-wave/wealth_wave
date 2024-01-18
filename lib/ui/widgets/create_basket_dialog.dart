@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/presentation/create_basket_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 
 Future<void> showCreateBasketDialog(
-    {required final BuildContext context, final Basket? basketToUpdate}) {
+    {required final BuildContext context, final int? basketIdTOUpdate}) {
   return showDialog(
       context: context,
       builder: (context) =>
-          _CreateBasketDialog(basketToUpdate: basketToUpdate));
+          _CreateBasketDialog(basketIdTOUpdate: basketIdTOUpdate));
 }
 
 class _CreateBasketDialog extends StatefulWidget {
-  final Basket? basketToUpdate;
+  final int? basketIdTOUpdate;
 
-  const _CreateBasketDialog({this.basketToUpdate});
+  const _CreateBasketDialog({this.basketIdTOUpdate});
 
   @override
   State<_CreateBasketDialog> createState() => _CreateBasketPage();
@@ -30,11 +29,9 @@ class _CreateBasketPage extends PageState<CreateBasketViewState,
   void initState() {
     super.initState();
 
-    Basket? basketToUpdate = widget.basketToUpdate;
-    if (basketToUpdate != null) {
-      _nameController.text = basketToUpdate.name;
-      _descriptionController.text = basketToUpdate.description ?? '';
-      presenter.setBasket(basketToUpdate);
+    int? basketIdToUpdate = widget.basketIdTOUpdate;
+    if (basketIdToUpdate != null) {
+      presenter.fetchBasket(id: basketIdToUpdate);
     }
 
     _nameController.addListener(() {
@@ -66,10 +63,10 @@ class _CreateBasketPage extends PageState<CreateBasketViewState,
           ElevatedButton(
             onPressed: snapshot.isValid()
                 ? () {
-                    presenter.createBasket(basketId: widget.basketToUpdate?.id);
+                    presenter.createBasket(basketId: widget.basketIdTOUpdate);
                   }
                 : null,
-            child: widget.basketToUpdate != null
+            child: widget.basketIdTOUpdate != null
                 ? const Text('Update')
                 : const Text('Create'),
           ),

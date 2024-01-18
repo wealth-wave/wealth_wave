@@ -44,7 +44,8 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
       _descriptionController.text = sipToUpdate.description ?? '';
       _valueController.text = sipToUpdate.amount.toString();
       _startDateController.text = formatDate(sipToUpdate.startDate);
-      _endDateController.text = formatDate(sipToUpdate.endDate);
+      final endDate = sipToUpdate.endDate;
+      _endDateController.text = endDate != null ? formatDate(endDate) : '';
       presenter.setSip(sipToUpdate);
     } else {
       _startDateController.text = formatDate(DateTime.now());
@@ -137,6 +138,6 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
 
   @override
   CreateSipPresenter initializePresenter() {
-    return CreateSipPresenter();
+    return CreateSipPresenter(investmentId: widget.investmentId);
   }
 }

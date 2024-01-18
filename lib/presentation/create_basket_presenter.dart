@@ -1,7 +1,7 @@
 import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
-import 'package:wealth_wave/presentation/baskets_presenter.dart';
+import 'package:wealth_wave/domain/models/basket.dart';
 
 class CreateBasketPresenter extends Presenter<CreateBasketViewState> {
   final BasketApi _basketApi;
@@ -9,6 +9,13 @@ class CreateBasketPresenter extends Presenter<CreateBasketViewState> {
   CreateBasketPresenter({final BasketApi? basketApi})
       : _basketApi = basketApi ?? BasketApi(),
         super(CreateBasketViewState());
+
+  void fetchBasket({required final int id}) {
+    _basketApi
+        .getBy(id: id)
+        .then((basketDO) => Basket.from(basketDO: basketDO))
+        .then((basket) => setBasket(basket));
+  }
 
   void createBasket({final int? basketId}) {
     var viewState = getViewState();
@@ -40,7 +47,7 @@ class CreateBasketPresenter extends Presenter<CreateBasketViewState> {
     updateViewState((viewState) => viewState.description = text);
   }
 
-  void setBasket(BasketVO basketToUpdate) {
+  void setBasket(Basket basketToUpdate) {
     updateViewState((viewState) {
       viewState.name = basketToUpdate.name;
       viewState.description = basketToUpdate.description;

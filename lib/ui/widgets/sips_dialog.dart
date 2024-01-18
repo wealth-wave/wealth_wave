@@ -30,7 +30,7 @@ class _SipsPage extends PageState<SipsViewState, _SipsDialog, SipsPresenter> {
   void initState() {
     super.initState();
 
-    presenter.getSips(investmentId: widget.investmentId);
+    presenter.getSips();
   }
 
   @override
@@ -68,8 +68,7 @@ class _SipsPage extends PageState<SipsViewState, _SipsDialog, SipsPresenter> {
                               context: context,
                               investmentId: widget.investmentId,
                               sipToUpdate: sip)
-                          .then((value) => presenter.getSips(
-                              investmentId: widget.investmentId));
+                          .then((value) => presenter.getSips());
                     },
                   ),
                   IconButton(

@@ -15,13 +15,7 @@ class BasketsPresenter extends Presenter<BasketsViewState> {
         .then((baskets) => Future.wait(baskets.map((basket) => Future.wait([
               basket.getTotalInvestments(),
               basket.getInvestedValue(),
-            ]).then((results) => BasketVO(
-                id: basket.id,
-                name: basket.name,
-                description: basket.description,
-                totalInvestedAmount: results[1].toDouble(),
-                totalInvesments: results[0].toInt(),
-                basket: basket)))))
+            ]).then((results) => BasketVO.from(basket: basket)))))
         .then((basketVOs) =>
             updateViewState((viewState) => viewState.baskets = basketVOs));
   }
@@ -41,13 +35,20 @@ class BasketVO {
   final String? description;
   final double totalInvestedAmount;
   final int totalInvesments;
-  final Basket basket;
 
   BasketVO(
       {required this.totalInvestedAmount,
       required this.totalInvesments,
       required this.id,
       required this.name,
-      required this.description,
-      required this.basket});
+      required this.description});
+
+  static Future<BasketVO> from({required final Basket basket}) async {
+    return BasketVO(
+        id: basket.id,
+        name: basket.name,
+        description: basket.description,
+        totalInvestedAmount: await basket.getInvestedValue(),
+        totalInvesments: await basket.getTotalInvestments());
+  }
 }

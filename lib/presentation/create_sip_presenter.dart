@@ -2,15 +2,19 @@ import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/sip_frequency.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/domain/services/investment_service.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 import 'package:wealth_wave/utils/utils.dart';
 
 class CreateSipPresenter extends Presenter<CreateSipViewState> {
-  final Investment _investment;
+  final int _investmentId;
+  final InvestmentService _investmentService;
 
-  CreateSipPresenter({required Investment investment})
-      : _investment = investment,
+  CreateSipPresenter(
+      {required final int investmentId,
+      final InvestmentService? investmentService})
+      : _investmentId = investmentId,
+        _investmentService = investmentService ?? InvestmentService(),
         super(CreateSipViewState());
 
   void createSip({required final int investmentId, final int? sipIdToUpdate}) {
@@ -26,28 +30,30 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     final endDate = viewState.getEndDate();
     final frequency = viewState.frequency;
 
-    if (sipIdToUpdate != null) {
-      _investment
-          .updateSip(
-              sipId: sipIdToUpdate,
-              description: description,
-              amount: amount,
-              startDate: startDate,
-              endDate: endDate,
-              frequency: frequency)
-          .then((_) => updateViewState(
-              (viewState) => viewState.onSipCreated = SingleEvent(null)));
-    } else {
-      _investment
-          .createSip(
-              description: description,
-              amount: amount,
-              startDate: startDate,
-              endDate: endDate,
-              frequency: frequency)
-          .then((_) => updateViewState(
-              (viewState) => viewState.onSipCreated = SingleEvent(null)));
-    }
+    _investmentService.getBy(id: _investmentId).then((investment) {
+      if (sipIdToUpdate != null) {
+        investment
+            .updateSip(
+                sipId: sipIdToUpdate,
+                description: description,
+                amount: amount,
+                startDate: startDate,
+                endDate: endDate,
+                frequency: frequency)
+            .then((_) => updateViewState(
+                (viewState) => viewState.onSipCreated = SingleEvent(null)));
+      } else {
+        investment
+            .createSip(
+                description: description,
+                amount: amount,
+                startDate: startDate,
+                endDate: endDate,
+                frequency: frequency)
+            .then((_) => updateViewState(
+                (viewState) => viewState.onSipCreated = SingleEvent(null)));
+      }
+    });
   }
 
   void onDescriptionChanged(String text) {
