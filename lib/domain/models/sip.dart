@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
@@ -94,11 +92,11 @@ class SIP {
   }
 
   Future<void> deleteTransaction({required final int transactionId}) async {
-    return _transactionApi.deleteBy(id: transactionId).then((count) => Void);
+    return _transactionApi.deleteBy(id: transactionId).then((count) => {});
   }
 
   Future<void> deleteTransactions() async {
-    return _transactionApi.deleteBy(sipId: id).then((count) => Void);
+    return _transactionApi.deleteBy(sipId: id).then((count) => {});
   }
 
   static SIP from({required final SipDO sipDO}) {

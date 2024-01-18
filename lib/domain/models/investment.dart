@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/api/apis/goal_api.dart';
 import 'package:wealth_wave/api/apis/goal_investment_api.dart';
@@ -166,7 +164,7 @@ class Investment {
   }
 
   Future<void> deleteSIP({required final int sipId}) async {
-    return _sipApi.delete(id: sipId).then((count) => Void);
+    return _sipApi.delete(id: sipId).then((count) => {});
   }
 
   Future<Transaction> createTransaction(
@@ -203,14 +201,14 @@ class Investment {
 
   Future<void> deleteTransaction(
       {required final int id}) async {
-    return _transactionApi.deleteBy(id: id).then((count) => Void);
+    return _transactionApi.deleteBy(id: id).then((count) => {});
   }
 
   Future<void> tagGoal(
       {required final int goalId, required final double split}) async {
     return _goalInvestmentApi
         .create(goalId: goalId, investmentId: id, split: split)
-        .then((goalInvestmentDO) => Void);
+        .then((goalInvestmentDO) => {});
   }
 
   Future<void> updateTaggedGoal(
@@ -219,13 +217,13 @@ class Investment {
       required final double split}) async {
     return _goalInvestmentApi
         .update(id: id, goalId: goalId, investmentId: id, split: split)
-        .then((goalInvestmentDO) => Void);
+        .then((goalInvestmentDO) => {});
   }
 
   Future<void> deleteTaggedGoal({required final int goalId}) {
     return _goalInvestmentApi
         .deleteBy(goalId: goalId, investmentId: id)
-        .then((count) => Void);
+        .then((count) => {});
   }
 
   Future<double> getIRR() async {

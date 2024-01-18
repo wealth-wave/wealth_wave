@@ -28,7 +28,7 @@ class Basket {
         .then((investments) => Future.wait(investments
             .map((investment) => investment.getTotalInvestedAmount())))
         .then((investedAmounts) =>
-            investedAmounts.reduce((value, element) => value + element));
+            investedAmounts.fold(0, (value, element) => value + element));
   }
 
   Future<double> getValue({final bool considerFuturePayments = false}) async {
@@ -38,7 +38,7 @@ class Basket {
             .map((investmentDO) => Investment.from(investmentDO: investmentDO)))
         .then((investments) => Future.wait(investments
             .map((investment) => investment.getValueOn(date: DateTime.now(), considerFuturePayments: considerFuturePayments))))
-        .then((values) => values.reduce((value, element) => value + element));
+        .then((values) => values.fold(0, (value, element) => value + element));
   }
 
   Future<List<Investment>> getInvestments() {

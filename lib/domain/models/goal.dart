@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:wealth_wave/api/apis/goal_investment_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
@@ -89,7 +87,7 @@ class Goal {
       {required final int investmentId, required final double split}) async {
     return _goalInvestmentApi
         .create(goalId: id, investmentId: investmentId, split: split)
-        .then((goalInvestmentDO) => Void);
+        .then((goalInvestmentDO) => {});
   }
 
   Future<void> updateTaggedInvestment(
@@ -98,13 +96,13 @@ class Goal {
       required final double split}) async {
     return _goalInvestmentApi
         .update(id: id, goalId: id, investmentId: investmentId, split: split)
-        .then((goalInvestmentDO) => Void);
+        .then((goalInvestmentDO) => {});
   }
 
   Future<void> deleteTaggedInvestment({required final int investmentId}) {
     return _goalInvestmentApi
         .deleteBy(goalId: id, investmentId: investmentId)
-        .then((count) => Void);
+        .then((count) => {});
   }
 
   Future<double> getIRR() async {
