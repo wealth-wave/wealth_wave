@@ -58,7 +58,7 @@ class Goal {
                     Investment.from(investmentDO: investmentDO))
                 .then((investment) => investment.getTotalInvestedAmount())
                 .then((amount) => amount * goalInvestment.split))))
-        .then((amounts) => amounts.reduce((value, element) => value + element));
+        .then((amounts) => amounts.isNotEmpty ? amounts.reduce((value, element) => value + element): 0);
   }
 
   Future<double> getMaturityAmount() {
@@ -80,7 +80,7 @@ class Goal {
                 .then((investment) => investment.getValueOn(
                     date: maturityDate, considerFuturePayments: true))
                 .then((amount) => amount * goalInvestment.split))))
-        .then((amounts) => amounts.reduce((value, element) => value + element));
+        .then((amounts) => amounts.isNotEmpty ? amounts.reduce((value, element) => value + element): 0);
   }
 
   Future<void> tagInvestment(

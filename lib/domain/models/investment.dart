@@ -61,9 +61,11 @@ class Investment {
             .map((transactionDO) =>
                 Transaction.from(transactionDO: transactionDO))
             .toList())
-        .then((transactions) => transactions
-            .map((transaction) => transaction.amount)
-            .reduce((value, element) => value + element));
+        .then((transactions) =>
+            transactions.map((transaction) => transaction.amount))
+        .then((amounts) => amounts.isNotEmpty
+            ? amounts.reduce((value, element) => value + element)
+            : 0);
   }
 
   Future<double> getValueOn(
@@ -199,8 +201,7 @@ class Investment {
             (transactionDO) => Transaction.from(transactionDO: transactionDO));
   }
 
-  Future<void> deleteTransaction(
-      {required final int id}) async {
+  Future<void> deleteTransaction({required final int id}) async {
     return _transactionApi.deleteBy(id: id).then((count) => {});
   }
 
