@@ -2,23 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/models/goal.dart';
 import 'package:wealth_wave/presentation/create_goal_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
-import 'package:wealth_wave/utils/utils.dart';
 
 Future<void> showCreateGoalDialog(
-    {required final BuildContext context, final Goal? goal}) {
+    {required final BuildContext context, final int? goalIdToUpdate}) {
   return showDialog(
       context: context,
-      builder: (context) => _CreateGoalDialog(goalToUpdate: goal));
+      builder: (context) => _CreateGoalDialog(goalIdToUpdate: goalIdToUpdate));
 }
 
 class _CreateGoalDialog extends StatefulWidget {
-  final Goal? goalToUpdate;
+  final int? goalIdToUpdate;
 
-  const _CreateGoalDialog({this.goalToUpdate});
+  const _CreateGoalDialog({this.goalIdToUpdate});
 
   @override
   State<_CreateGoalDialog> createState() => _CreateGoalPage();
@@ -37,20 +35,13 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
   void initState() {
     super.initState();
 
-    Goal? goalToUpdate = widget.goalToUpdate;
-    if (goalToUpdate != null) {
-      _nameController.text = goalToUpdate.name;
-      _descriptionController.text = goalToUpdate.description ?? '';
-      _amountController.text = goalToUpdate.amount.toString();
-      _currentDateController.text = formatDate(goalToUpdate.amountUpdatedOn);
-      _targetDateController.text = formatDate(goalToUpdate.maturityDate);
-      _inflationController.text = goalToUpdate.inflation.toString();
-
-      presenter.setGoal(goalToUpdate);
+    int? goalIdToUpdate = widget.goalIdToUpdate;
+    if (goalIdToUpdate != null) {
+      presenter.fetchGoal(id: goalIdToUpdate);
     } else {
-      _currentDateController.text = formatDate(DateTime.now());
+      _currentDateController.text = formatDate(DateTime.now()) ?? '';
       _targetDateController.text =
-          formatDate(DateTime.now().add(const Duration(days: 365)));
+          formatDate(DateTime.now().add(const Duration(days: 365))) ?? '';
     }
 
     _nameController.addListener(() {
@@ -66,16 +57,15 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
     });
 
     _inflationController.addListener(() {
-      presenter
-          .inflationChanged(double.tryParse(_inflationController.text) ?? 0);
+      presenter.inflationChanged(_inflationController.text);
     });
 
     _currentDateController.addListener(() {
-      presenter.dateChanged(parseDate(_currentDateController.text));
+      presenter.dateChanged(_currentDateController.text);
     });
 
     _targetDateController.addListener(() {
-      presenter.targetDateChanged(parseDate(_targetDateController.text));
+      presenter.targetDateChanged(_targetDateController.text);
     });
   }
 
@@ -209,10 +199,10 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
         FilledButton(
           onPressed: snapshot.isValid()
               ? () {
-                  presenter.createGoal(goalIdToUpdate: widget.goalToUpdate?.id);
+                  presenter.createGoal(goalIdToUpdate: widget.goalIdToUpdate);
                 }
               : null,
-          child: widget.goalToUpdate == null
+          child: widget.goalIdToUpdate == null
               ? const Text('Create')
               : const Text('Update'),
         ),

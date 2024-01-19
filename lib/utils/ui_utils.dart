@@ -1,10 +1,10 @@
 import 'package:intl/intl.dart';
 
-String formatDate(DateTime date) {
+String? formatDate(DateTime date) {
   try {
-    return DateFormat('dd-MM-yyyy').format(date);
+    return DateFormat('dd/MM/yyyy').format(date);
   } catch (e) {
-    return '-';
+    return null;
   }
 }
 
@@ -13,6 +13,10 @@ String formatToPercentage(double value) {
   return percentage == percentage.round()
       ? '${percentage.round()}%'
       : '${percentage.toStringAsFixed(2)}%';
+}
+
+String formatDecimal(double value) {
+  return value == value.round() ? '${value.round()}' : value.toStringAsFixed(2);
 }
 
 String formatToCurrency(double value) {

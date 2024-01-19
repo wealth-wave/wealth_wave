@@ -1,10 +1,10 @@
 import 'package:intl/intl.dart';
 
-DateTime parseDate(String date) {
+DateTime? parseDate(String date) {
   try {
     return DateFormat('dd-MM-yyyy').parse(date);
   } catch (e) {
-    return DateTime.now();
+    return null;
   }
 }
 

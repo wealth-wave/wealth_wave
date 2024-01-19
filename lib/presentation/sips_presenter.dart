@@ -2,6 +2,7 @@ import 'package:wealth_wave/contract/sip_frequency.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 class SipsPresenter extends Presenter<SipsViewState> {
   final int _investmentId;
@@ -41,10 +42,9 @@ class SIPVO {
   final int investmentId;
   final String? description;
   final double amount;
-  final DateTime startDate;
-  final DateTime? endDate;
+  final String startDate;
+  final String? endDate;
   final SipFrequency frequency;
-  final DateTime? executedTill;
 
   SIPVO(
       {required this.id,
@@ -53,18 +53,17 @@ class SIPVO {
       required this.amount,
       required this.startDate,
       required this.endDate,
-      required this.frequency,
-      required this.executedTill});
+      required this.frequency});
 
   static Future<SIPVO> from({required final SIP sip}) async {
+    final DateTime? endDate = sip.endDate;
     return SIPVO(
         id: sip.id,
         investmentId: sip.investmentId,
         description: sip.description,
         amount: sip.amount,
-        startDate: sip.startDate,
-        endDate: sip.endDate,
-        frequency: sip.frequency,
-        executedTill: sip.executedTill);
+        startDate: formatDate(sip.startDate) ?? '',
+        endDate: endDate != null ? formatDate(endDate) ?? '' : '',
+        frequency: sip.frequency);
   }
 }

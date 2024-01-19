@@ -4,7 +4,8 @@ import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/create_investment_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
-import 'package:wealth_wave/utils/ui_utils.dart';
+import 'package:wealth_wave/ui/custom/currency_text_input_formatter.dart';
+import 'package:wealth_wave/ui/custom/date_text_input_formatter.dart';
 
 Future<void> showCreateInvestmentDialog(
     {required final BuildContext context, final int? investmentIdToUpdate}) {
@@ -38,8 +39,6 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     int? investmentIdToUpdate = widget.investmentIdToUpdate;
     if (investmentIdToUpdate != null) {
       presenter.fetchInvestment(id: investmentIdToUpdate);
-    } else {
-      _valueUpdatedDateController.text = formatDate(DateTime.now());
     }
 
     _nameController.addListener(() {
@@ -70,6 +69,23 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onInvestmentCreated?.consume((_) {
         Navigator.of(context).pop();
+      });
+
+      snapshot.onInvestmentFetched?.consume((_) {
+        _nameController.text = snapshot.name;
+        _descriptionController.text = snapshot.description ?? '';
+        _irrController.text = snapshot.irr?.toString() ?? '';
+        _valueController.text = snapshot.value?.toString() ?? '';
+        _valueUpdatedDateController.text = snapshot.valueUpdatedAt ?? '';
+      });
+
+      snapshot.onIRRCleared?.consume((_) {
+        _irrController.text = '';
+      });
+
+      snapshot.onValueCleared?.consume((_) {
+        _valueController.text = '';
+        _valueUpdatedDateController.text = '';
       });
     });
 
@@ -110,7 +126,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                       textInputAction: TextInputAction.next,
                       controller: _valueController,
                       keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        CurrencyTextInputFormatter()
+                      ],
                       decoration: const InputDecoration(
                           labelText: 'Current Value',
                           border: OutlineInputBorder()),
@@ -119,11 +138,9 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                     TextFormField(
                       textInputAction: TextInputAction.next,
                       controller: _valueUpdatedDateController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
-                      ],
+                      inputFormatters: [DateTextInputFormatter()],
                       decoration: const InputDecoration(
-                          labelText: 'Updated Date (DD-MM-YYYY)',
+                          labelText: 'Updated Date',
                           border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: AppDimen.minPadding),

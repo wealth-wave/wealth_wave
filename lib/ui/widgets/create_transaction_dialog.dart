@@ -4,7 +4,6 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/services/transaction_service.dart';
 import 'package:wealth_wave/presentation/create_investment_transaction_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
-import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showCreateTransactionDialog(
     {required final BuildContext context,
@@ -46,8 +45,6 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
     int? transactionIdToUpdate = widget._transactionIdToUpdate;
     if (transactionIdToUpdate != null) {
       presenter.fetchTransaction(id: transactionIdToUpdate);
-    } else {
-      _valueUpdatedDateController.text = formatDate(DateTime.now());
     }
 
     _valueController.addListener(() {

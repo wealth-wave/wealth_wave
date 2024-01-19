@@ -48,7 +48,7 @@ class _SipsPage extends PageState<SipsViewState, _SipsDialog, SipsPresenter> {
                   children: [
                     Row(
                       children: [
-                        Text(formatDate(sipVO.startDate)),
+                        Text(sipVO.startDate),
                         const Text(' | '),
                         Text(sipVO.description ?? ''),
                       ],

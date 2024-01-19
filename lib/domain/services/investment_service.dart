@@ -16,7 +16,13 @@ class InvestmentService {
       required final double? value,
       required final DateTime? valueUpdatedOn,
       required final double? irr,
-      required final DateTime? maturityDate}) {
+      required final DateTime? maturityDate}) async {
+    if ((irr == null || irr <= 0) &&
+        (value == null || value <= 0 || valueUpdatedOn == null)) {
+      throw Exception(
+          "Either IRR or Value and Value Updated On must be provided");
+    }
+
     return _investmentApi
         .create(
             name: name,

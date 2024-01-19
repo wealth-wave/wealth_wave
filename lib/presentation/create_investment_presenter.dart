@@ -46,11 +46,11 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
               id: investmentIdToUpdate,
               description: description,
               name: name,
-              value: value,
+              value: double.tryParse(value!),
               valueUpdatedOn: valueUpdatedAt,
               basketId: basketId,
               riskLevel: riskLevel,
-              irr: irr,
+              irr: double.tryParse(irr!),
               maturityDate: maturityDate)
           .then((_) => updateViewState((viewState) =>
               viewState.onInvestmentCreated = SingleEvent(null)));
@@ -59,11 +59,11 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
           .create(
               name: name,
               description: description,
-              value: value,
+              value: double.tryParse(value!),
               valueUpdatedOn: valueUpdatedAt,
               basketId: basketId,
               riskLevel: riskLevel,
-              irr: irr,
+              irr: double.tryParse(irr!),
               maturityDate: maturityDate)
           .then((investmentId) => updateViewState((viewState) =>
               viewState.onInvestmentCreated = SingleEvent(null)));
@@ -80,9 +80,10 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
 
   void valueChanged(String text) {
     updateViewState((viewState) {
-      viewState.value = double.tryParse(text);
+      viewState.value = text;
       if (text.isNotEmpty) {
         viewState.irr = null;
+        viewState.onIRRCleared = SingleEvent(null);
       }
     });
   }
@@ -90,8 +91,9 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
   void valueUpdatedDateChanged(String date) {
     updateViewState((viewState) {
       viewState.valueUpdatedAt = date;
-      if (date.isNotEmpty) {
+      if (date.isNotEmpty && viewState.irr != null) {
         viewState.irr = null;
+        viewState.onIRRCleared = SingleEvent(null);
       }
     });
   }
@@ -106,10 +108,12 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
 
   void irrChanged(String irr) {
     updateViewState((viewState) {
-      viewState.irr = double.tryParse(irr);
-      if (irr.isNotEmpty) {
+      viewState.irr = irr;
+      if (irr.isNotEmpty &&
+          (viewState.value != null || viewState.valueUpdatedAt != null)) {
         viewState.valueUpdatedAt = '';
         viewState.value = null;
+        viewState.onValueCleared = SingleEvent(null);
       }
     });
   }
@@ -118,11 +122,14 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     updateViewState((viewState) {
       viewState.name = investmentToUpdate.name;
       viewState.basketId = investmentToUpdate.basketId;
-      viewState.value = investmentToUpdate.value;
+      viewState.value = investmentToUpdate.value != null
+          ? formatDecimal(investmentToUpdate.value!)
+          : null;
       viewState.valueUpdatedAt = investmentToUpdate.valueUpdatedOn != null
           ? formatDate(investmentToUpdate.valueUpdatedOn!)
           : null;
       viewState.riskLevel = investmentToUpdate.riskLevel;
+      viewState.onInvestmentFetched = SingleEvent(null);
     });
   }
 
@@ -135,19 +142,31 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
 
 class CreateInvestmentViewState {
   String name = '';
-  String? description;
+  String description = '';
   int? basketId;
-  double? irr;
+  String? irr;
   RiskLevel riskLevel = RiskLevel.medium;
-  double? value;
+  String? value;
   String? valueUpdatedAt;
   String? maturityDate;
   SingleEvent<void>? onInvestmentCreated;
+  SingleEvent<void>? onInvestmentFetched;
+  SingleEvent<void>? onIRRCleared;
+  SingleEvent<void>? onValueCleared;
+
   List<Basket> baskets = List.empty(growable: false);
 
   bool isValid() {
-    return name.isNotEmpty &&
-        ((value != null && _getValueUpdatedAt() != null) || irr != null);
+    final valueAsDouble = double.tryParse(value ?? '');
+    final irrAsDouble = double.tryParse(irr ?? '');
+    final valueUpdateAtAsDate = parseDate(valueUpdatedAt ?? '');
+
+    final containsValue = valueAsDouble != null &&
+        valueAsDouble > 0 &&
+        valueUpdateAtAsDate != null;
+    final containsIRR = irrAsDouble != null && irrAsDouble > 0;
+
+    return name.isNotEmpty && (containsValue || containsIRR);
   }
 
   DateTime? _getValueUpdatedAt() {

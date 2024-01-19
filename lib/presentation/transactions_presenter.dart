@@ -1,6 +1,7 @@
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 class InvestmentTransactionsPresenter extends Presenter<TransactionsViewState> {
   final int _investmentId;
@@ -42,7 +43,7 @@ class TransactionVO {
   final int? sipId;
   final String? description;
   final double amount;
-  final DateTime createdOn;
+  final String createdOn;
 
   TransactionVO(
       {required this.id,
@@ -60,6 +61,6 @@ class TransactionVO {
         sipId: transaction.sipId,
         description: transaction.description,
         amount: transaction.amount,
-        createdOn: transaction.createdOn);
+        createdOn: formatDate(transaction.createdOn) ?? '');
   }
 }

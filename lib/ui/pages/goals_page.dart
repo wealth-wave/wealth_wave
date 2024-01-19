@@ -75,7 +75,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                         onSelected: (value) {
                           if (value == 1) {
                             showCreateGoalDialog(
-                                    context: context, goal: goalVO.goal)
+                                    context: context, goalIdToUpdate: goalVO.id)
                                 .then((value) => presenter.fetchGoals());
                           } else if (value == 2) {
                             presenter.deleteGoal(id: goalVO.id);

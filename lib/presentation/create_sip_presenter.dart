@@ -28,11 +28,11 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
       return;
     }
 
-    final description = viewState.description;
-    final amount = viewState.amount;
-    final startDate = viewState.getStartDate();
-    final endDate = viewState.getEndDate();
-    final frequency = viewState.frequency;
+    final String description = viewState.description;
+    final double amount = double.tryParse(viewState.amount) ?? 0;
+    final DateTime startDate = parseDate(viewState.startDate) ?? DateTime.now();
+    final DateTime endDate = parseDate(viewState.endDate) ?? DateTime.now();
+    final SipFrequency frequency = viewState.frequency;
 
     _investmentService.getBy(id: _investmentId).then((investment) {
       if (sipIdToUpdate != null) {
@@ -41,7 +41,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
                 sipId: sipIdToUpdate,
                 description: description,
                 amount: amount,
-                startDate: startDate,
+                startDate: startDate!,
                 endDate: endDate,
                 frequency: frequency)
             .then((_) => updateViewState(
@@ -51,7 +51,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
             .createSip(
                 description: description,
                 amount: amount,
-                startDate: startDate,
+                startDate: startDate!,
                 endDate: endDate,
                 frequency: frequency)
             .then((_) => updateViewState(
@@ -65,8 +65,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
   }
 
   void onAmountChanged(String text) {
-    updateViewState(
-        (viewState) => viewState.amount = double.tryParse(text) ?? 0);
+    updateViewState((viewState) => viewState.amount = text);
   }
 
   void startDateChanged(String date) {
@@ -83,11 +82,11 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
 
   void setSip(SIP sipToUpdate) {
     updateViewState((viewState) {
-      viewState.description = sipToUpdate.description;
-      viewState.amount = sipToUpdate.amount;
-      viewState.startDate = formatDate(sipToUpdate.startDate);
-      viewState.endDate =
-          sipToUpdate.endDate != null ? formatDate(sipToUpdate.endDate!) : '';
+      final endDate = sipToUpdate.endDate;
+      viewState.description = sipToUpdate.description ?? '';
+      viewState.amount = formatToCurrency(sipToUpdate.amount);
+      viewState.startDate = formatDate(sipToUpdate.startDate) ?? '';
+      viewState.endDate = endDate != null ? formatDate(endDate) ?? '' : '';
       viewState.frequency = sipToUpdate.frequency;
     });
   }
@@ -98,22 +97,22 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
 }
 
 class CreateSipViewState {
-  String? description;
-  double amount = 0.0;
-  String startDate = formatDate(DateTime.now());
-  String endDate = formatDate(DateTime.now().add(const Duration(days: 365)));
+  String description = '';
+  String amount = '';
+  String startDate = formatDate(DateTime.now()) ?? '';
+  String endDate =
+      formatDate(DateTime.now().add(const Duration(days: 365))) ?? '';
   SipFrequency frequency = SipFrequency.monthly;
   SingleEvent<void>? onSipCreated;
 
   bool isValid() {
-    return amount > 0 && isValidDate(startDate) && isValidDate(endDate);
-  }
+    final double? amount = double.tryParse(this.amount);
+    final DateTime? startDate = parseDate(this.startDate);
+    final DateTime? endDate = parseDate(this.endDate);
 
-  DateTime getStartDate() {
-    return parseDate(startDate);
-  }
-
-  DateTime getEndDate() {
-    return parseDate(endDate);
+    return amount != null &&
+        amount > 0 &&
+        startDate != null &&
+        (endDate != null && startDate.isBefore(endDate) || endDate == null);
   }
 }

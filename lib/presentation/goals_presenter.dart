@@ -40,7 +40,6 @@ class GoalVO {
   final double inflation;
   final double irr;
   final GoalImportance importance;
-  final Goal goal;
   final Map<Investment, double> investments;
 
   double get yearsLeft => DateTime.now().difference(maturityDate).inDays / 365;
@@ -57,7 +56,6 @@ class GoalVO {
       required this.investedAmount,
       required this.importance,
       required this.inflation,
-      required this.goal,
       required this.irr,
       required this.investments});
 
@@ -66,7 +64,6 @@ class GoalVO {
         id: goal.id,
         name: goal.name,
         description: goal.description,
-        goal: goal,
         importance: goal.importance,
         inflation: goal.inflation,
         maturityAmount: await goal.getMaturityAmount(),

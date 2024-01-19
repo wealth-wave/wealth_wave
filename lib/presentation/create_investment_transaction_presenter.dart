@@ -28,9 +28,10 @@ class CreateInvestmentTransactionPresenter
       return;
     }
 
-    final description = viewState.description;
-    final amount = viewState.amount;
-    final investedDate = viewState.getInvestedDate();
+    final String description = viewState.description;
+    final double amount = double.tryParse(viewState.amount) ?? 0;
+    final DateTime investedDate =
+        parseDate(viewState.investedDate) ?? DateTime.now();
 
     _investmentService.getBy(id: _investmentId).then((investment) {
       if (transactionIdToUpdate != null) {
@@ -39,7 +40,7 @@ class CreateInvestmentTransactionPresenter
                 transactionId: transactionIdToUpdate,
                 description: description,
                 amount: amount,
-                createdOn: investedDate)
+                createdOn: investedDate!)
             .then((_) => updateViewState((viewState) =>
                 viewState.onTransactionCreated = SingleEvent(null)));
       } else {
@@ -47,7 +48,7 @@ class CreateInvestmentTransactionPresenter
             .createTransaction(
                 description: description,
                 amount: amount,
-                createdOn: investedDate)
+                createdOn: investedDate!)
             .then((_) => updateViewState((viewState) =>
                 viewState.onTransactionCreated = SingleEvent(null)));
       }
@@ -59,8 +60,7 @@ class CreateInvestmentTransactionPresenter
   }
 
   void onAmountChanged(String text) {
-    updateViewState(
-        (viewState) => viewState.amount = double.tryParse(text) ?? 0);
+    updateViewState((viewState) => viewState.amount = text);
   }
 
   void transactionDateChanged(String date) {
@@ -69,8 +69,8 @@ class CreateInvestmentTransactionPresenter
 
   void setTransaction(Transaction transactionToUpdate) {
     updateViewState((viewState) {
-      viewState.amount = transactionToUpdate.amount;
-      viewState.investedDate = formatDate(transactionToUpdate.createdOn);
+      viewState.amount = formatToCurrency(transactionToUpdate.amount);
+      viewState.investedDate = formatDate(transactionToUpdate.createdOn) ?? '';
     });
   }
 
@@ -82,16 +82,15 @@ class CreateInvestmentTransactionPresenter
 }
 
 class CreateTransactionViewState {
-  String? description;
-  double amount = 0.0;
-  String investedDate = formatDate(DateTime.now());
+  String description = '';
+  String amount = '';
+  String investedDate = formatDate(DateTime.now()) ?? '';
   SingleEvent<void>? onTransactionCreated;
 
   bool isValid() {
-    return amount > 0 && isValidDate(investedDate);
-  }
+    final double? amount = double.tryParse(this.amount);
+    final DateTime? investedDate = parseDate(this.investedDate);
 
-  DateTime getInvestedDate() {
-    return parseDate(investedDate);
+    return amount != null && amount > 0 && investedDate != null;
   }
 }

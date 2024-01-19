@@ -42,8 +42,6 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
     int? sipIdToUpdate = widget.sipIdToUpdate;
     if (sipIdToUpdate != null) {
       presenter.fetchSip(id: sipIdToUpdate);
-    } else {
-      _startDateController.text = formatDate(DateTime.now());
     }
 
     _valueController.addListener(() {
