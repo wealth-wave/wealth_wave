@@ -95,10 +95,8 @@ class _BasketsPage
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  basketVO.description != null
-                      ? Text(basketVO.description!,
-                          style: Theme.of(context).textTheme.bodyMedium)
-                      : Container(),
+                  Text(basketVO.description,
+                      style: Theme.of(context).textTheme.bodyMedium)
                 ],
               ),
               Row(

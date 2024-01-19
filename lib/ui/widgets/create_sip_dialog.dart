@@ -45,7 +45,7 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
     }
 
     _valueController.addListener(() {
-      presenter.onAmountChanged(_valueController.text);
+      presenter.onAmountChanged(double.tryParse(_valueController.text) ?? 0);
     });
 
     _descriptionController.addListener(() {
@@ -53,7 +53,8 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
     });
 
     _startDateController.addListener(() {
-      presenter.startDateChanged(_startDateController.text);
+      presenter.startDateChanged(
+          parseDate(_startDateController.text) ?? DateTime.now());
     });
   }
 

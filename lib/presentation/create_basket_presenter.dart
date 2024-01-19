@@ -14,7 +14,7 @@ class CreateBasketPresenter extends Presenter<CreateBasketViewState> {
     _basketApi
         .getBy(id: id)
         .then((basketDO) => Basket.from(basketDO: basketDO))
-        .then((basket) => setBasket(basket));
+        .then((basket) => _setBasket(basket));
   }
 
   void createBasket({final int? basketId}) {
@@ -24,8 +24,8 @@ class CreateBasketPresenter extends Presenter<CreateBasketViewState> {
       return;
     }
 
-    final name = viewState.name;
-    final description = viewState.description;
+    final String name = viewState.name;
+    final String description = viewState.description;
 
     if (basketId != null) {
       _basketApi
@@ -47,17 +47,17 @@ class CreateBasketPresenter extends Presenter<CreateBasketViewState> {
     updateViewState((viewState) => viewState.description = text);
   }
 
-  void setBasket(Basket basketToUpdate) {
+  void _setBasket(Basket basketToUpdate) {
     updateViewState((viewState) {
       viewState.name = basketToUpdate.name;
-      viewState.description = basketToUpdate.description;
+      viewState.description = basketToUpdate.description ?? '';
     });
   }
 }
 
 class CreateBasketViewState {
   String name = '';
-  String? description;
+  String description = '';
   SingleEvent<void>? onBasketCreated;
 
   bool isValid() {

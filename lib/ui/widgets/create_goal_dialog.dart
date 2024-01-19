@@ -53,19 +53,22 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
     });
 
     _amountController.addListener(() {
-      presenter.amountChanged(_amountController.text);
+      presenter.amountChanged(double.tryParse(_amountController.text) ?? 0);
     });
 
     _inflationController.addListener(() {
-      presenter.inflationChanged(_inflationController.text);
+      presenter
+          .inflationChanged(double.tryParse(_inflationController.text) ?? 0);
     });
 
     _currentDateController.addListener(() {
-      presenter.dateChanged(_currentDateController.text);
+      presenter.dateChanged(
+          parseDate(_currentDateController.text) ?? DateTime.now());
     });
 
     _targetDateController.addListener(() {
-      presenter.targetDateChanged(_targetDateController.text);
+      presenter.targetDateChanged(
+          parseDate(_targetDateController.text) ?? DateTime.now());
     });
   }
 

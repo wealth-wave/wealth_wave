@@ -5,8 +5,6 @@ import 'package:wealth_wave/domain/models/basket.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/services/basket_service.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
-import 'package:wealth_wave/utils/ui_utils.dart';
-import 'package:wealth_wave/utils/utils.dart';
 
 class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
   final InvestmentService _investmentService;
@@ -31,14 +29,14 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
       return;
     }
 
-    final name = viewState.name;
-    final description = viewState.description;
-    final value = viewState.value;
-    final valueUpdatedAt = viewState._getValueUpdatedAt();
-    final basketId = viewState.basketId;
-    final riskLevel = viewState.riskLevel;
-    final irr = viewState.irr;
-    final maturityDate = viewState.getMaturityDate();
+    final String name = viewState.name;
+    final String description = viewState.description;
+    final double? value = viewState.value;
+    final DateTime? valueUpdatedAt = viewState.valueUpdatedAt;
+    final int? basketId = viewState.basketId;
+    final RiskLevel riskLevel = viewState.riskLevel;
+    final double? irr = viewState.irr;
+    final DateTime? maturityDate = viewState.maturityDate;
 
     if (investmentIdToUpdate != null) {
       _investmentService
@@ -46,11 +44,11 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
               id: investmentIdToUpdate,
               description: description,
               name: name,
-              value: double.tryParse(value!),
+              value: value,
               valueUpdatedOn: valueUpdatedAt,
               basketId: basketId,
               riskLevel: riskLevel,
-              irr: double.tryParse(irr!),
+              irr: irr,
               maturityDate: maturityDate)
           .then((_) => updateViewState((viewState) =>
               viewState.onInvestmentCreated = SingleEvent(null)));
@@ -59,11 +57,11 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
           .create(
               name: name,
               description: description,
-              value: double.tryParse(value!),
+              value: value,
               valueUpdatedOn: valueUpdatedAt,
               basketId: basketId,
               riskLevel: riskLevel,
-              irr: double.tryParse(irr!),
+              irr: irr,
               maturityDate: maturityDate)
           .then((investmentId) => updateViewState((viewState) =>
               viewState.onInvestmentCreated = SingleEvent(null)));
@@ -78,20 +76,20 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     updateViewState((viewState) => viewState.description = text);
   }
 
-  void valueChanged(String text) {
+  void valueChanged(double? value) {
     updateViewState((viewState) {
-      viewState.value = text;
-      if (text.isNotEmpty) {
+      viewState.value = value;
+      if (value != null && viewState.irr != null) {
         viewState.irr = null;
         viewState.onIRRCleared = SingleEvent(null);
       }
     });
   }
 
-  void valueUpdatedDateChanged(String date) {
+  void valueUpdatedDateChanged(DateTime? date) {
     updateViewState((viewState) {
       viewState.valueUpdatedAt = date;
-      if (date.isNotEmpty && viewState.irr != null) {
+      if (date != null && viewState.irr != null) {
         viewState.irr = null;
         viewState.onIRRCleared = SingleEvent(null);
       }
@@ -106,12 +104,12 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     updateViewState((viewState) => viewState.riskLevel = riskLevel);
   }
 
-  void irrChanged(String irr) {
+  void irrChanged(double? irr) {
     updateViewState((viewState) {
       viewState.irr = irr;
-      if (irr.isNotEmpty &&
+      if (irr != null &&
           (viewState.value != null || viewState.valueUpdatedAt != null)) {
-        viewState.valueUpdatedAt = '';
+        viewState.valueUpdatedAt = null;
         viewState.value = null;
         viewState.onValueCleared = SingleEvent(null);
       }
@@ -120,14 +118,12 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
 
   void setInvestment(Investment investmentToUpdate) {
     updateViewState((viewState) {
+      final DateTime? valueUpdatedOn = investmentToUpdate.valueUpdatedOn;
+      final double? value = investmentToUpdate.value;
       viewState.name = investmentToUpdate.name;
       viewState.basketId = investmentToUpdate.basketId;
-      viewState.value = investmentToUpdate.value != null
-          ? formatDecimal(investmentToUpdate.value!)
-          : null;
-      viewState.valueUpdatedAt = investmentToUpdate.valueUpdatedOn != null
-          ? formatDate(investmentToUpdate.valueUpdatedOn!)
-          : null;
+      viewState.value = value;
+      viewState.valueUpdatedAt = valueUpdatedOn;
       viewState.riskLevel = investmentToUpdate.riskLevel;
       viewState.onInvestmentFetched = SingleEvent(null);
     });
@@ -144,11 +140,11 @@ class CreateInvestmentViewState {
   String name = '';
   String description = '';
   int? basketId;
-  String? irr;
+  double? irr;
   RiskLevel riskLevel = RiskLevel.medium;
-  String? value;
-  String? valueUpdatedAt;
-  String? maturityDate;
+  double? value;
+  DateTime? valueUpdatedAt;
+  DateTime? maturityDate;
   SingleEvent<void>? onInvestmentCreated;
   SingleEvent<void>? onInvestmentFetched;
   SingleEvent<void>? onIRRCleared;
@@ -157,23 +153,11 @@ class CreateInvestmentViewState {
   List<Basket> baskets = List.empty(growable: false);
 
   bool isValid() {
-    final valueAsDouble = double.tryParse(value ?? '');
-    final irrAsDouble = double.tryParse(irr ?? '');
-    final valueUpdateAtAsDate = parseDate(valueUpdatedAt ?? '');
-
-    final containsValue = valueAsDouble != null &&
-        valueAsDouble > 0 &&
-        valueUpdateAtAsDate != null;
-    final containsIRR = irrAsDouble != null && irrAsDouble > 0;
+    final value = this.value;
+    final irr = this.irr;
+    final containsValue = value != null && value > 0 && valueUpdatedAt != null;
+    final containsIRR = irr != null && irr > 0;
 
     return name.isNotEmpty && (containsValue || containsIRR);
-  }
-
-  DateTime? _getValueUpdatedAt() {
-    return valueUpdatedAt != null ? parseDate(valueUpdatedAt!) : null;
-  }
-
-  DateTime? getMaturityDate() {
-    return maturityDate != null ? parseDate(maturityDate!) : null;
   }
 }

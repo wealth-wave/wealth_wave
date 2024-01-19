@@ -1,10 +1,10 @@
 import 'package:intl/intl.dart';
 
-String? formatDate(DateTime date) {
+String formatDate(DateTime date) {
   try {
     return DateFormat('dd/MM/yyyy').format(date);
   } catch (e) {
-    return null;
+    return '';
   }
 }
 
@@ -20,5 +20,17 @@ String formatDecimal(double value) {
 }
 
 String formatToCurrency(double value) {
-  return NumberFormat.currency(locale: 'en_IN', symbol: '₹').format(value);
+  return NumberFormat.currency().format(value);
+}
+
+String formatCurrency(String value) {
+  return formatDecimal(NumberFormat.currency().parse(value).toDouble());
+}
+
+DateTime? parseDate(String date) {
+  try {
+    return DateFormat('dd-MM-yyyy').parse(date);
+  } catch (e) {
+    return null;
+  }
 }

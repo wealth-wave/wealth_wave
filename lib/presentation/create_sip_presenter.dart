@@ -4,8 +4,6 @@ import 'package:wealth_wave/core/single_event.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
 import 'package:wealth_wave/domain/services/sip_service.dart';
-import 'package:wealth_wave/utils/ui_utils.dart';
-import 'package:wealth_wave/utils/utils.dart';
 
 class CreateSipPresenter extends Presenter<CreateSipViewState> {
   final int _investmentId;
@@ -29,9 +27,9 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     }
 
     final String description = viewState.description;
-    final double amount = double.tryParse(viewState.amount) ?? 0;
-    final DateTime startDate = parseDate(viewState.startDate) ?? DateTime.now();
-    final DateTime endDate = parseDate(viewState.endDate) ?? DateTime.now();
+    final double amount = viewState.amount;
+    final DateTime startDate = viewState.startDate;
+    final DateTime? endDate = viewState.endDate;
     final SipFrequency frequency = viewState.frequency;
 
     _investmentService.getBy(id: _investmentId).then((investment) {
@@ -41,7 +39,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
                 sipId: sipIdToUpdate,
                 description: description,
                 amount: amount,
-                startDate: startDate!,
+                startDate: startDate,
                 endDate: endDate,
                 frequency: frequency)
             .then((_) => updateViewState(
@@ -51,7 +49,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
             .createSip(
                 description: description,
                 amount: amount,
-                startDate: startDate!,
+                startDate: startDate,
                 endDate: endDate,
                 frequency: frequency)
             .then((_) => updateViewState(
@@ -64,15 +62,15 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     updateViewState((viewState) => viewState.description = text);
   }
 
-  void onAmountChanged(String text) {
-    updateViewState((viewState) => viewState.amount = text);
+  void onAmountChanged(double value) {
+    updateViewState((viewState) => viewState.amount = value);
   }
 
-  void startDateChanged(String date) {
+  void startDateChanged(DateTime date) {
     updateViewState((viewState) => viewState.startDate = date);
   }
 
-  void endDateChanged(String date) {
+  void endDateChanged(DateTime? date) {
     updateViewState((viewState) => viewState.endDate = date);
   }
 
@@ -82,11 +80,10 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
 
   void setSip(SIP sipToUpdate) {
     updateViewState((viewState) {
-      final endDate = sipToUpdate.endDate;
       viewState.description = sipToUpdate.description ?? '';
-      viewState.amount = formatToCurrency(sipToUpdate.amount);
-      viewState.startDate = formatDate(sipToUpdate.startDate) ?? '';
-      viewState.endDate = endDate != null ? formatDate(endDate) ?? '' : '';
+      viewState.amount = sipToUpdate.amount;
+      viewState.startDate = sipToUpdate.startDate;
+      viewState.endDate = sipToUpdate.endDate;
       viewState.frequency = sipToUpdate.frequency;
     });
   }
@@ -98,21 +95,15 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
 
 class CreateSipViewState {
   String description = '';
-  String amount = '';
-  String startDate = formatDate(DateTime.now()) ?? '';
-  String endDate =
-      formatDate(DateTime.now().add(const Duration(days: 365))) ?? '';
+  double amount = 0;
+  DateTime startDate = DateTime.now();
+  DateTime? endDate = DateTime.now().add(const Duration(days: 365));
   SipFrequency frequency = SipFrequency.monthly;
   SingleEvent<void>? onSipCreated;
 
   bool isValid() {
-    final double? amount = double.tryParse(this.amount);
-    final DateTime? startDate = parseDate(this.startDate);
-    final DateTime? endDate = parseDate(this.endDate);
-
-    return amount != null &&
-        amount > 0 &&
-        startDate != null &&
+    final endDate = this.endDate;
+    return amount > 0 &&
         (endDate != null && startDate.isBefore(endDate) || endDate == null);
   }
 }

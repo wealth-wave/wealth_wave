@@ -32,7 +32,7 @@ class BasketsViewState {
 class BasketVO {
   final int id;
   final String name;
-  final String? description;
+  final String description;
   final double totalInvestedAmount;
   final int totalInvesments;
 
@@ -44,11 +44,13 @@ class BasketVO {
       required this.description});
 
   static Future<BasketVO> from({required final Basket basket}) async {
+    final double investedValue = await basket.getInvestedValue();
+    final int totalInvestments = await basket.getTotalInvestments();
     return BasketVO(
         id: basket.id,
         name: basket.name,
-        description: basket.description,
-        totalInvestedAmount: await basket.getInvestedValue(),
-        totalInvesments: await basket.getTotalInvestments());
+        description: basket.description ?? '',
+        totalInvestedAmount: investedValue,
+        totalInvesments: totalInvestments);
   }
 }

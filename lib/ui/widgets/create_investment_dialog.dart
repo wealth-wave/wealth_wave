@@ -6,6 +6,7 @@ import 'package:wealth_wave/presentation/create_investment_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/custom/currency_text_input_formatter.dart';
 import 'package:wealth_wave/ui/custom/date_text_input_formatter.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showCreateInvestmentDialog(
     {required final BuildContext context, final int? investmentIdToUpdate}) {
@@ -50,15 +51,16 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     });
 
     _valueController.addListener(() {
-      presenter.valueChanged(_valueController.text);
+      presenter.valueChanged(double.tryParse(_valueController.text));
     });
 
     _valueUpdatedDateController.addListener(() {
-      presenter.valueUpdatedDateChanged(_valueUpdatedDateController.text);
+      presenter
+          .valueUpdatedDateChanged(parseDate(_valueUpdatedDateController.text));
     });
 
     _irrController.addListener(() {
-      presenter.irrChanged(_irrController.text);
+      presenter.irrChanged(double.tryParse(_irrController.text));
     });
 
     presenter.getBaskets();
@@ -72,11 +74,13 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
       });
 
       snapshot.onInvestmentFetched?.consume((_) {
+        final DateTime? valueUpdatedAt = snapshot.valueUpdatedAt;
         _nameController.text = snapshot.name;
-        _descriptionController.text = snapshot.description ?? '';
+        _descriptionController.text = snapshot.description;
         _irrController.text = snapshot.irr?.toString() ?? '';
         _valueController.text = snapshot.value?.toString() ?? '';
-        _valueUpdatedDateController.text = snapshot.valueUpdatedAt ?? '';
+        _valueUpdatedDateController.text =
+            valueUpdatedAt != null ? formatDate(valueUpdatedAt) : '';
       });
 
       snapshot.onIRRCleared?.consume((_) {

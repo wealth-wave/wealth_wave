@@ -166,7 +166,6 @@ class Investment {
         .then((sip) => sip
             .deleteTransactions()
             .then((_) => sip.performSipTransactions().then((_) => sip)));
-    ;
   }
 
   Future<void> deleteSIP({required final int sipId}) async {

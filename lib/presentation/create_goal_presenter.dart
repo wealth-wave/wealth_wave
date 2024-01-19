@@ -5,8 +5,6 @@ import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
 import 'package:wealth_wave/domain/services/goal_service.dart';
-import 'package:wealth_wave/utils/ui_utils.dart';
-import 'package:wealth_wave/utils/utils.dart';
 
 class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
   final GoalService _goalService;
@@ -25,11 +23,10 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
 
     final String name = viewState.name;
     final String description = viewState.description;
-    final double amount = double.tryParse(viewState.amount) ?? 0;
-    final DateTime date = parseDate(viewState.date) ?? DateTime.now();
-    final DateTime targetDate =
-        parseDate(viewState.targetDate) ?? DateTime.now();
-    final double inflation = double.tryParse(viewState.inflation) ?? 0;
+    final double amount = viewState.amount;
+    final DateTime date = viewState.date;
+    final DateTime targetDate = viewState.targetDate;
+    final double inflation = viewState.inflation;
     final GoalImportance importance = viewState.importance;
 
     if (goalIdToUpdate != null) {
@@ -68,20 +65,20 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
     updateViewState((viewState) => viewState.description = text);
   }
 
-  void amountChanged(String text) {
-    updateViewState((viewState) => viewState.amount = text);
+  void amountChanged(double value) {
+    updateViewState((viewState) => viewState.amount = value);
   }
 
-  void dateChanged(String date) {
+  void dateChanged(DateTime date) {
     updateViewState((viewState) => viewState.date = date);
   }
 
-  void targetDateChanged(String date) {
+  void targetDateChanged(DateTime date) {
     updateViewState((viewState) => viewState.targetDate = date);
   }
 
-  void inflationChanged(String text) {
-    updateViewState((viewState) => viewState.inflation = text);
+  void inflationChanged(double value) {
+    updateViewState((viewState) => viewState.inflation = value);
   }
 
   void importanceChanged(GoalImportance importance) {
@@ -92,11 +89,12 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
     updateViewState((viewState) {
       viewState.name = goalToUpdate.name;
       viewState.description = goalToUpdate.description ?? '';
-      viewState.amount = goalToUpdate.amount.toString();
-      viewState.inflation = goalToUpdate.inflation.toString();
+      viewState.amount = goalToUpdate.amount;
+      viewState.inflation = goalToUpdate.inflation;
       viewState.importance = goalToUpdate.importance;
-      viewState.date = formatDate(goalToUpdate.amountUpdatedOn) ?? '';
-      viewState.targetDate = formatDate(goalToUpdate.maturityDate) ?? '';
+      viewState.date = goalToUpdate.amountUpdatedOn;
+      viewState.targetDate = goalToUpdate.maturityDate;
+      viewState.onDataLoaded = SingleEvent(null);
     });
   }
 
@@ -108,38 +106,26 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
 class CreateGoalViewState {
   String name = '';
   String description = '';
-  String amount = '';
-  String date = '';
-  String targetDate = '';
-  String inflation = '';
+  double amount = 0;
+  DateTime date = DateTime.now();
+  DateTime targetDate = DateTime.now().add(const Duration(days: 365));
+  double inflation = 0;
   GoalImportance importance = GoalImportance.high;
   SingleEvent<void>? onGoalCreated;
+  SingleEvent<void>? onDataLoaded;
 
   double getTargetAmount() {
-    final amount = double.tryParse(this.amount) ?? 0;
-    final inflation = double.tryParse(this.inflation) ?? 0;
-    final date = parseDate(this.date) ?? DateTime.now();
-    final targetDate = parseDate(this.targetDate) ?? DateTime.now();
     return amount *
         pow(1 + inflation / 100, targetDate.difference(date).inDays / 365);
   }
 
   bool isValid() {
-    final double? amount = double.tryParse(this.amount);
-    final DateTime? date = parseDate(this.date);
-    final DateTime? targetDate = parseDate(this.targetDate);
-    final double? inflation = double.tryParse(this.inflation);
-
-    final bool isAmountValid = amount != null && amount > 0;
-    final bool isDateValid = date != null;
-    final bool isTargetDateValid =
-        targetDate != null && targetDate.isAfter(DateTime.now());
-    final bool isInflationValid =
-        inflation != null && inflation >= 0 && inflation <= 100;
+    final bool isAmountValid = amount > 0;
+    final bool isTargetDateValid = targetDate.isAfter(DateTime.now());
+    final bool isInflationValid = inflation >= 0 && inflation <= 100;
 
     return name.isNotEmpty &&
         isAmountValid &&
-        isDateValid &&
         isTargetDateValid &&
         isInflationValid;
   }

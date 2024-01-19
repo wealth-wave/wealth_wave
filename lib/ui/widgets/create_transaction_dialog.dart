@@ -4,6 +4,7 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/services/transaction_service.dart';
 import 'package:wealth_wave/presentation/create_investment_transaction_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showCreateTransactionDialog(
     {required final BuildContext context,
@@ -48,7 +49,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
     }
 
     _valueController.addListener(() {
-      presenter.onAmountChanged(_valueController.text);
+      presenter.onAmountChanged(double.tryParse(_valueController.text) ?? 0);
     });
 
     _descriptionController.addListener(() {
@@ -56,7 +57,8 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
     });
 
     _valueUpdatedDateController.addListener(() {
-      presenter.transactionDateChanged(_valueUpdatedDateController.text);
+      presenter.transactionDateChanged(
+          parseDate(_valueUpdatedDateController.text) ?? DateTime.now());
     });
   }
 

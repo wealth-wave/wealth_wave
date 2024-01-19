@@ -57,7 +57,8 @@ class _TagInvestmentState
     }
 
     _valueController.addListener(() {
-      presenter.onPercentageChanged(_valueController.text);
+      presenter
+          .onPercentageChanged(double.tryParse(_valueController.text) ?? 0);
     });
 
     presenter.fetchGoals();

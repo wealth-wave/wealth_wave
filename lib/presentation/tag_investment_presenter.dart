@@ -51,9 +51,8 @@ class TagInvestmentPresenter extends Presenter<TagInvestmentViewState> {
     }
   }
 
-  void onPercentageChanged(String text) {
-    updateViewState((viewState) =>
-        viewState.sharePercentage = double.tryParse(text) ?? 0.0);
+  void onPercentageChanged(double text) {
+    updateViewState((viewState) => viewState.sharePercentage = text);
   }
 }
 
