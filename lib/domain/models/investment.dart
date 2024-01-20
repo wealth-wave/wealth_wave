@@ -236,8 +236,9 @@ class Investment {
   }
 
   Future<double> getIRR() async {
+    final irr = this.irr;
     if (irr != null) {
-      return Future(() => irr!);
+      return Future(() => irr);
     } else if (value != null && valueUpdatedOn != null) {
       List<Payment> payments = await getTransactions().then((transactions) =>
           transactions

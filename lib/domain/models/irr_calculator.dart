@@ -12,6 +12,8 @@ class IRRCalculator {
     payments.sort((a, b) => a.createdOn.compareTo(b.createdOn));
     DateTime initialDate = payments.first.createdOn;
     List<_CashFlow> cashFlows = payments
+        .where((payment) => payment.createdOn.isBefore(valueUpdatedOn))
+        .toList()
         .map((transaction) => _CashFlow(
             amount: -transaction.amount,
             years: transaction.createdOn.difference(initialDate).inDays / 365))
@@ -57,7 +59,7 @@ class IRRCalculator {
     required final DateTime valueUpdatedOn,
   }) {
     double years = valueUpdatedOn.difference(date).inDays / 365;
-    return value / pow(1 + irr/100, years);
+    return value / pow(1 + irr / 100, years);
   }
 }
 

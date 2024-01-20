@@ -171,7 +171,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
                 ),
                 const SizedBox(width: 10), // Add some spacing
                 Text(
-                  formatToCurrency(snapshot.getTargetAmount()),
+                  formatToCurrency(snapshot.targetAmount),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],

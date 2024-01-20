@@ -123,7 +123,8 @@ class Goal {
     var investmentData = [];
 
     for (var goalInvestment in goalInvestments) {
-      var investmentDO = await _investmentApi.getById(id: goalInvestment.investmentId);
+      var investmentDO =
+          await _investmentApi.getById(id: goalInvestment.investmentId);
       var investment = Investment.from(investmentDO: investmentDO);
       var value = investment.value;
       var irr = await investment.getIRR();
@@ -134,7 +135,8 @@ class Goal {
       });
     }
 
-    var totalValue = investmentData.fold(0.0, (sum, investment) => sum + investment['value']!);
+    var totalValue = investmentData.fold(
+        0.0, (sum, investment) => sum + investment['value']!);
     var weightedIRRSum = investmentData.fold(
         0.0,
         (sum, investment) =>
@@ -142,7 +144,7 @@ class Goal {
             calculatePercentageOfValue(
                 value: investment['value']!, percentage: investment['irr']!));
 
-    return totalValue == 0 ? 0 : weightedIRRSum / totalValue;
+    return totalValue == 0 ? 0 : (weightedIRRSum * 100 / totalValue);
   }
 
   static Goal from({required final GoalDO goalDO}) {

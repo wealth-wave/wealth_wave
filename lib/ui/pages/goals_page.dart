@@ -123,7 +123,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                     children: [
                       Text(formatToCurrency(goalVO.valueOnMaturity),
                           style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(At growth Rate of ${goalVO.irr})',
+                      Text('(At ${formatToPercentage(goalVO.irr)})',
                           style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),
@@ -142,7 +142,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Target Amount)',
                           style: Theme.of(context).textTheme.labelSmall),
-                      Text(formatToPercentage(goalVO.inflation / 100),
+                      Text(formatToPercentage(goalVO.inflation),
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Inflation)',
                           style: Theme.of(context).textTheme.labelSmall),
