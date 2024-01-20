@@ -58,7 +58,9 @@ class Goal {
                 .then((investmentDO) =>
                     Investment.from(investmentDO: investmentDO))
                 .then((investment) => investment.getTotalInvestedAmount())
-                .then((amount) => amount * goalInvestment.splitPercentage))))
+                .then((amount) => calculatePercentageOfValue(
+                    value: amount,
+                    percentage: goalInvestment.splitPercentage)))))
         .then((amounts) => amounts.isNotEmpty
             ? amounts.reduce((value, element) => value + element)
             : 0);
@@ -117,24 +119,30 @@ class Goal {
   }
 
   Future<double> getIRR() async {
-    return _goalInvestmentApi
-        .getBy(goalId: id)
-        .then((goalInvestments) => Future.wait(goalInvestments.map(
-            (goalInvestment) => _investmentApi
-                .getById(id: goalInvestment.investmentId)
-                .then((investmentDO) =>
-                    Investment.from(investmentDO: investmentDO))
-                .then((investment) async => {
-                      'value': investment.value,
-                      'irr': await investment.getIRR(),
-                    }))))
-        .then((investmentData) {
-      var totalValue = investmentData.fold(
-          0.0, (sum, investment) => sum + investment['value']!);
-      var weightedIRRSum = investmentData.fold(0.0,
-          (sum, investment) => sum + investment['value']! * investment['irr']!);
-      return weightedIRRSum / totalValue;
-    });
+    var goalInvestments = await _goalInvestmentApi.getBy(goalId: id);
+    var investmentData = [];
+
+    for (var goalInvestment in goalInvestments) {
+      var investmentDO = await _investmentApi.getById(id: goalInvestment.investmentId);
+      var investment = Investment.from(investmentDO: investmentDO);
+      var value = investment.value;
+      var irr = await investment.getIRR();
+
+      investmentData.add({
+        'value': value,
+        'irr': irr,
+      });
+    }
+
+    var totalValue = investmentData.fold(0.0, (sum, investment) => sum + investment['value']!);
+    var weightedIRRSum = investmentData.fold(
+        0.0,
+        (sum, investment) =>
+            sum +
+            calculatePercentageOfValue(
+                value: investment['value']!, percentage: investment['irr']!));
+
+    return totalValue == 0 ? 0 : weightedIRRSum / totalValue;
   }
 
   static Goal from({required final GoalDO goalDO}) {

@@ -70,7 +70,7 @@ class GoalVO {
         investedAmount: await goal.getInvestedAmount(),
         maturityDate: goal.maturityDate,
         irr: await goal.getIRR(),
-        valueOnMaturity: await goal.getMaturityAmount(),
+        valueOnMaturity: await goal.getValueOnMaturity(),
         investments: await goal.getInvestments());
   }
 }

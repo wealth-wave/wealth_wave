@@ -110,43 +110,6 @@ class GoalInvestmentTable extends Table {
   RealColumn get splitPercentage => real().named('SPLIT_PERCENTAGE')();
 }
 
-@DataClassName('InvestmentEnrichedDO')
-abstract class InvestmentEnrichedView extends View {
-  InvestmentTable get investment;
-  BasketTable get basket;
-  TransactionTable get transaction;
-  SipTable get sip;
-
-  Expression<int> get basketId => basket.id;
-  Expression<String> get basketName => basket.name;
-  Expression<double> get totalInvestedAmount => transaction.amount.sum();
-  Expression<int> get totalTransactions => transaction.id.count();
-  Expression<int> get totalSips => sip.id.count();
-
-  @override
-  Query as() => select([
-        investment.id,
-        investment.name,
-        investment.description,
-        investment.riskLevel,
-        investment.maturityDate,
-        investment.irr,
-        investment.value,
-        investment.valueUpdatedOn,
-        basketId,
-        basketName,
-        totalInvestedAmount,
-        totalTransactions,
-        totalSips
-      ]).from(investment).join([
-        leftOuterJoin(basket, basket.id.equalsExp(investment.basketId)),
-        leftOuterJoin(
-            transaction, transaction.investmentId.equalsExp(investment.id)),
-        leftOuterJoin(sip, sip.investmentId.equalsExp(investment.id)),
-      ])
-        ..groupBy([investment.id]);
-}
-
 @DriftDatabase(tables: [
   BasketTable,
   InvestmentTable,
@@ -154,9 +117,7 @@ abstract class InvestmentEnrichedView extends View {
   GoalTable,
   SipTable,
   GoalInvestmentTable,
-], views: [
-  InvestmentEnrichedView
-])
+], views: [])
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;
 
@@ -199,14 +160,29 @@ class AppDatabase extends _$AppDatabase {
         var tableDatas = entry.value;
 
         for (var tableData in tableDatas) {
-          var columns = tableData.keys.join(', ');
-          var values = tableData.keys.map((key) => '?').join(', ');
+          final String columnsString =
+              tableData.keys.where((key) => tableData[key] != null).join(', ');
+          final String valuesString = tableData.keys
+              .where((key) => tableData[key] != null)
+              .map((key) => '?')
+              .join(', ');
 
           await customInsert(
-            'INSERT INTO $tableName ($columns) VALUES ($values)',
-            variables: tableData.values
-                .map((value) => Variable.withString('$value'))
-                .toList(),
+            'INSERT INTO $tableName ($columnsString) VALUES ($valuesString)',
+            variables:
+                tableData.values.where((value) => value != null).map((value) {
+              if (value is int) {
+                return Variable.withInt(value);
+              } else if (value is double) {
+                return Variable.withReal(value);
+              } else if (value is DateTime) {
+                return Variable.withDateTime(value);
+              } else if (value is String) {
+                return Variable.withString(value);
+              } else {
+                throw Exception('Unknown type $value');
+              }
+            }).toList(),
           );
         }
       }
