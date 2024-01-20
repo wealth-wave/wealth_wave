@@ -117,7 +117,7 @@ class Investment {
             (goalInvestment) => _goalApi
                 .getBy(id: goalInvestment.goalId)
                 .then((goalDO) => Goal.from(goalDO: goalDO))
-                .then((goal) => MapEntry(goal, goalInvestment.split)))))
+                .then((goal) => MapEntry(goal, goalInvestment.splitPercentage)))))
         .then((entries) => Map.fromEntries(entries));
   }
 
@@ -211,7 +211,7 @@ class Investment {
   Future<void> tagGoal(
       {required final int goalId, required final double split}) async {
     return _goalInvestmentApi
-        .create(goalId: goalId, investmentId: id, split: split)
+        .create(goalId: goalId, investmentId: id, splitPercentage: split)
         .then((goalInvestmentDO) => {});
   }
 
@@ -220,7 +220,7 @@ class Investment {
       required final int goalId,
       required final double split}) async {
     return _goalInvestmentApi
-        .update(id: id, goalId: goalId, investmentId: id, split: split)
+        .update(id: id, goalId: goalId, investmentId: id, splitPercentage: split)
         .then((goalInvestmentDO) => {});
   }
 

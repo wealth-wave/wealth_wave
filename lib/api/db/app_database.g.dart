@@ -682,11 +682,11 @@ late final GeneratedColumn<int> goalId = GeneratedColumn<int>('GOAL_ID', aliased
 static const VerificationMeta _investmentIdMeta = const VerificationMeta('investmentId');
 @override
 late final GeneratedColumn<int> investmentId = GeneratedColumn<int>('INVESTMENT_ID', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true, defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES goal_table (ID)'));
-static const VerificationMeta _splitMeta = const VerificationMeta('split');
+static const VerificationMeta _splitPercentageMeta = const VerificationMeta('splitPercentage');
 @override
-late final GeneratedColumn<double> split = GeneratedColumn<double>('SPLIT', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
+late final GeneratedColumn<double> splitPercentage = GeneratedColumn<double>('SPLIT_PERCENTAGE', aliasedName, false, type: DriftSqlType.double, requiredDuringInsert: true);
 @override
-List<GeneratedColumn> get $columns => [id, goalId, investmentId, split];
+List<GeneratedColumn> get $columns => [id, goalId, investmentId, splitPercentage];
 @override
 String get aliasedName => _alias ?? actualTableName;
 @override
@@ -705,16 +705,16 @@ if (data.containsKey('INVESTMENT_ID')) {
 context.handle(_investmentIdMeta, investmentId.isAcceptableOrUnknown(data['INVESTMENT_ID']!, _investmentIdMeta));} else if (isInserting) {
 context.missing(_investmentIdMeta);
 }
-if (data.containsKey('SPLIT')) {
-context.handle(_splitMeta, split.isAcceptableOrUnknown(data['SPLIT']!, _splitMeta));} else if (isInserting) {
-context.missing(_splitMeta);
+if (data.containsKey('SPLIT_PERCENTAGE')) {
+context.handle(_splitPercentageMeta, splitPercentage.isAcceptableOrUnknown(data['SPLIT_PERCENTAGE']!, _splitPercentageMeta));} else if (isInserting) {
+context.missing(_splitPercentageMeta);
 }
 return context;
 }
 @override
 Set<GeneratedColumn> get $primaryKey => {id};
 @override GoalInvestmentDO map(Map<String, dynamic> data, {String? tablePrefix})  {
-final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return GoalInvestmentDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, goalId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}GOAL_ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, split: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}SPLIT'])!, );
+final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';return GoalInvestmentDO(id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}ID'])!, goalId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}GOAL_ID'])!, investmentId: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!, splitPercentage: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}SPLIT_PERCENTAGE'])!, );
 }
 @override
 $GoalInvestmentTableTable createAlias(String alias) {
@@ -722,44 +722,44 @@ return $GoalInvestmentTableTable(attachedDatabase, alias);}}class GoalInvestment
 final int id;
 final int goalId;
 final int investmentId;
-final double split;
-const GoalInvestmentDO({required this.id, required this.goalId, required this.investmentId, required this.split});@override
+final double splitPercentage;
+const GoalInvestmentDO({required this.id, required this.goalId, required this.investmentId, required this.splitPercentage});@override
 Map<String, Expression> toColumns(bool nullToAbsent) {
 final map = <String, Expression> {};map['ID'] = Variable<int>(id);
 map['GOAL_ID'] = Variable<int>(goalId);
 map['INVESTMENT_ID'] = Variable<int>(investmentId);
-map['SPLIT'] = Variable<double>(split);
+map['SPLIT_PERCENTAGE'] = Variable<double>(splitPercentage);
 return map; 
 }
 GoalInvestmentTableCompanion toCompanion(bool nullToAbsent) {
-return GoalInvestmentTableCompanion(id: Value(id),goalId: Value(goalId),investmentId: Value(investmentId),split: Value(split),);
+return GoalInvestmentTableCompanion(id: Value(id),goalId: Value(goalId),investmentId: Value(investmentId),splitPercentage: Value(splitPercentage),);
 }
 factory GoalInvestmentDO.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
-return GoalInvestmentDO(id: serializer.fromJson<int>(json['id']),goalId: serializer.fromJson<int>(json['goalId']),investmentId: serializer.fromJson<int>(json['investmentId']),split: serializer.fromJson<double>(json['split']),);}
+return GoalInvestmentDO(id: serializer.fromJson<int>(json['id']),goalId: serializer.fromJson<int>(json['goalId']),investmentId: serializer.fromJson<int>(json['investmentId']),splitPercentage: serializer.fromJson<double>(json['splitPercentage']),);}
 @override Map<String, dynamic> toJson({ValueSerializer? serializer}) {
 serializer ??= driftRuntimeOptions.defaultSerializer;
 return <String, dynamic>{
-'id': serializer.toJson<int>(id),'goalId': serializer.toJson<int>(goalId),'investmentId': serializer.toJson<int>(investmentId),'split': serializer.toJson<double>(split),};}GoalInvestmentDO copyWith({int? id,int? goalId,int? investmentId,double? split}) => GoalInvestmentDO(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,split: split ?? this.split,);@override
-String toString() {return (StringBuffer('GoalInvestmentDO(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('split: $split')..write(')')).toString();}
+'id': serializer.toJson<int>(id),'goalId': serializer.toJson<int>(goalId),'investmentId': serializer.toJson<int>(investmentId),'splitPercentage': serializer.toJson<double>(splitPercentage),};}GoalInvestmentDO copyWith({int? id,int? goalId,int? investmentId,double? splitPercentage}) => GoalInvestmentDO(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,splitPercentage: splitPercentage ?? this.splitPercentage,);@override
+String toString() {return (StringBuffer('GoalInvestmentDO(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('splitPercentage: $splitPercentage')..write(')')).toString();}
 @override
- int get hashCode => Object.hash(id, goalId, investmentId, split);@override
-bool operator ==(Object other) => identical(this, other) || (other is GoalInvestmentDO && other.id == this.id && other.goalId == this.goalId && other.investmentId == this.investmentId && other.split == this.split);
+ int get hashCode => Object.hash(id, goalId, investmentId, splitPercentage);@override
+bool operator ==(Object other) => identical(this, other) || (other is GoalInvestmentDO && other.id == this.id && other.goalId == this.goalId && other.investmentId == this.investmentId && other.splitPercentage == this.splitPercentage);
 }class GoalInvestmentTableCompanion extends UpdateCompanion<GoalInvestmentDO> {
 final Value<int> id;
 final Value<int> goalId;
 final Value<int> investmentId;
-final Value<double> split;
-const GoalInvestmentTableCompanion({this.id = const Value.absent(),this.goalId = const Value.absent(),this.investmentId = const Value.absent(),this.split = const Value.absent(),});
-GoalInvestmentTableCompanion.insert({this.id = const Value.absent(),required int goalId,required int investmentId,required double split,}): goalId = Value(goalId), investmentId = Value(investmentId), split = Value(split);
+final Value<double> splitPercentage;
+const GoalInvestmentTableCompanion({this.id = const Value.absent(),this.goalId = const Value.absent(),this.investmentId = const Value.absent(),this.splitPercentage = const Value.absent(),});
+GoalInvestmentTableCompanion.insert({this.id = const Value.absent(),required int goalId,required int investmentId,required double splitPercentage,}): goalId = Value(goalId), investmentId = Value(investmentId), splitPercentage = Value(splitPercentage);
 static Insertable<GoalInvestmentDO> custom({Expression<int>? id, 
 Expression<int>? goalId, 
 Expression<int>? investmentId, 
-Expression<double>? split, 
+Expression<double>? splitPercentage, 
 }) {
-return RawValuesInsertable({if (id != null)'ID': id,if (goalId != null)'GOAL_ID': goalId,if (investmentId != null)'INVESTMENT_ID': investmentId,if (split != null)'SPLIT': split,});
-}GoalInvestmentTableCompanion copyWith({Value<int>? id, Value<int>? goalId, Value<int>? investmentId, Value<double>? split}) {
-return GoalInvestmentTableCompanion(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,split: split ?? this.split,);
+return RawValuesInsertable({if (id != null)'ID': id,if (goalId != null)'GOAL_ID': goalId,if (investmentId != null)'INVESTMENT_ID': investmentId,if (splitPercentage != null)'SPLIT_PERCENTAGE': splitPercentage,});
+}GoalInvestmentTableCompanion copyWith({Value<int>? id, Value<int>? goalId, Value<int>? investmentId, Value<double>? splitPercentage}) {
+return GoalInvestmentTableCompanion(id: id ?? this.id,goalId: goalId ?? this.goalId,investmentId: investmentId ?? this.investmentId,splitPercentage: splitPercentage ?? this.splitPercentage,);
 }
 @override
 Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -769,12 +769,12 @@ if (goalId.present) {
 map['GOAL_ID'] = Variable<int>(goalId.value);}
 if (investmentId.present) {
 map['INVESTMENT_ID'] = Variable<int>(investmentId.value);}
-if (split.present) {
-map['SPLIT'] = Variable<double>(split.value);}
+if (splitPercentage.present) {
+map['SPLIT_PERCENTAGE'] = Variable<double>(splitPercentage.value);}
 return map; 
 }
 @override
-String toString() {return (StringBuffer('GoalInvestmentTableCompanion(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('split: $split')..write(')')).toString();}
+String toString() {return (StringBuffer('GoalInvestmentTableCompanion(')..write('id: $id, ')..write('goalId: $goalId, ')..write('investmentId: $investmentId, ')..write('splitPercentage: $splitPercentage')..write(')')).toString();}
 }
 class InvestmentEnrichedDO extends DataClass {
 final int id;

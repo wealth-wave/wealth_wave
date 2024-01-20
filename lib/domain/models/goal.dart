@@ -4,6 +4,7 @@ import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/models/irr_calculator.dart';
+import 'package:wealth_wave/utils/utils.dart';
 
 class Goal {
   final int id;
@@ -44,7 +45,7 @@ class Goal {
                 .then((investmentDO) =>
                     Investment.from(investmentDO: investmentDO))
                 .then((investment) =>
-                    MapEntry(investment, goalInvestment.split)))))
+                    MapEntry(investment, goalInvestment.splitPercentage)))))
         .then((entries) => Map.fromEntries(entries));
   }
 
@@ -57,8 +58,10 @@ class Goal {
                 .then((investmentDO) =>
                     Investment.from(investmentDO: investmentDO))
                 .then((investment) => investment.getTotalInvestedAmount())
-                .then((amount) => amount * goalInvestment.split))))
-        .then((amounts) => amounts.isNotEmpty ? amounts.reduce((value, element) => value + element): 0);
+                .then((amount) => amount * goalInvestment.splitPercentage))))
+        .then((amounts) => amounts.isNotEmpty
+            ? amounts.reduce((value, element) => value + element)
+            : 0);
   }
 
   Future<double> getMaturityAmount() {
@@ -79,14 +82,18 @@ class Goal {
                     Investment.from(investmentDO: investmentDO))
                 .then((investment) => investment.getValueOn(
                     date: maturityDate, considerFuturePayments: true))
-                .then((amount) => amount * goalInvestment.split))))
-        .then((amounts) => amounts.isNotEmpty ? amounts.reduce((value, element) => value + element): 0);
+                .then((amount) => calculatePercentageOfValue(
+                    value: amount,
+                    percentage: goalInvestment.splitPercentage)))))
+        .then((amounts) => amounts.isNotEmpty
+            ? amounts.reduce((value, element) => value + element)
+            : 0);
   }
 
   Future<void> tagInvestment(
       {required final int investmentId, required final double split}) async {
     return _goalInvestmentApi
-        .create(goalId: id, investmentId: investmentId, split: split)
+        .create(goalId: id, investmentId: investmentId, splitPercentage: split)
         .then((goalInvestmentDO) => {});
   }
 
@@ -95,7 +102,11 @@ class Goal {
       required final int investmentId,
       required final double split}) async {
     return _goalInvestmentApi
-        .update(id: id, goalId: id, investmentId: investmentId, split: split)
+        .update(
+            id: id,
+            goalId: id,
+            investmentId: investmentId,
+            splitPercentage: split)
         .then((goalInvestmentDO) => {});
   }
 

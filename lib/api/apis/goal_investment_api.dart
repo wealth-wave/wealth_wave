@@ -9,10 +9,10 @@ class GoalInvestmentApi {
   Future<int> create(
       {required final int goalId,
       required final int investmentId,
-      required final double split}) async {
+      required final double splitPercentage}) async {
     return _db.into(_db.goalInvestmentTable).insert(
         GoalInvestmentTableCompanion.insert(
-            goalId: goalId, investmentId: investmentId, split: split));
+            goalId: goalId, investmentId: investmentId, splitPercentage: splitPercentage));
   }
 
   Future<List<GoalInvestmentDO>> getBy(
@@ -38,12 +38,12 @@ class GoalInvestmentApi {
       {required final int id,
       required final int goalId,
       required final int investmentId,
-      required final double split}) async {
+      required final double splitPercentage}) async {
     return (_db.update(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
         .write(GoalInvestmentTableCompanion(
             investmentId: Value(investmentId),
             goalId: Value(goalId),
-            split: Value(split)));
+            splitPercentage: Value(splitPercentage)));
   }
 
   Future<int> deleteBy(

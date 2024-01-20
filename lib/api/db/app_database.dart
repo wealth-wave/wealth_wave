@@ -107,7 +107,7 @@ class GoalInvestmentTable extends Table {
   IntColumn get investmentId =>
       integer().named('INVESTMENT_ID').references(GoalTable, #id)();
 
-  RealColumn get split => real().named('SPLIT')();
+  RealColumn get splitPercentage => real().named('SPLIT_PERCENTAGE')();
 }
 
 @DataClassName('InvestmentEnrichedDO')
