@@ -23,13 +23,13 @@ String formatToCurrency(double value) {
   return NumberFormat.currency().format(value);
 }
 
-String formatCurrency(String value) {
-  return formatDecimal(NumberFormat.currency().parse(value).toDouble());
+double parseCurrency(String value) {
+  return NumberFormat.currency().parse(value).toDouble();
 }
 
 DateTime? parseDate(String date) {
   try {
-    return DateFormat('dd-MM-yyyy').parse(date);
+    return DateFormat('dd/MM/yyyy').parse(date);
   } catch (e) {
     return null;
   }
