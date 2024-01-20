@@ -32,6 +32,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
   final _irrController = TextEditingController();
   final _valueController = TextEditingController();
   final _valueUpdatedDateController = TextEditingController();
+  final _maturityDateController = TextEditingController();
 
   @override
   void initState() {
@@ -46,6 +47,9 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     _valueController.text = value != null ? formatToCurrency(value) : '';
     _valueUpdatedDateController.text = viewState.valueUpdatedAt != null
         ? formatDate(viewState.valueUpdatedAt!)
+        : '';
+    _maturityDateController.text = viewState.maturityDate != null
+        ? formatDate(viewState.maturityDate!)
         : '';
 
     int? investmentIdToUpdate = widget.investmentIdToUpdate;
@@ -74,6 +78,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
       presenter.irrChanged(double.tryParse(_irrController.text));
     });
 
+    _maturityDateController.addListener(() {
+      presenter.maturityDateChanged(parseDate(_maturityDateController.text));
+    });
+
     presenter.getBaskets();
   }
 
@@ -94,6 +102,9 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
         _valueController.text = value != null ? formatToCurrency(value) : '';
         _valueUpdatedDateController.text =
             valueUpdatedAt != null ? formatDate(valueUpdatedAt) : '';
+        _maturityDateController.text = snapshot.maturityDate != null
+            ? formatDate(snapshot.maturityDate!)
+            : '';
       });
 
       snapshot.onIRRCleared?.consume((_) {
@@ -128,7 +139,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
               FilteringTextInputFormatter.deny(RegExp(r'[^a-zA-Z0-9\s]'))
             ],
             decoration: const InputDecoration(
-                labelText: 'Desctiption', border: OutlineInputBorder()),
+                labelText: 'Description', border: OutlineInputBorder()),
           ),
           const SizedBox(height: AppDimen.defaultPadding),
           Container(
@@ -167,11 +178,19 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: const InputDecoration(
                           labelText: 'IRR %', border: OutlineInputBorder()),
-                    )
+                    ),
                   ],
                 ),
               )),
           const SizedBox(height: AppDimen.defaultPadding),
+          TextFormField(
+            textInputAction: TextInputAction.next,
+            controller: _maturityDateController,
+            inputFormatters: [DateTextInputFormatter()],
+            decoration: const InputDecoration(
+                labelText: 'Maturity Date', border: OutlineInputBorder()),
+          ),
+          const SizedBox(height: AppDimen.minPadding),
           DropdownButtonFormField<int>(
               decoration: const InputDecoration(
                   border: OutlineInputBorder(), labelText: 'Basket'),

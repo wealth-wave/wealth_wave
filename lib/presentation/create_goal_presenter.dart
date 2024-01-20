@@ -141,7 +141,7 @@ class CreateGoalViewState {
   double targetAmount = 0;
   DateTime date = DateTime.now();
   DateTime targetDate = DateTime.now().add(const Duration(days: 365));
-  double inflation = 0;
+  double inflation = 5;
   GoalImportance importance = GoalImportance.high;
   SingleEvent<void>? onGoalCreated;
   SingleEvent<void>? onDataLoaded;

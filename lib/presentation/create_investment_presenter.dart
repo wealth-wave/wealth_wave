@@ -134,6 +134,10 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
         .getBy(id: id)
         .then((investment) => setInvestment(investment));
   }
+
+  void maturityDateChanged(DateTime? date) {
+    updateViewState((viewState) => viewState.maturityDate = date);
+  }
 }
 
 class CreateInvestmentViewState {

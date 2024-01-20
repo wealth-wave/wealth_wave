@@ -5,10 +5,7 @@ import 'package:intl/intl.dart';
 
 class CurrencyTextInputFormatter extends TextInputFormatter {
   CurrencyTextInputFormatter() {
-    _format = NumberFormat.currency(
-      locale: null,
-      symbol: '',
-    );
+    _format = NumberFormat.currency();
   }
 
   late NumberFormat _format;
