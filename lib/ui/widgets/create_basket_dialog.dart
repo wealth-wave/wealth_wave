@@ -29,6 +29,10 @@ class _CreateBasketPage extends PageState<CreateBasketViewState,
   void initState() {
     super.initState();
 
+    final viewState = presenter.getViewState();
+    _nameController.text = viewState.name;
+    _descriptionController.text = viewState.description;
+
     int? basketIdToUpdate = widget.basketIdTOUpdate;
     if (basketIdToUpdate != null) {
       presenter.fetchBasket(id: basketIdToUpdate);
@@ -48,6 +52,10 @@ class _CreateBasketPage extends PageState<CreateBasketViewState,
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onBasketCreated?.consume((_) {
         Navigator.of(context).pop();
+      });
+      snapshot.onBasketFetched?.consume((_) {
+        _nameController.text = snapshot.name;
+        _descriptionController.text = snapshot.description;
       });
     });
 

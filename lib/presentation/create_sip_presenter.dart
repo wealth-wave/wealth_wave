@@ -78,18 +78,19 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     updateViewState((viewState) => viewState.frequency = frequency);
   }
 
-  void setSip(SIP sipToUpdate) {
+  void _setSip(SIP sipToUpdate) {
     updateViewState((viewState) {
       viewState.description = sipToUpdate.description ?? '';
       viewState.amount = sipToUpdate.amount;
       viewState.startDate = sipToUpdate.startDate;
       viewState.endDate = sipToUpdate.endDate;
       viewState.frequency = sipToUpdate.frequency;
+      viewState.onSipLoaded = SingleEvent(null);
     });
   }
 
   void fetchSip({required int id}) {
-    _sipService.getBy(id: id).then((sip) => setSip(sip));
+    _sipService.getBy(id: id).then((sip) => _setSip(sip));
   }
 }
 
@@ -100,6 +101,7 @@ class CreateSipViewState {
   DateTime? endDate = DateTime.now().add(const Duration(days: 365));
   SipFrequency frequency = SipFrequency.monthly;
   SingleEvent<void>? onSipCreated;
+  SingleEvent<void>? onSipLoaded;
 
   bool isValid() {
     final endDate = this.endDate;

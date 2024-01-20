@@ -37,13 +37,17 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
   void initState() {
     super.initState();
 
+    final viewState = presenter.getViewState();
+    _nameController.text = viewState.name;
+    _descriptionController.text = viewState.description;
+    _amountController.text = formatToCurrency(viewState.amount);
+    _currentDateController.text = formatDate(viewState.date);
+    _targetDateController.text = formatDate(viewState.targetDate);
+    _inflationController.text = viewState.inflation.toString();
+
     int? goalIdToUpdate = widget.goalIdToUpdate;
     if (goalIdToUpdate != null) {
       presenter.fetchGoal(id: goalIdToUpdate);
-    } else {
-      _currentDateController.text = formatDate(DateTime.now());
-      _targetDateController.text =
-          formatDate(DateTime.now().add(const Duration(days: 365)));
     }
 
     _nameController.addListener(() {
@@ -79,6 +83,15 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onGoalCreated?.consume((_) {
         Navigator.of(context).pop();
+      });
+
+      snapshot.onDataLoaded?.consume((_) {
+        _nameController.text = snapshot.name;
+        _descriptionController.text = snapshot.description;
+        _amountController.text = formatToCurrency(snapshot.amount);
+        _currentDateController.text = formatDate(snapshot.date);
+        _targetDateController.text = formatDate(snapshot.targetDate);
+        _inflationController.text = snapshot.inflation.toString();
       });
     });
 
@@ -117,9 +130,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
               textInputAction: TextInputAction.next,
               controller: _amountController,
               keyboardType: TextInputType.number,
-              inputFormatters: [
-                CurrencyTextInputFormatter()
-              ],
+              inputFormatters: [CurrencyTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Amount', border: OutlineInputBorder()),
             ),
@@ -127,9 +138,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _currentDateController,
-              inputFormatters: [
-                DateTextInputFormatter()
-              ],
+              inputFormatters: [DateTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Date (DD/MM/YYYY)', border: OutlineInputBorder()),
             ),
@@ -137,9 +146,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _targetDateController,
-              inputFormatters: [
-                DateTextInputFormatter()
-              ],
+              inputFormatters: [DateTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Target Date (DD/MM/YYYY)',
                   border: OutlineInputBorder()),

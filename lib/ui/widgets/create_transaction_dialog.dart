@@ -45,6 +45,11 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
   void initState() {
     super.initState();
 
+    final viewState = presenter.getViewState();
+    _valueController.text = formatToCurrency(viewState.amount);
+    _descriptionController.text = viewState.description;
+    _valueUpdatedDateController.text = formatDate(viewState.investedDate);
+
     int? transactionIdToUpdate = widget._transactionIdToUpdate;
     if (transactionIdToUpdate != null) {
       presenter.fetchTransaction(id: transactionIdToUpdate);
@@ -70,6 +75,11 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onTransactionCreated?.consume((_) {
         Navigator.of(context).pop();
+      });
+      snapshot.onTransactionLoaded?.consume((_) {
+        _descriptionController.text = snapshot.description;
+        _valueController.text = formatToCurrency(snapshot.amount);
+        _valueUpdatedDateController.text = formatDate(snapshot.investedDate);
       });
     });
 
@@ -117,9 +127,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _valueUpdatedDateController,
-              inputFormatters: [
-                DateTextInputFormatter()
-              ],
+              inputFormatters: [DateTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Date (DD/MM/YYYY)', border: OutlineInputBorder()),
             ),

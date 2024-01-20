@@ -41,6 +41,13 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
   void initState() {
     super.initState();
 
+    final viewState = presenter.getViewState();
+    _valueController.text = formatToCurrency(viewState.amount);
+    _descriptionController.text = viewState.description;
+    _startDateController.text = formatDate(viewState.startDate);
+    _endDateController.text =
+        viewState.endDate != null ? formatDate(viewState.endDate!) : '';
+
     int? sipIdToUpdate = widget.sipIdToUpdate;
     if (sipIdToUpdate != null) {
       presenter.fetchSip(id: sipIdToUpdate);
@@ -65,6 +72,13 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onSipCreated?.consume((_) {
         Navigator.of(context).pop();
+      });
+      snapshot.onSipLoaded?.consume((_) {
+        _valueController.text = formatToCurrency(snapshot.amount);
+        _descriptionController.text = snapshot.description;
+        _startDateController.text = formatDate(snapshot.startDate);
+        _endDateController.text =
+            snapshot.endDate != null ? formatDate(snapshot.endDate!) : '';
       });
     });
 

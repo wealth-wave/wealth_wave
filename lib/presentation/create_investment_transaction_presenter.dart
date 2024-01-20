@@ -64,17 +64,19 @@ class CreateInvestmentTransactionPresenter
     updateViewState((viewState) => viewState.investedDate = date);
   }
 
-  void setTransaction(Transaction transactionToUpdate) {
+  void _setTransaction(Transaction transactionToUpdate) {
     updateViewState((viewState) {
       viewState.amount = transactionToUpdate.amount;
       viewState.investedDate = transactionToUpdate.createdOn;
+      viewState.description = transactionToUpdate.description ?? '';
+      viewState.onTransactionLoaded = SingleEvent(null);
     });
   }
 
   void fetchTransaction({required int id}) {
     _transactionService
         .getBy(id: id)
-        .then((transaction) => setTransaction(transaction));
+        .then((transaction) => _setTransaction(transaction));
   }
 }
 
@@ -83,6 +85,7 @@ class CreateTransactionViewState {
   double amount = 0;
   DateTime investedDate = DateTime.now();
   SingleEvent<void>? onTransactionCreated;
+  SingleEvent<void>? onTransactionLoaded;
 
   bool isValid() {
     return amount > 0;

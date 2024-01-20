@@ -37,6 +37,14 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
   void initState() {
     super.initState();
 
+    final viewState = presenter.getViewState();
+    _nameController.text = viewState.name;
+    _descriptionController.text = viewState.description;
+    _irrController.text = viewState.irr?.toString() ?? '';
+    _valueController.text = viewState.value?.toString() ?? '';
+    _valueUpdatedDateController.text =
+        viewState.valueUpdatedAt != null ? formatDate(viewState.valueUpdatedAt!) : '';
+
     int? investmentIdToUpdate = widget.investmentIdToUpdate;
     if (investmentIdToUpdate != null) {
       presenter.fetchInvestment(id: investmentIdToUpdate);

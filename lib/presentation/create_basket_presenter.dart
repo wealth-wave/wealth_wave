@@ -51,6 +51,7 @@ class CreateBasketPresenter extends Presenter<CreateBasketViewState> {
     updateViewState((viewState) {
       viewState.name = basketToUpdate.name;
       viewState.description = basketToUpdate.description ?? '';
+      viewState.onBasketFetched = SingleEvent(null);
     });
   }
 }
@@ -59,6 +60,7 @@ class CreateBasketViewState {
   String name = '';
   String description = '';
   SingleEvent<void>? onBasketCreated;
+  SingleEvent<void>? onBasketFetched;
 
   bool isValid() {
     return name.isNotEmpty;
