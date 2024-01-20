@@ -1,5 +1,6 @@
 import 'package:wealth_wave/api/apis/sip_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
+import 'package:wealth_wave/domain/models/payment.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 
 class Transaction {
@@ -38,5 +39,9 @@ class Transaction {
         description: transactionDO.description,
         amount: transactionDO.amount,
         createdOn: transactionDO.createdOn);
+  }
+
+  Payment toPayment() {
+    return Payment(amount: amount, createdOn: createdOn);
   }
 }

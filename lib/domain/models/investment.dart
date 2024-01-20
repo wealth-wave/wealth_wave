@@ -72,7 +72,7 @@ class Investment {
       {required final DateTime date,
       bool considerFuturePayments = false}) async {
     final payments = await getTransactions().then((transactions) => transactions
-        .map((transaction) => Payment.from(transaction: transaction))
+        .map((transaction) => transaction.toPayment())
         .toList(growable: true));
     if (considerFuturePayments) {
       getSips().then((sips) => Future.wait(sips.map((sip) => sip
@@ -80,14 +80,17 @@ class Investment {
           .then((futurePayments) => payments.addAll(futurePayments)))));
     }
 
+    final value = this.value;
+    final valueUpdatedOn = this.valueUpdatedOn;
+    final irr = this.irr;
     if (value != null && valueUpdatedOn != null) {
       final irr = _irrCalculator.calculateIRR(
-          payments: payments, value: value!, valueUpdatedOn: valueUpdatedOn!);
+          payments: payments, value: value, valueUpdatedOn: valueUpdatedOn);
       return _irrCalculator.calculateValueOnIRR(
-          irr: irr, date: date, value: value!, valueUpdatedOn: valueUpdatedOn!);
+          irr: irr, date: date, value: value, valueUpdatedOn: valueUpdatedOn);
     } else if (irr != null) {
-      return _irrCalculator.calculateTransactedValueOnIRR(
-          payments: payments, irr: irr!, date: date);
+      return _irrCalculator.calculateFutureValueOnIRR(
+          payments: payments, irr: irr, date: date);
     } else {
       throw Exception('Value and IRR are null');
     }
@@ -117,7 +120,8 @@ class Investment {
             (goalInvestment) => _goalApi
                 .getBy(id: goalInvestment.goalId)
                 .then((goalDO) => Goal.from(goalDO: goalDO))
-                .then((goal) => MapEntry(goal, goalInvestment.splitPercentage)))))
+                .then(
+                    (goal) => MapEntry(goal, goalInvestment.splitPercentage)))))
         .then((entries) => Map.fromEntries(entries));
   }
 
@@ -220,7 +224,8 @@ class Investment {
       required final int goalId,
       required final double split}) async {
     return _goalInvestmentApi
-        .update(id: id, goalId: goalId, investmentId: id, splitPercentage: split)
+        .update(
+            id: id, goalId: goalId, investmentId: id, splitPercentage: split)
         .then((goalInvestmentDO) => {});
   }
 
@@ -236,7 +241,7 @@ class Investment {
     } else if (value != null && valueUpdatedOn != null) {
       List<Payment> payments = await getTransactions().then((transactions) =>
           transactions
-              .map((transaction) => Payment.from(transaction: transaction))
+              .map((transaction) => transaction.toPayment())
               .toList(growable: true));
 
       return getValueOn(date: DateTime.now()).then((valueOn) =>

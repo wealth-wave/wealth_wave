@@ -49,7 +49,7 @@ class _TransactionPage extends PageState<TransactionsViewState,
                   children: [
                     Row(
                       children: [
-                        Text(transaction.createdOn),
+                        Text(formatDate(transaction.createdOn)),
                         const Text(' | '),
                         Text(transaction.description ?? ''),
                       ],

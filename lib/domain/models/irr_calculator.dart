@@ -30,21 +30,21 @@ class IRRCalculator {
         f += cashFlow.amount / r;
         df -= cashFlow.years * cashFlow.amount / (r * (1 + guess));
       }
-      if (f.abs() < 1e-6) return guess; // Convergence tolerance
+      if (f.abs() < 1e-6) return guess * 100; // Convergence tolerance
       guess -= f / df; // Newton-Raphson update
     }
     return 0.0;
   }
 
-  double calculateTransactedValueOnIRR(
+  double calculateFutureValueOnIRR(
       {required final List<Payment> payments,
       required final double irr,
       required final DateTime date}) {
     double futureValue = 0;
 
-    for (var transaction in payments) {
-      double years = date.difference(transaction.createdOn).inDays / 365;
-      futureValue += transaction.amount / pow(1 + irr, years);
+    for (var payment in payments) {
+      double years = payment.createdOn.difference(date).inDays / 365;
+      futureValue += payment.amount / pow(1 + (irr / 100), years);
     }
 
     return futureValue;
@@ -56,8 +56,8 @@ class IRRCalculator {
     required final double value,
     required final DateTime valueUpdatedOn,
   }) {
-    double years = date.difference(valueUpdatedOn).inDays / 365;
-    return value / pow(1 + irr, years);
+    double years = valueUpdatedOn.difference(date).inDays / 365;
+    return value / pow(1 + irr/100, years);
   }
 }
 
