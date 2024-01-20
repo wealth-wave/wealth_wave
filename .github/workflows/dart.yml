@@ -26,7 +26,7 @@ jobs:
         run: flutter pub get
 
       - name: Build web
-        run: flutter build web --release --base-href /wealth_wave/
+        run: flutter build web --release
 
       - name: Deploy to Github Pages
         run: |
@@ -35,8 +35,8 @@ jobs:
           git config --global user.email praslnx8@gmail.com
           git config --global user.name praslnx8
           git status
-          git remote add origin https://${{secrets.COMMIT_SECRET}}@github.com/wealth-wave/wealth_wave.git
-          git checkout -b gh-pages
+          git remote add origin https://${{secrets.COMMIT_SECRET}}@github.com/wealth-wave/wealth-wave.github.io.git
+          git checkout -b main
           git add .
           git commit -m "update"
-          git push origin gh-pages -f
+          git push --set-upstream origin main -f
