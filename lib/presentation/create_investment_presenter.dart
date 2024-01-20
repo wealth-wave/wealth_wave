@@ -22,7 +22,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
         (value) => updateViewState((viewState) => viewState.baskets = value));
   }
 
-  void createInvestment({int? investmentIdToUpdate}) {
+  void createInvestment({int? idToUpdate}) {
     var viewState = getViewState();
 
     if (!viewState.isValid()) {
@@ -38,10 +38,10 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     final double? irr = viewState.irr;
     final DateTime? maturityDate = viewState.maturityDate;
 
-    if (investmentIdToUpdate != null) {
+    if (idToUpdate != null) {
       _investmentService
           .update(
-              id: investmentIdToUpdate,
+              id: idToUpdate,
               description: description,
               name: name,
               value: value,

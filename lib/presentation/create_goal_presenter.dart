@@ -14,7 +14,7 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
   })  : _goalService = goalService ?? GoalService(),
         super(CreateGoalViewState());
 
-  void createGoal({int? goalIdToUpdate}) {
+  void createGoal({int? idToUpdate}) {
     var viewState = getViewState();
 
     if (!viewState.isValid()) {
@@ -29,10 +29,10 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
     final double inflation = viewState.inflation;
     final GoalImportance importance = viewState.importance;
 
-    if (goalIdToUpdate != null) {
+    if (idToUpdate != null) {
       _goalService
           .update(
-              id: goalIdToUpdate,
+              id: idToUpdate,
               name: name,
               description: description,
               amount: amount,

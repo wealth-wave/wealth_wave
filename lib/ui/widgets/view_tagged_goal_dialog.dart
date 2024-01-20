@@ -51,9 +51,7 @@ class _TaggedGoalsPage extends PageState<TaggedGoalsViewState,
                     onPressed: () {
                       showTagGoalDialog(
                               context: context,
-                              goalId: taggedGoalVO.id,
-                              investmentId: widget.investmentId,
-                              sharePercentage: taggedGoalVO.splitPercentage)
+                              investmentId: widget.investmentId)
                           .then((value) => presenter.fetchTaggedInvestment());
                     },
                   ),

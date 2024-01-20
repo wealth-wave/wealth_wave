@@ -3,34 +3,23 @@ import 'package:flutter/services.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/tag_investment_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
-Future<void> showTagInvestmentDialog({
-  required final BuildContext context,
-  required final int goalId,
-  final int? idToUpdate,
-  final int? investmentId,
-  final double? sharePercentage,
-}) {
+Future<void> showTagInvestmentDialog(
+    {required final BuildContext context,
+    required final int goalId,
+    final int? idToUpdate}) {
   return showDialog(
       context: context,
-      builder: (context) => _TagInvestmentDialog(
-          idToUpdate: idToUpdate,
-          goalId: goalId,
-          investmentId: investmentId,
-          sharePercentage: sharePercentage));
+      builder: (context) =>
+          _TagInvestmentDialog(idToUpdate: idToUpdate, goalId: goalId));
 }
 
 class _TagInvestmentDialog extends StatefulWidget {
   final int goalId;
   final int? idToUpdate;
-  final int? investmentId;
-  final double? sharePercentage;
 
-  const _TagInvestmentDialog(
-      {required this.goalId,
-      this.idToUpdate,
-      this.investmentId,
-      this.sharePercentage});
+  const _TagInvestmentDialog({required this.goalId, this.idToUpdate});
 
   @override
   State<_TagInvestmentDialog> createState() => _TagInvestmentState();
@@ -44,24 +33,17 @@ class _TagInvestmentState extends PageState<TagInvestmentViewState,
   void initState() {
     super.initState();
 
-    final int? investmentId = widget.investmentId;
-    final double? sharePercentage = widget.sharePercentage;
+    final int? idToUpdate = widget.idToUpdate;
 
-    if (investmentId != null) {
-      presenter.onInvestmentSelected(investmentId);
+    if (idToUpdate != null) {
+      presenter.fetchGoalInvestment(idToUpdate: idToUpdate);
     }
-    if (sharePercentage != null) {
-      _valueController.text = sharePercentage.toString();
-    } else {
-      _valueController.text = '100';
-    }
-
     _valueController.addListener(() {
       presenter
           .onPercentageChanged(double.tryParse(_valueController.text) ?? 0);
     });
 
-    presenter.fetchInvesments();
+    presenter.fetchInvestments();
   }
 
   @override
@@ -69,6 +51,10 @@ class _TagInvestmentState extends PageState<TagInvestmentViewState,
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onInvestmentTagged?.consume((_) {
         Navigator.of(context).pop();
+      });
+
+      snapshot.onInvestmentTagLoaded?.consume((_) {
+        _valueController.text = formatDecimal(snapshot.sharePercentage);
       });
     });
 
@@ -111,7 +97,7 @@ class _TagInvestmentState extends PageState<TagInvestmentViewState,
           ElevatedButton(
             onPressed: snapshot.isValid()
                 ? () {
-                    presenter.tagInvestment();
+                    presenter.tagInvestment(idToUpdate: widget.idToUpdate);
                   }
                 : null,
             child: widget.idToUpdate != null

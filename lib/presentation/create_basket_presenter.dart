@@ -17,7 +17,7 @@ class CreateBasketPresenter extends Presenter<CreateBasketViewState> {
         .then((basket) => _setBasket(basket));
   }
 
-  void createBasket({final int? basketId}) {
+  void createBasket({final int? idToUpdate}) {
     var viewState = getViewState();
 
     if (!viewState.isValid()) {
@@ -27,9 +27,9 @@ class CreateBasketPresenter extends Presenter<CreateBasketViewState> {
     final String name = viewState.name;
     final String description = viewState.description;
 
-    if (basketId != null) {
+    if (idToUpdate != null) {
       _basketApi
-          .update(id: basketId, name: name, description: description)
+          .update(id: idToUpdate, name: name, description: description)
           .then((_) => updateViewState(
               (viewState) => viewState.onBasketCreated = SingleEvent(null)));
     } else {

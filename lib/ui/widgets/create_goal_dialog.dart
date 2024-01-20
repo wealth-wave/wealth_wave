@@ -43,7 +43,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
     _amountController.text = formatToCurrency(viewState.amount);
     _currentDateController.text = formatDate(viewState.date);
     _targetDateController.text = formatDate(viewState.targetDate);
-    _inflationController.text = viewState.inflation.toString();
+    _inflationController.text = formatDecimal(viewState.inflation);
 
     int? goalIdToUpdate = widget.goalIdToUpdate;
     if (goalIdToUpdate != null) {
@@ -91,7 +91,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
         _amountController.text = formatToCurrency(snapshot.amount);
         _currentDateController.text = formatDate(snapshot.date);
         _targetDateController.text = formatDate(snapshot.targetDate);
-        _inflationController.text = snapshot.inflation.toString();
+        _inflationController.text = formatToCurrency(snapshot.inflation);
       });
     });
 
@@ -158,7 +158,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
               controller: _inflationController,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: const InputDecoration(
-                  hintText: 'Inflation (0 - 100)',
+                  labelText: 'Inflation %',
                   border: OutlineInputBorder()),
             ),
             const SizedBox(height: AppDimen.defaultPadding),
@@ -213,7 +213,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
         FilledButton(
           onPressed: snapshot.isValid()
               ? () {
-                  presenter.createGoal(goalIdToUpdate: widget.goalIdToUpdate);
+                  presenter.createGoal(idToUpdate: widget.goalIdToUpdate);
                 }
               : null,
           child: widget.goalIdToUpdate == null

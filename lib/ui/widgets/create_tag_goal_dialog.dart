@@ -3,34 +3,24 @@ import 'package:flutter/services.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/tag_goal_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showTagGoalDialog({
   required final BuildContext context,
   required final int investmentId,
   final int? idToUpdate,
-  final int? goalId,
-  final double? sharePercentage,
 }) {
   return showDialog(
       context: context,
-      builder: (context) => _TagGoalDialog(
-          goalId: goalId,
-          idToUpdate: idToUpdate,
-          investmentId: investmentId,
-          sharePercentage: sharePercentage));
+      builder: (context) =>
+          _TagGoalDialog(idToUpdate: idToUpdate, investmentId: investmentId));
 }
 
 class _TagGoalDialog extends StatefulWidget {
   final int investmentId;
   final int? idToUpdate;
-  final int? goalId;
-  final double? sharePercentage;
 
-  const _TagGoalDialog(
-      {required this.investmentId,
-      this.idToUpdate,
-      this.goalId,
-      this.sharePercentage});
+  const _TagGoalDialog({required this.investmentId, this.idToUpdate});
 
   @override
   State<_TagGoalDialog> createState() => _TagInvestmentState();
@@ -44,16 +34,9 @@ class _TagInvestmentState
   void initState() {
     super.initState();
 
-    final int? goalId = widget.goalId;
-    final double? sharePercentage = widget.sharePercentage;
-
-    if (goalId != null) {
-      presenter.onGoalSelected(goalId);
-    }
-    if (sharePercentage != null) {
-      _valueController.text = sharePercentage.toString();
-    } else {
-      _valueController.text = '100';
+    final int? idToUpdate = widget.idToUpdate;
+    if (idToUpdate != null) {
+      presenter.loadTaggedGoal(id: idToUpdate);
     }
 
     _valueController.addListener(() {
@@ -69,6 +52,9 @@ class _TagInvestmentState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onGoalTagged?.consume((_) {
         Navigator.of(context).pop();
+      });
+      snapshot.onGoalTagLoaded?.consume((_) {
+        _valueController.text = formatDecimal(snapshot.sharePercentage);
       });
     });
 

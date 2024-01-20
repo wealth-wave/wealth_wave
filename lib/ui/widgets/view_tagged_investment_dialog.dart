@@ -53,9 +53,7 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
                       showTagInvestmentDialog(
                               context: context,
                               idToUpdate: taggedInvestment.id,
-                              goalId: widget.goalId,
-                              investmentId: taggedInvestment.id,
-                              sharePercentage: taggedInvestment.split)
+                              goalId: widget.goalId)
                           .then((value) => presenter.fetchTaggedInvestment());
                     },
                   ),

@@ -94,9 +94,7 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
           ElevatedButton(
             onPressed: snapshot.isValid()
                 ? () {
-                    presenter.createSip(
-                        investmentId: widget.investmentId,
-                        sipIdToUpdate: widget.sipIdToUpdate);
+                    presenter.createSip(idToUpdate: widget.sipIdToUpdate);
                   }
                 : null,
             child: widget.sipIdToUpdate != null

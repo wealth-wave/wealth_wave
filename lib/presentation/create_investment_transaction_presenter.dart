@@ -19,7 +19,7 @@ class CreateInvestmentTransactionPresenter
         _transactionService = transactionService ?? TransactionService(),
         super(CreateTransactionViewState());
 
-  void createTransaction({final int? transactionIdToUpdate}) {
+  void createTransaction({final int? idToUpdate}) {
     var viewState = getViewState();
 
     if (!viewState.isValid()) {
@@ -31,10 +31,10 @@ class CreateInvestmentTransactionPresenter
     final DateTime investedDate = viewState.investedDate;
 
     _investmentService.getBy(id: _investmentId).then((investment) {
-      if (transactionIdToUpdate != null) {
+      if (idToUpdate != null) {
         investment
             .updateTransaction(
-                transactionId: transactionIdToUpdate,
+                transactionId: idToUpdate,
                 description: description,
                 amount: amount,
                 createdOn: investedDate)

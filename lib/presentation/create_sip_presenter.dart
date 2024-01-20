@@ -19,7 +19,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
         _sipService = sipService ?? SipService(),
         super(CreateSipViewState());
 
-  void createSip({required final int investmentId, final int? sipIdToUpdate}) {
+  void createSip({final int? idToUpdate}) {
     var viewState = getViewState();
 
     if (!viewState.isValid()) {
@@ -33,10 +33,10 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     final SipFrequency frequency = viewState.frequency;
 
     _investmentService.getBy(id: _investmentId).then((investment) {
-      if (sipIdToUpdate != null) {
+      if (idToUpdate != null) {
         investment
             .updateSip(
-                sipId: sipIdToUpdate,
+                sipId: idToUpdate,
                 description: description,
                 amount: amount,
                 startDate: startDate,

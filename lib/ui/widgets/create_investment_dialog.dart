@@ -38,12 +38,15 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     super.initState();
 
     final viewState = presenter.getViewState();
+    final irr = viewState.irr;
+    final value = viewState.value;
     _nameController.text = viewState.name;
     _descriptionController.text = viewState.description;
-    _irrController.text = viewState.irr?.toString() ?? '';
-    _valueController.text = viewState.value?.toString() ?? '';
-    _valueUpdatedDateController.text =
-        viewState.valueUpdatedAt != null ? formatDate(viewState.valueUpdatedAt!) : '';
+    _irrController.text = irr != null ? formatDecimal(irr) : '';
+    _valueController.text = value != null ? formatToCurrency(value) : '';
+    _valueUpdatedDateController.text = viewState.valueUpdatedAt != null
+        ? formatDate(viewState.valueUpdatedAt!)
+        : '';
 
     int? investmentIdToUpdate = widget.investmentIdToUpdate;
     if (investmentIdToUpdate != null) {
@@ -82,11 +85,13 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
       });
 
       snapshot.onInvestmentFetched?.consume((_) {
+        final value = snapshot.value;
         final DateTime? valueUpdatedAt = snapshot.valueUpdatedAt;
+        final irr = snapshot.irr;
         _nameController.text = snapshot.name;
         _descriptionController.text = snapshot.description;
-        _irrController.text = snapshot.irr?.toString() ?? '';
-        _valueController.text = snapshot.value?.toString() ?? '';
+        _irrController.text = irr != null ? formatDecimal(irr) : '';
+        _valueController.text = value != null ? formatToCurrency(value) : '';
         _valueUpdatedDateController.text =
             valueUpdatedAt != null ? formatDate(valueUpdatedAt) : '';
       });
@@ -220,7 +225,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
             onPressed: snapshot.isValid()
                 ? () {
                     presenter.createInvestment(
-                        investmentIdToUpdate: widget.investmentIdToUpdate);
+                        idToUpdate: widget.investmentIdToUpdate);
                   }
                 : null,
             child: widget.investmentIdToUpdate != null

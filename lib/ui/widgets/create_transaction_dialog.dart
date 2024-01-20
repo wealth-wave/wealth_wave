@@ -96,7 +96,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
             onPressed: snapshot.isValid()
                 ? () {
                     presenter.createTransaction(
-                        transactionIdToUpdate: widget._transactionIdToUpdate);
+                        idToUpdate: widget._transactionIdToUpdate);
                   }
                 : null,
             child: widget._transactionIdToUpdate != null
