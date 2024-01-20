@@ -4,9 +4,9 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/investments_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
-import 'package:wealth_wave/ui/widgets/sips_dialog.dart';
-import 'package:wealth_wave/ui/widgets/tagged_goal_dialog.dart';
-import 'package:wealth_wave/ui/widgets/transactions_dialog.dart';
+import 'package:wealth_wave/ui/widgets/view_sips_dialog.dart';
+import 'package:wealth_wave/ui/widgets/view_tagged_goal_dialog.dart';
+import 'package:wealth_wave/ui/widgets/view_transactions_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 class InvestmentsPage extends StatefulWidget {

@@ -8,8 +8,7 @@ String formatDate(DateTime date) {
   }
 }
 
-String formatToPercentage(double value) {
-  double percentage = value * 100;
+String formatToPercentage(double percentage) {
   return percentage == percentage.round()
       ? '${percentage.round()}%'
       : '${percentage.toStringAsFixed(2)}%';
@@ -23,8 +22,17 @@ String formatToCurrency(double value) {
   return NumberFormat.currency().format(value);
 }
 
-double parseCurrency(String value) {
-  return NumberFormat.currency().parse(value).toDouble();
+double? parseCurrency(String value) {
+  try {
+    final num number = NumberFormat.currency().parse(value);
+    if (number.isFinite) {
+      return number.toDouble();
+    } else {
+      return null;
+    }
+  } catch (e) {
+    return null;
+  }
 }
 
 DateTime? parseDate(String date) {

@@ -4,6 +4,8 @@ import 'package:wealth_wave/contract/sip_frequency.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/create_sip_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/ui/custom/currency_text_input_formatter.dart';
+import 'package:wealth_wave/ui/custom/date_text_input_formatter.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showCreateSipDialog(
@@ -45,7 +47,7 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
     }
 
     _valueController.addListener(() {
-      presenter.onAmountChanged(double.tryParse(_valueController.text) ?? 0);
+      presenter.onAmountChanged(parseCurrency(_valueController.text) ?? 0);
     });
 
     _descriptionController.addListener(() {
@@ -93,6 +95,9 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _descriptionController,
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[^a-zA-Z0-9\s]'))
+              ],
               decoration: const InputDecoration(
                   labelText: 'Description', border: OutlineInputBorder()),
             ),
@@ -100,7 +105,7 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _valueController,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              inputFormatters: [CurrencyTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Amount', border: OutlineInputBorder()),
             ),
@@ -108,9 +113,7 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _startDateController,
-              inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
-              ],
+              inputFormatters: [DateTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Start Date (DD-MM-YYYY)',
                   border: OutlineInputBorder()),
@@ -119,9 +122,7 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _endDateController,
-              inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
-              ],
+              inputFormatters: [DateTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'End Date (DD-MM-YYYY)',
                   border: OutlineInputBorder()),

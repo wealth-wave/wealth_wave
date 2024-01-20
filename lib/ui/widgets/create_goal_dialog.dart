@@ -4,6 +4,8 @@ import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/create_goal_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/ui/custom/currency_text_input_formatter.dart';
+import 'package:wealth_wave/ui/custom/date_text_input_formatter.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showCreateGoalDialog(
@@ -39,9 +41,9 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
     if (goalIdToUpdate != null) {
       presenter.fetchGoal(id: goalIdToUpdate);
     } else {
-      _currentDateController.text = formatDate(DateTime.now()) ?? '';
+      _currentDateController.text = formatDate(DateTime.now());
       _targetDateController.text =
-          formatDate(DateTime.now().add(const Duration(days: 365))) ?? '';
+          formatDate(DateTime.now().add(const Duration(days: 365)));
     }
 
     _nameController.addListener(() {
@@ -53,7 +55,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
     });
 
     _amountController.addListener(() {
-      presenter.amountChanged(double.tryParse(_amountController.text) ?? 0);
+      presenter.amountChanged(parseCurrency(_amountController.text) ?? 0);
     });
 
     _inflationController.addListener(() {
@@ -115,7 +117,9 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
               textInputAction: TextInputAction.next,
               controller: _amountController,
               keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              inputFormatters: [
+                CurrencyTextInputFormatter()
+              ],
               decoration: const InputDecoration(
                   labelText: 'Amount', border: OutlineInputBorder()),
             ),
@@ -124,20 +128,20 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
               textInputAction: TextInputAction.next,
               controller: _currentDateController,
               inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
+                DateTextInputFormatter()
               ],
               decoration: const InputDecoration(
-                  labelText: 'Date (DD-MM-YYYY)', border: OutlineInputBorder()),
+                  labelText: 'Date (DD/MM/YYYY)', border: OutlineInputBorder()),
             ),
             const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _targetDateController,
               inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
+                DateTextInputFormatter()
               ],
               decoration: const InputDecoration(
-                  labelText: 'Target Date (DD-MM-YYYY)',
+                  labelText: 'Target Date (DD/MM/YYYY)',
                   border: OutlineInputBorder()),
             ),
             const SizedBox(height: AppDimen.defaultPadding),

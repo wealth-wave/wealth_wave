@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/tagged_goals_presenter.dart';
-import 'package:wealth_wave/ui/widgets/tag_goal_dialog.dart';
+import 'package:wealth_wave/ui/widgets/create_tag_goal_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showTaggedGoalDialog(
@@ -44,7 +44,7 @@ class _TaggedGoalsPage extends PageState<TaggedGoalsViewState,
                   snapshot.taggedGoalVOs.elementAt(index);
               return ListTile(
                 title: Text(
-                    '${formatToPercentage(taggedGoalVO.split / 100)} to ${taggedGoalVO.name}'),
+                    '${formatToPercentage(taggedGoalVO.splitPercentage)} to ${taggedGoalVO.name}'),
                 trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                   IconButton(
                     icon: const Icon(Icons.edit),
@@ -53,7 +53,7 @@ class _TaggedGoalsPage extends PageState<TaggedGoalsViewState,
                               context: context,
                               goalId: taggedGoalVO.id,
                               investmentId: widget.investmentId,
-                              sharePercentage: taggedGoalVO.split)
+                              sharePercentage: taggedGoalVO.splitPercentage)
                           .then((value) => presenter.fetchTaggedInvestment());
                     },
                   ),

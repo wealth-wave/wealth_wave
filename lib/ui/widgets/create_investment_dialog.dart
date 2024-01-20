@@ -51,7 +51,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     });
 
     _valueController.addListener(() {
-      presenter.valueChanged(double.tryParse(_valueController.text));
+      presenter.valueChanged(parseCurrency(_valueController.text));
     });
 
     _valueUpdatedDateController.addListener(() {
@@ -130,10 +130,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                       textInputAction: TextInputAction.next,
                       controller: _valueController,
                       keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        CurrencyTextInputFormatter()
-                      ],
+                      inputFormatters: [CurrencyTextInputFormatter()],
                       decoration: const InputDecoration(
                           labelText: 'Current Value',
                           border: OutlineInputBorder()),

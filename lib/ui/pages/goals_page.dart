@@ -4,7 +4,7 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/goals_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';
-import 'package:wealth_wave/ui/widgets/tagged_investment_dialog.dart';
+import 'package:wealth_wave/ui/widgets/view_tagged_investment_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 class GoalsPage extends StatefulWidget {

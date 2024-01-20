@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/tagged_investment_presenter.dart';
-import 'package:wealth_wave/ui/widgets/tag_investment_dialog.dart';
+import 'package:wealth_wave/ui/widgets/create_tag_investment_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showTaggedInvestmentDialog(
@@ -45,7 +45,7 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
                   snapshot.taggedInvestmentVOs.elementAt(index);
               return ListTile(
                 title: Text(
-                    '${formatToPercentage(taggedInvestment.split / 100)} of ${taggedInvestment.name}'),
+                    '${formatToPercentage(taggedInvestment.split)} of ${taggedInvestment.name}'),
                 trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                   IconButton(
                     icon: const Icon(Icons.edit),

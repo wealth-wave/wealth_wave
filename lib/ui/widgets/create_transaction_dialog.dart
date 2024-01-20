@@ -4,6 +4,8 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/domain/services/transaction_service.dart';
 import 'package:wealth_wave/presentation/create_investment_transaction_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/ui/custom/currency_text_input_formatter.dart';
+import 'package:wealth_wave/ui/custom/date_text_input_formatter.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showCreateTransactionDialog(
@@ -49,7 +51,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
     }
 
     _valueController.addListener(() {
-      presenter.onAmountChanged(double.tryParse(_valueController.text) ?? 0);
+      presenter.onAmountChanged(parseCurrency(_valueController.text) ?? 0);
     });
 
     _descriptionController.addListener(() {
@@ -97,6 +99,9 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _descriptionController,
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[^a-zA-Z0-9\s]'))
+              ],
               decoration: const InputDecoration(
                   labelText: 'Description', border: OutlineInputBorder()),
             ),
@@ -104,7 +109,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _valueController,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              inputFormatters: [CurrencyTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Amount', border: OutlineInputBorder()),
             ),
@@ -113,10 +118,10 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
               textInputAction: TextInputAction.next,
               controller: _valueUpdatedDateController,
               inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'[^0-9\-]'))
+                DateTextInputFormatter()
               ],
               decoration: const InputDecoration(
-                  labelText: 'Date (DD-MM-YYYY)', border: OutlineInputBorder()),
+                  labelText: 'Date (DD/MM/YYYY)', border: OutlineInputBorder()),
             ),
           ]),
         ));

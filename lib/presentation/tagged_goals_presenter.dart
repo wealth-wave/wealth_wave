@@ -49,7 +49,7 @@ class TagggedGoalVO {
   final DateTime maturityDate;
   final double inflation;
   final GoalImportance importance;
-  final double split;
+  final double splitPercentage;
 
   TagggedGoalVO(
       {required this.id,
@@ -60,7 +60,7 @@ class TagggedGoalVO {
       required this.maturityDate,
       required this.inflation,
       required this.importance,
-      required this.split});
+      required this.splitPercentage});
 
   static Future<TagggedGoalVO> from(
       {required final Goal goal, required final double split}) async {
@@ -73,6 +73,6 @@ class TagggedGoalVO {
         maturityDate: goal.maturityDate,
         inflation: goal.inflation,
         importance: goal.importance,
-        split: split));
+        splitPercentage: split));
   }
 }
