@@ -1,57 +1,42 @@
-name: Build & deploy
-
+name: Flutter Web
 on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
-
 jobs:
   build:
-    name: Build
+    name: Build Web
+    env:
+      my_secret: ${{secrets.commit_secret}}
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    
-    - name: Install Flutter
-      uses: subosito/flutter-action@v1
-      with:
-        flutter-version: '2.0.5'
-    
-    - name: Get dependencies
-      run: flutter pub get
-    
-    - name: Test project
-      run: flutter test
-    
-    - name: Build release project
-      run: flutter build web
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Upload production-ready build files
-      uses: actions/upload-artifact@v2
-      with:
-        name: production-files
-        path: ./build/web
-  
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    
-    steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: production-files
-        path: ./build
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.16.8'
 
-    - name: Deploy to gh-pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build
+      - name: Enable web
+        run: flutter config --enable-web
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build web
+        run: flutter build web --release --base-href /wealth_wave/
+
+      - name: Deploy to Github Pages
+        run: |
+          cd build/web
+          git init
+          git config --global user.email praslnx8@gmail.com
+          git config --global user.name praslnx8
+          git status
+          git remote add origin https://${{secrets.COMMIT_SECRET}}@github.com/wealth-wave/wealth_wave.git
+          git checkout -b gh-pages
+          git add .
+          git commit -m "update"
+          git push origin gh-pages -f

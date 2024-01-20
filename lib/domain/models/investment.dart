@@ -73,12 +73,17 @@ class Investment {
   Future<double> getValueOn(
       {required final DateTime date,
       bool considerFuturePayments = false}) async {
+    final maturityDate = this.maturityDate;
+    final futureDate = maturityDate != null && maturityDate.isBefore(date)
+        ? maturityDate
+        : date;
+
     final payments = await getTransactions().then((transactions) => transactions
         .map((transaction) => transaction.toPayment())
         .toList(growable: true));
     if (considerFuturePayments) {
       getSips().then((sips) => Future.wait(sips.map((sip) => sip
-          .getFuturePayment(till: date)
+          .getFuturePayment(till: futureDate)
           .then((futurePayments) => payments.addAll(futurePayments)))));
     }
 
@@ -90,12 +95,12 @@ class Investment {
           payments: payments, value: value, valueUpdatedOn: valueUpdatedOn);
       return _irrCalculator.calculateValueOnIRR(
           irr: irr,
-          futureDate: date,
+          futureDate: futureDate,
           currentValue: value,
           currentValueUpdatedOn: valueUpdatedOn);
     } else if (irr != null) {
       return _irrCalculator.calculateFutureValueOnIRR(
-          payments: payments, irr: irr, date: date);
+          payments: payments, irr: irr, date: futureDate);
     } else {
       throw Exception('Value and IRR are null');
     }
