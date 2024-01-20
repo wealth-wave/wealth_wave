@@ -39,10 +39,10 @@ void main() {
     test('calculateIRR value', () {
       final calculator = IRRCalculator();
       final value = calculator.calculateValueOnIRR(
-        value: 1000,
-        valueUpdatedOn: DateTime(2020, 1, 1),
+        currentValue: 1000,
+        currentValueUpdatedOn: DateTime(2020, 1, 1),
         irr: 10,
-        date: DateTime(2022, 1, 1),
+        futureDate: DateTime(2022, 1, 1),
       );
 
       expect(value, closeTo(1210, 1)); // Expected IRR is 20%, tolerance is 1%

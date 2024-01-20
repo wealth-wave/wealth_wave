@@ -125,7 +125,10 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
     final double inflation = viewState.inflation;
 
     final double targetAmount = _irrCalculator.calculateValueOnIRR(
-        irr: inflation, date: targetDate, value: amount, valueUpdatedOn: date);
+        irr: inflation,
+        futureDate: targetDate,
+        currentValue: amount,
+        currentValueUpdatedOn: date);
 
     viewState.targetAmount = targetAmount;
   }

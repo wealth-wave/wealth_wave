@@ -35,9 +35,10 @@ class SIP {
 
   Future<List<Payment>> getFuturePayment({required final DateTime till}) {
     return Future(() {
-      List<Payment> payments = [];
+      final List<Payment> payments = [];
+      final DateTime? endDate = this.endDate;
       for (var i = executedTill ?? startDate;
-          i.isBefore(endDate ?? till);
+          i.isBefore(till) && (endDate == null || i.isBefore(endDate));
           i = i.add(getDuration(frequency))) {
         payments.add(Payment(amount: amount, createdOn: i));
       }

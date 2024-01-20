@@ -57,7 +57,7 @@ class Goal {
                 .getById(id: goalInvestment.investmentId)
                 .then((investmentDO) =>
                     Investment.from(investmentDO: investmentDO))
-                .then((investment) => investment.getTotalInvestedAmount())
+                .then((investment) => investment.getTotalInvestedAmount(till: maturityDate))
                 .then((amount) => calculatePercentageOfValue(
                     value: amount,
                     percentage: goalInvestment.splitPercentage)))))
@@ -69,9 +69,9 @@ class Goal {
   Future<double> getMaturityAmount() {
     return Future(() => _irrCalculator.calculateValueOnIRR(
         irr: inflation,
-        date: maturityDate,
-        value: amount,
-        valueUpdatedOn: amountUpdatedOn));
+        futureDate: maturityDate,
+        currentValue: amount,
+        currentValueUpdatedOn: amountUpdatedOn));
   }
 
   Future<double> getValueOnMaturity() async {

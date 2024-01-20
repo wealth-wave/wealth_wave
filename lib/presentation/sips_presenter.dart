@@ -27,7 +27,7 @@ class SipsPresenter extends Presenter<SipsViewState> {
   void deleteSip({required final int id}) {
     _investmentService
         .getBy(id: _investmentId)
-        .then((investment) => investment.deleteSIP(sipId: id))
+        .then((investment) => investment.deleteSIP(id: id))
         .then((_) => getSips());
   }
 }

@@ -5,7 +5,13 @@ import 'package:wealth_wave/domain/models/goal.dart';
 class GoalService {
   final GoalApi _goalApi;
 
-  GoalService({GoalApi? goalApi}) : _goalApi = goalApi ?? GoalApi();
+  factory GoalService() {
+    return _instance;
+  }
+
+  static final GoalService _instance = GoalService._();
+
+  GoalService._({GoalApi? goalApi}) : _goalApi = goalApi ?? GoalApi();
 
   Future<Goal> create({
     required final String name,

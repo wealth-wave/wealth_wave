@@ -4,7 +4,14 @@ import 'package:wealth_wave/domain/models/basket.dart';
 class BasketService {
   final BasketApi _basketApi;
 
-  BasketService({BasketApi? basketApi}) : _basketApi = basketApi ?? BasketApi();
+  factory BasketService() {
+    return _instance;
+  }
+
+  static final BasketService _instance = BasketService._();
+
+  BasketService._({BasketApi? basketApi})
+      : _basketApi = basketApi ?? BasketApi();
 
   Future<Basket> create(
       {required final String name, required final String description}) {

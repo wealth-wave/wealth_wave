@@ -54,12 +54,12 @@ class IRRCalculator {
 
   double calculateValueOnIRR({
     required final double irr,
-    required final DateTime date,
-    required final double value,
-    required final DateTime valueUpdatedOn,
+    required final DateTime futureDate,
+    required final double currentValue,
+    required final DateTime currentValueUpdatedOn,
   }) {
-    double years = valueUpdatedOn.difference(date).inDays / 365;
-    return value / pow(1 + irr / 100, years);
+    double years = currentValueUpdatedOn.difference(futureDate).inDays / 365;
+    return currentValue / pow(1 + irr / 100, years);
   }
 }
 

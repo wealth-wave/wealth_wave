@@ -54,15 +54,17 @@ class Investment {
         _goalApi = goalApi ?? GoalApi(),
         _sipApi = sipApi ?? SipApi();
 
-  Future<double> getTotalInvestedAmount() async {
+  Future<double> getTotalInvestedAmount({final DateTime? till}) async {
     return _transactionApi
         .getBy(investmentId: id)
         .then((transactions) => transactions
             .map((transactionDO) =>
                 Transaction.from(transactionDO: transactionDO))
             .toList())
-        .then((transactions) =>
-            transactions.map((transaction) => transaction.amount))
+        .then((transactions) => transactions
+            .where((transaction) =>
+                till == null || till.isAfter(transaction.createdOn))
+            .map((transaction) => transaction.amount))
         .then((amounts) => amounts.isNotEmpty
             ? amounts.reduce((value, element) => value + element)
             : 0);
@@ -87,7 +89,10 @@ class Investment {
       final irr = _irrCalculator.calculateIRR(
           payments: payments, value: value, valueUpdatedOn: valueUpdatedOn);
       return _irrCalculator.calculateValueOnIRR(
-          irr: irr, date: date, value: value, valueUpdatedOn: valueUpdatedOn);
+          irr: irr,
+          futureDate: date,
+          currentValue: value,
+          currentValueUpdatedOn: valueUpdatedOn);
     } else if (irr != null) {
       return _irrCalculator.calculateFutureValueOnIRR(
           payments: payments, irr: irr, date: date);
@@ -172,8 +177,11 @@ class Investment {
             .then((_) => sip.performSipTransactions().then((_) => sip)));
   }
 
-  Future<void> deleteSIP({required final int sipId}) async {
-    return _sipApi.delete(id: sipId).then((count) => {});
+  Future<void> deleteSIP({required final int id}) async {
+    return _transactionApi
+        .deleteBy(sipId: id)
+        .then((_) => _sipApi.deleteBy(id: id))
+        .then((_) => {});
   }
 
   Future<Transaction> createTransaction(

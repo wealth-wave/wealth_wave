@@ -1,12 +1,27 @@
 import 'package:wealth_wave/api/apis/investment_api.dart';
+import 'package:wealth_wave/api/apis/sip_api.dart';
+import 'package:wealth_wave/api/apis/transaction_api.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 
 class InvestmentService {
   final InvestmentApi _investmentApi;
+  final TransactionApi _transactionApi;
+  final SipApi _sipApi;
 
-  InvestmentService({final InvestmentApi? investmentApi})
-      : _investmentApi = investmentApi ?? InvestmentApi();
+  factory InvestmentService() {
+    return _instance;
+  }
+
+  static final InvestmentService _instance = InvestmentService._();
+
+  InvestmentService._(
+      {final InvestmentApi? investmentApi,
+      final TransactionApi? transactionApi,
+      final SipApi? sipApi})
+      : _investmentApi = investmentApi ?? InvestmentApi(),
+        _transactionApi = transactionApi ?? TransactionApi(),
+        _sipApi = sipApi ?? SipApi();
 
   Future<Investment> create(
       {required final String name,
@@ -75,6 +90,9 @@ class InvestmentService {
   }
 
   Future<void> deleteBy({required final int id}) {
-    return _investmentApi.deleteBy(id: id);
+    return _transactionApi
+        .deleteBy(investmentId: id)
+        .then((_) => _sipApi.deleteBy(investmentId: id))
+        .then((_) => _investmentApi.deleteBy(id: id));
   }
 }

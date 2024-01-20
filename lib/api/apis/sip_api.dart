@@ -67,7 +67,7 @@ class SipApi {
             executedTill: const Value.absent()));
   }
 
-  Future<int> delete({final int? id, final int? investmentId}) async {
+  Future<int> deleteBy({final int? id, final int? investmentId}) async {
     if (id != null) {
       return (_db.delete(_db.sipTable)..where((t) => t.id.equals(id))).go();
     } else if (investmentId != null) {

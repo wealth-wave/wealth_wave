@@ -4,7 +4,13 @@ import 'package:wealth_wave/domain/models/transaction.dart';
 class TransactionService {
   final TransactionApi _transactionApi;
 
-  TransactionService({final TransactionApi? transactionApi})
+  factory TransactionService() {
+    return _instance;
+  }
+
+  static final TransactionService _instance = TransactionService._();
+
+  TransactionService._({final TransactionApi? transactionApi})
       : _transactionApi = transactionApi ?? TransactionApi();
 
   Future<Transaction> getBy({required final int id}) async {
