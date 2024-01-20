@@ -1,6 +1,7 @@
 # Wealth Wave
 
 Investment Portfolio and Wealth Management App
+https://wealth-wave.github.io/wealth_wave/
 
 ## Setup
 
