@@ -75,21 +75,19 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
             });
           },
         ),
-        body: Expanded(
-          child: Builder(
-            builder: (context) {
-              switch (_selectedIndex) {
-                case 0:
-                  return const InvestmentsPage();
-                case 1:
-                  return const GoalsPage();
-                case 2:
-                  return const BasketsPage();
-                default:
-                  return Container();
-              }
-            },
-          ),
+        body: Builder(
+          builder: (context) {
+            switch (_selectedIndex) {
+              case 0:
+                return const InvestmentsPage();
+              case 1:
+                return const GoalsPage();
+              case 2:
+                return const BasketsPage();
+              default:
+                return Container();
+            }
+          },
         ));
   }
 
