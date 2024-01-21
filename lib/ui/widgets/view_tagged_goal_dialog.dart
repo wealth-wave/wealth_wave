@@ -58,7 +58,7 @@ class _TaggedGoalsPage extends PageState<TaggedGoalsViewState,
                   IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {
-                      presenter.deleteTaggedInvestment(goalId: taggedGoalVO.id);
+                      presenter.deleteTaggedInvestment(id: taggedGoalVO.id);
                     },
                   )
                 ]),

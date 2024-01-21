@@ -112,9 +112,9 @@ class Goal {
         .then((goalInvestmentDO) => {});
   }
 
-  Future<void> deleteTaggedInvestment({required final int investmentId}) {
+  Future<void> deleteTaggedInvestment({required final int id}) {
     return _goalInvestmentApi
-        .deleteBy(goalId: id, investmentId: investmentId)
+        .deleteBy(id: id)
         .then((count) => {});
   }
 

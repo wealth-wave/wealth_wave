@@ -60,8 +60,7 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
                   IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {
-                      presenter.deleteTaggedInvestment(
-                          investmentId: taggedInvestment.id);
+                      presenter.deleteTaggedInvestment(id: taggedInvestment.id);
                     },
                   )
                 ]),

@@ -26,10 +26,10 @@ class TaggedGoalsPresenter extends Presenter<TaggedGoalsViewState> {
             }));
   }
 
-  void deleteTaggedInvestment({required final int goalId}) {
+  void deleteTaggedInvestment({required final int id}) {
     _investmentService
         .getBy(id: _investmentId)
-        .then((investment) => investment.deleteTaggedGoal(goalId: goalId))
+        .then((investment) => investment.deleteTaggedGoal(id: id))
         .then((value) => fetchTaggedInvestment());
   }
 }
