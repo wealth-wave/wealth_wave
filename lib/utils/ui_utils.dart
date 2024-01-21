@@ -19,7 +19,7 @@ String formatDecimal(double value) {
 }
 
 String formatToCurrency(double value) {
-  return NumberFormat.currency().format(value);
+  return NumberFormat.currency(symbol: '', decimalDigits: 2).format(value);
 }
 
 double? parseCurrency(String value) {

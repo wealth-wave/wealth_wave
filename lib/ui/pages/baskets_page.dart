@@ -59,34 +59,30 @@ class _BasketsPage
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(basketVO.name,
-                          style: Theme.of(context).textTheme.titleMedium),
-                      PopupMenuButton<int>(
-                        onSelected: (value) {
-                          if (value == 1) {
-                            showCreateBasketDialog(
-                                    basketIdTOUpdate: basketVO.id,
-                                    context: context)
-                                .then((value) => presenter.fetchBaskets());
-                          } else if (value == 2) {
-                            presenter.deleteBasket(id: basketVO.id);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          const PopupMenuItem(
-                            value: 1,
-                            child: Text('Edit'),
-                          ),
-                          const PopupMenuItem(
-                            value: 2,
-                            child: Text('Delete'),
-                          ),
-                        ],
+                  Expanded(
+                      child: Text(basketVO.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium)),
+                  PopupMenuButton<int>(
+                    onSelected: (value) {
+                      if (value == 1) {
+                        showCreateBasketDialog(
+                                basketIdTOUpdate: basketVO.id, context: context)
+                            .then((value) => presenter.fetchBaskets());
+                      } else if (value == 2) {
+                        presenter.deleteBasket(id: basketVO.id);
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 1,
+                        child: Text('Edit'),
+                      ),
+                      const PopupMenuItem(
+                        value: 2,
+                        child: Text('Delete'),
                       ),
                     ],
                   ),
@@ -107,7 +103,7 @@ class _BasketsPage
                     children: [
                       Text(formatToCurrency(basketVO.totalInvestedAmount),
                           style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Invested Value)',
+                      Text('(Invested)',
                           style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),

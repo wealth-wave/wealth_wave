@@ -64,75 +64,62 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(investmentVO.name,
-                          style: Theme.of(context).textTheme.titleMedium),
-                      Text('(${investmentVO.basketName})'),
-                      const Text(' | '),
-                      Text('${_getRiskLevel(investmentVO.riskLevel)} Risk',
-                          style: Theme.of(context).textTheme.labelSmall),
-                      PopupMenuButton<int>(
-                        onSelected: (value) {
-                          if (value == 1) {
-                            showCreateInvestmentDialog(
-                                    context: context,
-                                    investmentIdToUpdate: investmentVO.id)
-                                .then((value) => presenter.fetchInvestments());
-                          } else if (value == 2) {
-                            presenter.deleteInvestment(id: investmentVO.id);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          const PopupMenuItem(
-                            value: 1,
-                            child: Text('Edit'),
-                          ),
-                          const PopupMenuItem(
-                            value: 2,
-                            child: Text('Delete'),
-                          ),
-                        ],
+                  Expanded(
+                      flex: 1,
+                      child: Text(investmentVO.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium)),
+                  _infoToolTip(investmentVO, context),
+                  PopupMenuButton<int>(
+                    onSelected: (value) {
+                      if (value == 1) {
+                        showCreateInvestmentDialog(
+                                context: context,
+                                investmentIdToUpdate: investmentVO.id)
+                            .then((value) => presenter.fetchInvestments());
+                      } else if (value == 2) {
+                        presenter.deleteInvestment(id: investmentVO.id);
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 1,
+                        child: Text('Edit'),
+                      ),
+                      const PopupMenuItem(
+                        value: 2,
+                        child: Text('Delete'),
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          showSipsDialog(
-                                  context: context,
-                                  investmentId: investmentVO.id)
-                              .then((value) => presenter.fetchInvestments());
-                        },
-                        child: Text(
-                            '${investmentVO.sipCount} sips'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          showTransactionsDialog(
-                                  context: context,
-                                  investmentId: investmentVO.id)
-                              .then((value) => presenter.fetchInvestments());
-                        },
-                        child: Text(
-                            '${investmentVO.transactionCount} transactions'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          showTaggedGoalDialog(
-                                  context: context,
-                                  investmentId: investmentVO.id)
-                              .then((value) => presenter.fetchInvestments());
-                        },
-                        child: Text('${investmentVO.goalCount} tagged goals'),
-                      ),
-                    ],
-                  )
+                  const Spacer(flex: 1),
+                  TextButton(
+                    onPressed: () {
+                      showSipsDialog(
+                              context: context, investmentId: investmentVO.id)
+                          .then((value) => presenter.fetchInvestments());
+                    },
+                    child: Text('${investmentVO.sipCount} sips'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      showTransactionsDialog(
+                              context: context, investmentId: investmentVO.id)
+                          .then((value) => presenter.fetchInvestments());
+                    },
+                    child: Text('${investmentVO.transactionCount} tx'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      showTaggedGoalDialog(
+                              context: context, investmentId: investmentVO.id)
+                          .then((value) => presenter.fetchInvestments());
+                    },
+                    child: Text('${investmentVO.goalCount} goals'),
+                  ),
                 ],
               ),
               Row(
@@ -143,7 +130,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                     children: [
                       Text(formatToCurrency(investmentVO.investedValue),
                           style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Invested Amount)',
+                      Text('(Invested)',
                           style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),
@@ -152,7 +139,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                     children: [
                       Text(formatToPercentage(investmentVO.irr),
                           style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Growth Per Year)',
+                      Text('(IRR)',
                           style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),
@@ -161,6 +148,8 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                     children: [
                       Text(formatToCurrency(investmentVO.currentValue),
                           style: Theme.of(context).textTheme.bodyMedium),
+                      Text('(Value)',
+                          style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),
                 ],
@@ -168,6 +157,25 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
             ],
           ),
         ));
+  }
+
+  Tooltip _infoToolTip(InvestmentVO investmentVO, BuildContext context) {
+    final description = investmentVO.description;
+    final basketName = investmentVO.basketName;
+    final List<Widget> widgets = [];
+    if (description?.isNotEmpty == true) {
+      widgets.add(Text(description ?? '',
+          style: Theme.of(context).textTheme.labelSmall));
+    }
+    if (basketName != null) {
+      widgets.add(Text('Basket: $basketName',
+          style: Theme.of(context).textTheme.labelSmall));
+    }
+    widgets.add(Text('Risk: ${_getRiskLevel(investmentVO.riskLevel)}',
+        style: Theme.of(context).textTheme.labelSmall));
+    return Tooltip(
+        richMessage: WidgetSpan(child: Column(children: widgets)),
+        child: const Icon(Icons.info));
   }
 
   String _getRiskLevel(RiskLevel riskLevel) {

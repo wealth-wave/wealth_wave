@@ -53,51 +53,42 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
             ),
           ],
         ),
-        body: SafeArea(
-          child: Row(
-            children: [
-              GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isExtended = !_isExtended;
-                    });
-                  },
-                  child: NavigationRail(
-                      extended: _isExtended,
-                      onDestinationSelected: (value) {
-                        setState(() {
-                          _selectedIndex = value;
-                        });
-                      },
-                      destinations: const [
-                        NavigationRailDestination(
-                            icon: Icon(Icons.monetization_on),
-                            label: Text('Investment')),
-                        NavigationRailDestination(
-                            icon: Icon(Icons.bookmark), label: Text('Goals')),
-                        NavigationRailDestination(
-                            icon: Icon(Icons.local_offer),
-                            label: Text('Baskets')),
-                      ],
-                      selectedIndex: _selectedIndex)),
-              const VerticalDivider(thickness: 1, width: 1),
-              Expanded(
-                child: Builder(
-                  builder: (context) {
-                    switch (_selectedIndex) {
-                      case 0:
-                        return const InvestmentsPage();
-                      case 1:
-                        return const GoalsPage();
-                      case 2:
-                        return const BasketsPage();
-                      default:
-                        return Container();
-                    }
-                  },
-                ),
-              )
-            ],
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.monetization_on),
+              label: 'Investments',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.flag),
+              label: 'Goals',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_basket),
+              label: 'Baskets',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+        ),
+        body: Expanded(
+          child: Builder(
+            builder: (context) {
+              switch (_selectedIndex) {
+                case 0:
+                  return const InvestmentsPage();
+                case 1:
+                  return const GoalsPage();
+                case 2:
+                  return const BasketsPage();
+                default:
+                  return Container();
+              }
+            },
           ),
         ));
   }
