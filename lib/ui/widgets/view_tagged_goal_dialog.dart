@@ -40,7 +40,7 @@ class _TaggedGoalsPage extends PageState<TaggedGoalsViewState,
             shrinkWrap: true,
             itemCount: snapshot.taggedGoalVOs.length,
             itemBuilder: (context, index) {
-              TagggedGoalVO taggedGoalVO =
+              TaggedGoalVO taggedGoalVO =
                   snapshot.taggedGoalVOs.elementAt(index);
               return ListTile(
                 title: Text(

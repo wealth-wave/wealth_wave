@@ -41,7 +41,7 @@ class _SipsPage extends PageState<SipsViewState, _SipsDialog, SipsPresenter> {
             shrinkWrap: true,
             itemCount: snapshot.sipVOs.length,
             itemBuilder: (context, index) {
-              SIPVO sipVO = snapshot.sipVOs[index];
+              SipVO sipVO = snapshot.sipVOs[index];
               return ListTile(
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

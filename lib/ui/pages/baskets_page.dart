@@ -110,7 +110,7 @@ class _BasketsPage
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('${basketVO.totalInvesments}',
+                      Text('${basketVO.totalInvestments}',
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('(Investments)',
                           style: Theme.of(context).textTheme.labelSmall),

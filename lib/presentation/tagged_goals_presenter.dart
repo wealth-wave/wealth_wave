@@ -19,7 +19,7 @@ class TaggedGoalsPresenter extends Presenter<TaggedGoalsViewState> {
         .getBy(id: _investmentId)
         .then((investment) => investment.getGoals())
         .then((taggedGoals) => Future.wait(taggedGoals.entries.toList().map(
-            (taggedGoal) => TagggedGoalVO.from(
+            (taggedGoal) => TaggedGoalVO.from(
                 goal: taggedGoal.key, split: taggedGoal.value))))
         .then((taggedGoalVOs) => updateViewState((viewState) {
               viewState.taggedGoalVOs = taggedGoalVOs;
@@ -35,12 +35,12 @@ class TaggedGoalsPresenter extends Presenter<TaggedGoalsViewState> {
 }
 
 class TaggedGoalsViewState {
-  List<TagggedGoalVO> taggedGoalVOs = [];
+  List<TaggedGoalVO> taggedGoalVOs = [];
 
   TaggedGoalsViewState();
 }
 
-class TagggedGoalVO {
+class TaggedGoalVO {
   final int id;
   final String name;
   final String? description;
@@ -51,7 +51,7 @@ class TagggedGoalVO {
   final GoalImportance importance;
   final double splitPercentage;
 
-  TagggedGoalVO(
+  TaggedGoalVO(
       {required this.id,
       required this.name,
       required this.description,
@@ -62,9 +62,9 @@ class TagggedGoalVO {
       required this.importance,
       required this.splitPercentage});
 
-  static Future<TagggedGoalVO> from(
+  static Future<TaggedGoalVO> from(
       {required final Goal goal, required final double split}) async {
-    return Future.value(TagggedGoalVO(
+    return Future.value(TaggedGoalVO(
         id: goal.id,
         name: goal.name,
         description: goal.description,

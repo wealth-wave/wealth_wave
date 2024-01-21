@@ -18,7 +18,7 @@ class SipsPresenter extends Presenter<SipsViewState> {
     _investmentService
         .getBy(id: _investmentId)
         .then((investment) => investment.getSips())
-        .then((sips) => Future.wait(sips.map((sip) => SIPVO.from(sip: sip))))
+        .then((sips) => Future.wait(sips.map((sip) => SipVO.from(sip: sip))))
         .then((sipVOs) => updateViewState((viewState) {
               viewState.sipVOs = sipVOs;
             }));
@@ -33,10 +33,10 @@ class SipsPresenter extends Presenter<SipsViewState> {
 }
 
 class SipsViewState {
-  List<SIPVO> sipVOs = [];
+  List<SipVO> sipVOs = [];
 }
 
-class SIPVO {
+class SipVO {
   final int id;
   final int investmentId;
   final String? description;
@@ -45,7 +45,7 @@ class SIPVO {
   final DateTime? endDate;
   final SipFrequency frequency;
 
-  SIPVO(
+  SipVO(
       {required this.id,
       required this.investmentId,
       required this.description,
@@ -54,9 +54,9 @@ class SIPVO {
       required this.endDate,
       required this.frequency});
 
-  static Future<SIPVO> from({required final SIP sip}) async {
+  static Future<SipVO> from({required final SIP sip}) async {
     final DateTime? endDate = sip.endDate;
-    return SIPVO(
+    return SipVO(
         id: sip.id,
         investmentId: sip.investmentId,
         description: sip.description,

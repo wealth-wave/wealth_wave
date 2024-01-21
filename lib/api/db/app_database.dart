@@ -157,9 +157,9 @@ class AppDatabase extends _$AppDatabase {
     await transaction(() async {
       for (var entry in backup.entries) {
         var tableName = entry.key;
-        var tableDatas = entry.value;
+        var tableDataList = entry.value;
 
-        for (var tableData in tableDatas) {
+        for (var tableData in tableDataList) {
           final String columnsString =
               tableData.keys.where((key) => tableData[key] != null).join(', ');
           final String valuesString = tableData.keys

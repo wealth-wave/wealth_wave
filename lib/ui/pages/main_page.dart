@@ -17,7 +17,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
   var _selectedIndex = 0;
-  var _isExtended = true;
 
   @override
   Widget buildWidget(BuildContext context, MainViewState snapshot) {
