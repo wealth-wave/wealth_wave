@@ -1,9 +1,7 @@
-import 'package:wealth_wave/api/apis/goal_investment_api.dart';
-import 'package:wealth_wave/api/apis/investment_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
-import 'package:wealth_wave/domain/models/irr_calculator.dart';
+import 'package:wealth_wave/domain/services/irr_calculator.dart';
 import 'package:wealth_wave/utils/utils.dart';
 
 class Goal {
@@ -15,10 +13,7 @@ class Goal {
   final DateTime maturityDate;
   final double inflation;
   final GoalImportance importance;
-
-  final GoalInvestmentApi _goalInvestmentApi;
-  final InvestmentApi _investmentApi;
-  final IRRCalculator _irrCalculator;
+  final Map<Investment, double> taggedInvestments;
 
   Goal(
       {required this.id,
@@ -29,133 +24,50 @@ class Goal {
       required this.inflation,
       required this.amountUpdatedOn,
       required this.importance,
-      final GoalInvestmentApi? goalInvestmentApi,
-      final InvestmentApi? investmentApi,
-      final IRRCalculator? irrCalculator})
-      : _goalInvestmentApi = goalInvestmentApi ?? GoalInvestmentApi(),
-        _investmentApi = investmentApi ?? InvestmentApi(),
-        _irrCalculator = irrCalculator ?? IRRCalculator();
+      required this.taggedInvestments});
 
-  Future<Map<Investment, double>> getInvestments() async {
-    return _goalInvestmentApi
-        .getBy(goalId: id)
-        .then((goalInvestments) => Future.wait(goalInvestments.map(
-            (goalInvestment) => _investmentApi
-                .getById(id: goalInvestment.investmentId)
-                .then((investmentDO) =>
-                    Investment.from(investmentDO: investmentDO))
-                .then((investment) =>
-                    MapEntry(investment, goalInvestment.splitPercentage)))))
-        .then((entries) => Map.fromEntries(entries));
-  }
+  double get investedAmount => taggedInvestments.entries
+      .map((taggedInvestment) => calculatePercentageOfValue(
+          value:
+              taggedInvestment.key.getTotalInvestedAmount(till: maturityDate),
+          percentage: taggedInvestment.value))
+      .toList()
+      .fold(0.0, (value, element) => value + element);
 
-  Future<double> getInvestedAmount() async {
-    return _goalInvestmentApi
-        .getBy(goalId: id)
-        .then((goalInvestments) => Future.wait(goalInvestments.map(
-            (goalInvestment) => _investmentApi
-                .getById(id: goalInvestment.investmentId)
-                .then((investmentDO) =>
-                    Investment.from(investmentDO: investmentDO))
-                .then((investment) => investment.getTotalInvestedAmount(till: maturityDate))
-                .then((amount) => calculatePercentageOfValue(
-                    value: amount,
-                    percentage: goalInvestment.splitPercentage)))))
-        .then((amounts) => amounts.isNotEmpty
-            ? amounts.reduce((value, element) => value + element)
-            : 0);
-  }
+  double get maturityAmount => IRRCalculator().calculateValueOnIRR(
+      irr: inflation,
+      futureDate: maturityDate,
+      currentValue: amount,
+      currentValueUpdatedOn: amountUpdatedOn);
 
-  Future<double> getMaturityAmount() {
-    return Future(() => _irrCalculator.calculateValueOnIRR(
-        irr: inflation,
-        futureDate: maturityDate,
-        currentValue: amount,
-        currentValueUpdatedOn: amountUpdatedOn));
-  }
+  double get valueOnMaturity => taggedInvestments.entries
+      .map((taggedInvestment) => calculatePercentageOfValue(
+          value: taggedInvestment.key
+              .getValueOn(date: maturityDate, considerFuturePayments: true),
+          percentage: taggedInvestment.value))
+      .toList()
+      .fold(0.0, (value, element) => value + element);
 
-  Future<double> getValueOnMaturity() async {
-    return _goalInvestmentApi
-        .getBy(goalId: id)
-        .then((goalInvestments) => Future.wait(goalInvestments.map(
-            (goalInvestment) => _investmentApi
-                .getById(id: goalInvestment.investmentId)
-                .then((investmentDO) =>
-                    Investment.from(investmentDO: investmentDO))
-                .then((investment) => investment.getValueOn(
-                    date: maturityDate, considerFuturePayments: true))
-                .then((amount) => calculatePercentageOfValue(
-                    value: amount,
-                    percentage: goalInvestment.splitPercentage)))))
-        .then((amounts) => amounts.isNotEmpty
-            ? amounts.reduce((value, element) => value + element)
-            : 0);
-  }
+  double get irr => taggedInvestments.entries
+      .map((taggedInvestment) => calculatePercentageOfValue(
+          value: taggedInvestment.key.getIRR(),
+          percentage: taggedInvestment.value))
+      .toList()
+      .fold(0.0, (value, element) => value + element);
 
-  Future<void> tagInvestment(
-      {required final int investmentId, required final double split}) async {
-    return _goalInvestmentApi
-        .create(goalId: id, investmentId: investmentId, splitPercentage: split)
-        .then((goalInvestmentDO) => {});
-  }
-
-  Future<void> updateTaggedInvestment(
-      {required final int id,
-      required final int investmentId,
-      required final double split}) async {
-    return _goalInvestmentApi
-        .update(
-            id: id,
-            goalId: id,
-            investmentId: investmentId,
-            splitPercentage: split)
-        .then((goalInvestmentDO) => {});
-  }
-
-  Future<void> deleteTaggedInvestment({required final int id}) {
-    return _goalInvestmentApi
-        .deleteBy(id: id)
-        .then((count) => {});
-  }
-
-  Future<double> getIRR() async {
-    var goalInvestments = await _goalInvestmentApi.getBy(goalId: id);
-    var investmentData = [];
-
-    for (var goalInvestment in goalInvestments) {
-      var investmentDO =
-          await _investmentApi.getById(id: goalInvestment.investmentId);
-      var investment = Investment.from(investmentDO: investmentDO);
-      var value = investment.value;
-      var irr = await investment.getIRR();
-
-      investmentData.add({
-        'value': value,
-        'irr': irr,
-      });
-    }
-
-    var totalValue = investmentData.fold(
-        0.0, (sum, investment) => sum + investment['value']!);
-    var weightedIRRSum = investmentData.fold(
-        0.0,
-        (sum, investment) =>
-            sum +
-            calculatePercentageOfValue(
-                value: investment['value']!, percentage: investment['irr']!));
-
-    return totalValue == 0 ? 0 : (weightedIRRSum * 100 / totalValue);
-  }
-
-  static Goal from({required final GoalDO goalDO}) {
+  static Goal from(
+      {required final GoalDO goalDO,
+      required final Map<Investment, double> taggedInvestments}) {
     return Goal(
-        id: goalDO.id,
-        name: goalDO.name,
-        description: goalDO.description,
-        amount: goalDO.amount,
-        maturityDate: goalDO.maturityDate,
-        inflation: goalDO.inflation,
-        amountUpdatedOn: goalDO.amountUpdatedOn,
-        importance: goalDO.importance);
+      id: goalDO.id,
+      name: goalDO.name,
+      description: goalDO.description,
+      amount: goalDO.amount,
+      maturityDate: goalDO.maturityDate,
+      inflation: goalDO.inflation,
+      amountUpdatedOn: goalDO.amountUpdatedOn,
+      importance: goalDO.importance,
+      taggedInvestments: taggedInvestments,
+    );
   }
 }

@@ -3,6 +3,14 @@ import 'dart:math';
 import 'package:wealth_wave/domain/models/payment.dart';
 
 class IRRCalculator {
+  factory IRRCalculator() {
+    return _instance;
+  }
+
+  static final IRRCalculator _instance = IRRCalculator._();
+
+  IRRCalculator._();
+
   double calculateIRR(
       {required final List<Payment> payments,
       required final double value,

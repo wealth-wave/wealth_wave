@@ -1,8 +1,15 @@
 import 'package:wealth_wave/api/apis/basket_api.dart';
+import 'package:wealth_wave/api/apis/investment_api.dart';
+import 'package:wealth_wave/api/apis/sip_api.dart';
+import 'package:wealth_wave/api/apis/transaction_api.dart';
+import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 
 class BasketService {
   final BasketApi _basketApi;
+  final InvestmentApi _investmentApi;
+  final SipApi _sipApi;
+  final TransactionApi _transactionApi;
 
   factory BasketService() {
     return _instance;
@@ -10,34 +17,56 @@ class BasketService {
 
   static final BasketService _instance = BasketService._();
 
-  BasketService._({BasketApi? basketApi})
-      : _basketApi = basketApi ?? BasketApi();
+  BasketService._(
+      {BasketApi? basketApi,
+      InvestmentApi? investmentApi,
+      SipApi? sipApi,
+      TransactionApi? transactionApi})
+      : _basketApi = basketApi ?? BasketApi(),
+        _investmentApi = investmentApi ?? InvestmentApi(),
+        _sipApi = sipApi ?? SipApi(),
+        _transactionApi = transactionApi ?? TransactionApi();
 
-  Future<Basket> create(
+  Future<void> create(
       {required final String name, required final String description}) {
     return _basketApi
         .create(name: name, description: description)
-        .then((basketId) => _basketApi.getBy(id: basketId))
-        .then((basketDO) => Basket.from(basketDO: basketDO));
+        .then((_) => {});
   }
 
   Future<List<Basket>> get() async {
-    return _basketApi.get().then((baskets) =>
-        baskets.map((basketDO) => Basket.from(basketDO: basketDO)).toList());
+    List<InvestmentDO> investmentDOs = await _investmentApi.get();
+    List<SipDO> sipDOs = await _sipApi.getAll();
+    List<TransactionDO> transactionDOs = await _transactionApi.getAll();
+    List<BasketDO> basketDOs = await _basketApi.get();
+    return basketDOs
+        .map((basketDO) => Basket.from(
+            basketDO: basketDO,
+            investmentDOs: investmentDOs,
+            sipDOs: sipDOs,
+            transactionDOs: transactionDOs))
+        .toList();
   }
 
-  Future<Basket> getBy({required final int id}) async {
-    return _basketApi.getBy(id: id).then((basketDO) {
-      return Basket.from(basketDO: basketDO);
-    });
+  Future<Basket> getById({required final int id}) async {
+    List<InvestmentDO> investmentDOs = await _investmentApi.get();
+    List<SipDO> sipDOs = await _sipApi.getAll();
+    List<TransactionDO> transactionDOs = await _transactionApi.getAll();
+    BasketDO basketDO = await _basketApi.getBy(id: id);
+    return Basket.from(
+        basketDO: basketDO,
+        investmentDOs: investmentDOs,
+        sipDOs: sipDOs,
+        transactionDOs: transactionDOs);
   }
 
-  Future<Basket> update(Basket basket) {
+  Future<void> update(
+      {required final int id,
+      required final String name,
+      required final String? description}) {
     return _basketApi
-        .update(
-            id: basket.id, name: basket.name, description: basket.description)
-        .then((value) => _basketApi.getBy(id: basket.id))
-        .then((basketDO) => Basket.from(basketDO: basketDO));
+        .update(id: id, name: name, description: description)
+        .then((_) => {});
   }
 
   Future<void> deleteBy({required final int id}) {

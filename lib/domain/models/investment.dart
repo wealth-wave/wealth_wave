@@ -1,14 +1,6 @@
-import 'package:wealth_wave/api/apis/basket_api.dart';
-import 'package:wealth_wave/api/apis/goal_api.dart';
-import 'package:wealth_wave/api/apis/goal_investment_api.dart';
-import 'package:wealth_wave/api/apis/sip_api.dart';
-import 'package:wealth_wave/api/apis/transaction_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
-import 'package:wealth_wave/contract/sip_frequency.dart';
-import 'package:wealth_wave/domain/models/basket.dart';
-import 'package:wealth_wave/domain/models/goal.dart';
-import 'package:wealth_wave/domain/models/irr_calculator.dart';
+import 'package:wealth_wave/domain/services/irr_calculator.dart';
 import 'package:wealth_wave/domain/models/payment.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
@@ -23,13 +15,10 @@ class Investment {
   final DateTime? valueUpdatedOn;
   final DateTime? maturityDate;
   final int? basketId;
-
-  final TransactionApi _transactionApi;
-  final IRRCalculator _irrCalculator;
-  final BasketApi _basketApi;
-  final GoalInvestmentApi _goalInvestmentApi;
-  final GoalApi _goalApi;
-  final SipApi _sipApi;
+  final String? basketName;
+  final int goalsCount;
+  final List<Transaction> transactions;
+  final List<Sip> sips;
 
   Investment(
       {required this.id,
@@ -41,234 +30,76 @@ class Investment {
       required this.valueUpdatedOn,
       required this.basketId,
       required this.maturityDate,
-      final TransactionApi? transactionApi,
-      final IRRCalculator? irrCalculator,
-      final BasketApi? basketApi,
-      final GoalInvestmentApi? goalInvestmentApi,
-      final GoalApi? goalApi,
-      final SipApi? sipApi})
-      : _transactionApi = transactionApi ?? TransactionApi(),
-        _irrCalculator = irrCalculator ?? IRRCalculator(),
-        _basketApi = basketApi ?? BasketApi(),
-        _goalInvestmentApi = goalInvestmentApi ?? GoalInvestmentApi(),
-        _goalApi = goalApi ?? GoalApi(),
-        _sipApi = sipApi ?? SipApi();
+      required this.basketName,
+      required this.goalsCount,
+      required this.transactions,
+      required this.sips});
 
-  Future<double> getTotalInvestedAmount({final DateTime? till}) async {
-    return _transactionApi
-        .getBy(investmentId: id)
-        .then((transactions) => transactions
-            .map((transactionDO) =>
-                Transaction.from(transactionDO: transactionDO))
-            .toList())
-        .then((transactions) => transactions
-            .where((transaction) =>
-                till == null || till.isAfter(transaction.createdOn))
-            .map((transaction) => transaction.amount))
-        .then((amounts) => amounts.isNotEmpty
-            ? amounts.reduce((value, element) => value + element)
-            : 0);
+  double getTotalInvestedAmount({final DateTime? till}) {
+    return transactions
+        .where((transaction) =>
+            till == null || till.isAfter(transaction.createdOn))
+        .map((transaction) => transaction.amount)
+        .fold(0, (value, element) => value + element);
   }
 
-  Future<double> getValueOn(
-      {required final DateTime date,
-      bool considerFuturePayments = false}) async {
+  double getValueOn(
+      {required final DateTime date, bool considerFuturePayments = false}) {
     final maturityDate = this.maturityDate;
     final futureDate = maturityDate != null && maturityDate.isBefore(date)
         ? maturityDate
         : date;
 
-    final payments = await getTransactions().then((transactions) => transactions
-        .map((transaction) => transaction.toPayment())
-        .toList(growable: true));
+    final payments = transactions
+        .map((transaction) => Payment.fromTransaction(transaction))
+        .toList(growable: true);
     if (considerFuturePayments) {
-      getSips().then((sips) => Future.wait(sips.map((sip) => sip
-          .getFuturePayment(till: futureDate)
-          .then((futurePayments) => payments.addAll(futurePayments)))));
+      for (var sip in sips) {
+        payments.addAll(sip.getFuturePayment(till: futureDate));
+      }
     }
 
     final value = this.value;
     final valueUpdatedOn = this.valueUpdatedOn;
     final irr = this.irr;
     if (value != null && valueUpdatedOn != null) {
-      final irr = _irrCalculator.calculateIRR(
+      final irr = IRRCalculator().calculateIRR(
           payments: payments, value: value, valueUpdatedOn: valueUpdatedOn);
-      return _irrCalculator.calculateValueOnIRR(
+      return IRRCalculator().calculateValueOnIRR(
           irr: irr,
           futureDate: futureDate,
           currentValue: value,
           currentValueUpdatedOn: valueUpdatedOn);
     } else if (irr != null) {
-      return _irrCalculator.calculateFutureValueOnIRR(
+      return IRRCalculator().calculateFutureValueOnIRR(
           payments: payments, irr: irr, date: futureDate);
     } else {
       throw Exception('Value and IRR are null');
     }
   }
 
-  Future<List<Transaction>> getTransactions() async {
-    return _transactionApi.getBy(investmentId: id).then((transactions) =>
-        transactions
-            .map((transactionDO) =>
-                Transaction.from(transactionDO: transactionDO))
-            .toList());
-  }
-
-  Future<Basket?> getBasket() async {
-    if (basketId != null) {
-      return _basketApi
-          .getBy(id: basketId!)
-          .then((basketDO) => Basket.from(basketDO: basketDO));
-    }
-    return null;
-  }
-
-  Future<Map<Goal, double>> getGoals() async {
-    return _goalInvestmentApi
-        .getBy(goalId: id)
-        .then((goalInvestments) => Future.wait(goalInvestments.map(
-            (goalInvestment) => _goalApi
-                .getBy(id: goalInvestment.goalId)
-                .then((goalDO) => Goal.from(goalDO: goalDO))
-                .then(
-                    (goal) => MapEntry(goal, goalInvestment.splitPercentage)))))
-        .then((entries) => Map.fromEntries(entries));
-  }
-
-  Future<List<SIP>> getSips() async {
-    return _sipApi.getBy(investmentId: id).then(
-        (sips) => Future.wait(sips.map((sipDO) => SIP.from(sipDO: sipDO))));
-  }
-
-  Future<SIP> createSip(
-      {required final String? description,
-      required final double amount,
-      required final DateTime startDate,
-      required final DateTime? endDate,
-      required final SipFrequency frequency}) async {
-    return _sipApi
-        .create(
-            investmentId: id,
-            description: description,
-            amount: amount,
-            startDate: startDate,
-            endDate: endDate,
-            frequency: frequency)
-        .then((id) => _sipApi.getById(id: id))
-        .then((sipDO) => SIP.from(sipDO: sipDO))
-        .then((sip) => sip.performSipTransactions().then((_) => sip));
-  }
-
-  Future<SIP> updateSip(
-      {required final int sipId,
-      required final String? description,
-      required final double amount,
-      required final DateTime startDate,
-      required final DateTime? endDate,
-      required final SipFrequency frequency}) async {
-    return _sipApi
-        .update(
-            id: sipId,
-            investmentId: id,
-            description: description,
-            amount: amount,
-            startDate: startDate,
-            endDate: endDate,
-            frequency: frequency)
-        .then((count) => _sipApi.getById(id: sipId))
-        .then((sipDO) => SIP.from(sipDO: sipDO))
-        .then((sip) => sip
-            .deleteTransactions()
-            .then((_) => sip.performSipTransactions().then((_) => sip)));
-  }
-
-  Future<void> deleteSIP({required final int id}) async {
-    return _transactionApi
-        .deleteBy(sipId: id)
-        .then((_) => _sipApi.deleteBy(id: id))
-        .then((_) => {});
-  }
-
-  Future<Transaction> createTransaction(
-      {required final String? description,
-      required final double amount,
-      required final DateTime createdOn}) async {
-    return _transactionApi
-        .create(
-            investmentId: id,
-            description: description,
-            amount: amount,
-            createdOn: createdOn)
-        .then((id) => _transactionApi.getById(id: id))
-        .then(
-            (transactionDO) => Transaction.from(transactionDO: transactionDO));
-  }
-
-  Future<Transaction> updateTransaction(
-      {required final int transactionId,
-      required final String? description,
-      required final double amount,
-      required final DateTime createdOn}) async {
-    return _transactionApi
-        .update(
-            id: transactionId,
-            investmentId: id,
-            description: description,
-            amount: amount,
-            createdOn: createdOn)
-        .then((count) => _transactionApi.getById(id: transactionId))
-        .then(
-            (transactionDO) => Transaction.from(transactionDO: transactionDO));
-  }
-
-  Future<void> deleteTransaction({required final int id}) async {
-    return _transactionApi.deleteBy(id: id).then((count) => {});
-  }
-
-  Future<void> tagGoal(
-      {required final int goalId, required final double split}) async {
-    return _goalInvestmentApi
-        .create(goalId: goalId, investmentId: id, splitPercentage: split)
-        .then((goalInvestmentDO) => {});
-  }
-
-  Future<void> updateTaggedGoal(
-      {required final int id,
-      required final int goalId,
-      required final double split}) async {
-    return _goalInvestmentApi
-        .update(
-            id: id, goalId: goalId, investmentId: id, splitPercentage: split)
-        .then((goalInvestmentDO) => {});
-  }
-
-  Future<void> deleteTaggedGoal({required final int id}) {
-    return _goalInvestmentApi
-        .deleteBy(id: id)
-        .then((count) => {});
-  }
-
-  Future<double> getIRR() async {
+  double getIRR() {
     final irr = this.irr;
+    final value = this.value;
+    final valueUpdatedOn = this.valueUpdatedOn;
     if (irr != null) {
-      return Future(() => irr);
+      return irr;
     } else if (value != null && valueUpdatedOn != null) {
-      List<Payment> payments = await getTransactions().then((transactions) =>
-          transactions
-              .map((transaction) => transaction.toPayment())
-              .toList(growable: true));
+      List<Payment> payments = transactions
+          .map((transaction) => Payment.fromTransaction(transaction))
+          .toList(growable: true);
 
-      return getValueOn(date: DateTime.now()).then((valueOn) =>
-          _irrCalculator.calculateIRR(
-              payments: payments,
-              value: value!,
-              valueUpdatedOn: valueUpdatedOn!));
+      return IRRCalculator().calculateIRR(
+          payments: payments, value: value, valueUpdatedOn: valueUpdatedOn);
     } else {
-      return Future.error('IRR is null');
+      throw Exception('Value and IRR are null');
     }
   }
 
-  static Investment from({required final InvestmentDO investmentDO}) {
+  factory Investment.from(
+      {required final InvestmentDO investmentDO,
+      required final List<TransactionDO> transactionsDOs,
+      required final List<SipDO> sipDOs}) {
     return Investment(
         id: investmentDO.id,
         name: investmentDO.name,
@@ -278,6 +109,13 @@ class Investment {
         value: investmentDO.value,
         valueUpdatedOn: investmentDO.valueUpdatedOn,
         basketId: investmentDO.basketId,
-        maturityDate: investmentDO.maturityDate);
+        maturityDate: investmentDO.maturityDate,
+        basketName: investmentDO.basketName,
+        goalsCount: investmentDO.taggedGoals ?? 0,
+        transactions: transactionsDOs
+            .map((transactionDO) =>
+                Transaction.from(transactionDO: transactionDO))
+            .toList(),
+        sips: sipDOs.map((sipDO) => Sip.from(sipDO: sipDO)).toList());
   }
 }

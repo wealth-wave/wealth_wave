@@ -96,7 +96,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                               context: context, goalId: goalVO.id)
                           .then((value) => presenter.fetchGoals());
                     },
-                    child: Text('${goalVO.investments.length} investments'),
+                    child: Text('${goalVO.taggedInvestmentCount} investments'),
                   ),
                 ],
               ),

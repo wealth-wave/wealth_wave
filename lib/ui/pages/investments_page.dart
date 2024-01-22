@@ -118,7 +118,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                               context: context, investmentId: investmentVO.id)
                           .then((value) => presenter.fetchInvestments());
                     },
-                    child: Text('${investmentVO.goalCount} goals'),
+                    child: Text('${investmentVO.taggedGoalCount} goals'),
                   ),
                 ],
               ),

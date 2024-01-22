@@ -30,26 +30,26 @@ class CreateInvestmentTransactionPresenter
     final double amount = viewState.amount;
     final DateTime investedDate = viewState.investedDate;
 
-    _investmentService.getBy(id: _investmentId).then((investment) {
-      if (idToUpdate != null) {
-        investment
-            .updateTransaction(
-                transactionId: idToUpdate,
-                description: description,
-                amount: amount,
-                createdOn: investedDate)
-            .then((_) => updateViewState((viewState) =>
-                viewState.onTransactionCreated = SingleEvent(null)));
-      } else {
-        investment
-            .createTransaction(
-                description: description,
-                amount: amount,
-                createdOn: investedDate)
-            .then((_) => updateViewState((viewState) =>
-                viewState.onTransactionCreated = SingleEvent(null)));
-      }
-    });
+    if (idToUpdate != null) {
+      _transactionService
+          .updateTransaction(
+              id: idToUpdate,
+              investmentId: _investmentId,
+              description: description,
+              amount: amount,
+              createdOn: investedDate)
+          .then((_) => updateViewState((viewState) =>
+              viewState.onTransactionCreated = SingleEvent(null)));
+    } else {
+      _transactionService
+          .createTransaction(
+              investmentId: _investmentId,
+              description: description,
+              amount: amount,
+              createdOn: investedDate)
+          .then((_) => updateViewState((viewState) =>
+              viewState.onTransactionCreated = SingleEvent(null)));
+    }
   }
 
   void onDescriptionChanged(String text) {
@@ -75,7 +75,7 @@ class CreateInvestmentTransactionPresenter
 
   void fetchTransaction({required int id}) {
     _transactionService
-        .getBy(id: id)
+        .getById(id: id)
         .then((transaction) => _setTransaction(transaction));
   }
 }

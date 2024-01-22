@@ -23,7 +23,7 @@ class InvestmentService {
         _transactionApi = transactionApi ?? TransactionApi(),
         _sipApi = sipApi ?? SipApi();
 
-  Future<Investment> create(
+  Future<void> create(
       {required final String name,
       required final String? description,
       required final int? basketId,
@@ -48,23 +48,33 @@ class InvestmentService {
             maturityDate: maturityDate,
             irr: irr,
             valueUpdatedOn: valueUpdatedOn)
-        .then((investmentId) => _investmentApi.getById(id: investmentId))
-        .then((investmentDO) => Investment.from(investmentDO: investmentDO));
+        .then((_) => {});
   }
 
   Future<List<Investment>> get() async {
-    return _investmentApi.get().then((investments) => investments
-        .map((investmentDO) => Investment.from(investmentDO: investmentDO))
-        .toList());
+    return _investmentApi.get().then((investments) => Future.wait(
+        investments.map((investmentEnrichedDO) => _sipApi
+            .getBy(investmentId: investmentEnrichedDO.id)
+            .then((sipDOs) => _transactionApi
+                .getBy(investmentId: investmentEnrichedDO.id)
+                .then((transactionDOs) => Investment.from(
+                    investmentDO: investmentEnrichedDO,
+                    transactionsDOs: transactionDOs,
+                    sipDOs: sipDOs))))));
   }
 
   Future<Investment> getBy({required final int id}) async {
-    return _investmentApi.getById(id: id).then((investmentDO) {
-      return Investment.from(investmentDO: investmentDO);
-    });
+    return _investmentApi.getById(id: id).then((investmentEnrichedDO) => _sipApi
+        .getBy(investmentId: investmentEnrichedDO.id)
+        .then((sipDOs) => _transactionApi
+            .getBy(investmentId: investmentEnrichedDO.id)
+            .then((transactionDOs) => Investment.from(
+                investmentDO: investmentEnrichedDO,
+                transactionsDOs: transactionDOs,
+                sipDOs: sipDOs))));
   }
 
-  Future<Investment> update(
+  Future<void> update(
       {required final int id,
       required final String name,
       required final String? description,
@@ -85,8 +95,7 @@ class InvestmentService {
             maturityDate: maturityDate,
             riskLevel: riskLevel,
             basketId: basketId)
-        .then((value) => _investmentApi.getById(id: id))
-        .then((investmentDO) => Investment.from(investmentDO: investmentDO));
+        .then((_) => {});
   }
 
   Future<void> deleteBy({required final int id}) {

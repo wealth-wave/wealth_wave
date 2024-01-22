@@ -25,18 +25,18 @@ class SipApi {
   }
 
   Future<List<SipDO>> getAll() async {
-    return (_db.select(_db.sipTable)
+    return (_db.select(_db.sipEnrichedView)
           ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
         .get();
   }
 
   Future<List<SipDO>> getBy({final int? investmentId}) async {
     if (investmentId == null) {
-      return (_db.select(_db.sipTable)
+      return (_db.select(_db.sipEnrichedView)
             ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
           .get();
     } else {
-      return (_db.select(_db.sipTable)
+      return (_db.select(_db.sipEnrichedView)
             ..where((t) => t.investmentId.equals(investmentId))
             ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
           .get();
@@ -44,7 +44,7 @@ class SipApi {
   }
 
   Future<SipDO> getById({required final int id}) async {
-    return (_db.select(_db.sipTable)..where((t) => t.id.equals(id)))
+    return (_db.select(_db.sipEnrichedView)..where((t) => t.id.equals(id)))
         .getSingle();
   }
 
