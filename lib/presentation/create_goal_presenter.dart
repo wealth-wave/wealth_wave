@@ -2,8 +2,8 @@ import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
-import 'package:wealth_wave/domain/models/irr_calculator.dart';
 import 'package:wealth_wave/domain/services/goal_service.dart';
+import 'package:wealth_wave/domain/services/irr_calculator.dart';
 
 class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
   final GoalService _goalService;
@@ -69,8 +69,8 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
 
   void amountChanged(double value) {
     updateViewState((viewState) {
-      _updateTargetAmount();
       viewState.amount = value;
+      _updateTargetAmount();
     });
   }
 
@@ -83,15 +83,15 @@ class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
 
   void targetDateChanged(DateTime date) {
     updateViewState((viewState) {
-      _updateTargetAmount();
       viewState.targetDate = date;
+      _updateTargetAmount();
     });
   }
 
   void inflationChanged(double value) {
     updateViewState((viewState) {
-      _updateTargetAmount();
       viewState.inflation = value;
+      _updateTargetAmount();
     });
   }
 

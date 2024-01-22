@@ -1,7 +1,5 @@
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
-import 'package:wealth_wave/domain/models/basket.dart';
-import 'package:wealth_wave/domain/models/goal.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
@@ -17,8 +15,9 @@ class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
   void fetchInvestments() {
     _investmentService
         .get()
-        .then((investments) => Future.wait(investments
-            .map((investment) => InvestmentVO.from(investment: investment))))
+        .then((investments) => investments
+            .map((investment) => InvestmentVO.from(investment: investment))
+            .toList())
         .then((investmentVOs) => updateViewState((viewState) {
               viewState.investmentVOs = investmentVOs;
             }));
@@ -44,15 +43,15 @@ class InvestmentVO {
   final double currentValue;
   final DateTime? valueUpdatedOn;
   final DateTime? maturityDate;
-  final Basket? basket;
-  final List<SIP> sips;
+  final int? basketId;
+  final String? basketName;
+  final List<Sip> sips;
   final List<Transaction> transactions;
-  final Map<Goal, double> goals;
+  final int taggedGoalCount;
 
-  String? get basketName => basket?.name;
   int get transactionCount => transactions.length;
+
   int get sipCount => sips.length;
-  int get goalCount => goals.length;
 
   InvestmentVO(
       {required this.id,
@@ -62,30 +61,31 @@ class InvestmentVO {
       required this.irr,
       required this.value,
       required this.valueUpdatedOn,
-      required this.basket,
+      required this.basketId,
+      required this.basketName,
       required this.investedValue,
       required this.currentValue,
       required this.maturityDate,
       required this.transactions,
       required this.sips,
-      required this.goals});
+      required this.taggedGoalCount});
 
-  static Future<InvestmentVO> from(
-      {required final Investment investment}) async {
+  factory InvestmentVO.from({required final Investment investment}) {
     return InvestmentVO(
         id: investment.id,
         name: investment.name,
         description: investment.description,
         riskLevel: investment.riskLevel,
-        irr: await investment.getIRR(),
+        irr: investment.getIRR(),
         value: investment.value,
-        investedValue: await investment.getTotalInvestedAmount(),
-        currentValue: await investment.getValueOn(date: DateTime.now()),
+        investedValue: investment.getTotalInvestedAmount(),
+        currentValue: investment.getValueOn(date: DateTime.now()),
         valueUpdatedOn: investment.valueUpdatedOn,
-        basket: await investment.getBasket(),
-        transactions: await investment.getTransactions(),
-        sips: await investment.getSips(),
-        goals: await investment.getGoals(),
+        basketId: investment.basketId,
+        basketName: investment.basketName,
+        transactions: investment.transactions,
+        sips: investment.sips,
+        taggedGoalCount: investment.goalsCount,
         maturityDate: investment.maturityDate);
   }
 }

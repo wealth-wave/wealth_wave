@@ -44,7 +44,7 @@ class _TaggedGoalsPage extends PageState<TaggedGoalsViewState,
                   snapshot.taggedGoalVOs.elementAt(index);
               return ListTile(
                 title: Text(
-                    '${formatToPercentage(taggedGoalVO.splitPercentage)} to ${taggedGoalVO.name}'),
+                    '${formatToPercentage(taggedGoalVO.split)} to ${taggedGoalVO.goalName}'),
                 trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                   IconButton(
                     icon: const Icon(Icons.edit),

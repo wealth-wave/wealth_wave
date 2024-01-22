@@ -1,33 +1,32 @@
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
-import 'package:wealth_wave/domain/services/investment_service.dart';
+import 'package:wealth_wave/domain/services/transaction_service.dart';
 
 class InvestmentTransactionsPresenter extends Presenter<TransactionsViewState> {
   final int _investmentId;
-  final InvestmentService _investmentService;
+  final TransactionService _transactionService;
 
   InvestmentTransactionsPresenter(
       {required final int investmentId,
-      final InvestmentService? investmentService})
+      final TransactionService? transactionService})
       : _investmentId = investmentId,
-        _investmentService = investmentService ?? InvestmentService(),
+        _transactionService = transactionService ?? TransactionService(),
         super(TransactionsViewState());
 
   void getTransactions() {
-    _investmentService
-        .getBy(id: _investmentId)
-        .then((investment) => investment.getTransactions())
-        .then((transactions) => Future.wait(transactions.map(
-            (transaction) => TransactionVO.from(transaction: transaction))))
+    _transactionService
+        .getBy(investmentId: _investmentId)
+        .then((transactions) => transactions
+            .map((transaction) => TransactionVO.from(transaction: transaction))
+            .toList())
         .then((transactions) => updateViewState((viewState) {
               viewState.transactions = transactions;
             }));
   }
 
   void deleteTransaction({required final int id}) {
-    _investmentService
-        .getBy(id: _investmentId)
-        .then((investment) => investment.deleteTransaction(id: id))
+    _transactionService
+        .deleteTransaction(id: id)
         .then((_) => getTransactions());
   }
 }
@@ -52,8 +51,7 @@ class TransactionVO {
       required this.amount,
       required this.createdOn});
 
-  static Future<TransactionVO> from(
-      {required final Transaction transaction}) async {
+  factory TransactionVO.from({required final Transaction transaction}) {
     return TransactionVO(
         id: transaction.id,
         investmentId: transaction.investmentId,

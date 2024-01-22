@@ -12,17 +12,19 @@ class GoalInvestmentApi {
       required final double splitPercentage}) async {
     return _db.into(_db.goalInvestmentTable).insert(
         GoalInvestmentTableCompanion.insert(
-            goalId: goalId, investmentId: investmentId, splitPercentage: splitPercentage));
+            goalId: goalId,
+            investmentId: investmentId,
+            splitPercentage: splitPercentage));
   }
 
   Future<List<GoalInvestmentDO>> getBy(
       {final int? goalId, final int? investmentId}) async {
     if (goalId != null) {
-      return (_db.select(_db.goalInvestmentTable)
+      return (_db.select(_db.goalInvestmentEnrichedView)
             ..where((t) => t.goalId.equals(goalId)))
           .get();
     } else if (investmentId != null) {
-      return (_db.select(_db.goalInvestmentTable)
+      return (_db.select(_db.goalInvestmentEnrichedView)
             ..where((t) => t.investmentId.equals(investmentId)))
           .get();
     }
@@ -30,7 +32,8 @@ class GoalInvestmentApi {
   }
 
   Future<GoalInvestmentDO> getById({required final int id}) async {
-    return (_db.select(_db.goalInvestmentTable)..where((t) => t.id.equals(id)))
+    return (_db.select(_db.goalInvestmentEnrichedView)
+          ..where((t) => t.id.equals(id)))
         .getSingle();
   }
 

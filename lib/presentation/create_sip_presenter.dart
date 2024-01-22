@@ -32,30 +32,30 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     final DateTime? endDate = viewState.endDate;
     final SipFrequency frequency = viewState.frequency;
 
-    _investmentService.getBy(id: _investmentId).then((investment) {
-      if (idToUpdate != null) {
-        investment
-            .updateSip(
-                sipId: idToUpdate,
-                description: description,
-                amount: amount,
-                startDate: startDate,
-                endDate: endDate,
-                frequency: frequency)
-            .then((_) => updateViewState(
-                (viewState) => viewState.onSipCreated = SingleEvent(null)));
-      } else {
-        investment
-            .createSip(
-                description: description,
-                amount: amount,
-                startDate: startDate,
-                endDate: endDate,
-                frequency: frequency)
-            .then((_) => updateViewState(
-                (viewState) => viewState.onSipCreated = SingleEvent(null)));
-      }
-    });
+    if (idToUpdate != null) {
+      _sipService
+          .updateSip(
+              sipId: idToUpdate,
+              description: description,
+              amount: amount,
+              startDate: startDate,
+              endDate: endDate,
+              frequency: frequency,
+              investmentId: _investmentId)
+          .then((_) => updateViewState(
+              (viewState) => viewState.onSipCreated = SingleEvent(null)));
+    } else {
+      _sipService
+          .createSip(
+              investmentId: _investmentId,
+              description: description,
+              amount: amount,
+              startDate: startDate,
+              endDate: endDate,
+              frequency: frequency)
+          .then((_) => updateViewState(
+              (viewState) => viewState.onSipCreated = SingleEvent(null)));
+    }
   }
 
   void onDescriptionChanged(String text) {
@@ -78,7 +78,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     updateViewState((viewState) => viewState.frequency = frequency);
   }
 
-  void _setSip(SIP sipToUpdate) {
+  void _setSip(Sip sipToUpdate) {
     updateViewState((viewState) {
       viewState.description = sipToUpdate.description ?? '';
       viewState.amount = sipToUpdate.amount;
@@ -90,7 +90,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
   }
 
   void fetchSip({required int id}) {
-    _sipService.getBy(id: id).then((sip) => _setSip(sip));
+    _sipService.getById(id: id).then((sip) => _setSip(sip));
   }
 }
 

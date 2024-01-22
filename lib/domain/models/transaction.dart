@@ -1,6 +1,5 @@
 import 'package:wealth_wave/api/apis/sip_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
-import 'package:wealth_wave/domain/models/payment.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 
 class Transaction {
@@ -23,15 +22,15 @@ class Transaction {
       final SipApi? sipApi})
       : _sipApi = sipApi ?? SipApi();
 
-  Future<SIP?> getSip() {
+  Future<Sip?> getSip() {
     if (sipId == null) {
       return Future.value(null);
     }
 
-    return _sipApi.getById(id: sipId!).then((sipDO) => SIP.from(sipDO: sipDO));
+    return _sipApi.getById(id: sipId!).then((sipDO) => Sip.from(sipDO: sipDO));
   }
 
-  static Transaction from({required final TransactionDO transactionDO}) {
+  factory Transaction.from({required final TransactionDO transactionDO}) {
     return Transaction(
         id: transactionDO.id,
         investmentId: transactionDO.investmentId,
@@ -39,9 +38,5 @@ class Transaction {
         description: transactionDO.description,
         amount: transactionDO.amount,
         createdOn: transactionDO.createdOn);
-  }
-
-  Payment toPayment() {
-    return Payment(amount: amount, createdOn: createdOn);
   }
 }

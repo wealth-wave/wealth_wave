@@ -13,9 +13,63 @@ class TransactionService {
   TransactionService._({final TransactionApi? transactionApi})
       : _transactionApi = transactionApi ?? TransactionApi();
 
-  Future<Transaction> getBy({required final int id}) async {
+  Future<Transaction> createTransaction(
+      {required final int investmentId,
+      required final String? description,
+      required final double amount,
+      final int? sipId,
+      required final DateTime createdOn}) async {
+    return _transactionApi
+        .create(
+            investmentId: investmentId,
+            description: description,
+            amount: amount,
+            sipId: sipId,
+            createdOn: createdOn)
+        .then((id) => _transactionApi.getById(id: id))
+        .then(
+            (transactionDO) => Transaction.from(transactionDO: transactionDO));
+  }
+
+  Future<Transaction> getById({required final int id}) async {
     return _transactionApi.getById(id: id).then((transactionDO) {
       return Transaction.from(transactionDO: transactionDO);
     });
+  }
+
+  Future<List<Transaction>> getBy({final int? investmentId}) async {
+    if (investmentId != null) {
+      return _transactionApi.getBy(investmentId: investmentId).then(
+          (transactions) => transactions
+              .map((transactionDO) =>
+                  Transaction.from(transactionDO: transactionDO))
+              .toList());
+    }
+
+    throw Exception("InvestmentId is required");
+  }
+
+  Future<Transaction> updateTransaction(
+      {required final int investmentId,
+      required final int id,
+      final int? sipId,
+      required final String? description,
+      required final double amount,
+      required final DateTime createdOn}) async {
+    return _transactionApi
+        .update(
+            id: id,
+            investmentId: investmentId,
+            description: description,
+            amount: amount,
+            sipId: sipId,
+            createdOn: createdOn)
+        .then((count) => _transactionApi.getById(id: id))
+        .then(
+            (transactionDO) => Transaction.from(transactionDO: transactionDO));
+  }
+
+  Future<void> deleteTransaction({required final int id}) async {
+    return _transactionApi.deleteBy(id: id).then((count) => {});
   }
 }

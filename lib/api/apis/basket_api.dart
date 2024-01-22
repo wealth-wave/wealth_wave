@@ -13,13 +13,13 @@ class BasketApi {
   }
 
   Future<List<BasketDO>> get() async {
-    return (_db.select(_db.basketTable)
+    return (_db.select(_db.basketEnrichedView)
           ..orderBy([(t) => OrderingTerm(expression: t.name)]))
         .get();
   }
 
   Future<BasketDO> getBy({required final int id}) async {
-    return (_db.select(_db.basketTable)..where((t) => t.id.equals(id)))
+    return (_db.select(_db.basketEnrichedView)..where((t) => t.id.equals(id)))
         .getSingle();
   }
 

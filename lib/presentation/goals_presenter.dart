@@ -1,7 +1,6 @@
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/services/goal_service.dart';
 
 class GoalsPresenter extends Presenter<GoalsViewState> {
@@ -40,7 +39,7 @@ class GoalVO {
   final double inflation;
   final double irr;
   final GoalImportance importance;
-  final Map<Investment, double> investments;
+  final int taggedInvestmentCount;
 
   double get yearsLeft => DateTime.now().difference(maturityDate).inDays / 365;
 
@@ -57,7 +56,7 @@ class GoalVO {
       required this.importance,
       required this.inflation,
       required this.irr,
-      required this.investments});
+      required this.taggedInvestmentCount});
 
   static Future<GoalVO> from({required final Goal goal}) async {
     return GoalVO(
@@ -66,11 +65,11 @@ class GoalVO {
         description: goal.description,
         importance: goal.importance,
         inflation: goal.inflation,
-        maturityAmount: await goal.getMaturityAmount(),
-        investedAmount: await goal.getInvestedAmount(),
+        maturityAmount: goal.maturityAmount,
+        investedAmount: goal.investedAmount,
         maturityDate: goal.maturityDate,
-        irr: await goal.getIRR(),
-        valueOnMaturity: await goal.getValueOnMaturity(),
-        investments: await goal.getInvestments());
+        irr: goal.irr,
+        valueOnMaturity: goal.valueOnMaturity,
+        taggedInvestmentCount: goal.taggedInvestments.length);
   }
 }

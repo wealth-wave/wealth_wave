@@ -26,13 +26,13 @@ class GoalApi {
   }
 
   Future<List<GoalDO>> get() async {
-    return (_db.select(_db.goalTable)
+    return (_db.select(_db.goalEnrichedView)
           ..orderBy([(t) => OrderingTerm.asc(t.maturityDate)]))
         .get();
   }
 
   Future<GoalDO> getBy({required final int id}) async {
-    return (_db.select(_db.goalTable)..where((t) => t.id.equals(id)))
+    return (_db.select(_db.goalEnrichedView)..where((t) => t.id.equals(id)))
         .getSingle();
   }
 

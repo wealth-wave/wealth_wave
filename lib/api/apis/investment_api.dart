@@ -29,25 +29,26 @@ class InvestmentApi {
   }
 
   Future<List<InvestmentDO>> get() async {
-    return (_db.select(_db.investmentTable)
+    return (_db.select(_db.investmentEnrichedView)
           ..orderBy([(t) => OrderingTerm.asc(t.name)]))
         .get();
   }
 
-  Future<List<InvestmentEnrichedDO>> getEnriched() async {
+  Future<List<InvestmentDO>> getEnriched() async {
     return (_db.select(_db.investmentEnrichedView)
           ..orderBy([(t) => OrderingTerm.asc(t.name)]))
         .get();
   }
 
   Future<InvestmentDO> getById({required final int id}) async {
-    return (_db.select(_db.investmentTable)..where((t) => t.id.equals(id)))
+    return (_db.select(_db.investmentEnrichedView)
+          ..where((t) => t.id.equals(id)))
         .getSingle();
   }
 
   Future<List<InvestmentDO>> getBy({final int? basketId}) async {
     if (basketId != null) {
-      return (_db.select(_db.investmentTable)
+      return (_db.select(_db.investmentEnrichedView)
             ..where((t) => t.basketId.equals(basketId)))
           .get();
     }

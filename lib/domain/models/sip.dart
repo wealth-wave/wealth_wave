@@ -6,7 +6,7 @@ import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/models/payment.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
 
-class SIP {
+class Sip {
   final int id;
   final int investmentId;
   final String? description;
@@ -16,10 +16,7 @@ class SIP {
   final SipFrequency frequency;
   final DateTime? executedTill;
 
-  final TransactionApi _transactionApi;
-  final InvestmentApi _investmentApi;
-
-  SIP(
+  Sip(
       {required this.id,
       required this.investmentId,
       required this.description,
@@ -27,89 +24,21 @@ class SIP {
       required this.startDate,
       required this.endDate,
       required this.frequency,
-      required this.executedTill,
-      final TransactionApi? transactionApi,
-      final InvestmentApi? investmentApi})
-      : _transactionApi = transactionApi ?? TransactionApi(),
-        _investmentApi = investmentApi ?? InvestmentApi();
+      required this.executedTill});
 
-  Future<List<Payment>> getFuturePayment({required final DateTime till}) {
-    return Future(() {
-      final List<Payment> payments = [];
-      final DateTime? endDate = this.endDate;
-      for (var i = executedTill ?? startDate;
-          i.isBefore(till) && (endDate == null || i.isBefore(endDate));
-          i = i.add(getDuration(frequency))) {
-        payments.add(Payment(amount: amount, createdOn: i));
-      }
-      return payments;
-    });
+  List<Payment> getFuturePayment({required final DateTime till}) {
+    final List<Payment> payments = [];
+    final DateTime? endDate = this.endDate;
+    for (var i = executedTill ?? startDate;
+        i.isBefore(till) && (endDate == null || i.isBefore(endDate));
+        i = i.add(getDuration(frequency))) {
+      payments.add(Payment(amount: amount, createdOn: i));
+    }
+    return payments;
   }
 
-  Future<List<Transaction>> getTransactions() {
-    return _transactionApi.getBy(sipId: id).then((transactions) => transactions
-        .map((transactionDO) => Transaction.from(transactionDO: transactionDO))
-        .toList());
-  }
-
-  Future<Investment> getInvestment() {
-    return _investmentApi
-        .getById(id: investmentId)
-        .then((investmentDO) => Investment.from(investmentDO: investmentDO));
-  }
-
-  Future<Transaction> createTransaction(
-      {required final String description,
-      required final double amount,
-      required final DateTime createdOn}) async {
-    return _transactionApi
-        .create(
-            investmentId: investmentId,
-            sipId: id,
-            description: description,
-            amount: amount,
-            createdOn: createdOn)
-        .then((id) => _transactionApi.getById(id: id))
-        .then(
-            (transactionDO) => Transaction.from(transactionDO: transactionDO));
-  }
-
-  Future<Transaction> updateTransactions(
-      {required final int transactionId,
-      required final String description,
-      required final double amount,
-      required final DateTime createdOn}) async {
-    return _transactionApi
-        .update(
-            id: transactionId,
-            investmentId: investmentId,
-            sipId: id,
-            description: description,
-            amount: amount,
-            createdOn: createdOn)
-        .then((count) => _transactionApi.getById(id: transactionId))
-        .then(
-            (transactionDO) => Transaction.from(transactionDO: transactionDO));
-  }
-
-  Future<void> deleteTransaction({required final int transactionId}) async {
-    return _transactionApi.deleteBy(id: transactionId).then((count) => {});
-  }
-
-  Future<void> deleteTransactions() async {
-    return _transactionApi.deleteBy(sipId: id).then((count) => {});
-  }
-
-  Future<void> performSipTransactions() {
-    return getFuturePayment(till: DateTime.now()).then((payments) =>
-        Future.wait(payments.map((payment) => createTransaction(
-            description: 'SIP',
-            amount: payment.amount,
-            createdOn: payment.createdOn))));
-  }
-
-  static Future<SIP> from({required final SipDO sipDO}) async {
-    return SIP(
+  factory Sip.from({required final SipDO sipDO}) {
+    return Sip(
         id: sipDO.id,
         investmentId: sipDO.investmentId,
         description: sipDO.description,

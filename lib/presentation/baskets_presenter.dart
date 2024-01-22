@@ -12,10 +12,8 @@ class BasketsPresenter extends Presenter<BasketsViewState> {
   void fetchBaskets() {
     _basketService
         .get()
-        .then((baskets) => Future.wait(baskets.map((basket) => Future.wait([
-              basket.getTotalInvestments(),
-              basket.getInvestedValue(),
-            ]).then((results) => BasketVO.from(basket: basket)))))
+        .then((baskets) =>
+            baskets.map((basket) => BasketVO.from(basket: basket)).toList())
         .then((basketVOs) =>
             updateViewState((viewState) => viewState.baskets = basketVOs));
   }
@@ -43,14 +41,12 @@ class BasketVO {
       required this.name,
       required this.description});
 
-  static Future<BasketVO> from({required final Basket basket}) async {
-    final double investedValue = await basket.getInvestedValue();
-    final int totalInvestments = await basket.getTotalInvestments();
+  factory BasketVO.from({required final Basket basket}) {
     return BasketVO(
         id: basket.id,
         name: basket.name,
         description: basket.description ?? '',
-        totalInvestedAmount: investedValue,
-        totalInvestments: totalInvestments);
+        totalInvestedAmount: basket.investedValue,
+        totalInvestments: basket.totalInvestment);
   }
 }

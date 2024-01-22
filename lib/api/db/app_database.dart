@@ -7,7 +7,7 @@ import 'package:wealth_wave/contract/sip_frequency.dart';
 
 part 'app_database.g.dart';
 
-@DataClassName('BasketDO')
+@DataClassName('BaseBasketDO')
 class BasketTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -16,7 +16,7 @@ class BasketTable extends Table {
   TextColumn get description => text().nullable().named('DESCRIPTION')();
 }
 
-@DataClassName('InvestmentDO')
+@DataClassName('BaseInvestmentDO')
 class InvestmentTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -40,7 +40,7 @@ class InvestmentTable extends Table {
   TextColumn get riskLevel => textEnum<RiskLevel>().named('RISK_LEVEL')();
 }
 
-@DataClassName('TransactionDO')
+@DataClassName('BaseTransactionDO')
 class TransactionTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -57,7 +57,7 @@ class TransactionTable extends Table {
   DateTimeColumn get createdOn => dateTime().named('CREATED_ON')();
 }
 
-@DataClassName('SipDO')
+@DataClassName('BaseSipDO')
 class SipTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -78,7 +78,7 @@ class SipTable extends Table {
       dateTime().nullable().named('EXECUTED_TILL')();
 }
 
-@DataClassName('GoalDO')
+@DataClassName('BaseGoalDO')
 class GoalTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -97,7 +97,7 @@ class GoalTable extends Table {
   TextColumn get importance => textEnum<GoalImportance>().named('IMPORTANCE')();
 }
 
-@DataClassName('GoalInvestmentDO')
+@DataClassName('BaseGoalInvestmentDO')
 class GoalInvestmentTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -110,6 +110,191 @@ class GoalInvestmentTable extends Table {
   RealColumn get splitPercentage => real().named('SPLIT_PERCENTAGE')();
 }
 
+@DataClassName('InvestmentDO')
+abstract class InvestmentEnrichedView extends View {
+  InvestmentTable get investment;
+
+  BasketTable get basket;
+
+  TransactionTable get transaction;
+
+  GoalInvestmentTable get goalInvestment;
+
+  SipTable get sip;
+
+  Expression<int> get basketId => basket.id;
+
+  Expression<String> get basketName => basket.name;
+
+  Expression<double> get totalInvestedAmount => transaction.amount.sum();
+
+  Expression<int> get totalTransactions => transaction.id.count();
+
+  Expression<int> get totalSips => sip.id.count();
+
+  Expression<int> get taggedGoals => goalInvestment.id.count();
+
+  @override
+  Query as() => select([
+        investment.id,
+        investment.name,
+        investment.description,
+        investment.riskLevel,
+        investment.maturityDate,
+        investment.irr,
+        investment.value,
+        investment.valueUpdatedOn,
+        basketId,
+        basketName,
+        totalInvestedAmount,
+        totalTransactions,
+        totalSips,
+        taggedGoals
+      ]).from(investment).join([
+        leftOuterJoin(basket, basket.id.equalsExp(investment.basketId)),
+        leftOuterJoin(
+            transaction, transaction.investmentId.equalsExp(investment.id)),
+        leftOuterJoin(sip, sip.investmentId.equalsExp(investment.id)),
+        leftOuterJoin(goalInvestment,
+            goalInvestment.investmentId.equalsExp(investment.id))
+      ])
+        ..groupBy([investment.id]);
+}
+
+@DataClassName('TransactionDO')
+abstract class TransactionEnrichedView extends View {
+  TransactionTable get transaction;
+
+  InvestmentTable get investment;
+
+  SipTable get sip;
+
+  Expression<String> get investmentName => investment.name;
+
+  Expression<String> get sipDescription => sip.description;
+
+  @override
+  Query as() => select([
+        transaction.id,
+        transaction.description,
+        transaction.investmentId,
+        transaction.sipId,
+        transaction.amount,
+        transaction.createdOn,
+        investmentName,
+        sipDescription,
+      ]).from(transaction).join([
+        innerJoin(
+            investment, investment.id.equalsExp(transaction.investmentId)),
+        leftOuterJoin(sip, sip.id.equalsExp(transaction.sipId)),
+      ]);
+}
+
+@DataClassName('SipDO')
+abstract class SipEnrichedView extends View {
+  SipTable get sip;
+
+  InvestmentTable get investment;
+
+  TransactionTable get transaction;
+
+  Expression<String> get investmentName => investment.name;
+
+  Expression<int> get transactionCount => transaction.id.count();
+
+  @override
+  Query as() => select([
+        sip.id,
+        sip.description,
+        sip.investmentId,
+        sip.amount,
+        sip.startDate,
+        sip.endDate,
+        sip.frequency,
+        sip.executedTill,
+        investmentName,
+        transactionCount,
+      ]).from(sip).join([
+        innerJoin(investment, investment.id.equalsExp(sip.investmentId)),
+        leftOuterJoin(transaction, transaction.sipId.equalsExp(sip.id)),
+      ]);
+}
+
+@DataClassName('BasketDO')
+abstract class BasketEnrichedView extends View {
+  BasketTable get basket;
+
+  InvestmentTable get investment;
+
+  TransactionTable get transaction;
+
+  Expression<int> get totalInvestmentCount => investment.id.count();
+
+  Expression<double> get investedAmount => transaction.amount.sum();
+
+  @override
+  Query as() => select([
+        basket.id,
+        basket.name,
+        basket.description,
+        totalInvestmentCount,
+      ]).from(basket).join([
+        leftOuterJoin(investment, investment.basketId.equalsExp(basket.id)),
+      ]);
+}
+
+@DataClassName('GoalInvestmentDO')
+abstract class GoalInvestmentEnrichedView extends View {
+  GoalInvestmentTable get goalInvestment;
+
+  InvestmentTable get investment;
+
+  GoalTable get goal;
+
+  Expression<String> get investmentName => investment.name;
+
+  Expression<String> get goalName => goal.name;
+
+  @override
+  Query as() => select([
+        goalInvestment.id,
+        goalInvestment.investmentId,
+        goalInvestment.goalId,
+        goalInvestment.splitPercentage,
+        investmentName,
+        goalName
+      ]).from(goalInvestment).join([
+        innerJoin(
+            investment, investment.id.equalsExp(goalInvestment.investmentId)),
+        innerJoin(goal, goal.id.equalsExp(goalInvestment.goalId)),
+      ]);
+}
+
+@DataClassName('GoalDO')
+abstract class GoalEnrichedView extends View {
+  GoalTable get goal;
+
+  GoalInvestmentTable get goalInvestment;
+
+  Expression<int> get taggedInvestmentCount => goalInvestment.id.count();
+
+  @override
+  Query as() => select([
+        goal.id,
+        goal.name,
+        goal.description,
+        goal.importance,
+        goal.maturityDate,
+        goal.amount,
+        goal.inflation,
+        goal.amountUpdatedOn,
+        taggedInvestmentCount
+      ]).from(goal).join([
+        leftOuterJoin(goalInvestment, goalInvestment.goalId.equalsExp(goal.id)),
+      ])
+        ..groupBy([goal.id]);
+}
+
 @DriftDatabase(tables: [
   BasketTable,
   InvestmentTable,
@@ -117,7 +302,14 @@ class GoalInvestmentTable extends Table {
   GoalTable,
   SipTable,
   GoalInvestmentTable,
-], views: [])
+], views: [
+  BasketEnrichedView,
+  InvestmentEnrichedView,
+  GoalInvestmentEnrichedView,
+  TransactionEnrichedView,
+  SipEnrichedView,
+  GoalEnrichedView
+])
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;
 

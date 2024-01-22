@@ -45,7 +45,7 @@ class _TaggedInvestmentPage extends PageState<TaggedInvestmentsViewState,
                   snapshot.taggedInvestmentVOs.elementAt(index);
               return ListTile(
                 title: Text(
-                    '${formatToPercentage(taggedInvestment.split)} of ${taggedInvestment.name}'),
+                    '${formatToPercentage(taggedInvestment.split)} of ${taggedInvestment.investmentName}'),
                 trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                   IconButton(
                     icon: const Icon(Icons.edit),

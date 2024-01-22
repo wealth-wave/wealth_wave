@@ -21,15 +21,21 @@ class TransactionApi {
             createdOn: createdOn));
   }
 
+  Future<List<TransactionDO>> getAll() {
+    return (_db.select(_db.transactionEnrichedView)
+          ..orderBy([(t) => OrderingTerm.desc(t.createdOn)]))
+        .get();
+  }
+
   Future<List<TransactionDO>> getBy(
       {final int? investmentId, final int? sipId}) async {
     if (investmentId != null) {
-      return (_db.select(_db.transactionTable)
+      return (_db.select(_db.transactionEnrichedView)
             ..where((t) => t.investmentId.equals(investmentId))
             ..orderBy([(t) => OrderingTerm.desc(t.createdOn)]))
           .get();
     } else if (sipId != null) {
-      return (_db.select(_db.transactionTable)
+      return (_db.select(_db.transactionEnrichedView)
             ..where((t) => t.sipId.equals(sipId))
             ..orderBy([(t) => OrderingTerm.desc(t.createdOn)]))
           .get();
@@ -39,7 +45,8 @@ class TransactionApi {
   }
 
   Future<TransactionDO> getById({required final int id}) async {
-    return (_db.select(_db.transactionTable)..where((t) => t.id.equals(id)))
+    return (_db.select(_db.transactionEnrichedView)
+          ..where((t) => t.id.equals(id)))
         .getSingle();
   }
 

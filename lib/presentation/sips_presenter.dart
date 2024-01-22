@@ -1,34 +1,28 @@
 import 'package:wealth_wave/contract/sip_frequency.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
-import 'package:wealth_wave/domain/services/investment_service.dart';
+import 'package:wealth_wave/domain/services/sip_service.dart';
 
 class SipsPresenter extends Presenter<SipsViewState> {
   final int _investmentId;
-  final InvestmentService _investmentService;
+  final SipService _sipService;
 
-  SipsPresenter(
-      {required final int investmentId,
-      final InvestmentService? investmentService})
+  SipsPresenter({required final int investmentId, final SipService? sipService})
       : _investmentId = investmentId,
-        _investmentService = investmentService ?? InvestmentService(),
+        _sipService = sipService ?? SipService(),
         super(SipsViewState());
 
   void getSips() {
-    _investmentService
-        .getBy(id: _investmentId)
-        .then((investment) => investment.getSips())
-        .then((sips) => Future.wait(sips.map((sip) => SipVO.from(sip: sip))))
+    _sipService
+        .getBy(investmentId: _investmentId)
+        .then((sips) => sips.map((sip) => SipVO.from(sip: sip)).toList())
         .then((sipVOs) => updateViewState((viewState) {
               viewState.sipVOs = sipVOs;
             }));
   }
 
   void deleteSip({required final int id}) {
-    _investmentService
-        .getBy(id: _investmentId)
-        .then((investment) => investment.deleteSIP(id: id))
-        .then((_) => getSips());
+    _sipService.deleteSIP(id: id).then((_) => getSips());
   }
 }
 
@@ -54,15 +48,12 @@ class SipVO {
       required this.endDate,
       required this.frequency});
 
-  static Future<SipVO> from({required final SIP sip}) async {
-    final DateTime? endDate = sip.endDate;
-    return SipVO(
-        id: sip.id,
-        investmentId: sip.investmentId,
-        description: sip.description,
-        amount: sip.amount,
-        startDate: sip.startDate,
-        endDate: endDate,
-        frequency: sip.frequency);
-  }
+  factory SipVO.from({required final Sip sip}) => SipVO(
+      id: sip.id,
+      investmentId: sip.investmentId,
+      description: sip.description,
+      amount: sip.amount,
+      startDate: sip.startDate,
+      endDate: sip.endDate,
+      frequency: sip.frequency);
 }

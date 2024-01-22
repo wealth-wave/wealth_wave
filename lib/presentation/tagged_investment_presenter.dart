@@ -1,36 +1,34 @@
-import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
-import 'package:wealth_wave/domain/services/goal_service.dart';
+import 'package:wealth_wave/domain/models/goal_investment_tag.dart';
+import 'package:wealth_wave/domain/services/goal_investment_service.dart';
 
 class TaggedInvestmentPresenter extends Presenter<TaggedInvestmentsViewState> {
   final int _goalId;
-  final GoalService _goalService;
+  final GoalInvestmentService _goalInvestmentService;
 
   TaggedInvestmentPresenter(
-      {required final int goalId, final GoalService? goalService})
+      {required final int goalId,
+      final GoalInvestmentService? goalInvestmentService})
       : _goalId = goalId,
-        _goalService = goalService ?? GoalService(),
+        _goalInvestmentService =
+            goalInvestmentService ?? GoalInvestmentService(),
         super(TaggedInvestmentsViewState());
 
   void fetchTaggedInvestment() {
-    _goalService
-        .getBy(id: _goalId)
-        .then((goal) => goal.getInvestments())
-        .then((taggedInvestments) => Future.wait(taggedInvestments.entries
-            .toList()
-            .map((taggedInvestmentEntry) => TaggedInvestmentVO.from(
-                investment: taggedInvestmentEntry.key,
-                split: taggedInvestmentEntry.value))))
+    _goalInvestmentService
+        .getBy(goalId: _goalId)
+        .then((taggedInvestments) => taggedInvestments
+            .map((taggedInvestment) =>
+                TaggedInvestmentVO.from(goalInvestmentTag: taggedInvestment))
+            .toList())
         .then((taggedInvestmentVOs) => updateViewState((viewState) {
               viewState.taggedInvestmentVOs = taggedInvestmentVOs;
             }));
   }
 
   void deleteTaggedInvestment({required final int id}) {
-    _goalService
-        .getBy(id: _goalId)
-        .then((goal) => goal.deleteTaggedInvestment(id: id))
+    _goalInvestmentService
+        .deleteTaggedGoal(id: id)
         .then((_) => fetchTaggedInvestment());
   }
 }
@@ -41,29 +39,17 @@ class TaggedInvestmentsViewState {
 
 class TaggedInvestmentVO {
   final int id;
-  final String name;
-  final String? description;
-  final RiskLevel riskLevel;
-  final double? value;
+  final String investmentName;
   final double split;
 
   TaggedInvestmentVO(
-      {required this.id,
-      required this.name,
-      required this.description,
-      required this.riskLevel,
-      required this.value,
-      required this.split});
+      {required this.id, required this.investmentName, required this.split});
 
-  static Future<TaggedInvestmentVO> from(
-      {required final Investment investment,
-      required final double split}) async {
+  factory TaggedInvestmentVO.from(
+      {required final GoalInvestmentTag goalInvestmentTag}) {
     return TaggedInvestmentVO(
-        id: investment.id,
-        name: investment.name,
-        description: investment.description,
-        riskLevel: investment.riskLevel,
-        value: investment.value,
-        split: split);
+        id: goalInvestmentTag.id,
+        investmentName: goalInvestmentTag.investmentName,
+        split: goalInvestmentTag.splitPercentage);
   }
 }
