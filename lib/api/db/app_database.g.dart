@@ -2247,9 +2247,9 @@ class $BasketEnrichedViewView
 
   @override
   Query? get query =>
-      (attachedDatabase.selectOnly(basket)..addColumns($columns)).join([
-        leftOuterJoin(investment, investment.basketId.equalsExp(basket.id))
-      ]);
+      (attachedDatabase.selectOnly(basket)..addColumns($columns)).join(
+          [leftOuterJoin(investment, investment.basketId.equalsExp(basket.id))])
+        ..groupBy([basket.id]);
   @override
   Set<String> get readTables =>
       const {'basket_table', 'investment_table', 'transaction_table'};
@@ -2738,7 +2738,8 @@ class $GoalInvestmentEnrichedViewView
         innerJoin(
             investment, investment.id.equalsExp(goalInvestment.investmentId)),
         innerJoin(goal, goal.id.equalsExp(goalInvestment.goalId))
-      ]);
+      ])
+        ..groupBy([goalInvestment.id]);
   @override
   Set<String> get readTables =>
       const {'goal_investment_table', 'investment_table', 'goal_table'};
@@ -2940,7 +2941,8 @@ class $TransactionEnrichedViewView
         innerJoin(
             investment, investment.id.equalsExp(transaction.investmentId)),
         leftOuterJoin(sip, sip.id.equalsExp(transaction.sipId))
-      ]);
+      ])
+        ..groupBy([transaction.id]);
   @override
   Set<String> get readTables =>
       const {'transaction_table', 'investment_table', 'sip_table'};
@@ -3182,9 +3184,10 @@ class $SipEnrichedViewView extends ViewInfo<$SipEnrichedViewView, SipDO>
   @override
   Query? get query =>
       (attachedDatabase.selectOnly(sip)..addColumns($columns)).join([
-        leftOuterJoin(investment, investment.id.equalsExp(sip.investmentId)),
+        innerJoin(investment, investment.id.equalsExp(sip.investmentId)),
         leftOuterJoin(transaction, transaction.sipId.equalsExp(sip.id))
-      ]);
+      ])
+        ..groupBy([sip.id]);
   @override
   Set<String> get readTables =>
       const {'sip_table', 'investment_table', 'transaction_table'};

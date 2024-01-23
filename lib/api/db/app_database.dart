@@ -187,7 +187,8 @@ abstract class TransactionEnrichedView extends View {
         innerJoin(
             investment, investment.id.equalsExp(transaction.investmentId)),
         leftOuterJoin(sip, sip.id.equalsExp(transaction.sipId)),
-      ]);
+      ])
+        ..groupBy([transaction.id]);
 }
 
 @DataClassName('SipDO')
@@ -217,7 +218,8 @@ abstract class SipEnrichedView extends View {
       ]).from(sip).join([
         innerJoin(investment, investment.id.equalsExp(sip.investmentId)),
         leftOuterJoin(transaction, transaction.sipId.equalsExp(sip.id)),
-      ]);
+      ])
+        ..groupBy([sip.id]);
 }
 
 @DataClassName('BasketDO')
@@ -240,7 +242,8 @@ abstract class BasketEnrichedView extends View {
         totalInvestmentCount,
       ]).from(basket).join([
         leftOuterJoin(investment, investment.basketId.equalsExp(basket.id)),
-      ]);
+      ])
+        ..groupBy([basket.id]);
 }
 
 @DataClassName('GoalInvestmentDO')
@@ -267,7 +270,8 @@ abstract class GoalInvestmentEnrichedView extends View {
         innerJoin(
             investment, investment.id.equalsExp(goalInvestment.investmentId)),
         innerJoin(goal, goal.id.equalsExp(goalInvestment.goalId)),
-      ]);
+      ])
+        ..groupBy([goalInvestment.id]);
 }
 
 @DataClassName('GoalDO')
