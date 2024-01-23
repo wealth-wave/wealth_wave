@@ -31,16 +31,14 @@ class SipApi {
   }
 
   Future<List<SipDO>> getBy({final int? investmentId}) async {
-    if (investmentId == null) {
-      return (_db.select(_db.sipEnrichedView)
-            ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
-          .get();
-    } else {
+    if (investmentId != null) {
       return (_db.select(_db.sipEnrichedView)
             ..where((t) => t.investmentId.equals(investmentId))
             ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
           .get();
     }
+
+    throw Exception("Investment Id is null");
   }
 
   Future<SipDO> getById({required final int id}) async {

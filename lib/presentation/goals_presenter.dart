@@ -41,7 +41,7 @@ class GoalVO {
   final GoalImportance importance;
   final int taggedInvestmentCount;
 
-  double get yearsLeft => DateTime.now().difference(maturityDate).inDays / 365;
+  double get yearsLeft => maturityDate.difference(DateTime.now()).inDays / 365;
 
   double get progress => valueOnMaturity / maturityAmount;
 
