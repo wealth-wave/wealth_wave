@@ -1,9 +1,9 @@
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
-import 'package:wealth_wave/domain/services/irr_calculator.dart';
 import 'package:wealth_wave/domain/models/payment.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
+import 'package:wealth_wave/domain/services/irr_calculator.dart';
 
 class Investment {
   final int id;
@@ -20,7 +20,7 @@ class Investment {
   final List<Transaction> transactions;
   final List<Sip> sips;
 
-  Investment(
+  Investment._(
       {required this.id,
       required this.name,
       required this.description,
@@ -51,7 +51,7 @@ class Investment {
         : date;
 
     final payments = transactions
-        .map((transaction) => Payment.fromTransaction(transaction))
+        .map((transaction) => transaction.toPayment())
         .toList(growable: true);
     if (considerFuturePayments) {
       for (var sip in sips) {
@@ -85,9 +85,8 @@ class Investment {
     if (irr != null) {
       return irr;
     } else if (value != null && valueUpdatedOn != null) {
-      List<Payment> payments = transactions
-          .map((transaction) => Payment.fromTransaction(transaction))
-          .toList(growable: true);
+      final List<Payment> payments =
+          transactions.map((transaction) => transaction.toPayment()).toList();
 
       return IRRCalculator().calculateIRR(
           payments: payments, value: value, valueUpdatedOn: valueUpdatedOn);
@@ -97,25 +96,24 @@ class Investment {
   }
 
   factory Investment.from(
-      {required final InvestmentDO investmentDO,
-      required final List<TransactionDO> transactionsDOs,
-      required final List<SipDO> sipDOs}) {
-    return Investment(
-        id: investmentDO.id,
-        name: investmentDO.name,
-        description: investmentDO.description,
-        riskLevel: investmentDO.riskLevel,
-        irr: investmentDO.irr,
-        value: investmentDO.value,
-        valueUpdatedOn: investmentDO.valueUpdatedOn,
-        basketId: investmentDO.basketId,
-        maturityDate: investmentDO.maturityDate,
-        basketName: investmentDO.basketName,
-        goalsCount: investmentDO.taggedGoals ?? 0,
-        transactions: transactionsDOs
-            .map((transactionDO) =>
-                Transaction.from(transactionDO: transactionDO))
-            .toList(),
-        sips: sipDOs.map((sipDO) => Sip.from(sipDO: sipDO)).toList());
-  }
+          {required final InvestmentDO investmentDO,
+          required final List<TransactionDO> transactionsDOs,
+          required final List<SipDO> sipDOs}) =>
+      Investment._(
+          id: investmentDO.id,
+          name: investmentDO.name,
+          description: investmentDO.description,
+          riskLevel: investmentDO.riskLevel,
+          irr: investmentDO.irr,
+          value: investmentDO.value,
+          valueUpdatedOn: investmentDO.valueUpdatedOn,
+          basketId: investmentDO.basketId,
+          maturityDate: investmentDO.maturityDate,
+          basketName: investmentDO.basketName,
+          goalsCount: investmentDO.taggedGoals ?? 0,
+          transactions: transactionsDOs
+              .map((transactionDO) =>
+                  Transaction.from(transactionDO: transactionDO))
+              .toList(),
+          sips: sipDOs.map((sipDO) => Sip.from(sipDO: sipDO)).toList());
 }

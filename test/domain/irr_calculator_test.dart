@@ -7,9 +7,9 @@ void main() {
     test('calculateIRR returns correct IRR', () {
       final calculator = IRRCalculator();
       final payments = [
-        Payment(amount: 1000.0, createdOn: DateTime(2020, 1, 1)),
-        Payment(amount: 2000.0, createdOn: DateTime(2021, 1, 1)),
-        Payment(amount: 3000.0, createdOn: DateTime(2022, 1, 1)),
+        Payment.from(amount: 1000.0, createdOn: DateTime(2020, 1, 1)),
+        Payment.from(amount: 2000.0, createdOn: DateTime(2021, 1, 1)),
+        Payment.from(amount: 3000.0, createdOn: DateTime(2022, 1, 1)),
       ];
       const finalValue = 8000.0;
       final finalDate = DateTime(2023, 1, 1);
@@ -23,9 +23,9 @@ void main() {
     test('calculateIRR returns correct value for multiple payments', () {
       final calculator = IRRCalculator();
       final payments = [
-        Payment(amount: 1000.0, createdOn: DateTime(2020, 1, 1)),
-        Payment(amount: 2000.0, createdOn: DateTime(2021, 1, 1)),
-        Payment(amount: 3000.0, createdOn: DateTime(2022, 1, 1)),
+        Payment.from(amount: 1000.0, createdOn: DateTime(2020, 1, 1)),
+        Payment.from(amount: 2000.0, createdOn: DateTime(2021, 1, 1)),
+        Payment.from(amount: 3000.0, createdOn: DateTime(2022, 1, 1)),
       ];
       const irr = 10.0;
       final futureDate = DateTime(2023, 1, 1);

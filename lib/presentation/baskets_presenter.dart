@@ -34,7 +34,7 @@ class BasketVO {
   final double totalInvestedAmount;
   final int totalInvestments;
 
-  BasketVO(
+  BasketVO._(
       {required this.totalInvestedAmount,
       required this.totalInvestments,
       required this.id,
@@ -42,7 +42,7 @@ class BasketVO {
       required this.description});
 
   factory BasketVO.from({required final Basket basket}) {
-    return BasketVO(
+    return BasketVO._(
         id: basket.id,
         name: basket.name,
         description: basket.description ?? '',

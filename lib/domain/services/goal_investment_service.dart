@@ -14,45 +14,41 @@ class GoalInvestmentService {
       : _goalInvestmentApi = goalInvestmentApi ?? GoalInvestmentApi();
 
   Future<void> tagGoalInvestment(
-      {required final int goalId,
-      required final int investmentId,
-      required final double split}) async {
-    return _goalInvestmentApi
-        .create(
-            goalId: goalId, investmentId: investmentId, splitPercentage: split)
-        .then((goalInvestmentDO) => {});
-  }
+          {required final int goalId,
+          required final int investmentId,
+          required final double split}) =>
+      _goalInvestmentApi
+          .create(
+              goalId: goalId,
+              investmentId: investmentId,
+              splitPercentage: split)
+          .then((goalInvestmentDO) => {});
 
   Future<void> updateTaggedGoalInvestment(
-      {required final int id,
-      required final int goalId,
-      required final int investmentId,
-      required final double split}) async {
-    return _goalInvestmentApi
-        .update(
-            id: id,
-            goalId: goalId,
-            investmentId: investmentId,
-            splitPercentage: split)
-        .then((goalInvestmentDO) => {});
-  }
+          {required final int id,
+          required final int goalId,
+          required final int investmentId,
+          required final double split}) =>
+      _goalInvestmentApi
+          .update(
+              id: id,
+              goalId: goalId,
+              investmentId: investmentId,
+              splitPercentage: split)
+          .then((goalInvestmentDO) => {});
 
-  Future<GoalInvestmentTag> getById({required final int id}) async {
-    return _goalInvestmentApi.getById(id: id).then((goalInvestmentDO) {
-      return GoalInvestmentTag.from(goalInvestmentDO: goalInvestmentDO);
-    });
-  }
+  Future<GoalInvestmentTag> getById({required final int id}) =>
+      _goalInvestmentApi.getById(id: id).then((goalInvestmentDO) =>
+          GoalInvestmentTag.from(goalInvestmentDO: goalInvestmentDO));
 
   Future<List<GoalInvestmentTag>> getBy(
-      {final int? investmentId, final int? goalId}) async {
-    return _goalInvestmentApi
-        .getBy(investmentId: investmentId, goalId: goalId)
-        .then((goalInvestments) => Future.wait(goalInvestments.map(
-            (goalInvestment) =>
-                GoalInvestmentTag.from(goalInvestmentDO: goalInvestment))));
-  }
+          {final int? investmentId, final int? goalId}) =>
+      _goalInvestmentApi.getBy(investmentId: investmentId, goalId: goalId).then(
+          (goalInvestments) => goalInvestments
+              .map((goalInvestment) =>
+                  GoalInvestmentTag.from(goalInvestmentDO: goalInvestment))
+              .toList());
 
-  Future<void> deleteTaggedGoal({required final int id}) {
-    return _goalInvestmentApi.deleteBy(id: id).then((count) => {});
-  }
+  Future<void> deleteTaggedGoal({required final int id}) =>
+      _goalInvestmentApi.deleteBy(id: id).then((count) => {});
 }

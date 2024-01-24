@@ -41,7 +41,7 @@ class IRRCalculator {
         df -= cashFlow.years * cashFlow.amount / (r * (1 + guess));
       }
       if (f.abs() < 1e-6) return guess * 100; // Convergence tolerance
-      guess -= f / df; // Newton-Raphson update
+      guess -= f / df;
     }
     return 0.0;
   }

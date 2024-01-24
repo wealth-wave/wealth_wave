@@ -41,18 +41,17 @@ class GoalService {
     required final DateTime maturityDate,
     required final double inflation,
     required final GoalImportance importance,
-  }) {
-    return _goalApi
-        .create(
-            name: name,
-            description: description,
-            amount: amount,
-            amountUpdatedOn: amountUpdatedOn,
-            maturityDate: maturityDate,
-            inflation: inflation,
-            importance: importance)
-        .then((_) => {});
-  }
+  }) =>
+      _goalApi
+          .create(
+              name: name,
+              description: description,
+              amount: amount,
+              amountUpdatedOn: amountUpdatedOn,
+              maturityDate: maturityDate,
+              inflation: inflation,
+              importance: importance)
+          .then((_) => {});
 
   Future<List<Goal>> get() async {
     List<InvestmentDO> investmentDOs = await _investmentApi.get();
@@ -114,21 +113,18 @@ class GoalService {
     required final DateTime maturityDate,
     required final double inflation,
     required final GoalImportance importance,
-  }) {
-    return _goalApi
-        .update(
-            id: id,
-            name: name,
-            description: description,
-            amount: amount,
-            amountUpdatedOn: amountUpdatedOn,
-            maturityDate: maturityDate,
-            inflation: inflation,
-            importance: importance)
-        .then((_) => {});
-  }
+  }) =>
+      _goalApi
+          .update(
+              id: id,
+              name: name,
+              description: description,
+              amount: amount,
+              amountUpdatedOn: amountUpdatedOn,
+              maturityDate: maturityDate,
+              inflation: inflation,
+              importance: importance)
+          .then((_) => {});
 
-  Future<void> deleteBy({required final int id}) {
-    return _goalApi.deleteBy(id: id);
-  }
+  Future<void> deleteBy({required final int id}) => _goalApi.deleteBy(id: id);
 }

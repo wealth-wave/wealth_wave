@@ -53,7 +53,7 @@ class InvestmentVO {
 
   int get sipCount => sips.length;
 
-  InvestmentVO(
+  InvestmentVO._(
       {required this.id,
       required this.name,
       required this.description,
@@ -71,7 +71,7 @@ class InvestmentVO {
       required this.taggedGoalCount});
 
   factory InvestmentVO.from({required final Investment investment}) {
-    return InvestmentVO(
+    return InvestmentVO._(
         id: investment.id,
         name: investment.name,
         description: investment.description,

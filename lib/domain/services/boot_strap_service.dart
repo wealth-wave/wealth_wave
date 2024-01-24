@@ -12,7 +12,6 @@ class BootStrapService {
   BootStrapService._({final SipService? sipService})
       : _sipService = sipService ?? SipService();
 
-  Future<void> performBootStrapOperations() {
-    return _sipService.performSipTransactions();
-  }
+  Future<void> performBootStrapOperations() =>
+      _sipService.performSipTransactions();
 }

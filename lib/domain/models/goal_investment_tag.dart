@@ -8,7 +8,7 @@ class GoalInvestmentTag {
   final String goalName;
   final double splitPercentage;
 
-  GoalInvestmentTag(
+  GoalInvestmentTag._(
       {required this.id,
       required this.investmentId,
       required this.investmentName,
@@ -16,14 +16,13 @@ class GoalInvestmentTag {
       required this.goalName,
       required this.splitPercentage});
 
-  static Future<GoalInvestmentTag> from(
-      {required GoalInvestmentDO goalInvestmentDO}) async {
-    return GoalInvestmentTag(
-        id: goalInvestmentDO.id,
-        investmentId: goalInvestmentDO.investmentId,
-        investmentName: goalInvestmentDO.investmentName ?? '',
-        goalId: goalInvestmentDO.goalId,
-        goalName: goalInvestmentDO.goalName ?? '',
-        splitPercentage: goalInvestmentDO.splitPercentage);
-  }
+  factory GoalInvestmentTag.from(
+          {required GoalInvestmentDO goalInvestmentDO}) =>
+      GoalInvestmentTag._(
+          id: goalInvestmentDO.id,
+          investmentId: goalInvestmentDO.investmentId,
+          investmentName: goalInvestmentDO.investmentName ?? '',
+          goalId: goalInvestmentDO.goalId,
+          goalName: goalInvestmentDO.goalName ?? '',
+          splitPercentage: goalInvestmentDO.splitPercentage);
 }

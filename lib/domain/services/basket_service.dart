@@ -28,11 +28,8 @@ class BasketService {
         _transactionApi = transactionApi ?? TransactionApi();
 
   Future<void> create(
-      {required final String name, required final String description}) {
-    return _basketApi
-        .create(name: name, description: description)
-        .then((_) => {});
-  }
+          {required final String name, required final String description}) =>
+      _basketApi.create(name: name, description: description).then((_) => {});
 
   Future<List<Basket>> get() async {
     List<InvestmentDO> investmentDOs = await _investmentApi.get();
@@ -61,15 +58,12 @@ class BasketService {
   }
 
   Future<void> update(
-      {required final int id,
-      required final String name,
-      required final String? description}) {
-    return _basketApi
-        .update(id: id, name: name, description: description)
-        .then((_) => {});
-  }
+          {required final int id,
+          required final String name,
+          required final String? description}) =>
+      _basketApi
+          .update(id: id, name: name, description: description)
+          .then((_) => {});
 
-  Future<void> deleteBy({required final int id}) {
-    return _basketApi.deleteBy(id: id);
-  }
+  Future<void> deleteBy({required final int id}) => _basketApi.deleteBy(id: id);
 }

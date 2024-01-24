@@ -45,7 +45,7 @@ class GoalVO {
 
   double get progress => valueOnMaturity / maturityAmount;
 
-  GoalVO(
+  GoalVO._(
       {required this.id,
       required this.name,
       required this.description,
@@ -59,7 +59,7 @@ class GoalVO {
       required this.taggedInvestmentCount});
 
   static Future<GoalVO> from({required final Goal goal}) async {
-    return GoalVO(
+    return GoalVO._(
         id: goal.id,
         name: goal.name,
         description: goal.description,

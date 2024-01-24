@@ -39,7 +39,7 @@ class SipVO {
   final DateTime? endDate;
   final SipFrequency frequency;
 
-  SipVO(
+  SipVO._(
       {required this.id,
       required this.investmentId,
       required this.description,
@@ -48,7 +48,7 @@ class SipVO {
       required this.endDate,
       required this.frequency});
 
-  factory SipVO.from({required final Sip sip}) => SipVO(
+  factory SipVO.from({required final Sip sip}) => SipVO._(
       id: sip.id,
       investmentId: sip.investmentId,
       description: sip.description,

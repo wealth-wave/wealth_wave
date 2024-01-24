@@ -98,10 +98,8 @@ class InvestmentService {
         .then((_) => {});
   }
 
-  Future<void> deleteBy({required final int id}) {
-    return _transactionApi
-        .deleteBy(investmentId: id)
-        .then((_) => _sipApi.deleteBy(investmentId: id))
-        .then((_) => _investmentApi.deleteBy(id: id));
-  }
+  Future<void> deleteBy({required final int id}) => _transactionApi
+      .deleteBy(investmentId: id)
+      .then((_) => _sipApi.deleteBy(investmentId: id))
+      .then((_) => _investmentApi.deleteBy(id: id));
 }

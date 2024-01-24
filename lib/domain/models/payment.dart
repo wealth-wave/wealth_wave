@@ -1,16 +1,12 @@
-import 'package:wealth_wave/domain/models/transaction.dart';
-
 class Payment {
   final double amount;
   final DateTime createdOn;
 
-  Payment({
+  Payment._({
     required this.amount,
     required this.createdOn,
   });
 
-  factory Payment.fromTransaction(final Transaction transaction) {
-    return Payment(
-        amount: transaction.amount, createdOn: transaction.createdOn);
-  }
+  factory Payment.from({required double amount, required DateTime createdOn}) =>
+      Payment._(amount: amount, createdOn: createdOn);
 }

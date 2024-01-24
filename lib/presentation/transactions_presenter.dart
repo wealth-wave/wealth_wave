@@ -43,7 +43,7 @@ class TransactionVO {
   final double amount;
   final DateTime createdOn;
 
-  TransactionVO(
+  TransactionVO._(
       {required this.id,
       required this.investmentId,
       required this.sipId,
@@ -52,7 +52,7 @@ class TransactionVO {
       required this.createdOn});
 
   factory TransactionVO.from({required final Transaction transaction}) {
-    return TransactionVO(
+    return TransactionVO._(
         id: transaction.id,
         investmentId: transaction.investmentId,
         sipId: transaction.sipId,

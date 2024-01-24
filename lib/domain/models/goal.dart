@@ -15,7 +15,7 @@ class Goal {
   final GoalImportance importance;
   final Map<Investment, double> taggedInvestments;
 
-  Goal(
+  Goal._(
       {required this.id,
       required this.name,
       required this.description,
@@ -55,19 +55,18 @@ class Goal {
       .toList()
       .fold(0.0, (value, element) => value + element);
 
-  static Goal from(
-      {required final GoalDO goalDO,
-      required final Map<Investment, double> taggedInvestments}) {
-    return Goal(
-      id: goalDO.id,
-      name: goalDO.name,
-      description: goalDO.description,
-      amount: goalDO.amount,
-      maturityDate: goalDO.maturityDate,
-      inflation: goalDO.inflation,
-      amountUpdatedOn: goalDO.amountUpdatedOn,
-      importance: goalDO.importance,
-      taggedInvestments: taggedInvestments,
-    );
-  }
+  factory Goal.from(
+          {required final GoalDO goalDO,
+          required final Map<Investment, double> taggedInvestments}) =>
+      Goal._(
+        id: goalDO.id,
+        name: goalDO.name,
+        description: goalDO.description,
+        amount: goalDO.amount,
+        maturityDate: goalDO.maturityDate,
+        inflation: goalDO.inflation,
+        amountUpdatedOn: goalDO.amountUpdatedOn,
+        importance: goalDO.importance,
+        taggedInvestments: taggedInvestments,
+      );
 }

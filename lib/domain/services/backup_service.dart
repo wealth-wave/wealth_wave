@@ -12,11 +12,7 @@ class BackupService {
   BackupService._({final BackupApi? backupApi})
       : _backupApi = backupApi ?? BackupApi();
 
-  Future<void> import() async {
-    return _backupApi.import();
-  }
+  Future<void> import() async => _backupApi.import();
 
-  Future<void> export() async {
-    return _backupApi.export();
-  }
+  Future<void> export() async => _backupApi.export();
 }

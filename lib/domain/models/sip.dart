@@ -1,10 +1,6 @@
-import 'package:wealth_wave/api/apis/investment_api.dart';
-import 'package:wealth_wave/api/apis/transaction_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/sip_frequency.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/models/payment.dart';
-import 'package:wealth_wave/domain/models/transaction.dart';
 
 class Sip {
   final int id;
@@ -16,7 +12,7 @@ class Sip {
   final SipFrequency frequency;
   final DateTime? executedTill;
 
-  Sip(
+  Sip._(
       {required this.id,
       required this.investmentId,
       required this.description,
@@ -32,20 +28,18 @@ class Sip {
     for (var i = executedTill ?? startDate;
         i.isBefore(till) && (endDate == null || i.isBefore(endDate));
         i = i.add(getDuration(frequency))) {
-      payments.add(Payment(amount: amount, createdOn: i));
+      payments.add(Payment.from(amount: amount, createdOn: i));
     }
     return payments;
   }
 
-  factory Sip.from({required final SipDO sipDO}) {
-    return Sip(
-        id: sipDO.id,
-        investmentId: sipDO.investmentId,
-        description: sipDO.description,
-        amount: sipDO.amount,
-        startDate: sipDO.startDate,
-        endDate: sipDO.endDate,
-        frequency: sipDO.frequency,
-        executedTill: sipDO.executedTill);
-  }
+  factory Sip.from({required final SipDO sipDO}) => Sip._(
+      id: sipDO.id,
+      investmentId: sipDO.investmentId,
+      description: sipDO.description,
+      amount: sipDO.amount,
+      startDate: sipDO.startDate,
+      endDate: sipDO.endDate,
+      frequency: sipDO.frequency,
+      executedTill: sipDO.executedTill);
 }
