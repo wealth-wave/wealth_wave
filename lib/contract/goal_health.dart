@@ -1,0 +1,1 @@
+enum GoalHealth { risky, good }

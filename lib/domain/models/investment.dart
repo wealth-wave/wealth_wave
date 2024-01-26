@@ -3,7 +3,7 @@ import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/domain/models/payment.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
-import 'package:wealth_wave/domain/services/irr_calculator.dart';
+import 'package:wealth_wave/domain/models/irr_calculator.dart';
 
 class Investment {
   final int id;

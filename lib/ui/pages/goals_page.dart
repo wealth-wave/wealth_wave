@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:primer_progress_bar/primer_progress_bar.dart';
+import 'package:wealth_wave/contract/goal_health.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/goals_presenter.dart';
@@ -126,9 +128,24 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                       child: Padding(
                           padding:
                               const EdgeInsets.all(AppDimen.defaultPadding),
-                          child: LinearProgressIndicator(
-                            value: goalVO.progress,
-                            semanticsLabel: 'progress',
+                          child: PrimerProgressBar(
+                            segments: [
+                              Segment(
+                                  value: (goalVO.currentProgress * 100).toInt(),
+                                  label: const Text('Current Value'),
+                                  color: goalVO.health == GoalHealth.good
+                                      ? Colors.green
+                                      : Colors.red),
+                              Segment(
+                                  value: ((goalVO.maturityProgress -
+                                              goalVO.currentProgress) *
+                                          100)
+                                      .toInt(),
+                                  label: const Text('Maturity Value'),
+                                  color: goalVO.health == GoalHealth.good
+                                      ? Colors.lightGreen
+                                      : Colors.orange),
+                            ],
                           ))),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -145,6 +162,24 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                   ),
                 ],
               ),
+              Padding(
+                  padding: const EdgeInsets.all(AppDimen.defaultPadding),
+                  child: PrimerProgressBar(
+                    segments: [
+                      Segment(
+                          value: (goalVO.lowRiskProgress * 100).toInt(),
+                          label: const Text('Low Risk'),
+                          color: Colors.green),
+                      Segment(
+                          value: (goalVO.mediumRiskProgress * 100).toInt(),
+                          label: const Text('Medium Risk'),
+                          color: Colors.orange),
+                      Segment(
+                          value: (goalVO.highRiskProgress * 100).toInt(),
+                          label: const Text('High Risk'),
+                          color: Colors.red),
+                    ],
+                  )),
             ],
           ),
         ));

@@ -1,7 +1,9 @@
 import 'package:wealth_wave/api/db/app_database.dart';
+import 'package:wealth_wave/contract/goal_health.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
+import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
-import 'package:wealth_wave/domain/services/irr_calculator.dart';
+import 'package:wealth_wave/domain/models/irr_calculator.dart';
 import 'package:wealth_wave/utils/utils.dart';
 
 class Goal {
@@ -40,6 +42,17 @@ class Goal {
       currentValue: amount,
       currentValueUpdatedOn: amountUpdatedOn);
 
+  double get yearsLeft =>
+      (maturityDate.difference(DateTime.now()).inDays / 365);
+
+  double get value => taggedInvestments.entries
+      .map((taggedInvestment) => calculatePercentageOfValue(
+          value: taggedInvestment.key
+              .getValueOn(date: DateTime.now(), considerFuturePayments: false),
+          percentage: taggedInvestment.value))
+      .toList()
+      .fold(0.0, (value, element) => value + element);
+
   double get valueOnMaturity => taggedInvestments.entries
       .map((taggedInvestment) => calculatePercentageOfValue(
           value: taggedInvestment.key
@@ -54,6 +67,52 @@ class Goal {
           percentage: taggedInvestment.value))
       .toList()
       .fold(0.0, (value, element) => value + element);
+
+  Map<RiskLevel, double> get riskComposition => taggedInvestments.entries
+          .fold<Map<RiskLevel, double>>({}, (acc, element) {
+        Investment investment = element.key;
+        double percentage = element.value;
+        double value = calculatePercentageOfValue(
+            value: investment.getValueOn(
+                date: maturityDate, considerFuturePayments: true),
+            percentage: percentage);
+
+        return {
+          ...acc,
+          investment.riskLevel: (acc[investment.riskLevel] ?? 0) + value
+        }.map((key, value) => MapEntry(key, value / valueOnMaturity));
+      });
+
+  GoalHealth get health {
+    Map<RiskLevel, double> riskComposition = this.riskComposition;
+
+    if (importance == GoalImportance.high) {
+      if ((riskComposition[RiskLevel.high] ?? 0) > yearsLeft / 2 / 100) {
+        return GoalHealth.risky;
+      }
+      if (riskComposition.containsKey(RiskLevel.medium) &&
+          riskComposition[RiskLevel.medium]! > yearsLeft / 3 / 100) {
+        return GoalHealth.risky;
+      }
+    } else if (importance == GoalImportance.medium) {
+      if ((riskComposition[RiskLevel.high] ?? 0.0) > yearsLeft / 1.5 / 100) {
+        return GoalHealth.risky;
+      }
+      if (riskComposition.containsKey(RiskLevel.medium) &&
+          riskComposition[RiskLevel.medium]! > yearsLeft / 2 / 100) {
+        return GoalHealth.risky;
+      }
+    } else if (importance == GoalImportance.low) {
+      if ((riskComposition[RiskLevel.high] ?? 0) > yearsLeft / 1.5 / 100) {
+        return GoalHealth.risky;
+      }
+      if ((riskComposition[RiskLevel.medium] ?? 0) > yearsLeft / 1.5 / 100) {
+        return GoalHealth.risky;
+      }
+    }
+
+    return GoalHealth.good;
+  }
 
   factory Goal.from(
           {required final GoalDO goalDO,

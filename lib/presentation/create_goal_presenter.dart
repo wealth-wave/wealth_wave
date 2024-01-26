@@ -3,7 +3,7 @@ import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
 import 'package:wealth_wave/domain/services/goal_service.dart';
-import 'package:wealth_wave/domain/services/irr_calculator.dart';
+import 'package:wealth_wave/domain/models/irr_calculator.dart';
 
 class CreateGoalPresenter extends Presenter<CreateGoalViewState> {
   final GoalService _goalService;

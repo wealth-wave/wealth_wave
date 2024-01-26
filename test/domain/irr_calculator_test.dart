@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:wealth_wave/domain/services/irr_calculator.dart';
+import 'package:wealth_wave/domain/models/irr_calculator.dart';
 import 'package:wealth_wave/domain/models/payment.dart';
 
 void main() {
