@@ -5,12 +5,14 @@ class Basket {
   final int id;
   final String name;
   final String? description;
+  final int expectedInvestmentPercentage;
   final List<Investment> investments;
 
   Basket._(
       {required this.id,
       required this.name,
       required this.description,
+      required this.expectedInvestmentPercentage,
       required this.investments});
 
   int get totalInvestment => investments.length;
@@ -28,7 +30,9 @@ class Basket {
           id: basketDO.id,
           name: basketDO.name,
           description: basketDO.description,
+          expectedInvestmentPercentage: 0,
           investments: investmentDOs
+              .where((investment) => investment.basketId == basketDO.id)
               .map((investmentDO) => Investment.from(
                   investmentDO: investmentDO,
                   sipDOs: sipDOs

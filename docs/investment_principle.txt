@@ -1,0 +1,53 @@
+Available Asset Classes
+    - Equities(MF, Direct Stock, US Stock) - 50%
+    - Fixed Income(FD/RD) - 10%
+    - Gold(Physical, "SGB", x-Gold ETF) - 10%
+    - Real Estate(Plot, REIT) - 20%
+    - Debt Funds - 10%
+
+Equity
+    - Large Cap - Low Risk
+    - Mid Cap - Medium Risk
+    - Small Cap - High Risk
+
+Debt Fund
+    - Debt Fund - Low Risk
+    - Equity Saver - Medium Risk
+
+
+Investing in mid cap, small cap and multi cap fund
+    - 5 year average rolling return
+    - Alpha
+    - 5 year upside capture ratio
+    - 5 year downside capture ratio
+    - Expense ratio
+
+
+Allocation Strategy for Goal
+    - 0-3 years - Debt
+    - 3-5 years - 50% Debt, 50% Equity
+    - 5-7 years - 30% Debt, 70% Equity
+    - 7-10 years - 20% Debt, 80% Equity
+    - 10+ years - 10% Debt, 90% Equity
+
+Invest in Equity
+    Age 20-30
+        - Large Cap - 30%
+        - Mid Cap - 50%
+        - Small Cap - 20%
+
+    Age 30-45
+        - Large Cap - 40%
+        - Mid Cap - 40%
+        - Small Cap - 20%
+
+    Age 45-65
+        - Large Cap - 50%
+        - Mid Cap - 40%
+        - Small Cap - 10%
+
+    Age 65+
+        - Large Cap - 70%
+        - Mid Cap - 30%
+        - Small Cap - 0%
+
