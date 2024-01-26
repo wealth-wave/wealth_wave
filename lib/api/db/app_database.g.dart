@@ -22,6 +22,7 @@ class $BasketTableTable extends BasketTable
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'NAME', aliasedName, false,
+      check: () => name.isNotValue(''),
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
@@ -237,7 +238,10 @@ class $InvestmentTableTable extends InvestmentTable
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'NAME', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      check: () => name.isNotValue(''),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
@@ -274,7 +278,11 @@ class $InvestmentTableTable extends InvestmentTable
   @override
   late final GeneratedColumn<DateTime> maturityDate = GeneratedColumn<DateTime>(
       'MATURITY_DATE', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      check: () =>
+          maturityDate.isNull() |
+          maturityDate.isBiggerThanValue(DateTime.now()),
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false);
   static const VerificationMeta _riskLevelMeta =
       const VerificationMeta('riskLevel');
   @override
@@ -725,7 +733,9 @@ class $SipTableTable extends SipTable
   @override
   late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>(
       'END_DATE', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      check: () => endDate.isNull() | endDate.isBiggerThan(startDate),
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false);
   static const VerificationMeta _frequencyMeta =
       const VerificationMeta('frequency');
   @override
@@ -1145,7 +1155,9 @@ class $TransactionTableTable extends TransactionTable
   @override
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
       'AMOUNT', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      check: () => amount.isBiggerThanValue(0),
+      type: DriftSqlType.double,
+      requiredDuringInsert: true);
   static const VerificationMeta _createdOnMeta =
       const VerificationMeta('createdOn');
   @override
@@ -1458,7 +1470,9 @@ class $GoalTableTable extends GoalTable
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'NAME', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
@@ -1469,7 +1483,9 @@ class $GoalTableTable extends GoalTable
   @override
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
       'AMOUNT', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      check: () => amount.isBiggerThanValue(0),
+      type: DriftSqlType.double,
+      requiredDuringInsert: true);
   static const VerificationMeta _amountUpdatedOnMeta =
       const VerificationMeta('amountUpdatedOn');
   @override
@@ -1481,13 +1497,17 @@ class $GoalTableTable extends GoalTable
   @override
   late final GeneratedColumn<double> inflation = GeneratedColumn<double>(
       'INFLATION', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      check: () => inflation.isBetweenValues(1, 100),
+      type: DriftSqlType.double,
+      requiredDuringInsert: true);
   static const VerificationMeta _maturityDateMeta =
       const VerificationMeta('maturityDate');
   @override
   late final GeneratedColumn<DateTime> maturityDate = GeneratedColumn<DateTime>(
       'MATURITY_DATE', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      check: () => maturityDate.isBiggerThanValue(DateTime.now()),
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true);
   static const VerificationMeta _importanceMeta =
       const VerificationMeta('importance');
   @override
@@ -1887,14 +1907,18 @@ class $GoalInvestmentTableTable extends GoalInvestmentTable
       'INVESTMENT_ID', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES goal_table (ID)'));
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES investment_table (ID)'));
   static const VerificationMeta _splitPercentageMeta =
       const VerificationMeta('splitPercentage');
   @override
   late final GeneratedColumn<double> splitPercentage = GeneratedColumn<double>(
       'SPLIT_PERCENTAGE', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      check: () =>
+          splitPercentage.isBiggerThanValue(0) |
+          splitPercentage.isSmallerOrEqualValue(100),
+      type: DriftSqlType.double,
+      requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
       [id, goalId, investmentId, splitPercentage];
@@ -1939,6 +1963,10 @@ class $GoalInvestmentTableTable extends GoalInvestmentTable
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+        {goalId, investmentId},
+      ];
   @override
   BaseGoalInvestmentDO map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -2545,7 +2573,7 @@ class $InvestmentEnrichedViewView
   late final GeneratedColumn<int> taggedGoals = GeneratedColumn<int>(
       'tagged_goals', aliasedName, true,
       generatedAs: GeneratedAs(
-          goalInvestment.id.count(
+          goalInvestment.goalId.count(
               distinct: true,
               filter: goalInvestment.investmentId.equalsExp(investment.id)),
           false),
@@ -3414,7 +3442,7 @@ class $GoalEnrichedViewView extends ViewInfo<$GoalEnrichedViewView, GoalDO>
   late final GeneratedColumn<int> taggedInvestmentCount = GeneratedColumn<int>(
       'tagged_investment_count', aliasedName, true,
       generatedAs: GeneratedAs(
-          goalInvestment.id.count(
+          goalInvestment.investmentId.count(
               distinct: true, filter: goalInvestment.goalId.equalsExp(goal.id)),
           false),
       type: DriftSqlType.int);

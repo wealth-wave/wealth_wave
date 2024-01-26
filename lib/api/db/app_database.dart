@@ -11,7 +11,8 @@ part 'app_database.g.dart';
 class BasketTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
-  TextColumn get name => text().named('NAME').unique()();
+  TextColumn get name =>
+      text().named('NAME').check(name.isNotValue('')).unique()();
 
   TextColumn get description => text().nullable().named('DESCRIPTION')();
 }
@@ -20,7 +21,8 @@ class BasketTable extends Table {
 class InvestmentTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
-  TextColumn get name => text().named('NAME')();
+  TextColumn get name =>
+      text().named('NAME').check(name.isNotValue('')).unique()();
 
   TextColumn get description => text().nullable().named('DESCRIPTION')();
 
@@ -35,7 +37,8 @@ class InvestmentTable extends Table {
   RealColumn get irr => real().nullable().named('IRR')();
 
   DateTimeColumn get maturityDate =>
-      dateTime().nullable().named('MATURITY_DATE')();
+      dateTime().nullable().named('MATURITY_DATE').check(maturityDate.isNull() |
+          maturityDate.isBiggerThanValue(DateTime.now()))();
 
   TextColumn get riskLevel => textEnum<RiskLevel>().named('RISK_LEVEL')();
 }
@@ -52,7 +55,8 @@ class TransactionTable extends Table {
   IntColumn get sipId =>
       integer().nullable().named('SIP_ID').references(SipTable, #id)();
 
-  RealColumn get amount => real().named('AMOUNT')();
+  RealColumn get amount =>
+      real().named('AMOUNT').check(amount.isBiggerThanValue(0))();
 
   DateTimeColumn get createdOn => dateTime().named('CREATED_ON')();
 }
@@ -70,7 +74,10 @@ class SipTable extends Table {
 
   DateTimeColumn get startDate => dateTime().named('START_DATE')();
 
-  DateTimeColumn get endDate => dateTime().nullable().named('END_DATE')();
+  DateTimeColumn get endDate => dateTime()
+      .nullable()
+      .check(endDate.isNull() | endDate.isBiggerThan(startDate))
+      .named('END_DATE')();
 
   TextColumn get frequency => textEnum<SipFrequency>().named('FREQUENCY')();
 
@@ -82,17 +89,21 @@ class SipTable extends Table {
 class GoalTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
-  TextColumn get name => text().named('NAME')();
+  TextColumn get name => text().named('NAME').unique()();
 
   TextColumn get description => text().nullable().named('DESCRIPTION')();
 
-  RealColumn get amount => real().named('AMOUNT')();
+  RealColumn get amount =>
+      real().named('AMOUNT').check(amount.isBiggerThanValue(0))();
 
   DateTimeColumn get amountUpdatedOn => dateTime().named('AMOUNT_UPDATED_ON')();
 
-  RealColumn get inflation => real().named('INFLATION')();
+  RealColumn get inflation =>
+      real().named('INFLATION').check(inflation.isBetweenValues(1, 100))();
 
-  DateTimeColumn get maturityDate => dateTime().named('MATURITY_DATE')();
+  DateTimeColumn get maturityDate => dateTime()
+      .named('MATURITY_DATE')
+      .check(maturityDate.isBiggerThanValue(DateTime.now()))();
 
   TextColumn get importance => textEnum<GoalImportance>().named('IMPORTANCE')();
 }
@@ -105,9 +116,16 @@ class GoalInvestmentTable extends Table {
       integer().named('GOAL_ID').references(GoalTable, #id)();
 
   IntColumn get investmentId =>
-      integer().named('INVESTMENT_ID').references(GoalTable, #id)();
+      integer().named('INVESTMENT_ID').references(InvestmentTable, #id)();
 
-  RealColumn get splitPercentage => real().named('SPLIT_PERCENTAGE')();
+  RealColumn get splitPercentage => real().named('SPLIT_PERCENTAGE').check(
+      splitPercentage.isBiggerThanValue(0) |
+          splitPercentage.isSmallerOrEqualValue(100))();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+        {goalId, investmentId}
+      ];
 }
 
 @DataClassName('InvestmentDO')
@@ -126,11 +144,16 @@ abstract class InvestmentEnrichedView extends View {
 
   Expression<String> get basketName => basket.name;
 
-  Expression<int> get totalTransactions => transaction.id.count(distinct: true, filter: transaction.investmentId.equalsExp(investment.id));
+  Expression<int> get totalTransactions => transaction.id.count(
+      distinct: true,
+      filter: transaction.investmentId.equalsExp(investment.id));
 
-  Expression<int> get totalSips => sip.id.count(distinct: true, filter: sip.investmentId.equalsExp(investment.id));
+  Expression<int> get totalSips => sip.id
+      .count(distinct: true, filter: sip.investmentId.equalsExp(investment.id));
 
-  Expression<int> get taggedGoals => goalInvestment.id.count(distinct: true, filter: goalInvestment.investmentId.equalsExp(investment.id));
+  Expression<int> get taggedGoals => goalInvestment.goalId.count(
+      distinct: true,
+      filter: goalInvestment.investmentId.equalsExp(investment.id));
 
   @override
   Query as() => select([
@@ -198,7 +221,8 @@ abstract class SipEnrichedView extends View {
 
   Expression<String> get investmentName => investment.name;
 
-  Expression<int> get transactionCount => transaction.id.count(distinct: true, filter: transaction.sipId.equalsExp(sip.id));
+  Expression<int> get transactionCount => transaction.id
+      .count(distinct: true, filter: transaction.sipId.equalsExp(sip.id));
 
   @override
   Query as() => select([
@@ -227,9 +251,11 @@ abstract class BasketEnrichedView extends View {
 
   TransactionTable get transaction;
 
-  Expression<int> get totalInvestmentCount => investment.id.count(distinct: true, filter: investment.basketId.equalsExp(basket.id));
+  Expression<int> get totalInvestmentCount => investment.id
+      .count(distinct: true, filter: investment.basketId.equalsExp(basket.id));
 
-  Expression<double> get investedAmount => transaction.amount.sum(filter: transaction.investmentId.equalsExp(investment.id));
+  Expression<double> get investedAmount => transaction.amount
+      .sum(filter: transaction.investmentId.equalsExp(investment.id));
 
   @override
   Query as() => select([
@@ -280,7 +306,8 @@ abstract class GoalEnrichedView extends View {
 
   GoalInvestmentTable get goalInvestment;
 
-  Expression<int> get taggedInvestmentCount => goalInvestment.id.count(distinct: true, filter: goalInvestment.goalId.equalsExp(goal.id));
+  Expression<int> get taggedInvestmentCount => goalInvestment.investmentId
+      .count(distinct: true, filter: goalInvestment.goalId.equalsExp(goal.id));
 
   @override
   Query as() => select([
