@@ -60,94 +60,42 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
           padding: const EdgeInsets.all(AppDimen.defaultPadding),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+              OverflowBar(
+                alignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                      flex: 1,
-                      child: Text(goalVO.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleMedium)),
-                  _infoToolTip(goalVO, context),
-                  Text('(${_getYearsLeft(goalVO.yearsLeft)})',
-                      style: Theme.of(context).textTheme.labelSmall),
-                  PopupMenuButton<int>(
-                    onSelected: (value) {
-                      if (value == 1) {
-                        showCreateGoalDialog(
-                                context: context, goalIdToUpdate: goalVO.id)
-                            .then((value) => presenter.fetchGoals());
-                      } else if (value == 2) {
-                        presenter.deleteGoal(id: goalVO.id);
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 1,
-                        child: Text('Edit'),
-                      ),
-                      const PopupMenuItem(
-                        value: 2,
-                        child: Text('Delete'),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      _getTitleWidget(goalVO, context),
+                      TextButton(
+                        onPressed: () {
+                          showTaggedInvestmentDialog(
+                                  context: context, goalId: goalVO.id)
+                              .then((value) => presenter.fetchGoals());
+                        },
+                        child:
+                            Text('${goalVO.taggedInvestmentCount} investments'),
                       ),
                     ],
                   ),
-                  const Spacer(flex: 1),
-                  TextButton(
-                    onPressed: () {
-                      showTaggedInvestmentDialog(
-                              context: context, goalId: goalVO.id)
-                          .then((value) => presenter.fetchGoals());
-                    },
-                    child: Text('${goalVO.taggedInvestmentCount} investments'),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(formatToCurrency(goalVO.investedAmount),
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Invested)',
-                          style: Theme.of(context).textTheme.labelSmall),
-                    ],
-                  ),
-                  const SizedBox(width: AppDimen.minPadding), //
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(formatToCurrency(goalVO.valueOnMaturity),
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(At ${formatToPercentage(goalVO.irr)})',
-                          style: Theme.of(context).textTheme.labelSmall),
-                    ],
-                  ),
-                  Expanded(
-                      child: Padding(
-                          padding:
-                              const EdgeInsets.all(AppDimen.defaultPadding),
-                          child: PrimerProgressBar(
-                            segments: _getProgressSegments(goalVO, context),
-                          ))),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(formatToCurrency(goalVO.maturityAmount),
                           style: Theme.of(context).textTheme.bodyMedium),
-                      Text('At ${formatToPercentage(goalVO.inflation)} inflation',
+                      Text(
+                          'At ${formatToPercentage(goalVO.inflation)} inflation',
                           style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),
                 ],
               ),
-              Padding(
-                  padding: const EdgeInsets.all(AppDimen.defaultPadding),
-                  child: PrimerProgressBar(
-                    segments: _getRiskCompositionSegments(goalVO, context),
-                  )),
+              PrimerProgressBar(
+                segments: _getProgressSegments(goalVO, context),
+              ),
+              PrimerProgressBar(
+                segments: _getRiskCompositionSegments(goalVO, context),
+              )
             ],
           ),
         ));
@@ -160,8 +108,8 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
         Segment(
             value: (goalVO.currentProgressPercent).toInt(),
             label: const Text('Current Value'),
-            valueLabel: Text(formatToPercentage(goalVO.currentProgressPercent),
-                style: Theme.of(context).textTheme.labelSmall),
+            valueLabel: Text(formatToCurrency(goalVO.currentValue),
+                style: Theme.of(context).textTheme.bodyMedium),
             color:
                 goalVO.health == GoalHealth.good ? Colors.green : Colors.red),
       );
@@ -170,8 +118,8 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
         Segment(
             value: (goalVO.currentProgressPercent).toInt(),
             label: const Text('Current Value'),
-            valueLabel: Text(formatToPercentage(goalVO.currentProgressPercent),
-                style: Theme.of(context).textTheme.labelSmall),
+            valueLabel: Text(formatToCurrency(goalVO.currentValue),
+                style: Theme.of(context).textTheme.bodyMedium),
             color:
                 goalVO.health == GoalHealth.good ? Colors.green : Colors.red),
       );
@@ -183,8 +131,8 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                   .toInt(),
               label: const Text('Maturity Value'),
               valueLabel: Text(
-                  formatToPercentage(goalVO.maturityProgressPercent),
-                  style: Theme.of(context).textTheme.labelSmall),
+                  formatToCurrency(goalVO.valueOnMaturity),
+                  style: Theme.of(context).textTheme.bodyMedium),
               color: goalVO.health == GoalHealth.good
                   ? Colors.lightGreen
                   : Colors.orange),
@@ -194,7 +142,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
           value: (goalVO.pendingProgressPercent).toInt(),
           label: const Text('Health:'),
           valueLabel: Text(goalVO.health == GoalHealth.good ? 'Good' : 'Risky',
-              style: Theme.of(context).textTheme.labelSmall!.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   color: goalVO.health == GoalHealth.good
                       ? Colors.green
                       : Colors.red)),
@@ -246,18 +194,45 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
     }
   }
 
-  Tooltip _infoToolTip(GoalVO goalVO, BuildContext context) {
-    final String? description = goalVO.description;
-    final List<Widget> widgets = [];
-    if (description?.isNotEmpty == true) {
-      widgets.add(Text(description ?? '',
-          style: Theme.of(context).textTheme.labelSmall));
+  RichText _getTitleWidget(GoalVO goalVO, BuildContext context) {
+    List<WidgetSpan> widgets = [];
+    bool isLowImportance = goalVO.importance == GoalImportance.low;
+    if (!isLowImportance) {
+      widgets.add(WidgetSpan(
+          child: Text(' | ${_getImportance(goalVO.importance)}',
+              style: Theme.of(context).textTheme.labelMedium)));
     }
-    widgets.add(Text('Importance: ${_getImportance(goalVO.importance)}',
-        style: Theme.of(context).textTheme.labelSmall));
-    return Tooltip(
-        richMessage: WidgetSpan(child: Column(children: widgets)),
-        child: const Icon(Icons.info));
+    widgets.add(WidgetSpan(
+        child: Text(' | ${_getYearsLeft(goalVO.yearsLeft)}',
+            style: Theme.of(context).textTheme.labelMedium)));
+    widgets.add(WidgetSpan(
+      alignment: PlaceholderAlignment.middle,
+      child: PopupMenuButton<int>(
+        onSelected: (value) {
+          if (value == 1) {
+            showCreateGoalDialog(context: context, goalIdToUpdate: goalVO.id)
+                .then((value) => presenter.fetchGoals());
+          } else if (value == 2) {
+            presenter.deleteGoal(id: goalVO.id);
+          }
+        },
+        itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: 1,
+            child: Text('Edit'),
+          ),
+          const PopupMenuItem(
+            value: 2,
+            child: Text('Delete'),
+          ),
+        ],
+      ),
+    ));
+    return RichText(
+        text: TextSpan(
+            text: goalVO.name,
+            style: Theme.of(context).textTheme.titleMedium,
+            children: widgets));
   }
 
   String _getImportance(GoalImportance importance) {
