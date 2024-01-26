@@ -95,7 +95,10 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
               ),
               PrimerProgressBar(
                 segments: _getRiskCompositionSegments(goalVO, context),
-              )
+              ),
+              PrimerProgressBar(
+                segments: _getBasketCompositionSegments(goalVO, context),
+              ),
             ],
           ),
         ));
@@ -130,8 +133,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                       goalVO.currentProgressPercent)
                   .toInt(),
               label: const Text('Maturity Value'),
-              valueLabel: Text(
-                  formatToCurrency(goalVO.valueOnMaturity),
+              valueLabel: Text(formatToCurrency(goalVO.valueOnMaturity),
                   style: Theme.of(context).textTheme.bodyMedium),
               color: goalVO.health == GoalHealth.good
                   ? Colors.lightGreen
@@ -155,7 +157,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
       GoalVO goalVO, BuildContext context) {
     List<Segment> segments = [];
 
-    Map<RiskLevel, double> riskComposition = goalVO.riskLevelDistribution;
+    Map<RiskLevel, double> riskComposition = goalVO.riskComposition;
     if (riskComposition.containsKey(RiskLevel.low)) {
       segments.add(Segment(
           value: (goalVO.lowRiskProgressPercent).toInt(),
@@ -182,6 +184,17 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
     }
 
     return segments;
+  }
+
+  List<Segment> _getBasketCompositionSegments(
+      GoalVO goalVO, BuildContext context) {
+    return goalVO.basketComposition.entries
+        .map((entry) => Segment(
+            value: (entry.value * 100).toInt(),
+            color:
+                Colors.primaries[entry.key.hashCode % Colors.primaries.length],
+            label: Text(entry.key)))
+        .toList();
   }
 
   String _getYearsLeft(double yearsLeft) {

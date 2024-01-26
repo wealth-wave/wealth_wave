@@ -85,6 +85,23 @@ class Goal {
     }).map((key, value) => MapEntry(key, value / valueOnMaturity));
   }
 
+  Map<String, double> get basketComposition {
+    double valueOnMaturity = this.valueOnMaturity;
+    return taggedInvestments.entries.fold({}, (acc, element) {
+      Investment investment = element.key;
+      double percentage = element.value;
+      double value = calculatePercentageOfValue(
+          value: investment.getValueOn(
+              date: maturityDate, considerFuturePayments: true),
+          percentage: percentage);
+
+      return {
+        ...acc,
+        investment.basketName: (acc[investment.riskLevel] ?? 0) + value
+      };
+    }).map((key, value) => MapEntry(key, value / valueOnMaturity));
+  }
+
   GoalHealth get health {
     Map<RiskLevel, double> riskComposition = this.riskComposition;
 

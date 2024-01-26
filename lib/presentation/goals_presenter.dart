@@ -43,7 +43,8 @@ class GoalVO {
   final GoalImportance importance;
   final GoalHealth health;
   final int taggedInvestmentCount;
-  final Map<RiskLevel, double> riskLevelDistribution;
+  final Map<RiskLevel, double> riskComposition;
+  final Map<String, double> basketComposition;
 
   double get yearsLeft => maturityDate.difference(DateTime.now()).inDays / 365;
 
@@ -68,11 +69,13 @@ class GoalVO {
   double get pendingProgressPercent => 100 - maturityProgressPercent;
 
   double get lowRiskProgressPercent =>
-      (riskLevelDistribution[RiskLevel.low] ?? 0.0) * 100;
+      (riskComposition[RiskLevel.low] ?? 0.0) * 100;
+
   double get mediumRiskProgressPercent =>
-      (riskLevelDistribution[RiskLevel.medium] ?? 0.0) * 100;
+      (riskComposition[RiskLevel.medium] ?? 0.0) * 100;
+
   double get highRiskProgressPercent =>
-      (riskLevelDistribution[RiskLevel.high] ?? 0.0) * 100;
+      (riskComposition[RiskLevel.high] ?? 0.0) * 100;
 
   GoalVO._(
       {required this.id,
@@ -88,7 +91,8 @@ class GoalVO {
       required this.irr,
       required this.health,
       required this.taggedInvestmentCount,
-      required this.riskLevelDistribution});
+      required this.riskComposition,
+      required this.basketComposition});
 
   factory GoalVO.from({required final Goal goal}) {
     return GoalVO._(
@@ -105,6 +109,7 @@ class GoalVO {
         health: goal.health,
         valueOnMaturity: goal.valueOnMaturity,
         taggedInvestmentCount: goal.taggedInvestments.length,
-        riskLevelDistribution: goal.riskComposition);
+        riskComposition: goal.riskComposition,
+        basketComposition: goal.basketComposition);
   }
 }
