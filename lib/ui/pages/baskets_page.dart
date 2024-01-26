@@ -56,70 +56,51 @@ class _BasketsPage
         margin: const EdgeInsets.all(AppDimen.defaultPadding),
         child: Padding(
           padding: const EdgeInsets.all(AppDimen.defaultPadding),
-          child: Column(
+          child: OverflowBar(
+            alignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
+              _getTitleWidget(basketVO, context),
+              Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Expanded(
-                      child: Text(basketVO.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleMedium)),
-                  PopupMenuButton<int>(
-                    onSelected: (value) {
-                      if (value == 1) {
-                        showCreateBasketDialog(
-                                basketIdTOUpdate: basketVO.id, context: context)
-                            .then((value) => presenter.fetchBaskets());
-                      } else if (value == 2) {
-                        presenter.deleteBasket(id: basketVO.id);
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 1,
-                        child: Text('Edit'),
-                      ),
-                      const PopupMenuItem(
-                        value: 2,
-                        child: Text('Delete'),
-                      ),
-                    ],
-                  ),
+                  Text(formatToCurrency(basketVO.totalInvestedAmount)),
                 ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(basketVO.description,
-                      style: Theme.of(context).textTheme.bodyMedium)
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(formatToCurrency(basketVO.totalInvestedAmount),
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Invested)',
-                          style: Theme.of(context).textTheme.labelSmall),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('${basketVO.totalInvestments}',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Investments)',
-                          style: Theme.of(context).textTheme.labelSmall),
-                    ],
-                  ),
-                ],
-              ),
+              )
             ],
           ),
         ));
+  }
+
+  RichText _getTitleWidget(BasketVO basketVO, BuildContext context) {
+    List<WidgetSpan> widgets = [];
+    widgets.add(WidgetSpan(
+      alignment: PlaceholderAlignment.middle,
+      child: PopupMenuButton<int>(
+        onSelected: (value) {
+          if (value == 1) {
+            showCreateBasketDialog(
+                    context: context, basketIdTOUpdate: basketVO.id)
+                .then((value) => presenter.fetchBaskets());
+          } else if (value == 2) {
+            presenter.deleteBasket(id: basketVO.id);
+          }
+        },
+        itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: 1,
+            child: Text('Edit'),
+          ),
+          const PopupMenuItem(
+            value: 2,
+            child: Text('Delete'),
+          ),
+        ],
+      ),
+    ));
+    return RichText(
+        text: TextSpan(
+            text: basketVO.name,
+            style: Theme.of(context).textTheme.titleMedium,
+            children: widgets));
   }
 }
