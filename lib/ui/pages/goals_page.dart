@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:wealth_wave/contract/goal_health.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
+import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/goals_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
@@ -129,23 +130,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                           padding:
                               const EdgeInsets.all(AppDimen.defaultPadding),
                           child: PrimerProgressBar(
-                            segments: [
-                              Segment(
-                                  value: (goalVO.currentProgress * 100).toInt(),
-                                  label: const Text('Current Value'),
-                                  color: goalVO.health == GoalHealth.good
-                                      ? Colors.green
-                                      : Colors.red),
-                              Segment(
-                                  value: ((goalVO.maturityProgress -
-                                              goalVO.currentProgress) *
-                                          100)
-                                      .toInt(),
-                                  label: const Text('Maturity Value'),
-                                  color: goalVO.health == GoalHealth.good
-                                      ? Colors.lightGreen
-                                      : Colors.orange),
-                            ],
+                            segments: _getProgressSegments(goalVO, context),
                           ))),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -165,24 +150,94 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
               Padding(
                   padding: const EdgeInsets.all(AppDimen.defaultPadding),
                   child: PrimerProgressBar(
-                    segments: [
-                      Segment(
-                          value: (goalVO.lowRiskProgress * 100).toInt(),
-                          label: const Text('Low Risk'),
-                          color: Colors.green),
-                      Segment(
-                          value: (goalVO.mediumRiskProgress * 100).toInt(),
-                          label: const Text('Medium Risk'),
-                          color: Colors.orange),
-                      Segment(
-                          value: (goalVO.highRiskProgress * 100).toInt(),
-                          label: const Text('High Risk'),
-                          color: Colors.red),
-                    ],
+                    segments: _getRiskCompositionSegments(goalVO, context),
                   )),
             ],
           ),
         ));
+  }
+
+  List<Segment> _getProgressSegments(GoalVO goalVO, BuildContext context) {
+    List<Segment> segments = [];
+    if (goalVO.currentProgressPercent == 100) {
+      segments.add(
+        Segment(
+            value: (goalVO.currentProgressPercent).toInt(),
+            label: const Text('Current Value'),
+            valueLabel: Text(formatToPercentage(goalVO.currentProgressPercent),
+                style: Theme.of(context).textTheme.labelSmall),
+            color:
+                goalVO.health == GoalHealth.good ? Colors.green : Colors.red),
+      );
+    } else {
+      segments.add(
+        Segment(
+            value: (goalVO.currentProgressPercent).toInt(),
+            label: const Text('Current Value'),
+            valueLabel: Text(formatToPercentage(goalVO.currentProgressPercent),
+                style: Theme.of(context).textTheme.labelSmall),
+            color:
+                goalVO.health == GoalHealth.good ? Colors.green : Colors.red),
+      );
+      if (goalVO.maturityProgressPercent > goalVO.currentProgressPercent) {
+        segments.add(
+          Segment(
+              value: (goalVO.maturityProgressPercent -
+                      goalVO.currentProgressPercent)
+                  .toInt(),
+              label: const Text('Maturity Value'),
+              valueLabel: Text(
+                  formatToPercentage(goalVO.maturityProgressPercent),
+                  style: Theme.of(context).textTheme.labelSmall),
+              color: goalVO.health == GoalHealth.good
+                  ? Colors.lightGreen
+                  : Colors.orange),
+        );
+      }
+      segments.add(Segment(
+          value: (goalVO.pendingProgressPercent).toInt(),
+          label: const Text('Health:'),
+          valueLabel: Text(goalVO.health == GoalHealth.good ? 'Good' : 'Risky',
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                  color: goalVO.health == GoalHealth.good
+                      ? Colors.green
+                      : Colors.red)),
+          color: Colors.transparent));
+    }
+    return segments;
+  }
+
+  List<Segment> _getRiskCompositionSegments(
+      GoalVO goalVO, BuildContext context) {
+    List<Segment> segments = [];
+
+    Map<RiskLevel, double> riskComposition = goalVO.riskLevelDistribution;
+    if (riskComposition.containsKey(RiskLevel.low)) {
+      segments.add(Segment(
+          value: (goalVO.lowRiskProgressPercent).toInt(),
+          label: const Text('Low Risk'),
+          valueLabel: Text(formatToPercentage(goalVO.lowRiskProgressPercent),
+              style: Theme.of(context).textTheme.labelSmall),
+          color: Colors.green));
+    }
+    if (riskComposition.containsKey(RiskLevel.medium)) {
+      segments.add(Segment(
+          value: (goalVO.mediumRiskProgressPercent).toInt(),
+          label: const Text('Medium Risk'),
+          valueLabel: Text(formatToPercentage(goalVO.mediumRiskProgressPercent),
+              style: Theme.of(context).textTheme.labelSmall),
+          color: Colors.orange));
+    }
+    if (riskComposition.containsKey(RiskLevel.high)) {
+      segments.add(Segment(
+          value: (goalVO.highRiskProgressPercent).toInt(),
+          label: const Text('High Risk'),
+          valueLabel: Text(formatToPercentage(goalVO.highRiskProgressPercent),
+              style: Theme.of(context).textTheme.labelSmall),
+          color: Colors.red));
+    }
+
+    return segments;
   }
 
   String _getYearsLeft(double yearsLeft) {

@@ -47,12 +47,32 @@ class GoalVO {
 
   double get yearsLeft => maturityDate.difference(DateTime.now()).inDays / 365;
 
-  double get currentProgress => currentValue / maturityAmount;
-  double get maturityProgress => valueOnMaturity / maturityAmount;
+  double get currentProgressPercent {
+    double progress = (currentValue / maturityAmount) * 100;
+    if (progress > 100) {
+      return 100;
+    } else {
+      return progress;
+    }
+  }
 
-  double get lowRiskProgress => riskLevelDistribution[RiskLevel.low] ?? 0.0;
-  double get mediumRiskProgress => riskLevelDistribution[RiskLevel.medium] ?? 0.0;
-  double get highRiskProgress => riskLevelDistribution[RiskLevel.high] ?? 0.0;
+  double get maturityProgressPercent {
+    double progress = (valueOnMaturity / maturityAmount) * 100;
+    if (progress > 100) {
+      return 100;
+    } else {
+      return progress;
+    }
+  }
+
+  double get pendingProgressPercent => 100 - maturityProgressPercent;
+
+  double get lowRiskProgressPercent =>
+      (riskLevelDistribution[RiskLevel.low] ?? 0.0) * 100;
+  double get mediumRiskProgressPercent =>
+      (riskLevelDistribution[RiskLevel.medium] ?? 0.0) * 100;
+  double get highRiskProgressPercent =>
+      (riskLevelDistribution[RiskLevel.high] ?? 0.0) * 100;
 
   GoalVO._(
       {required this.id,
