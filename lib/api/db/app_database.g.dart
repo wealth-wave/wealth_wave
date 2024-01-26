@@ -2586,13 +2586,15 @@ class GoalInvestmentDO extends DataClass {
   final double splitPercentage;
   final String? investmentName;
   final String? goalName;
+  final DateTime? maturityDate;
   const GoalInvestmentDO(
       {required this.id,
       required this.investmentId,
       required this.goalId,
       required this.splitPercentage,
       this.investmentName,
-      this.goalName});
+      this.goalName,
+      this.maturityDate});
   factory GoalInvestmentDO.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -2603,6 +2605,7 @@ class GoalInvestmentDO extends DataClass {
       splitPercentage: serializer.fromJson<double>(json['splitPercentage']),
       investmentName: serializer.fromJson<String?>(json['investmentName']),
       goalName: serializer.fromJson<String?>(json['goalName']),
+      maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),
     );
   }
   @override
@@ -2615,6 +2618,7 @@ class GoalInvestmentDO extends DataClass {
       'splitPercentage': serializer.toJson<double>(splitPercentage),
       'investmentName': serializer.toJson<String?>(investmentName),
       'goalName': serializer.toJson<String?>(goalName),
+      'maturityDate': serializer.toJson<DateTime?>(maturityDate),
     };
   }
 
@@ -2624,7 +2628,8 @@ class GoalInvestmentDO extends DataClass {
           int? goalId,
           double? splitPercentage,
           Value<String?> investmentName = const Value.absent(),
-          Value<String?> goalName = const Value.absent()}) =>
+          Value<String?> goalName = const Value.absent(),
+          Value<DateTime?> maturityDate = const Value.absent()}) =>
       GoalInvestmentDO(
         id: id ?? this.id,
         investmentId: investmentId ?? this.investmentId,
@@ -2633,6 +2638,8 @@ class GoalInvestmentDO extends DataClass {
         investmentName:
             investmentName.present ? investmentName.value : this.investmentName,
         goalName: goalName.present ? goalName.value : this.goalName,
+        maturityDate:
+            maturityDate.present ? maturityDate.value : this.maturityDate,
       );
   @override
   String toString() {
@@ -2642,14 +2649,15 @@ class GoalInvestmentDO extends DataClass {
           ..write('goalId: $goalId, ')
           ..write('splitPercentage: $splitPercentage, ')
           ..write('investmentName: $investmentName, ')
-          ..write('goalName: $goalName')
+          ..write('goalName: $goalName, ')
+          ..write('maturityDate: $maturityDate')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, investmentId, goalId, splitPercentage, investmentName, goalName);
+  int get hashCode => Object.hash(id, investmentId, goalId, splitPercentage,
+      investmentName, goalName, maturityDate);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2659,7 +2667,8 @@ class GoalInvestmentDO extends DataClass {
           other.goalId == this.goalId &&
           other.splitPercentage == this.splitPercentage &&
           other.investmentName == this.investmentName &&
-          other.goalName == this.goalName);
+          other.goalName == this.goalName &&
+          other.maturityDate == this.maturityDate);
 }
 
 class $GoalInvestmentEnrichedViewView
@@ -2675,8 +2684,15 @@ class $GoalInvestmentEnrichedViewView
       attachedDatabase.investmentTable.createAlias('t1');
   $GoalTableTable get goal => attachedDatabase.goalTable.createAlias('t2');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, investmentId, goalId, splitPercentage, investmentName, goalName];
+  List<GeneratedColumn> get $columns => [
+        id,
+        investmentId,
+        goalId,
+        splitPercentage,
+        investmentName,
+        goalName,
+        maturityDate
+      ];
   @override
   String get aliasedName => _alias ?? entityName;
   @override
@@ -2701,6 +2717,8 @@ class $GoalInvestmentEnrichedViewView
           .read(DriftSqlType.string, data['${effectivePrefix}investment_name']),
       goalName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}goal_name']),
+      maturityDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}maturity_date']),
     );
   }
 
@@ -2727,6 +2745,10 @@ class $GoalInvestmentEnrichedViewView
   late final GeneratedColumn<String> goalName = GeneratedColumn<String>(
       'goal_name', aliasedName, true,
       generatedAs: GeneratedAs(goal.name, false), type: DriftSqlType.string);
+  late final GeneratedColumn<DateTime> maturityDate = GeneratedColumn<DateTime>(
+      'maturity_date', aliasedName, true,
+      generatedAs: GeneratedAs(goal.maturityDate, false),
+      type: DriftSqlType.dateTime);
   @override
   $GoalInvestmentEnrichedViewView createAlias(String alias) {
     return $GoalInvestmentEnrichedViewView(attachedDatabase, alias);
