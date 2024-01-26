@@ -2238,7 +2238,10 @@ class $BasketEnrichedViewView
       type: DriftSqlType.string);
   late final GeneratedColumn<int> totalInvestmentCount = GeneratedColumn<int>(
       'total_investment_count', aliasedName, true,
-      generatedAs: GeneratedAs(investment.id.count(), false),
+      generatedAs: GeneratedAs(
+          investment.id.count(
+              distinct: true, filter: investment.basketId.equalsExp(basket.id)),
+          false),
       type: DriftSqlType.int);
   @override
   $BasketEnrichedViewView createAlias(String alias) {
@@ -2266,7 +2269,6 @@ class InvestmentDO extends DataClass {
   final DateTime? valueUpdatedOn;
   final int? basketId;
   final String? basketName;
-  final double? totalInvestedAmount;
   final int? totalTransactions;
   final int? totalSips;
   final int? taggedGoals;
@@ -2281,7 +2283,6 @@ class InvestmentDO extends DataClass {
       this.valueUpdatedOn,
       this.basketId,
       this.basketName,
-      this.totalInvestedAmount,
       this.totalTransactions,
       this.totalSips,
       this.taggedGoals});
@@ -2300,8 +2301,6 @@ class InvestmentDO extends DataClass {
       valueUpdatedOn: serializer.fromJson<DateTime?>(json['valueUpdatedOn']),
       basketId: serializer.fromJson<int?>(json['basketId']),
       basketName: serializer.fromJson<String?>(json['basketName']),
-      totalInvestedAmount:
-          serializer.fromJson<double?>(json['totalInvestedAmount']),
       totalTransactions: serializer.fromJson<int?>(json['totalTransactions']),
       totalSips: serializer.fromJson<int?>(json['totalSips']),
       taggedGoals: serializer.fromJson<int?>(json['taggedGoals']),
@@ -2322,7 +2321,6 @@ class InvestmentDO extends DataClass {
       'valueUpdatedOn': serializer.toJson<DateTime?>(valueUpdatedOn),
       'basketId': serializer.toJson<int?>(basketId),
       'basketName': serializer.toJson<String?>(basketName),
-      'totalInvestedAmount': serializer.toJson<double?>(totalInvestedAmount),
       'totalTransactions': serializer.toJson<int?>(totalTransactions),
       'totalSips': serializer.toJson<int?>(totalSips),
       'taggedGoals': serializer.toJson<int?>(taggedGoals),
@@ -2340,7 +2338,6 @@ class InvestmentDO extends DataClass {
           Value<DateTime?> valueUpdatedOn = const Value.absent(),
           Value<int?> basketId = const Value.absent(),
           Value<String?> basketName = const Value.absent(),
-          Value<double?> totalInvestedAmount = const Value.absent(),
           Value<int?> totalTransactions = const Value.absent(),
           Value<int?> totalSips = const Value.absent(),
           Value<int?> taggedGoals = const Value.absent()}) =>
@@ -2357,9 +2354,6 @@ class InvestmentDO extends DataClass {
             valueUpdatedOn.present ? valueUpdatedOn.value : this.valueUpdatedOn,
         basketId: basketId.present ? basketId.value : this.basketId,
         basketName: basketName.present ? basketName.value : this.basketName,
-        totalInvestedAmount: totalInvestedAmount.present
-            ? totalInvestedAmount.value
-            : this.totalInvestedAmount,
         totalTransactions: totalTransactions.present
             ? totalTransactions.value
             : this.totalTransactions,
@@ -2379,7 +2373,6 @@ class InvestmentDO extends DataClass {
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
           ..write('basketId: $basketId, ')
           ..write('basketName: $basketName, ')
-          ..write('totalInvestedAmount: $totalInvestedAmount, ')
           ..write('totalTransactions: $totalTransactions, ')
           ..write('totalSips: $totalSips, ')
           ..write('taggedGoals: $taggedGoals')
@@ -2399,7 +2392,6 @@ class InvestmentDO extends DataClass {
       valueUpdatedOn,
       basketId,
       basketName,
-      totalInvestedAmount,
       totalTransactions,
       totalSips,
       taggedGoals);
@@ -2417,7 +2409,6 @@ class InvestmentDO extends DataClass {
           other.valueUpdatedOn == this.valueUpdatedOn &&
           other.basketId == this.basketId &&
           other.basketName == this.basketName &&
-          other.totalInvestedAmount == this.totalInvestedAmount &&
           other.totalTransactions == this.totalTransactions &&
           other.totalSips == this.totalSips &&
           other.taggedGoals == this.taggedGoals);
@@ -2451,7 +2442,6 @@ class $InvestmentEnrichedViewView
         valueUpdatedOn,
         basketId,
         basketName,
-        totalInvestedAmount,
         totalTransactions,
         totalSips,
         taggedGoals
@@ -2489,8 +2479,6 @@ class $InvestmentEnrichedViewView
           .read(DriftSqlType.int, data['${effectivePrefix}basket_id']),
       basketName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}basket_name']),
-      totalInvestedAmount: attachedDatabase.typeMapping.read(
-          DriftSqlType.double, data['${effectivePrefix}total_invested_amount']),
       totalTransactions: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}total_transactions']),
       totalSips: attachedDatabase.typeMapping
@@ -2538,20 +2526,29 @@ class $InvestmentEnrichedViewView
   late final GeneratedColumn<String> basketName = GeneratedColumn<String>(
       'basket_name', aliasedName, true,
       generatedAs: GeneratedAs(basket.name, false), type: DriftSqlType.string);
-  late final GeneratedColumn<double> totalInvestedAmount =
-      GeneratedColumn<double>('total_invested_amount', aliasedName, true,
-          generatedAs: GeneratedAs(transaction.amount.sum(), false),
-          type: DriftSqlType.double);
   late final GeneratedColumn<int> totalTransactions = GeneratedColumn<int>(
       'total_transactions', aliasedName, true,
-      generatedAs: GeneratedAs(transaction.id.count(), false),
+      generatedAs: GeneratedAs(
+          transaction.id.count(
+              distinct: true,
+              filter: transaction.investmentId.equalsExp(investment.id)),
+          false),
       type: DriftSqlType.int);
   late final GeneratedColumn<int> totalSips = GeneratedColumn<int>(
       'total_sips', aliasedName, true,
-      generatedAs: GeneratedAs(sip.id.count(), false), type: DriftSqlType.int);
+      generatedAs: GeneratedAs(
+          sip.id.count(
+              distinct: true,
+              filter: sip.investmentId.equalsExp(investment.id)),
+          false),
+      type: DriftSqlType.int);
   late final GeneratedColumn<int> taggedGoals = GeneratedColumn<int>(
       'tagged_goals', aliasedName, true,
-      generatedAs: GeneratedAs(goalInvestment.id.count(), false),
+      generatedAs: GeneratedAs(
+          goalInvestment.id.count(
+              distinct: true,
+              filter: goalInvestment.investmentId.equalsExp(investment.id)),
+          false),
       type: DriftSqlType.int);
   @override
   $InvestmentEnrichedViewView createAlias(String alias) {
@@ -3196,7 +3193,10 @@ class $SipEnrichedViewView extends ViewInfo<$SipEnrichedViewView, SipDO>
       type: DriftSqlType.string);
   late final GeneratedColumn<int> transactionCount = GeneratedColumn<int>(
       'transaction_count', aliasedName, true,
-      generatedAs: GeneratedAs(transaction.id.count(), false),
+      generatedAs: GeneratedAs(
+          transaction.id.count(
+              distinct: true, filter: transaction.sipId.equalsExp(sip.id)),
+          false),
       type: DriftSqlType.int);
   @override
   $SipEnrichedViewView createAlias(String alias) {
@@ -3413,7 +3413,10 @@ class $GoalEnrichedViewView extends ViewInfo<$GoalEnrichedViewView, GoalDO>
           type: DriftSqlType.dateTime);
   late final GeneratedColumn<int> taggedInvestmentCount = GeneratedColumn<int>(
       'tagged_investment_count', aliasedName, true,
-      generatedAs: GeneratedAs(goalInvestment.id.count(), false),
+      generatedAs: GeneratedAs(
+          goalInvestment.id.count(
+              distinct: true, filter: goalInvestment.goalId.equalsExp(goal.id)),
+          false),
       type: DriftSqlType.int);
   @override
   $GoalEnrichedViewView createAlias(String alias) {

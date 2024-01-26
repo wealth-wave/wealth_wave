@@ -126,13 +126,11 @@ abstract class InvestmentEnrichedView extends View {
 
   Expression<String> get basketName => basket.name;
 
-  Expression<double> get totalInvestedAmount => transaction.amount.sum();
+  Expression<int> get totalTransactions => transaction.id.count(distinct: true, filter: transaction.investmentId.equalsExp(investment.id));
 
-  Expression<int> get totalTransactions => transaction.id.count();
+  Expression<int> get totalSips => sip.id.count(distinct: true, filter: sip.investmentId.equalsExp(investment.id));
 
-  Expression<int> get totalSips => sip.id.count();
-
-  Expression<int> get taggedGoals => goalInvestment.id.count();
+  Expression<int> get taggedGoals => goalInvestment.id.count(distinct: true, filter: goalInvestment.investmentId.equalsExp(investment.id));
 
   @override
   Query as() => select([
@@ -146,7 +144,6 @@ abstract class InvestmentEnrichedView extends View {
         investment.valueUpdatedOn,
         basketId,
         basketName,
-        totalInvestedAmount,
         totalTransactions,
         totalSips,
         taggedGoals
@@ -201,7 +198,7 @@ abstract class SipEnrichedView extends View {
 
   Expression<String> get investmentName => investment.name;
 
-  Expression<int> get transactionCount => transaction.id.count();
+  Expression<int> get transactionCount => transaction.id.count(distinct: true, filter: transaction.sipId.equalsExp(sip.id));
 
   @override
   Query as() => select([
@@ -230,9 +227,9 @@ abstract class BasketEnrichedView extends View {
 
   TransactionTable get transaction;
 
-  Expression<int> get totalInvestmentCount => investment.id.count();
+  Expression<int> get totalInvestmentCount => investment.id.count(distinct: true, filter: investment.basketId.equalsExp(basket.id));
 
-  Expression<double> get investedAmount => transaction.amount.sum();
+  Expression<double> get investedAmount => transaction.amount.sum(filter: transaction.investmentId.equalsExp(investment.id));
 
   @override
   Query as() => select([
@@ -283,7 +280,7 @@ abstract class GoalEnrichedView extends View {
 
   GoalInvestmentTable get goalInvestment;
 
-  Expression<int> get taggedInvestmentCount => goalInvestment.id.count();
+  Expression<int> get taggedInvestmentCount => goalInvestment.id.count(distinct: true, filter: goalInvestment.goalId.equalsExp(goal.id));
 
   @override
   Query as() => select([
