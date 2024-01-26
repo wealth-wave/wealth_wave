@@ -68,20 +68,22 @@ class Goal {
       .toList()
       .fold(0.0, (value, element) => value + element);
 
-  Map<RiskLevel, double> get riskComposition => taggedInvestments.entries
-          .fold<Map<RiskLevel, double>>({}, (acc, element) {
-        Investment investment = element.key;
-        double percentage = element.value;
-        double value = calculatePercentageOfValue(
-            value: investment.getValueOn(
-                date: maturityDate, considerFuturePayments: true),
-            percentage: percentage);
+  Map<RiskLevel, double> get riskComposition {
+    double valueOnMaturity = this.valueOnMaturity;
+    return taggedInvestments.entries.fold({}, (acc, element) {
+      Investment investment = element.key;
+      double percentage = element.value;
+      double value = calculatePercentageOfValue(
+          value: investment.getValueOn(
+              date: maturityDate, considerFuturePayments: true),
+          percentage: percentage);
 
-        return {
-          ...acc,
-          investment.riskLevel: (acc[investment.riskLevel] ?? 0) + value
-        }.map((key, value) => MapEntry(key, value / valueOnMaturity));
-      });
+      return {
+        ...acc,
+        investment.riskLevel: (acc[investment.riskLevel] ?? 0) + value
+      };
+    }).map((key, value) => MapEntry(key, value / valueOnMaturity));
+  }
 
   GoalHealth get health {
     Map<RiskLevel, double> riskComposition = this.riskComposition;
