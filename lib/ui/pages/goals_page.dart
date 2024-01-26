@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:wealth_wave/contract/goal_health.dart';
@@ -93,12 +94,38 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
               PrimerProgressBar(
                 segments: _getProgressSegments(goalVO, context),
               ),
-              PrimerProgressBar(
-                segments: _getRiskCompositionSegments(goalVO, context),
-              ),
-              PrimerProgressBar(
-                segments: _getBasketCompositionSegments(goalVO, context),
-              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                      height: 200,
+                      width: 200,
+                      child: PieChart(
+                        PieChartData(
+                            sections: goalVO.riskComposition.entries
+                                .map((entry) => PieChartSectionData(
+                                    value: entry.value * 100,
+                                    color: _getColorForRiskLevel(entry.key),
+                                    title: _getRiskName(entry.key),
+                                    radius: 50))
+                                .toList()),
+                      )),
+                  SizedBox(
+                      height: 200,
+                      width: 200,
+                      child: PieChart(
+                        PieChartData(
+                            sections: goalVO.basketComposition.entries
+                                .map((entry) => PieChartSectionData(
+                                    value: entry.value * 100,
+                                    color: Colors.primaries[entry.key.hashCode %
+                                        Colors.primaries.length],
+                                    title: entry.key,
+                                    radius: 50))
+                                .toList()),
+                      )),
+                ],
+              )
             ],
           ),
         ));
@@ -256,6 +283,28 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
         return 'Medium';
       case GoalImportance.high:
         return 'High';
+    }
+  }
+
+  Color _getColorForRiskLevel(RiskLevel key) {
+    switch (key) {
+      case RiskLevel.low:
+        return Colors.green;
+      case RiskLevel.medium:
+        return Colors.orange;
+      case RiskLevel.high:
+        return Colors.red;
+    }
+  }
+
+  String _getRiskName(RiskLevel key) {
+    switch (key) {
+      case RiskLevel.low:
+        return 'Low Risk';
+      case RiskLevel.medium:
+        return 'Medium Risk';
+      case RiskLevel.high:
+        return 'High Risk';
     }
   }
 }
