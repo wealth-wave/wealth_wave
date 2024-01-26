@@ -58,124 +58,112 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
       {required final BuildContext context,
       required final InvestmentVO investmentVO}) {
     return Card(
-        margin: const EdgeInsets.all(AppDimen.defaultPadding),
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimen.defaultPadding),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                      flex: 1,
-                      child: Text(investmentVO.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleMedium)),
-                  _infoToolTip(investmentVO, context),
-                  PopupMenuButton<int>(
-                    onSelected: (value) {
-                      if (value == 1) {
-                        showCreateInvestmentDialog(
-                                context: context,
-                                investmentIdToUpdate: investmentVO.id)
+      margin: const EdgeInsets.all(AppDimen.defaultPadding),
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimen.defaultPadding),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _getTitleWidget(investmentVO, context),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        showSipsDialog(
+                                context: context, investmentId: investmentVO.id)
                             .then((value) => presenter.fetchInvestments());
-                      } else if (value == 2) {
-                        presenter.deleteInvestment(id: investmentVO.id);
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 1,
-                        child: Text('Edit'),
-                      ),
-                      const PopupMenuItem(
-                        value: 2,
-                        child: Text('Delete'),
-                      ),
-                    ],
-                  ),
-                  const Spacer(flex: 1),
-                  TextButton(
-                    onPressed: () {
-                      showSipsDialog(
-                              context: context, investmentId: investmentVO.id)
-                          .then((value) => presenter.fetchInvestments());
-                    },
-                    child: Text('${investmentVO.sipCount} sips'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      showTransactionsDialog(
-                              context: context, investmentId: investmentVO.id)
-                          .then((value) => presenter.fetchInvestments());
-                    },
-                    child: Text('${investmentVO.transactionCount} tx'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      showTaggedGoalDialog(
-                              context: context, investmentId: investmentVO.id)
-                          .then((value) => presenter.fetchInvestments());
-                    },
-                    child: Text('${investmentVO.taggedGoalCount} goals'),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      },
+                      child: Text('${investmentVO.sipCount} sips'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        showTransactionsDialog(
+                                context: context, investmentId: investmentVO.id)
+                            .then((value) => presenter.fetchInvestments());
+                      },
+                      child: Text('${investmentVO.transactionCount} tx'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        showTaggedGoalDialog(
+                                context: context, investmentId: investmentVO.id)
+                            .then((value) => presenter.fetchInvestments());
+                      },
+                      child: Text('${investmentVO.taggedGoalCount} goals'),
+                    ),
+                  ],
+                ),
+              ]),
+          OverflowBar(
+            children: [
+              Column(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(formatToCurrency(investmentVO.investedValue),
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Invested)',
-                          style: Theme.of(context).textTheme.labelSmall),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(formatToPercentage(investmentVO.irr),
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(IRR)',
-                          style: Theme.of(context).textTheme.labelSmall),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(formatToCurrency(investmentVO.currentValue),
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('(Value)',
-                          style: Theme.of(context).textTheme.labelSmall),
-                    ],
-                  ),
+                  Text(formatToCurrency(investmentVO.investedValue),
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  Text('(Invested)',
+                      style: Theme.of(context).textTheme.labelSmall),
                 ],
               ),
+              const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)),
+              Column(
+                children: [
+                  Text(formatToCurrency(investmentVO.currentValue),
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  Text('(At ${formatToPercentage(investmentVO.irr)}',
+                      style: Theme.of(context).textTheme.labelSmall),
+                ],
+              )
             ],
-          ),
-        ));
+          )
+        ]),
+      ),
+    );
   }
 
-  Tooltip _infoToolTip(InvestmentVO investmentVO, BuildContext context) {
-    final description = investmentVO.description;
-    final basketName = investmentVO.basketName;
-    final List<Widget> widgets = [];
-    if (description?.isNotEmpty == true) {
-      widgets.add(Text(description ?? '',
-          style: Theme.of(context).textTheme.labelSmall));
-    }
+  RichText _getTitleWidget(InvestmentVO investmentVO, BuildContext context) {
+    List<WidgetSpan> widgets = [];
+    String? basketName = investmentVO.basketName;
     if (basketName != null) {
-      widgets.add(Text('Basket: $basketName',
-          style: Theme.of(context).textTheme.labelSmall));
+      widgets.add(WidgetSpan(
+          child: Text(' | $basketName',
+              style: Theme.of(context).textTheme.labelMedium)));
     }
-    widgets.add(Text('Risk: ${_getRiskLevel(investmentVO.riskLevel)}',
-        style: Theme.of(context).textTheme.labelSmall));
-    return Tooltip(
-        richMessage: WidgetSpan(child: Column(children: widgets)),
-        child: const Icon(Icons.info));
+    widgets.add(WidgetSpan(
+        child: Text(' | ${_getRiskLevel(investmentVO.riskLevel)}',
+            style: Theme.of(context).textTheme.labelMedium)));
+    widgets.add(WidgetSpan(
+      alignment: PlaceholderAlignment.middle,
+      child: PopupMenuButton<int>(
+        onSelected: (value) {
+          if (value == 1) {
+            showCreateInvestmentDialog(
+                    context: context, investmentIdToUpdate: investmentVO.id)
+                .then((value) => presenter.fetchInvestments());
+          } else if (value == 2) {
+            presenter.deleteInvestment(id: investmentVO.id);
+          }
+        },
+        itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: 1,
+            child: Text('Edit'),
+          ),
+          const PopupMenuItem(
+            value: 2,
+            child: Text('Delete'),
+          ),
+        ],
+      ),
+    ));
+    return RichText(
+        text: TextSpan(
+            text: investmentVO.name,
+            style: Theme.of(context).textTheme.titleMedium,
+            children: widgets));
   }
 
   String _getRiskLevel(RiskLevel riskLevel) {
