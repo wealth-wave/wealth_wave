@@ -32,7 +32,7 @@ class BasketService {
       _basketApi.create(name: name, description: description).then((_) => {});
 
   Future<List<Basket>> get() async {
-    List<InvestmentDO> investmentDOs = await _investmentApi.get();
+    List<InvestmentDO> investmentDOs = await _investmentApi.getAll();
     List<SipDO> sipDOs = await _sipApi.getAll();
     List<TransactionDO> transactionDOs = await _transactionApi.getAll();
     List<BasketDO> basketDOs = await _basketApi.get();
@@ -46,7 +46,7 @@ class BasketService {
   }
 
   Future<Basket> getById({required final int id}) async {
-    List<InvestmentDO> investmentDOs = await _investmentApi.get();
+    List<InvestmentDO> investmentDOs = await _investmentApi.getAll();
     List<SipDO> sipDOs = await _sipApi.getAll();
     List<TransactionDO> transactionDOs = await _transactionApi.getAll();
     BasketDO basketDO = await _basketApi.getBy(id: id);

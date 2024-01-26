@@ -52,7 +52,7 @@ class InvestmentService {
   }
 
   Future<List<Investment>> get() async {
-    return _investmentApi.get().then((investments) => Future.wait(
+    return _investmentApi.getAll().then((investments) => Future.wait(
         investments.map((investmentEnrichedDO) => _sipApi
             .getBy(investmentId: investmentEnrichedDO.id)
             .then((sipDOs) => _transactionApi

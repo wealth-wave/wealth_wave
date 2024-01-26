@@ -54,7 +54,7 @@ class GoalService {
           .then((_) => {});
 
   Future<List<Goal>> get() async {
-    List<InvestmentDO> investmentDOs = await _investmentApi.get();
+    List<InvestmentDO> investmentDOs = await _investmentApi.getAll();
     List<GoalDO> goalDOs = await _goalApi.get();
     List<Goal> goals = List.empty(growable: true);
     for (final goalDO in goalDOs) {
@@ -82,7 +82,7 @@ class GoalService {
   }
 
   Future<Goal> getBy({required final int id}) async {
-    List<InvestmentDO> investmentDOs = await _investmentApi.get();
+    List<InvestmentDO> investmentDOs = await _investmentApi.getAll();
     GoalDO goalDO = await _goalApi.getBy(id: id);
     List<GoalInvestmentDO> goalInvestments =
         await _goalInvestmentApi.getBy(goalId: goalDO.id);

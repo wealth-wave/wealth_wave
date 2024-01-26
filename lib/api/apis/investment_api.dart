@@ -28,7 +28,7 @@ class InvestmentApi {
         riskLevel: riskLevel));
   }
 
-  Future<List<InvestmentDO>> get() async {
+  Future<List<InvestmentDO>> getAll() async {
     return (_db.select(_db.investmentEnrichedView)
           ..orderBy([(t) => OrderingTerm.asc(t.name)]))
         .get();

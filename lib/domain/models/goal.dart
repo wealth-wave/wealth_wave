@@ -89,26 +89,24 @@ class Goal {
     Map<RiskLevel, double> riskComposition = this.riskComposition;
 
     if (importance == GoalImportance.high) {
-      if ((riskComposition[RiskLevel.high] ?? 0) > yearsLeft / 2 / 100) {
+      if ((riskComposition[RiskLevel.high] ?? 0) > yearsLeft / 10 / 2) {
         return GoalHealth.risky;
       }
-      if (riskComposition.containsKey(RiskLevel.medium) &&
-          riskComposition[RiskLevel.medium]! > yearsLeft / 3 / 100) {
+      if ((riskComposition[RiskLevel.medium] ?? 0) > yearsLeft / 10 / 3) {
         return GoalHealth.risky;
       }
     } else if (importance == GoalImportance.medium) {
-      if ((riskComposition[RiskLevel.high] ?? 0.0) > yearsLeft / 1.5 / 100) {
+      if ((riskComposition[RiskLevel.high] ?? 0) > yearsLeft / 10 / 1.5) {
         return GoalHealth.risky;
       }
-      if (riskComposition.containsKey(RiskLevel.medium) &&
-          riskComposition[RiskLevel.medium]! > yearsLeft / 2 / 100) {
+      if ((riskComposition[RiskLevel.medium] ?? 0) > yearsLeft / 10 / 2) {
         return GoalHealth.risky;
       }
     } else if (importance == GoalImportance.low) {
-      if ((riskComposition[RiskLevel.high] ?? 0) > yearsLeft / 1.5 / 100) {
+      if ((riskComposition[RiskLevel.high] ?? 0) > yearsLeft / 10 / 1.5) {
         return GoalHealth.risky;
       }
-      if ((riskComposition[RiskLevel.medium] ?? 0) > yearsLeft / 1.5 / 100) {
+      if ((riskComposition[RiskLevel.medium] ?? 0) > yearsLeft / 10 / 1.5) {
         return GoalHealth.risky;
       }
     }

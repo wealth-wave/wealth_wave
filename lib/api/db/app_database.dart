@@ -258,6 +258,8 @@ abstract class GoalInvestmentEnrichedView extends View {
 
   Expression<String> get goalName => goal.name;
 
+  Expression<DateTime> get maturityDate => goal.maturityDate;
+
   @override
   Query as() => select([
         goalInvestment.id,
@@ -265,7 +267,8 @@ abstract class GoalInvestmentEnrichedView extends View {
         goalInvestment.goalId,
         goalInvestment.splitPercentage,
         investmentName,
-        goalName
+        goalName,
+        maturityDate
       ]).from(goalInvestment).join([
         innerJoin(
             investment, investment.id.equalsExp(goalInvestment.investmentId)),

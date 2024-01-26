@@ -43,14 +43,26 @@ class TaggedGoalVO {
   final int id;
   final String goalName;
   final double split;
+  final double valueOnMaturity;
+  final int sipCount;
+  final double irr;
 
-  TaggedGoalVO({required this.id, required this.goalName, required this.split});
+  TaggedGoalVO(
+      {required this.id,
+      required this.goalName,
+      required this.split,
+      required this.valueOnMaturity,
+      required this.sipCount,
+      required this.irr});
 
   factory TaggedGoalVO.from(
       {required final GoalInvestmentTag goalInvestmentTag}) {
     return TaggedGoalVO(
         id: goalInvestmentTag.id,
         goalName: goalInvestmentTag.goalName,
-        split: goalInvestmentTag.splitPercentage);
+        split: goalInvestmentTag.splitPercentage,
+        valueOnMaturity: goalInvestmentTag.valueOnMaturity,
+        irr: goalInvestmentTag.irr,
+        sipCount: goalInvestmentTag.sipCount);
   }
 }
