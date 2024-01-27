@@ -1,4 +1,3 @@
-import 'package:wealth_wave/contract/goal_health.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
@@ -41,7 +40,7 @@ class GoalVO {
   final double inflation;
   final double irr;
   final GoalImportance importance;
-  final GoalHealth health;
+  final List<String> healthSuggestions;
   final int taggedInvestmentCount;
   final Map<RiskLevel, double> riskComposition;
   final Map<String, double> basketComposition;
@@ -89,7 +88,7 @@ class GoalVO {
       required this.importance,
       required this.inflation,
       required this.irr,
-      required this.health,
+      required this.healthSuggestions,
       required this.taggedInvestmentCount,
       required this.riskComposition,
       required this.basketComposition});
@@ -106,7 +105,7 @@ class GoalVO {
         investedAmount: goal.investedAmount,
         maturityDate: goal.maturityDate,
         irr: goal.irr,
-        health: goal.health,
+        healthSuggestions: goal.healthSuggestions,
         valueOnMaturity: goal.valueOnMaturity,
         taggedInvestmentCount: goal.taggedInvestments.length,
         riskComposition: goal.riskComposition,

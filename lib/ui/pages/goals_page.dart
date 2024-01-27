@@ -1,9 +1,6 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
-import 'package:wealth_wave/contract/goal_health.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
-import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/goals_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
@@ -61,11 +58,11 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
           padding: const EdgeInsets.all(AppDimen.defaultPadding),
           child: Column(
             children: [
-              OverflowBar(
-                alignment: MainAxisAlignment.spaceBetween,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       _getTitleWidget(goalVO, context),
@@ -94,41 +91,32 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
               PrimerProgressBar(
                 segments: _getProgressSegments(goalVO, context),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                      height: 200,
-                      width: 200,
-                      child: PieChart(
-                        PieChartData(
-                            sections: goalVO.riskComposition.entries
-                                .map((entry) => PieChartSectionData(
-                                    value: entry.value * 100,
-                                    color: _getColorForRiskLevel(entry.key),
-                                    title: _getRiskName(entry.key),
-                                    radius: 50))
-                                .toList()),
-                      )),
-                  SizedBox(
-                      height: 200,
-                      width: 200,
-                      child: PieChart(
-                        PieChartData(
-                            sections: goalVO.basketComposition.entries
-                                .map((entry) => PieChartSectionData(
-                                    value: entry.value * 100,
-                                    color: Colors.primaries[entry.key.hashCode %
-                                        Colors.primaries.length],
-                                    title: entry.key,
-                                    radius: 50))
-                                .toList()),
-                      )),
-                ],
-              )
+              const Padding(padding: EdgeInsets.all(AppDimen.minPadding)),
+              _getSuggestions(context, goalVO)
             ],
           ),
         ));
+  }
+
+  Column _getSuggestions(BuildContext context, GoalVO goalVO) {
+    return Column(
+      children: goalVO.healthSuggestions.map((suggestion) {
+        return Padding(
+          padding: const EdgeInsets.all(AppDimen.textPadding),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Text('•  ',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Expanded(
+                child: Text(suggestion,
+                    style: Theme.of(context).textTheme.bodyMedium),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
   }
 
   List<Segment> _getProgressSegments(GoalVO goalVO, BuildContext context) {
@@ -141,7 +129,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
             valueLabel: Text(formatToCurrency(goalVO.currentValue),
                 style: Theme.of(context).textTheme.bodyMedium),
             color:
-                goalVO.health == GoalHealth.good ? Colors.green : Colors.red),
+                goalVO.healthSuggestions.isEmpty ? Colors.green : Colors.red),
       );
     } else {
       segments.add(
@@ -151,7 +139,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
             valueLabel: Text(formatToCurrency(goalVO.currentValue),
                 style: Theme.of(context).textTheme.bodyMedium),
             color:
-                goalVO.health == GoalHealth.good ? Colors.green : Colors.red),
+                goalVO.healthSuggestions.isEmpty ? Colors.green : Colors.red),
       );
       if (goalVO.maturityProgressPercent > goalVO.currentProgressPercent) {
         segments.add(
@@ -162,7 +150,7 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
               label: const Text('Maturity Value'),
               valueLabel: Text(formatToCurrency(goalVO.valueOnMaturity),
                   style: Theme.of(context).textTheme.bodyMedium),
-              color: goalVO.health == GoalHealth.good
+              color: goalVO.healthSuggestions.isEmpty
                   ? Colors.lightGreen
                   : Colors.orange),
         );
@@ -170,58 +158,14 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
       segments.add(Segment(
           value: (goalVO.pendingProgressPercent).toInt(),
           label: const Text('Health:'),
-          valueLabel: Text(goalVO.health == GoalHealth.good ? 'Good' : 'Risky',
+          valueLabel: Text(goalVO.healthSuggestions.isEmpty ? 'Good' : 'Risky',
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: goalVO.health == GoalHealth.good
+                  color: goalVO.healthSuggestions.isEmpty
                       ? Colors.green
                       : Colors.red)),
           color: Colors.transparent));
     }
     return segments;
-  }
-
-  List<Segment> _getRiskCompositionSegments(
-      GoalVO goalVO, BuildContext context) {
-    List<Segment> segments = [];
-
-    Map<RiskLevel, double> riskComposition = goalVO.riskComposition;
-    if (riskComposition.containsKey(RiskLevel.low)) {
-      segments.add(Segment(
-          value: (goalVO.lowRiskProgressPercent).toInt(),
-          label: const Text('Low Risk'),
-          valueLabel: Text(formatToPercentage(goalVO.lowRiskProgressPercent),
-              style: Theme.of(context).textTheme.labelSmall),
-          color: Colors.green));
-    }
-    if (riskComposition.containsKey(RiskLevel.medium)) {
-      segments.add(Segment(
-          value: (goalVO.mediumRiskProgressPercent).toInt(),
-          label: const Text('Medium Risk'),
-          valueLabel: Text(formatToPercentage(goalVO.mediumRiskProgressPercent),
-              style: Theme.of(context).textTheme.labelSmall),
-          color: Colors.orange));
-    }
-    if (riskComposition.containsKey(RiskLevel.high)) {
-      segments.add(Segment(
-          value: (goalVO.highRiskProgressPercent).toInt(),
-          label: const Text('High Risk'),
-          valueLabel: Text(formatToPercentage(goalVO.highRiskProgressPercent),
-              style: Theme.of(context).textTheme.labelSmall),
-          color: Colors.red));
-    }
-
-    return segments;
-  }
-
-  List<Segment> _getBasketCompositionSegments(
-      GoalVO goalVO, BuildContext context) {
-    return goalVO.basketComposition.entries
-        .map((entry) => Segment(
-            value: (entry.value * 100).toInt(),
-            color:
-                Colors.primaries[entry.key.hashCode % Colors.primaries.length],
-            label: Text(entry.key)))
-        .toList();
   }
 
   String _getYearsLeft(double yearsLeft) {
@@ -283,28 +227,6 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
         return 'Medium';
       case GoalImportance.high:
         return 'High';
-    }
-  }
-
-  Color _getColorForRiskLevel(RiskLevel key) {
-    switch (key) {
-      case RiskLevel.low:
-        return Colors.green;
-      case RiskLevel.medium:
-        return Colors.orange;
-      case RiskLevel.high:
-        return Colors.red;
-    }
-  }
-
-  String _getRiskName(RiskLevel key) {
-    switch (key) {
-      case RiskLevel.low:
-        return 'Low Risk';
-      case RiskLevel.medium:
-        return 'Medium Risk';
-      case RiskLevel.high:
-        return 'High Risk';
     }
   }
 }
