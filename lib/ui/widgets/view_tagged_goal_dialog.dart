@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/tagged_goals_presenter.dart';
-import 'package:wealth_wave/ui/widgets/create_tag_goal_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showTaggedGoalDialog(
@@ -43,26 +42,8 @@ class _TaggedGoalsPage extends PageState<TaggedGoalsViewState,
               TaggedGoalVO taggedGoalVO =
                   snapshot.taggedGoalVOs.elementAt(index);
               return ListTile(
-                title: Text(
-                    '${formatToPercentage(taggedGoalVO.split)} to ${taggedGoalVO.goalName}'),
-                trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      showTagGoalDialog(
-                              context: context,
-                              investmentId: widget.investmentId)
-                          .then((value) => presenter.fetchTaggedInvestment());
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      presenter.deleteTaggedInvestment(id: taggedGoalVO.id);
-                    },
-                  )
-                ]),
-              );
+                  title: Text(
+                      '${formatToCurrency(taggedGoalVO.currentValue)} (${formatToPercentage(taggedGoalVO.split)}) to ${taggedGoalVO.goalName}'));
             },
           )),
       actions: <Widget>[
@@ -70,14 +51,6 @@ class _TaggedGoalsPage extends PageState<TaggedGoalsViewState,
           child: const Text('Close'),
           onPressed: () {
             Navigator.of(context).pop();
-          },
-        ),
-        OutlinedButton(
-          child: const Text('Tag Goal'),
-          onPressed: () {
-            showTagGoalDialog(
-                    context: context, investmentId: widget.investmentId)
-                .then((value) => presenter.fetchTaggedInvestment());
           },
         ),
       ],

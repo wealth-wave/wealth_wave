@@ -3,6 +3,7 @@ import 'package:wealth_wave/core/single_event.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/services/goal_investment_service.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
+import 'package:wealth_wave/utils/utils.dart';
 
 class TagInvestmentPresenter extends Presenter<TagInvestmentViewState> {
   final int _goalId;
@@ -76,7 +77,21 @@ class TagInvestmentViewState {
   SingleEvent<void>? onInvestmentTagged;
   SingleEvent<void>? onInvestmentTagLoaded;
 
+  double get tagAmount {
+    int? investmentId = this.investmentId;
+    if (investmentId == null) {
+      return 0.0;
+    }
+    double investmentValue = investments
+        .firstWhere((element) => element.id == investmentId)
+        .getValueOn(date: DateTime.now());
+    return calculatePercentageOfValue(
+        value: investmentValue, percentage: sharePercentage);
+  }
+
   bool isValid() {
-    return investmentId != null && sharePercentage > 0;
+    return investmentId != null &&
+        sharePercentage > 0 &&
+        sharePercentage <= 100;
   }
 }

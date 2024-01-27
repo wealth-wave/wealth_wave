@@ -41,7 +41,7 @@ class TaggedInvestmentVO {
   final int id;
   final String investmentName;
   final double split;
-  final double valueOnMaturity;
+  final double currentValue;
   final int sipCount;
   final double irr;
 
@@ -49,7 +49,7 @@ class TaggedInvestmentVO {
       {required this.id,
       required this.investmentName,
       required this.split,
-      required this.valueOnMaturity,
+      required this.currentValue,
       required this.sipCount,
       required this.irr});
 
@@ -59,7 +59,7 @@ class TaggedInvestmentVO {
       id: goalInvestmentTag.id,
       investmentName: goalInvestmentTag.investmentName,
       split: goalInvestmentTag.splitPercentage,
-      valueOnMaturity: goalInvestmentTag.valueOnMaturity,
+      currentValue: goalInvestmentTag.currentValue,
       irr: goalInvestmentTag.irr,
       sipCount: goalInvestmentTag.sipCount,
     );

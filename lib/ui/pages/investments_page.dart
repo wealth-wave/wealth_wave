@@ -4,6 +4,8 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/investments_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
+import 'package:wealth_wave/ui/widgets/create_sip_dialog.dart';
+import 'package:wealth_wave/ui/widgets/create_transaction_dialog.dart';
 import 'package:wealth_wave/ui/widgets/view_sips_dialog.dart';
 import 'package:wealth_wave/ui/widgets/view_tagged_goal_dialog.dart';
 import 'package:wealth_wave/ui/widgets/view_transactions_dialog.dart';
@@ -71,22 +73,49 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TextButton(
-                      onPressed: () {
-                        showSipsDialog(
-                                context: context, investmentId: investmentVO.id)
-                            .then((value) => presenter.fetchInvestments());
-                      },
-                      child: Text('${investmentVO.sipCount} sips'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        showTransactionsDialog(
-                                context: context, investmentId: investmentVO.id)
-                            .then((value) => presenter.fetchInvestments());
-                      },
-                      child: Text('${investmentVO.transactionCount} tx'),
-                    ),
+                    investmentVO.transactions.isEmpty
+                        ? FilledButton(
+                            onPressed: () {
+                              showCreateTransactionDialog(
+                                      context: context,
+                                      investmentId: investmentVO.id)
+                                  .then(
+                                      (value) => presenter.fetchInvestments());
+                            },
+                            child: const Text('Add transactions'),
+                          )
+                        : TextButton(
+                            onPressed: () {
+                              showTransactionsDialog(
+                                      context: context,
+                                      investmentId: investmentVO.id)
+                                  .then(
+                                      (value) => presenter.fetchInvestments());
+                            },
+                            child: Text(
+                                '${investmentVO.transactionCount} transactions'),
+                          ),
+                    investmentVO.sips.isEmpty
+                        ? TextButton(
+                            onPressed: () {
+                              showCreateSipDialog(
+                                      context: context,
+                                      investmentId: investmentVO.id)
+                                  .then(
+                                      (value) => presenter.fetchInvestments());
+                            },
+                            child: const Text('Add SIP'),
+                          )
+                        : TextButton(
+                            onPressed: () {
+                              showSipsDialog(
+                                      context: context,
+                                      investmentId: investmentVO.id)
+                                  .then(
+                                      (value) => presenter.fetchInvestments());
+                            },
+                            child: Text('${investmentVO.sipCount} sips'),
+                          ),
                     TextButton(
                       onPressed: () {
                         showTaggedGoalDialog(

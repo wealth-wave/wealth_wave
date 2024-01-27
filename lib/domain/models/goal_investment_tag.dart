@@ -12,9 +12,8 @@ class GoalInvestmentTag {
   final DateTime maturityDate;
   final double splitPercentage;
 
-  double get valueOnMaturity => calculatePercentageOfValue(
-      value: investment.getValueOn(
-          date: maturityDate, considerFuturePayments: true),
+  double get currentValue => calculatePercentageOfValue(
+      value: investment.getValueOn(date: DateTime.now()),
       percentage: splitPercentage);
 
   int get sipCount => investment.sips.length;

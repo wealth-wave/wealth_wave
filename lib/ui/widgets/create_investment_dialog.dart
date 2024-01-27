@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:toastification/toastification.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/create_investment_presenter.dart';
@@ -89,6 +90,12 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
   Widget buildWidget(BuildContext context, CreateInvestmentViewState snapshot) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snapshot.onInvestmentCreated?.consume((_) {
+        if (widget.investmentIdToUpdate == null) {
+          toastification.show(
+              context: context,
+              title: const Text(
+                  'Investment Created. Add Transactions on the created investment to see IRR'));
+        }
         Navigator.of(context).pop();
       });
 
