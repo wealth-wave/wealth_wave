@@ -47,8 +47,7 @@ class Goal {
 
   double get value => taggedInvestments.entries
       .map((taggedInvestment) => calculatePercentageOfValue(
-          value: taggedInvestment.key
-              .getValueOn(date: DateTime.now(), considerFuturePayments: false),
+          value: taggedInvestment.key.getValueOn(date: DateTime.now()),
           percentage: taggedInvestment.value))
       .toList()
       .fold(0.0, (value, element) => value + element);

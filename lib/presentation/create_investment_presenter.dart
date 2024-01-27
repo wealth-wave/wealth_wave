@@ -32,7 +32,6 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     final String name = viewState.name;
     final String description = viewState.description;
     final double? value = viewState.value;
-    final DateTime? valueUpdatedAt = viewState.valueUpdatedAt;
     final int? basketId = viewState.basketId;
     final RiskLevel riskLevel = viewState.riskLevel;
     final double? irr = viewState.irr;
@@ -45,7 +44,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
               description: description,
               name: name,
               value: value,
-              valueUpdatedOn: valueUpdatedAt,
+              valueUpdatedOn: DateTime.now(),
               basketId: basketId,
               riskLevel: riskLevel,
               irr: irr,
@@ -58,7 +57,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
               name: name,
               description: description,
               value: value,
-              valueUpdatedOn: valueUpdatedAt,
+              valueUpdatedOn: DateTime.now(),
               basketId: basketId,
               riskLevel: riskLevel,
               irr: irr,
@@ -86,16 +85,6 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     });
   }
 
-  void valueUpdatedDateChanged(DateTime? date) {
-    updateViewState((viewState) {
-      viewState.valueUpdatedAt = date;
-      if (date != null && viewState.irr != null) {
-        viewState.irr = null;
-        viewState.onIRRCleared = SingleEvent(null);
-      }
-    });
-  }
-
   void baskedIdChanged(int baskedIt) {
     updateViewState((viewState) => viewState.basketId = baskedIt);
   }
@@ -107,9 +96,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
   void irrChanged(double? irr) {
     updateViewState((viewState) {
       viewState.irr = irr;
-      if (irr != null &&
-          (viewState.value != null || viewState.valueUpdatedAt != null)) {
-        viewState.valueUpdatedAt = null;
+      if (irr != null && viewState.value != null) {
         viewState.value = null;
         viewState.onValueCleared = SingleEvent(null);
       }
@@ -118,12 +105,12 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
 
   void setInvestment(Investment investmentToUpdate) {
     updateViewState((viewState) {
-      final DateTime? valueUpdatedOn = investmentToUpdate.valueUpdatedOn;
-      final double? value = investmentToUpdate.value;
+      final double? value = investmentToUpdate.irr == null
+          ? investmentToUpdate.getValueOn(date: DateTime.now())
+          : null;
       viewState.name = investmentToUpdate.name;
       viewState.basketId = investmentToUpdate.basketId;
       viewState.value = value;
-      viewState.valueUpdatedAt = valueUpdatedOn;
       viewState.riskLevel = investmentToUpdate.riskLevel;
       viewState.onInvestmentFetched = SingleEvent(null);
     });
@@ -147,7 +134,6 @@ class CreateInvestmentViewState {
   double? irr;
   RiskLevel riskLevel = RiskLevel.medium;
   double? value;
-  DateTime? valueUpdatedAt = DateTime.now();
   DateTime? maturityDate;
   SingleEvent<void>? onInvestmentCreated;
   SingleEvent<void>? onInvestmentFetched;
@@ -159,7 +145,7 @@ class CreateInvestmentViewState {
   bool isValid() {
     final value = this.value;
     final irr = this.irr;
-    final containsValue = value != null && value > 0 && valueUpdatedAt != null;
+    final containsValue = value != null && value > 0;
     final containsIRR = irr != null && irr > 0;
 
     return name.isNotEmpty && (containsValue || containsIRR);

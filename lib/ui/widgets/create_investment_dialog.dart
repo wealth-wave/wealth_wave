@@ -32,7 +32,6 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
   final _descriptionController = TextEditingController();
   final _irrController = TextEditingController();
   final _valueController = TextEditingController();
-  final _valueUpdatedDateController = TextEditingController();
   final _maturityDateController = TextEditingController();
 
   @override
@@ -46,9 +45,6 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     _descriptionController.text = viewState.description;
     _irrController.text = irr != null ? formatDecimal(irr) : '';
     _valueController.text = value != null ? formatToCurrency(value) : '';
-    _valueUpdatedDateController.text = viewState.valueUpdatedAt != null
-        ? formatDate(viewState.valueUpdatedAt!)
-        : '';
     _maturityDateController.text = viewState.maturityDate != null
         ? formatDate(viewState.maturityDate!)
         : '';
@@ -68,11 +64,6 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
 
     _valueController.addListener(() {
       presenter.valueChanged(parseCurrency(_valueController.text));
-    });
-
-    _valueUpdatedDateController.addListener(() {
-      presenter
-          .valueUpdatedDateChanged(parseDate(_valueUpdatedDateController.text));
     });
 
     _irrController.addListener(() {
@@ -101,14 +92,11 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
 
       snapshot.onInvestmentFetched?.consume((_) {
         final value = snapshot.value;
-        final DateTime? valueUpdatedAt = snapshot.valueUpdatedAt;
         final irr = snapshot.irr;
         _nameController.text = snapshot.name;
         _descriptionController.text = snapshot.description;
         _irrController.text = irr != null ? formatDecimal(irr) : '';
         _valueController.text = value != null ? formatToCurrency(value) : '';
-        _valueUpdatedDateController.text =
-            valueUpdatedAt != null ? formatDate(valueUpdatedAt) : '';
         _maturityDateController.text = snapshot.maturityDate != null
             ? formatDate(snapshot.maturityDate!)
             : '';
@@ -120,7 +108,6 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
 
       snapshot.onValueCleared?.consume((_) {
         _valueController.text = '';
-        _valueUpdatedDateController.text = '';
       });
     });
 
@@ -164,15 +151,6 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                       inputFormatters: [CurrencyTextInputFormatter()],
                       decoration: const InputDecoration(
                           labelText: 'Current Value',
-                          border: OutlineInputBorder()),
-                    ),
-                    const SizedBox(height: AppDimen.defaultPadding),
-                    TextFormField(
-                      textInputAction: TextInputAction.next,
-                      controller: _valueUpdatedDateController,
-                      inputFormatters: [DateTextInputFormatter()],
-                      decoration: const InputDecoration(
-                          labelText: 'Updated Date',
                           border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: AppDimen.minPadding),
