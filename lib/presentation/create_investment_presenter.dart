@@ -147,7 +147,7 @@ class CreateInvestmentViewState {
   double? irr;
   RiskLevel riskLevel = RiskLevel.medium;
   double? value;
-  DateTime? valueUpdatedAt;
+  DateTime? valueUpdatedAt = DateTime.now();
   DateTime? maturityDate;
   SingleEvent<void>? onInvestmentCreated;
   SingleEvent<void>? onInvestmentFetched;

@@ -63,15 +63,6 @@ class _TagInvestmentState extends PageState<TagInvestmentViewState,
             style: Theme.of(context).textTheme.titleMedium),
         content: SingleChildScrollView(
             child: Column(children: <Widget>[
-          TextFormField(
-            textInputAction: TextInputAction.next,
-            controller: _valueController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: const InputDecoration(
-                labelText: 'Percentage of', border: OutlineInputBorder()),
-          ),
-          const SizedBox(height: AppDimen.minPadding),
           DropdownButtonFormField<int>(
               decoration: const InputDecoration(border: OutlineInputBorder()),
               hint: const Text('Investment'),
@@ -87,6 +78,30 @@ class _TagInvestmentState extends PageState<TagInvestmentViewState,
                         child: Text(e.name),
                       ))
                   .toList()),
+          const SizedBox(height: AppDimen.minPadding),
+          TextFormField(
+            textInputAction: TextInputAction.next,
+            controller: _valueController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: const InputDecoration(
+                labelText: 'Percentage of', border: OutlineInputBorder()),
+          ),
+          const SizedBox(height: AppDimen.minPadding),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Amount',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(width: 10), // Add some spacing
+              Text(
+                formatToCurrency(snapshot.tagAmount),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
+          ),
         ])),
         actions: [
           ElevatedButton(

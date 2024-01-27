@@ -5,6 +5,7 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/goals_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';
+import 'package:wealth_wave/ui/widgets/create_tag_investment_dialog.dart';
 import 'package:wealth_wave/ui/widgets/view_tagged_investment_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
@@ -66,15 +67,24 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       _getTitleWidget(goalVO, context),
-                      TextButton(
-                        onPressed: () {
-                          showTaggedInvestmentDialog(
-                                  context: context, goalId: goalVO.id)
-                              .then((value) => presenter.fetchGoals());
-                        },
-                        child:
-                            Text('${goalVO.taggedInvestmentCount} investments'),
-                      ),
+                      goalVO.taggedInvestmentCount == 0
+                          ? FilledButton(
+                              onPressed: () {
+                                showTagInvestmentDialog(
+                                        context: context, goalId: goalVO.id)
+                                    .then((value) => presenter.fetchGoals());
+                              },
+                              child: const Text('Tag Investment'),
+                            )
+                          : TextButton(
+                              onPressed: () {
+                                showTaggedInvestmentDialog(
+                                        context: context, goalId: goalVO.id)
+                                    .then((value) => presenter.fetchGoals());
+                              },
+                              child: Text(
+                                  '${goalVO.taggedInvestmentCount} investments'),
+                            ),
                     ],
                   ),
                   Column(
@@ -104,7 +114,8 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
         return Padding(
           padding: const EdgeInsets.all(AppDimen.textPadding),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               const Text('•  ',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
