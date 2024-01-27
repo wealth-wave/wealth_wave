@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/main_presenter.dart';
 import 'package:wealth_wave/ui/pages/baskets_page.dart';
+import 'package:wealth_wave/ui/pages/dashboard_page.dart';
 import 'package:wealth_wave/ui/pages/goals_page.dart';
 import 'package:wealth_wave/ui/pages/investments_page.dart';
 import 'package:wealth_wave/utils/dialog_utils.dart';
@@ -52,23 +53,27 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: _selectedIndex,
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.analytics),
+              label: 'Dashboard',
+            ),
+            NavigationDestination(
               icon: Icon(Icons.monetization_on),
               label: 'Investments',
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Icon(Icons.flag),
               label: 'Goals',
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Icon(Icons.shopping_basket),
               label: 'Baskets',
             ),
           ],
-          currentIndex: _selectedIndex,
-          onTap: (index) {
+          onDestinationSelected: (index) {
             setState(() {
               _selectedIndex = index;
             });
@@ -78,10 +83,12 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
           builder: (context) {
             switch (_selectedIndex) {
               case 0:
-                return const InvestmentsPage();
+                return const DashboardPage();
               case 1:
-                return const GoalsPage();
+                return const InvestmentsPage();
               case 2:
+                return const GoalsPage();
+              case 3:
                 return const BasketsPage();
               default:
                 return Container();
