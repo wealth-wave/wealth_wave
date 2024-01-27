@@ -109,6 +109,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
           ? investmentToUpdate.getValueOn(date: DateTime.now())
           : null;
       viewState.name = investmentToUpdate.name;
+      viewState.irr = investmentToUpdate.irr;
       viewState.basketId = investmentToUpdate.basketId;
       viewState.value = value;
       viewState.riskLevel = investmentToUpdate.riskLevel;

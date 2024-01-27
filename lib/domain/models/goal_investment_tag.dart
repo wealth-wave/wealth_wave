@@ -34,8 +34,10 @@ class GoalInvestmentTag {
           {required GoalInvestmentDO goalInvestmentDO,
           required List<InvestmentDO> investmentDOs,
           required List<TransactionDO> transactionsDOs,
-          required List<SipDO> sipDOs}) =>
-      GoalInvestmentTag._(
+          required List<SipDO> sipDOs}) {
+    print(goalInvestmentDO.goalName);
+    print(goalInvestmentDO.splitPercentage);
+    return GoalInvestmentTag._(
           id: goalInvestmentDO.id,
           investmentId: goalInvestmentDO.investmentId,
           investmentName: goalInvestmentDO.investmentName ?? '',
@@ -54,4 +56,5 @@ class GoalInvestmentTag {
           goalId: goalInvestmentDO.goalId,
           goalName: goalInvestmentDO.goalName ?? '',
           splitPercentage: goalInvestmentDO.splitPercentage);
+  }
 }
