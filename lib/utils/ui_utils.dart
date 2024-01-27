@@ -8,8 +8,8 @@ String formatDate(DateTime date) {
   }
 }
 
-String formatToPercentage(double percentage) {
-  return percentage == percentage.round()
+String formatToPercentage(double percentage, {final bool forceRound = false}) {
+  return percentage == percentage.round() || forceRound
       ? '${percentage.round()}%'
       : '${percentage.toStringAsFixed(2)}%';
 }

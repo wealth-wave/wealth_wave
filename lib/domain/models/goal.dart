@@ -1,7 +1,7 @@
 import 'package:wealth_wave/api/db/app_database.dart';
-import 'package:wealth_wave/contract/goal_health.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
+import 'package:wealth_wave/domain/models/goal_health_evaluator.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 import 'package:wealth_wave/domain/models/irr_calculator.dart';
 import 'package:wealth_wave/utils/utils.dart';
@@ -102,30 +102,8 @@ class Goal {
     }).map((key, value) => MapEntry(key, value / valueOnMaturity));
   }
 
-  GoalHealth get health {
-    Map<RiskLevel, double> riskComposition = this.riskComposition;
-
-    double lowRiskThreshold = importance == GoalImportance.high
-        ? 0.6
-        : importance == GoalImportance.medium
-            ? 0.4
-            : 0.2;
-
-    double mediumRiskThreshold = importance == GoalImportance.high
-        ? 0.3
-        : importance == GoalImportance.medium
-            ? 0.2
-            : 0.1;
-
-    lowRiskThreshold -= yearsLeft / 100;
-    mediumRiskThreshold -= yearsLeft / 100;
-
-    if ((riskComposition[RiskLevel.low] ?? 0) < lowRiskThreshold ||
-        (riskComposition[RiskLevel.medium] ?? 0) < mediumRiskThreshold) {
-      return GoalHealth.risky;
-    }
-
-    return GoalHealth.good;
+  List<String> get healthSuggestions {
+    return GoalHealthEvaluator().evaluate(this);
   }
 
   factory Goal.from(
