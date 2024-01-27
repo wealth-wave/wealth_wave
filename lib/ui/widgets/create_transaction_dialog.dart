@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/services/transaction_service.dart';
 import 'package:wealth_wave/presentation/create_investment_transaction_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/custom/currency_text_input_formatter.dart';
@@ -25,9 +24,7 @@ class _CreateTransactionDialog extends StatefulWidget {
   final int _investmentId;
 
   const _CreateTransactionDialog(
-      {final int? transactionIdToUpdate,
-      required final int investmentId,
-      final TransactionService? transactionService})
+      {final int? transactionIdToUpdate, required final int investmentId})
       : _transactionIdToUpdate = transactionIdToUpdate,
         _investmentId = investmentId;
 
@@ -127,6 +124,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _valueUpdatedDateController,
+              maxLength: 10,
               inputFormatters: [DateTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Date (DD/MM/YYYY)', border: OutlineInputBorder()),

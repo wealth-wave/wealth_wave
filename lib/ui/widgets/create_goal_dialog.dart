@@ -139,6 +139,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
               textInputAction: TextInputAction.next,
               controller: _currentDateController,
               inputFormatters: [DateTextInputFormatter()],
+              maxLength: 10,
               decoration: const InputDecoration(
                   labelText: 'Date (DD/MM/YYYY)', border: OutlineInputBorder()),
             ),
@@ -146,6 +147,7 @@ class _CreateGoalPage extends PageState<CreateGoalViewState, _CreateGoalDialog,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _targetDateController,
+              maxLength: 10,
               inputFormatters: [DateTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Target Date (DD/MM/YYYY)',

@@ -37,7 +37,7 @@ double? parseCurrency(String value) {
 
 DateTime? parseDate(String date) {
   try {
-    return DateFormat('dd/MM/yyyy').parse(date);
+    return DateFormat('dd/MM/yyyy').parseStrict(date);
   } catch (e) {
     return null;
   }

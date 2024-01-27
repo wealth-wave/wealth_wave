@@ -46,9 +46,11 @@ class Goal {
       (maturityDate.difference(DateTime.now()).inDays / 365);
 
   double get value => taggedInvestments.entries
-      .map((taggedInvestment) => calculatePercentageOfValue(
+      .map((taggedInvestment) {
+        return calculatePercentageOfValue(
           value: taggedInvestment.key.getValueOn(date: DateTime.now()),
-          percentage: taggedInvestment.value))
+          percentage: taggedInvestment.value);
+      })
       .toList()
       .fold(0.0, (value, element) => value + element);
 

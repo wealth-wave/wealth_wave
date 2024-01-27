@@ -63,7 +63,7 @@ class GoalService {
       Map<Investment, double> taggedInvestment = {};
       for (final goalInvestment in goalInvestments) {
         InvestmentDO investmentEnrichedDO = investmentDOs
-            .where((element) => element.id == goalInvestment.id)
+            .where((element) => element.id == goalInvestment.investmentId)
             .first;
         List<TransactionDO> transactionsDOs =
             await _transactionAPi.getBy(investmentId: investmentEnrichedDO.id);
@@ -89,7 +89,7 @@ class GoalService {
     Map<Investment, double> taggedInvestment = {};
     for (final goalInvestment in goalInvestments) {
       InvestmentDO investmentEnrichedDO = investmentDOs
-          .where((element) => element.id == goalInvestment.id)
+          .where((element) => element.id == goalInvestment.investmentId)
           .first;
       List<TransactionDO> transactionsDOs =
           await _transactionAPi.getBy(investmentId: investmentEnrichedDO.id);
