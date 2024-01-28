@@ -12,16 +12,17 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
 
   void fetchDashboard() {
     _investmentService.get().then((investments) {
-      double invested = 0;
-      double currentValue = 0;
+      double totalInvestedAmount = 0;
+      double totalValueOfInvestment = 0;
       Map<RiskLevel, double> riskComposition = {};
       Map<String, double> basketComposition = {};
       Map<double, double> irrComposition = {};
 
       for (var investment in investments) {
         double investmentValue = investment.getValueOn(date: DateTime.now());
-        invested += investment.getTotalInvestedAmount(till: DateTime.now());
-        currentValue += investmentValue;
+        double investedAmount = investment.getTotalInvestedAmount(till: DateTime.now());
+        totalInvestedAmount += investedAmount;
+        totalValueOfInvestment += investmentValue;
         riskComposition.update(
             investment.riskLevel, (value) => value + investmentValue,
             ifAbsent: () => investmentValue);
@@ -29,19 +30,18 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
             investment.basketName ?? '-', (value) => value + investmentValue,
             ifAbsent: () => investmentValue);
         irrComposition.update((investment.getIRR()).roundToDouble(),
-            (value) => value + investmentValue,
-            ifAbsent: () => investmentValue);
+            (value) => value + (investmentValue-investedAmount),
+            ifAbsent: () => (investmentValue-investedAmount));
       }
 
       updateViewState((viewState) {
-        viewState.invested = invested;
-        viewState.currentValue = currentValue;
+        viewState.invested = totalInvestedAmount;
+        viewState.currentValue = totalValueOfInvestment;
         viewState.riskComposition = riskComposition
-            .map((key, value) => MapEntry(key, value / currentValue));
+            .map((key, value) => MapEntry(key, value / totalValueOfInvestment));
         viewState.basketComposition = basketComposition
-            .map((key, value) => MapEntry(key, value / currentValue));
-        viewState.irrComposition = irrComposition
-            .map((key, value) => MapEntry(key, value / currentValue));
+            .map((key, value) => MapEntry(key, value / totalValueOfInvestment));
+        viewState.irrComposition = irrComposition;
         viewState.valueOverTime = _getValueOverTime(investments);
         viewState.investmentOverTime = _getInvestmentOverTime(investments);
       });

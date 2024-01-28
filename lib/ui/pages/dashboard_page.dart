@@ -62,9 +62,10 @@ class _DashboardPage
               Text('IRR Composition:',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
-              _buildBarChart(irrComposition
-                  .map((e) => MapEntry(formatToPercentage(e.key), e.value))
-                  .toList()),
+              _buildIrrContribution(
+                  investedAmount: snapshot.invested,
+                  data: irrComposition,
+                  valueOfInvestment: snapshot.currentValue),
               const SizedBox(height: AppDimen.minPadding),
               Text('Investment Over Time:',
                   style: Theme.of(context).textTheme.titleMedium),
@@ -100,6 +101,33 @@ class _DashboardPage
                   Colors.primaries[e.key.hashCode % Colors.primaries.length]))
           .toList(),
     );
+  }
+
+  Widget _buildIrrContribution(
+      {required final double investedAmount,
+      required final List<MapEntry<double, double>> data,
+      required final double valueOfInvestment}) {
+    if (data.isNotEmpty) {
+      List<MapEntry<String, double>> contribution = [];
+      contribution.add(MapEntry("Invested", investedAmount));
+      for (var element in data) {
+        contribution.add(MapEntry(
+            formatToPercentage(element.key, forceRound: true),
+            element.value));
+      }
+      return SfCartesianChart(
+        primaryXAxis: const CategoryAxis(),
+        series: [
+          WaterfallSeries(
+            dataSource: contribution,
+            xValueMapper: (data, _) => data.key,
+            yValueMapper: (data, _) => data.value,
+          ),
+        ],
+      );
+    } else {
+      return const Text('');
+    }
   }
 
   Widget _buildTimeLine(final List<MapEntry<DateTime, double>> valueData,
