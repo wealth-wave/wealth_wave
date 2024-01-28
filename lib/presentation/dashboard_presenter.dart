@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
-import 'package:wealth_wave/domain/models/transaction.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
 
 class DashboardPresenter extends Presenter<DashboardViewState> {
@@ -50,76 +47,64 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
       });
     });
   }
-}
 
-Map<DateTime, double> _getInvestmentOverTime(List<Investment> investments) {
-  Map<DateTime, double> valueOverTime = {};
-  List<Transaction> transactions = [];
+  Map<DateTime, double> _getInvestmentOverTime(List<Investment> investments) {
+    Map<DateTime, double> valueOverTime = {};
+    Map<DateTime, double> dateInvestmentMap = {};
 
-  for (var investment in investments) {
-    transactions.addAll(investment.transactions);
-  }
-  transactions.sort((a, b) => a.createdOn.compareTo(b.createdOn));
+    for (var investment in investments) {
+      investment.transactions
+          .map((e) => MapEntry(e.createdOn, e.amount))
+          .forEach((entry) {
+        dateInvestmentMap.update(entry.key, (value) => value + entry.value,
+            ifAbsent: () => entry.value);
+      });
+    }
+    List<DateTime> investmentDates = dateInvestmentMap.keys.toList();
+    investmentDates.sort((a, b) => a.compareTo(b));
 
-  double previousValue = 0;
-  DateTime previousDate = transactions.firstOrNull?.createdOn ?? DateTime.now();
-  for (var transaction in transactions) {
-    double valueAtTransactionDate = previousValue + transaction.amount;
-    valueOverTime[transaction.createdOn] =
-        (valueOverTime[transaction.createdOn] ?? 0) + valueAtTransactionDate;
+    double previousValue = 0;
+    for (var date in investmentDates) {
+      double investedAmount = dateInvestmentMap[date] ?? 0;
+      double valueSoFar = previousValue + investedAmount;
+      valueOverTime[date] = valueSoFar;
+      previousValue = valueSoFar;
+    }
 
-    valueOverTime[previousDate] =
-        (valueOverTime[previousDate] ?? 0) + transaction.amount;
-
-    previousValue = transaction.amount;
-    previousDate = transaction.createdOn;
-  }
-
-  return valueOverTime;
-}
-
-Map<DateTime, double> _getValueOverTime(List<Investment> investments) {
-  Map<DateTime, double> valueOverTime = {};
-
-  List<Transaction> transactions = [];
-  Map<double, double> irrComposition = {};
-  for (var investment in investments) {
-    transactions.addAll(investment.transactions);
-    double valueOfInvestment = investment.getValueOn(date: DateTime.now());
-    irrComposition.update((investment.getIRR()).roundToDouble(),
-        (value) => value + valueOfInvestment,
-        ifAbsent: () => valueOfInvestment);
-  }
-  double totalValue = irrComposition.values.fold(0, (a, b) => a + b);
-  irrComposition =
-      irrComposition.map((key, value) => MapEntry(key, value / totalValue));
-  double averageIRR = irrComposition.entries
-      .map((e) => e.key * e.value)
-      .toList()
-      .fold(0, (a, b) => a + b);
-
-  transactions.sort((a, b) => a.createdOn.compareTo(b.createdOn));
-
-  double previousValue = 0;
-  DateTime previousDate = transactions.firstOrNull?.createdOn ?? DateTime.now();
-  for (var transaction in transactions) {
-    // Calculate the value of the investment at the date of the transaction
-    double valueAtTransactionDate = previousValue + transaction.amount;
-    valueOverTime[transaction.createdOn] =
-        (valueOverTime[transaction.createdOn] ?? 0) + valueAtTransactionDate;
-
-    // Calculate the value of the investment at the current date
-    int days = previousDate.difference(transaction.createdOn).inDays;
-    double valueAtCurrentDate =
-        valueAtTransactionDate * pow(1 + averageIRR, days / 365);
-    valueOverTime[previousDate] =
-        (valueOverTime[previousDate] ?? 0) + valueAtCurrentDate;
-
-    previousValue = valueAtCurrentDate;
-    previousDate = transaction.createdOn;
+    return valueOverTime;
   }
 
-  return valueOverTime;
+  Map<DateTime, double> _getValueOverTime(List<Investment> investments) {
+    Map<DateTime, double> valueOverTime = {};
+    Map<DateTime, double> dateInvestmentMap = {};
+    double totalValue = 0;
+    double totalInvested = 0;
+
+    for (var investment in investments) {
+      investment.transactions
+          .map((e) => MapEntry(e.createdOn, e.amount))
+          .forEach((entry) {
+        dateInvestmentMap.update(entry.key, (value) => value + entry.value,
+            ifAbsent: () => entry.value);
+      });
+      totalValue += investment.getValueOn(date: DateTime.now());
+      totalInvested += investment.getTotalInvestedAmount(till: DateTime.now());
+    }
+    
+    List<DateTime> investmentDates = dateInvestmentMap.keys.toList();
+    investmentDates.sort((a, b) => a.compareTo(b));
+
+    double previousValue = 0;
+    for (var date in investmentDates) {
+      double proportion = (dateInvestmentMap[date] ?? 0) / totalInvested;
+      double value = (proportion * totalValue);
+      double valueSoFar = previousValue + value;
+      valueOverTime[date] = valueSoFar;
+      previousValue = valueSoFar;
+    }
+
+    return valueOverTime;
+  }
 }
 
 class DashboardViewState {
