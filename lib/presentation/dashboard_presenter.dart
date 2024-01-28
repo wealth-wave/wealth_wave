@@ -20,7 +20,8 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
 
       for (var investment in investments) {
         double investmentValue = investment.getValueOn(date: DateTime.now());
-        double investedAmount = investment.getTotalInvestedAmount(till: DateTime.now());
+        double investedAmount =
+            investment.getTotalInvestedAmount(till: DateTime.now());
         totalInvestedAmount += investedAmount;
         totalValueOfInvestment += investmentValue;
         riskComposition.update(
@@ -30,9 +31,10 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
             investment.basketName ?? '-', (value) => value + investmentValue,
             ifAbsent: () => investmentValue);
         irrComposition.update((investment.getIRR()).roundToDouble(),
-            (value) => value + (investmentValue-investedAmount),
-            ifAbsent: () => (investmentValue-investedAmount));
+            (value) => value + (investmentValue - investedAmount),
+            ifAbsent: () => (investmentValue - investedAmount));
       }
+      irrComposition.removeWhere((key, value) => value == 0);
 
       updateViewState((viewState) {
         viewState.invested = totalInvestedAmount;
@@ -90,7 +92,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
       totalValue += investment.getValueOn(date: DateTime.now());
       totalInvested += investment.getTotalInvestedAmount(till: DateTime.now());
     }
-    
+
     List<DateTime> investmentDates = dateInvestmentMap.keys.toList();
     investmentDates.sort((a, b) => a.compareTo(b));
 

@@ -115,10 +115,12 @@ class _DashboardPage
             formatToPercentage(element.key, forceRound: true),
             element.value));
       }
+      contribution.add(MapEntry("Current Value", valueOfInvestment));
       return SfCartesianChart(
         primaryXAxis: const CategoryAxis(),
         series: [
           WaterfallSeries(
+            totalSumPredicate: (datum, index) => index == contribution.length-1,
             dataSource: contribution,
             xValueMapper: (data, _) => data.key,
             yValueMapper: (data, _) => data.value,
