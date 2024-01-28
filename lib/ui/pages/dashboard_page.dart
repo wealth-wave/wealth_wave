@@ -63,6 +63,12 @@ class _DashboardPage
               _buildBarChart(irrComposition
                   .map((e) => MapEntry(formatToPercentage(e.key), e.value))
                   .toList()),
+              const SizedBox(height: AppDimen.minPadding),
+              Text('Investment Over Time:',
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: AppDimen.minPadding),
+              _buildTimeLine(snapshot.valueOverTime.entries.toList(),
+                  snapshot.investmentOverTime.entries.toList()),
             ],
           ),
         ),
@@ -93,6 +99,59 @@ class _DashboardPage
               color:
                   Colors.primaries[e.key.hashCode % Colors.primaries.length]))
           .toList(),
+    );
+  }
+
+  Widget _buildTimeLine(final List<MapEntry<DateTime, double>> valueData,
+      final List<MapEntry<DateTime, double>> investedData) {
+    List<FlSpot> valueDataSpots = valueData
+        .map((data) =>
+            FlSpot(data.key.millisecondsSinceEpoch.toDouble(), data.value))
+        .toList();
+
+    List<FlSpot> investedDataSpots = investedData
+        .map((data) =>
+            FlSpot(data.key.millisecondsSinceEpoch.toDouble(), data.value))
+        .toList();
+
+    return LineChart(
+      LineChartData(
+        gridData: const FlGridData(
+          show: true,
+        ),
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, m) => Text(
+                DateTime.fromMillisecondsSinceEpoch(value.toInt())
+                    .year
+                    .toString()),
+          )),
+          leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, m) => Text(formatToCurrency(value)),
+          )),
+        ),
+        borderData: FlBorderData(
+          show: false,
+        ),
+        lineBarsData: [
+          LineChartBarData(
+            spots: valueDataSpots,
+            isCurved: true,
+            color: Colors.blue,
+            dotData: FlDotData(show: false),
+          ),
+          LineChartBarData(
+            spots: investedDataSpots,
+            isCurved: true,
+            color: Colors.red,
+            dotData: FlDotData(show: false),
+          ),
+        ],
+      ),
     );
   }
 

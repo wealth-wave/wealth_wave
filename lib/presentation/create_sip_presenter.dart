@@ -7,7 +7,6 @@ import 'package:wealth_wave/domain/services/sip_service.dart';
 
 class CreateSipPresenter extends Presenter<CreateSipViewState> {
   final int _investmentId;
-  final InvestmentService _investmentService;
   final SipService _sipService;
 
   CreateSipPresenter(
@@ -15,7 +14,6 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
       final InvestmentService? investmentService,
       final SipService? sipService})
       : _investmentId = investmentId,
-        _investmentService = investmentService ?? InvestmentService(),
         _sipService = sipService ?? SipService(),
         super(CreateSipViewState());
 
