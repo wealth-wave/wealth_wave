@@ -7,7 +7,6 @@ import 'package:wealth_wave/domain/services/transaction_service.dart';
 class CreateInvestmentTransactionPresenter
     extends Presenter<CreateTransactionViewState> {
   final int _investmentId;
-  final InvestmentService _investmentService;
   final TransactionService _transactionService;
 
   CreateInvestmentTransactionPresenter(
@@ -15,7 +14,6 @@ class CreateInvestmentTransactionPresenter
       final InvestmentService? investmentService,
       final TransactionService? transactionService})
       : _investmentId = investmentId,
-        _investmentService = investmentService ?? InvestmentService(),
         _transactionService = transactionService ?? TransactionService(),
         super(CreateTransactionViewState());
 
