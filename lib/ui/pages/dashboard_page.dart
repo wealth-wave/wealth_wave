@@ -107,19 +107,22 @@ class _DashboardPage
     if (valueData.isNotEmpty && investedData.isNotEmpty) {
       return SfCartesianChart(
         primaryXAxis: const DateTimeAxis(),
-        primaryYAxis: NumericAxis(numberFormat: NumberFormat.compactCurrency()),
+        primaryYAxis:
+            NumericAxis(numberFormat: NumberFormat.compactCurrency(symbol: '')),
         series: [
           LineSeries<MapEntry<DateTime, double>, DateTime>(
+            color: Colors.green,
             dataSource: valueData,
             xValueMapper: (MapEntry<DateTime, double> entry, _) => entry.key,
             yValueMapper: (MapEntry<DateTime, double> entry, _) => entry.value,
-            name: 'Value',
+            name: 'Invested Value',
           ),
           LineSeries<MapEntry<DateTime, double>, DateTime>(
+            color: Colors.blue,
             dataSource: investedData,
             xValueMapper: (MapEntry<DateTime, double> entry, _) => entry.key,
             yValueMapper: (MapEntry<DateTime, double> entry, _) => entry.value,
-            name: 'Invested',
+            name: 'Invested Amount',
           ),
         ],
         tooltipBehavior: TooltipBehavior(enable: true),
