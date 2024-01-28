@@ -1,6 +1,8 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/dashboard_presenter.dart';
@@ -77,16 +79,14 @@ class _DashboardPage
   }
 
   Widget _buildPieChart(Map<RiskLevel, double> data) {
-    return SizedBox(
-        height: 200,
-        child: PieChart(PieChartData(
-            sections: data.entries
-                .map((e) => PieChartSectionData(
-                      value: e.value,
-                      color: _getColorForRiskLevel(e.key),
-                      title: _getRiskLevelName(e.key),
-                    ))
-                .toList())));
+    if (data.isNotEmpty) {
+      return PieChart(
+          chartRadius: MediaQuery.of(context).size.width / 4,
+          colorList: _getColorList(data),
+          dataMap: data.map(
+              (key, value) => MapEntry(_getRiskLevelName(key), value * 100)));
+    }
+    return const Text('');
   }
 
   Widget _buildBarChart(List<MapEntry<String, double>> data) {
@@ -104,55 +104,28 @@ class _DashboardPage
 
   Widget _buildTimeLine(final List<MapEntry<DateTime, double>> valueData,
       final List<MapEntry<DateTime, double>> investedData) {
-    List<FlSpot> valueDataSpots = valueData
-        .map((data) =>
-            FlSpot(data.key.millisecondsSinceEpoch.toDouble(), data.value))
-        .toList();
-
-    List<FlSpot> investedDataSpots = investedData
-        .map((data) =>
-            FlSpot(data.key.millisecondsSinceEpoch.toDouble(), data.value))
-        .toList();
-
-    return LineChart(
-      LineChartData(
-        gridData: const FlGridData(
-          show: true,
-        ),
-        titlesData: FlTitlesData(
-          bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: (value, m) => Text(
-                DateTime.fromMillisecondsSinceEpoch(value.toInt())
-                    .year
-                    .toString()),
-          )),
-          leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: (value, m) => Text(formatToCurrency(value)),
-          )),
-        ),
-        borderData: FlBorderData(
-          show: false,
-        ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: valueDataSpots,
-            isCurved: true,
-            color: Colors.blue,
-            dotData: FlDotData(show: false),
+    if (valueData.isNotEmpty && investedData.isNotEmpty) {
+      return SfCartesianChart(
+        primaryXAxis: const DateTimeAxis(),
+        primaryYAxis: NumericAxis(numberFormat: NumberFormat.compactCurrency()),
+        series: [
+          LineSeries<MapEntry<DateTime, double>, DateTime>(
+            dataSource: valueData,
+            xValueMapper: (MapEntry<DateTime, double> entry, _) => entry.key,
+            yValueMapper: (MapEntry<DateTime, double> entry, _) => entry.value,
+            name: 'Value',
           ),
-          LineChartBarData(
-            spots: investedDataSpots,
-            isCurved: true,
-            color: Colors.red,
-            dotData: FlDotData(show: false),
+          LineSeries<MapEntry<DateTime, double>, DateTime>(
+            dataSource: investedData,
+            xValueMapper: (MapEntry<DateTime, double> entry, _) => entry.key,
+            yValueMapper: (MapEntry<DateTime, double> entry, _) => entry.value,
+            name: 'Invested',
           ),
         ],
-      ),
-    );
+        tooltipBehavior: TooltipBehavior(enable: true),
+      );
+    }
+    return const Text('');
   }
 
   String _getRiskLevelName(RiskLevel riskLevel) {
@@ -175,6 +148,16 @@ class _DashboardPage
       case RiskLevel.high:
         return Colors.red;
     }
+  }
+
+  List<Color> _getColorList(Map<RiskLevel, double> value) {
+    List<Color> colors = [];
+
+    for (var element in value.keys) {
+      colors.add(_getColorForRiskLevel(element));
+    }
+
+    return colors;
   }
 
   @override
