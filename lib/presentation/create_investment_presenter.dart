@@ -33,6 +33,8 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     final String description = viewState.description;
     final double? value = viewState.value;
     final int? basketId = viewState.basketId;
+    final double? investedAmount = viewState.investedAmount;
+    final DateTime? investedOn = viewState.investedOn;
     final RiskLevel riskLevel = viewState.riskLevel;
     final double? irr = viewState.irr;
     final DateTime? maturityDate = viewState.maturityDate;
@@ -44,6 +46,8 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
               description: description,
               name: name,
               value: value,
+              investedAmount: investedAmount,
+              investedOn: investedOn,
               valueUpdatedOn: DateTime.now(),
               basketId: basketId,
               riskLevel: riskLevel,
@@ -56,6 +60,8 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
           .create(
               name: name,
               description: description,
+              investedAmount: investedAmount,
+              investedOn: investedOn,
               value: value,
               valueUpdatedOn: DateTime.now(),
               basketId: basketId,
@@ -73,6 +79,14 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
 
   void descriptionChanged(String text) {
     updateViewState((viewState) => viewState.description = text);
+  }
+
+  void onInvestmentAmountChanged(double? value) {
+    updateViewState((viewState) => viewState.investedAmount = value);
+  }
+
+  void onInvestmentOnChanged(DateTime? time) {
+    updateViewState((viewState) => viewState.investedOn = time);
   }
 
   void valueChanged(double? value) {
@@ -110,8 +124,11 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
           : null;
       viewState.name = investmentToUpdate.name;
       viewState.irr = investmentToUpdate.irr;
+      viewState.investedAmount = investmentToUpdate.getTotalInvestedAmount();
+      viewState.investedOn = investmentToUpdate.investedOn;
       viewState.basketId = investmentToUpdate.basketId;
       viewState.value = value;
+      viewState.hasTransactions = investmentToUpdate.transactions.isNotEmpty;
       viewState.riskLevel = investmentToUpdate.riskLevel;
       viewState.onInvestmentFetched = SingleEvent(null);
     });
@@ -134,8 +151,11 @@ class CreateInvestmentViewState {
   int? basketId;
   double? irr;
   RiskLevel riskLevel = RiskLevel.medium;
+  double? investedAmount;
+  DateTime? investedOn;
   double? value;
   DateTime? maturityDate;
+  bool hasTransactions = false;
   SingleEvent<void>? onInvestmentCreated;
   SingleEvent<void>? onInvestmentFetched;
   SingleEvent<void>? onIRRCleared;
@@ -148,7 +168,13 @@ class CreateInvestmentViewState {
     final irr = this.irr;
     final containsValue = value != null && value > 0;
     final containsIRR = irr != null && irr > 0;
+    final containsInvestedAmount =
+        investedAmount != null && investedAmount! > 0;
+    final containsInvestedOnDate = investedOn != null;
 
-    return name.isNotEmpty && (containsValue || containsIRR);
+    return name.isNotEmpty &&
+        (containsValue || containsIRR) &&
+        ((!containsInvestedAmount && !containsInvestedOnDate) ||
+            (containsInvestedAmount && containsInvestedOnDate));
   }
 }

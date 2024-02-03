@@ -1,9 +1,9 @@
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
+import 'package:wealth_wave/domain/models/irr_calculator.dart';
 import 'package:wealth_wave/domain/models/payment.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
-import 'package:wealth_wave/domain/models/irr_calculator.dart';
 
 class Investment {
   final int id;
@@ -12,6 +12,8 @@ class Investment {
   final RiskLevel riskLevel;
   final double? value;
   final double? irr;
+  final double? investedAmount;
+  final DateTime? investedOn;
   final DateTime? valueUpdatedOn;
   final DateTime? maturityDate;
   final int? basketId;
@@ -26,6 +28,8 @@ class Investment {
       required this.description,
       required this.riskLevel,
       required this.irr,
+      required this.investedAmount,
+      required this.investedOn,
       required this.value,
       required this.valueUpdatedOn,
       required this.basketId,
@@ -36,6 +40,9 @@ class Investment {
       required this.sips});
 
   double getTotalInvestedAmount({final DateTime? till}) {
+    if (transactions.isEmpty) {
+      return investedAmount ?? 0;
+    }
     return transactions
         .where((transaction) =>
             till == null || till.isAfter(transaction.createdOn))
@@ -57,6 +64,10 @@ class Investment {
       for (var sip in sips) {
         payments.addAll(sip.getFuturePayment(till: futureDate));
       }
+    }
+    if (payments.isEmpty && investedAmount != null && investedOn != null) {
+      payments
+          .add(Payment.from(amount: investedAmount!, createdOn: investedOn!));
     }
 
     final value = this.value;
@@ -102,6 +113,8 @@ class Investment {
       Investment._(
           id: investmentDO.id,
           name: investmentDO.name,
+          investedAmount: investmentDO.investedAmount,
+          investedOn: investmentDO.investedOn,
           description: investmentDO.description,
           riskLevel: investmentDO.riskLevel,
           irr: investmentDO.irr,

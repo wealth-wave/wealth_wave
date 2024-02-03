@@ -31,6 +31,11 @@ class InvestmentTable extends Table {
 
   RealColumn get value => real().nullable().named('VALUE')();
 
+  RealColumn get investedAmount =>
+      real().nullable().named('INVESTED_AMOUNT')();
+
+  DateTimeColumn get investedOn => dateTime().nullable().named('INVESTED_ON')();
+
   DateTimeColumn get valueUpdatedOn =>
       dateTime().nullable().named('VALUE_UPDATED_ON')();
 
@@ -162,6 +167,8 @@ abstract class InvestmentEnrichedView extends View {
         investment.description,
         investment.riskLevel,
         investment.maturityDate,
+        investment.investedAmount,
+        investment.investedOn,
         investment.irr,
         investment.value,
         investment.valueUpdatedOn,

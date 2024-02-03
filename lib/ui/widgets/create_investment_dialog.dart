@@ -33,6 +33,8 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
   final _descriptionController = TextEditingController();
   final _irrController = TextEditingController();
   final _valueController = TextEditingController();
+  final _investedAmountController = TextEditingController();
+  final _investedOnController = TextEditingController();
   final _maturityDateController = TextEditingController();
 
   @override
@@ -41,10 +43,16 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
 
     final viewState = presenter.getViewState();
     final irr = viewState.irr;
+    final investedAmount = viewState.investedAmount;
+    final investedOn = viewState.investedOn;
     final value = viewState.value;
     _nameController.text = viewState.name;
     _descriptionController.text = viewState.description;
     _irrController.text = irr != null ? formatDecimal(irr) : '';
+    _investedAmountController.text =
+        investedAmount != null ? formatToCurrency(investedAmount) : '';
+    _investedOnController.text =
+        investedOn != null ? formatDate(investedOn) : '';
     _valueController.text = value != null ? formatToCurrency(value) : '';
     _maturityDateController.text = viewState.maturityDate != null
         ? formatDate(viewState.maturityDate!)
@@ -75,6 +83,15 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
       presenter.maturityDateChanged(parseDate(_maturityDateController.text));
     });
 
+    _investedOnController.addListener(() {
+      presenter.onInvestmentOnChanged(parseDate(_investedOnController.text));
+    });
+
+    _investedAmountController.addListener(() {
+      presenter.onInvestmentAmountChanged(
+          parseCurrency(_investedAmountController.text));
+    });
+
     presenter.getBaskets();
   }
 
@@ -94,13 +111,19 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
       snapshot.onInvestmentFetched?.consume((_) {
         final value = snapshot.value;
         final irr = snapshot.irr;
+        final investedAmount = snapshot.investedAmount;
+        final investedOn = snapshot.investedOn;
         _nameController.text = snapshot.name;
         _descriptionController.text = snapshot.description;
         _irrController.text = irr != null ? formatDecimal(irr) : '';
         _valueController.text = value != null ? formatToCurrency(value) : '';
+        _investedAmountController.text =
+            investedAmount != null ? formatToCurrency(investedAmount) : '';
         _maturityDateController.text = snapshot.maturityDate != null
             ? formatDate(snapshot.maturityDate!)
             : '';
+        _investedOnController.text =
+            investedOn != null ? formatDate(investedOn) : '';
       });
 
       snapshot.onIRRCleared?.consume((_) {
@@ -124,7 +147,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
               FilteringTextInputFormatter.deny(RegExp(r'[^a-zA-Z0-9\s]'))
             ],
             decoration: const InputDecoration(
-                labelText: 'Name', border: OutlineInputBorder()),
+                labelText: 'Name*', border: OutlineInputBorder()),
           ),
           const SizedBox(height: AppDimen.defaultPadding),
           TextFormField(
@@ -136,6 +159,36 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
             decoration: const InputDecoration(
                 labelText: 'Description', border: OutlineInputBorder()),
           ),
+          const SizedBox(height: AppDimen.defaultPadding),
+          Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).dividerColor),
+                  borderRadius: BorderRadius.circular(AppDimen.defaultPadding)),
+              child: Padding(
+                padding: const EdgeInsets.all(AppDimen.minPadding),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      controller: _investedAmountController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [CurrencyTextInputFormatter()],
+                      decoration: const InputDecoration(
+                          labelText: 'Invested Amount',
+                          border: OutlineInputBorder()),
+                    ),
+                    const SizedBox(height: AppDimen.defaultPadding),
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      controller: _investedOnController,
+                      inputFormatters: [DateTextInputFormatter()],
+                      decoration: const InputDecoration(
+                          labelText: 'Date (DD/MM/YYYY)',
+                          border: OutlineInputBorder()),
+                    ),
+                  ],
+                ),
+              )),
           const SizedBox(height: AppDimen.defaultPadding),
           Container(
               decoration: BoxDecoration(

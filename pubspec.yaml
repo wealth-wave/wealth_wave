@@ -22,7 +22,6 @@ dependencies:
   toastification: ^1.2.0
   syncfusion_flutter_charts: ^24.1.47+2
 
-
 dev_dependencies:
   flutter_lints: ^3.0.1
   drift_dev: ^2.15.0
