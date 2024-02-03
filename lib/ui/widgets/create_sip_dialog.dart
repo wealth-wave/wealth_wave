@@ -172,6 +172,10 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
                   child: Text('Quarterly'),
                 ),
                 DropdownMenuItem(
+                  value: SipFrequency.halfyearly,
+                  child: Text('Half Yearly'),
+                ),
+                DropdownMenuItem(
                   value: SipFrequency.yearly,
                   child: Text('Yearly'),
                 ),
