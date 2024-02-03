@@ -20,12 +20,15 @@ class IRRCalculator {
     payments.sort((a, b) => a.createdOn.compareTo(b.createdOn));
     DateTime initialDate = payments.first.createdOn;
     List<_CashFlow> cashFlows = payments
-        .where((payment) => payment.createdOn.isBefore(valueUpdatedOn))
+        .where((payment) => payment.createdOn
+            .isBefore(valueUpdatedOn.subtract(const Duration(days: 1))))
         .toList()
-        .map((transaction) => _CashFlow(
-            amount: -transaction.amount,
-            years: transaction.createdOn.difference(initialDate).inDays / 365))
-        .toList();
+        .map((transaction) {
+      double years = transaction.createdOn.difference(initialDate).inDays / 365;
+      return _CashFlow(
+          amount: -transaction.amount,
+          years: years);
+    }).toList();
 
     cashFlows.add(_CashFlow(
         amount: value,
