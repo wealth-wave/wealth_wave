@@ -91,6 +91,7 @@ class _DashboardPage
   }
 
   Widget _buildBarChart(List<MapEntry<String, double>> data) {
+    data.sort((a, b) => a.value > b.value ? -1 : 1);
     return PrimerProgressBar(
       segments: data
           .map((e) => Segment(
@@ -108,19 +109,23 @@ class _DashboardPage
       required final List<MapEntry<double, double>> data,
       required final double valueOfInvestment}) {
     if (data.isNotEmpty) {
+      data.sort((a, b) => a.value > b.value ? -1 : 1);
       List<MapEntry<String, double>> contribution = [];
       contribution.add(MapEntry("Invested", investedAmount));
       for (var element in data) {
-        contribution.add(MapEntry(
-            formatToPercentage(element.key, forceRound: true),
-            element.value));
+        if (element.value / valueOfInvestment > 0.01) {
+          contribution.add(MapEntry(
+              formatToPercentage(element.key, forceRound: true),
+              element.value));
+        }
       }
       contribution.add(MapEntry("Current Value", valueOfInvestment));
       return SfCartesianChart(
         primaryXAxis: const CategoryAxis(),
         series: [
           WaterfallSeries(
-            totalSumPredicate: (datum, index) => index == contribution.length-1,
+            totalSumPredicate: (datum, index) =>
+                index == contribution.length - 1,
             dataSource: contribution,
             xValueMapper: (data, _) => data.key,
             yValueMapper: (data, _) => data.value,

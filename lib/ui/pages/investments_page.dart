@@ -123,24 +123,37 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
               Column(
                 children: [
                   Text(formatToCurrency(investmentVO.investedValue),
-                      style: Theme.of(context).textTheme.bodyMedium),
+                      style: Theme.of(context).textTheme.bodyLarge),
                   Text('(Invested)',
-                      style: Theme.of(context).textTheme.labelSmall),
+                      style: Theme.of(context).textTheme.labelMedium),
                 ],
               ),
               const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)),
-              Column(
-                children: [
-                  Text(formatToCurrency(investmentVO.currentValue),
-                      style: Theme.of(context).textTheme.bodyMedium),
-                  Text('(At ${formatToPercentage(investmentVO.irr)}',
-                      style: Theme.of(context).textTheme.labelSmall),
-                ],
-              )
+              _getValueWidget(investmentVO, context),
+              const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)),
             ],
           )
         ]),
       ),
+    );
+  }
+
+  Column _getValueWidget(InvestmentVO investmentVO, BuildContext context) {
+    Color color = Colors.red;
+    if (investmentVO.currentValue > investmentVO.investedValue) {
+      color = Colors.green;
+    }
+    return Column(
+      children: [
+        Text(formatToCurrency(investmentVO.currentValue),
+            style:
+                Theme.of(context).textTheme.bodyLarge!.copyWith(color: color)),
+        Text('(At ${formatToPercentage(investmentVO.irr)})',
+            style: Theme.of(context)
+                .textTheme
+                .labelMedium!
+                .copyWith(color: color)),
+      ],
     );
   }
 
