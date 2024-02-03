@@ -18,9 +18,12 @@ class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
         .then((investments) => investments
             .map((investment) => InvestmentVO.from(investment: investment))
             .toList())
-        .then((investmentVOs) => updateViewState((viewState) {
-              viewState.investmentVOs = investmentVOs;
-            }));
+        .then((investmentVOs) {
+      investmentVOs.sort((a, b) => a.currentValue > b.currentValue ? -1 : 1);
+      updateViewState((viewState) {
+        viewState.investmentVOs = investmentVOs;
+      });
+    });
   }
 
   void deleteInvestment({required final int id}) {
