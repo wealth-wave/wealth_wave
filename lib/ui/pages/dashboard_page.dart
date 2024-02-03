@@ -106,17 +106,15 @@ class _DashboardPage
 
   Widget _buildIrrContribution(
       {required final double investedAmount,
-      required final List<MapEntry<double, double>> data,
+      required final List<MapEntry<int, double>> data,
       required final double valueOfInvestment}) {
     if (data.isNotEmpty) {
-      data.sort((a, b) => a.value > b.value ? -1 : 1);
+      data.sort((a, b) => a.key.compareTo(b.key));
       List<MapEntry<String, double>> contribution = [];
       contribution.add(MapEntry("Invested", investedAmount));
       for (var element in data) {
         if (element.value / valueOfInvestment > 0.01) {
-          contribution.add(MapEntry(
-              formatToPercentage(element.key, forceRound: true),
-              element.value));
+          contribution.add(MapEntry(_getIrrKey(element.key), element.value));
         }
       }
       contribution.add(MapEntry("Current Value", valueOfInvestment));
@@ -201,5 +199,21 @@ class _DashboardPage
   @override
   DashboardPresenter initializePresenter() {
     return DashboardPresenter();
+  }
+
+  String _getIrrKey(int key) {
+    if (key < 5) {
+      return '0-5%';
+    } else if (key < 10) {
+      return '5-10%';
+    } else if (key < 15) {
+      return '10-15%';
+    } else if (key < 20) {
+      return '15-20%';
+    } else if (key < 40) {
+      return '20-40%';
+    } else {
+      return '40%+';
+    }
   }
 }

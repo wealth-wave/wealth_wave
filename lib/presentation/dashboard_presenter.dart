@@ -16,7 +16,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
       double totalValueOfInvestment = 0;
       Map<RiskLevel, double> riskComposition = {};
       Map<String, double> basketComposition = {};
-      Map<double, double> irrComposition = {};
+      Map<int, double> irrComposition = {};
 
       for (var investment in investments) {
         double investmentValue = investment.getValueOn(date: DateTime.now());
@@ -30,7 +30,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
         basketComposition.update(
             investment.basketName ?? '-', (value) => value + investmentValue,
             ifAbsent: () => investmentValue);
-        irrComposition.update((investment.getIRR()).roundToDouble(),
+        irrComposition.update(_getIrrCompositionKey(investment.getIRR()),
             (value) => value + (investmentValue - investedAmount),
             ifAbsent: () => (investmentValue - investedAmount));
       }
@@ -84,7 +84,8 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
     double totalInvested = 0;
 
     for (var investment in investments) {
-      investment.getPayments(till: DateTime.now())
+      investment
+          .getPayments(till: DateTime.now())
           .map((e) => MapEntry(e.createdOn, e.amount))
           .forEach((entry) {
         dateInvestmentMap.update(entry.key, (value) => value + entry.value,
@@ -110,12 +111,28 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
   }
 }
 
+int _getIrrCompositionKey(double irr) {
+  if (irr < 5) {
+    return 5;
+  } else if (irr < 10) {
+    return 10;
+  } else if (irr < 15) {
+    return 15;
+  } else if (irr < 20) {
+    return 20;
+  } else if (irr < 40) {
+    return 40;
+  } else {
+    return 100;
+  }
+}
+
 class DashboardViewState {
   double invested = 0;
   double currentValue = 0;
   Map<RiskLevel, double> riskComposition = {};
   Map<String, double> basketComposition = {};
-  Map<double, double> irrComposition = {};
+  Map<int, double> irrComposition = {};
   Map<DateTime, double> investmentOverTime = {};
   Map<DateTime, double> valueOverTime = {};
 }
