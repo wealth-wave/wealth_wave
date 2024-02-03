@@ -122,10 +122,13 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
       final double? value = investmentToUpdate.irr == null
           ? investmentToUpdate.getValueOn(date: DateTime.now())
           : null;
+      final bool hasTransactions = investmentToUpdate.transactions.isNotEmpty;
       viewState.name = investmentToUpdate.name;
       viewState.irr = investmentToUpdate.irr;
-      viewState.investedAmount = investmentToUpdate.getTotalInvestedAmount();
-      viewState.investedOn = investmentToUpdate.investedOn;
+      viewState.investedAmount =
+          hasTransactions ? null : investmentToUpdate.getTotalInvestedAmount();
+      viewState.investedOn =
+          hasTransactions ? null : investmentToUpdate.investedOn;
       viewState.basketId = investmentToUpdate.basketId;
       viewState.value = value;
       viewState.hasTransactions = investmentToUpdate.transactions.isNotEmpty;
@@ -168,13 +171,7 @@ class CreateInvestmentViewState {
     final irr = this.irr;
     final containsValue = value != null && value > 0;
     final containsIRR = irr != null && irr > 0;
-    final containsInvestedAmount =
-        investedAmount != null && investedAmount! > 0;
-    final containsInvestedOnDate = investedOn != null;
 
-    return name.isNotEmpty &&
-        (containsValue || containsIRR) &&
-        ((!containsInvestedAmount && !containsInvestedOnDate) ||
-            (containsInvestedAmount && containsInvestedOnDate));
+    return name.isNotEmpty && (containsValue || containsIRR);
   }
 }
