@@ -4,6 +4,7 @@ enum SipFrequency {
   biweekly,
   monthly,
   quarterly,
+  halfyearly,
   yearly,
 }
 
@@ -18,7 +19,9 @@ Duration getDuration(SipFrequency frequency) {
     case SipFrequency.monthly:
       return const Duration(days: 30);
     case SipFrequency.quarterly:
-      return const Duration(days: 90);
+      return const Duration(days: 91);
+    case SipFrequency.halfyearly:
+      return const Duration(days: 182);
     case SipFrequency.yearly:
       return const Duration(days: 365);
     default:
