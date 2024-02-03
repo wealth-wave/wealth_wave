@@ -17,23 +17,24 @@ class IRRCalculator {
       required final DateTime valueUpdatedOn}) {
     if (payments.isEmpty) return 0.0;
 
+    payments.add(Payment.from(amount: -value, createdOn: valueUpdatedOn));
     payments.sort((a, b) => a.createdOn.compareTo(b.createdOn));
     DateTime initialDate = payments.first.createdOn;
-    List<_CashFlow> cashFlows = payments
-        .where((payment) => payment.createdOn
-            .isBefore(valueUpdatedOn.subtract(const Duration(days: 1))))
-        .toList()
+    List<_CashFlow> cashFlows = payments.toList()
         .map((transaction) {
       double years = transaction.createdOn.difference(initialDate).inDays / 365;
-      return _CashFlow(
-          amount: -transaction.amount,
-          years: years);
+      return _CashFlow(amount: -transaction.amount, years: years);
     }).toList();
 
-    cashFlows.add(_CashFlow(
-        amount: value,
-        years: valueUpdatedOn.difference(initialDate).inDays / 365));
+    double irr = _calculateIRR(cashFlows);
+    if (irr.isFinite) {
+      return irr;
+    } else {
+      return 0.0;
+    }
+  }
 
+  double _calculateIRR(List<_CashFlow> cashFlows) {
     double guess = 0.1; // Initial guess for IRR
     for (int i = 0; i < 100; i++) {
       // Limit iterations to prevent infinite loop
@@ -46,7 +47,7 @@ class IRRCalculator {
       if (f.abs() < 1e-6) return guess * 100; // Convergence tolerance
       guess -= f / df;
     }
-    return 0.0;
+    return guess*100;
   }
 
   double calculateFutureValueOnIRR(
