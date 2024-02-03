@@ -160,36 +160,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                 labelText: 'Description', border: OutlineInputBorder()),
           ),
           const SizedBox(height: AppDimen.defaultPadding),
-          Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).dividerColor),
-                  borderRadius: BorderRadius.circular(AppDimen.defaultPadding)),
-              child: Padding(
-                padding: const EdgeInsets.all(AppDimen.minPadding),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      textInputAction: TextInputAction.next,
-                      controller: _investedAmountController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [CurrencyTextInputFormatter()],
-                      decoration: const InputDecoration(
-                          labelText: 'Invested Amount',
-                          border: OutlineInputBorder()),
-                    ),
-                    const SizedBox(height: AppDimen.defaultPadding),
-                    TextFormField(
-                      textInputAction: TextInputAction.next,
-                      controller: _investedOnController,
-                      inputFormatters: [DateTextInputFormatter()],
-                      decoration: const InputDecoration(
-                          labelText: 'Date (DD/MM/YYYY)',
-                          border: OutlineInputBorder()),
-                    ),
-                  ],
-                ),
-              )),
-          const SizedBox(height: AppDimen.defaultPadding),
+          _getInvestedAmountWidget(snapshot.hasTransactions),
           Container(
               decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).dividerColor),
@@ -298,5 +269,46 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
   @override
   CreateInvestmentPresenter initializePresenter() {
     return CreateInvestmentPresenter();
+  }
+
+  Widget _getInvestedAmountWidget(bool containsTransactions) {
+    if (containsTransactions) {
+      return Container();
+    } else {
+      return Column(
+        children: [
+          const SizedBox(height: AppDimen.defaultPadding),
+          Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).dividerColor),
+                  borderRadius: BorderRadius.circular(AppDimen.defaultPadding)),
+              child: Padding(
+                padding: const EdgeInsets.all(AppDimen.minPadding),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      controller: _investedAmountController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [CurrencyTextInputFormatter()],
+                      decoration: const InputDecoration(
+                          labelText: 'Invested Amount',
+                          border: OutlineInputBorder()),
+                    ),
+                    const SizedBox(height: AppDimen.defaultPadding),
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      controller: _investedOnController,
+                      inputFormatters: [DateTextInputFormatter()],
+                      decoration: const InputDecoration(
+                          labelText: 'Date (DD/MM/YYYY)',
+                          border: OutlineInputBorder()),
+                    ),
+                  ],
+                ),
+              )),
+        ],
+      );
+    }
   }
 }

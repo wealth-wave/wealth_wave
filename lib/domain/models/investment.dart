@@ -40,14 +40,28 @@ class Investment {
       required this.sips});
 
   double getTotalInvestedAmount({final DateTime? till}) {
-    if (transactions.isEmpty) {
-      return investedAmount ?? 0;
-    }
-    return transactions
-        .where((transaction) =>
-            till == null || till.isAfter(transaction.createdOn))
+    return getPayments(till: till)
         .map((transaction) => transaction.amount)
         .fold(0, (value, element) => value + element);
+  }
+
+  List<Payment> getPayments(
+      {final DateTime? till, bool considerFuturePayments = false}) {
+    final payments = transactions
+        .where((transaction) =>
+            till == null || till.isAfter(transaction.createdOn))
+        .map((transaction) => transaction.toPayment())
+        .toList(growable: true);
+    if (considerFuturePayments && till != null) {
+      for (var sip in sips) {
+        payments.addAll(sip.getFuturePayment(till: till));
+      }
+    }
+    if (investedAmount != null && investedOn != null && payments.isEmpty) {
+      payments
+          .add(Payment.from(amount: investedAmount!, createdOn: investedOn!));
+    }
+    return payments;
   }
 
   double getValueOn(
@@ -57,18 +71,8 @@ class Investment {
         ? maturityDate
         : date;
 
-    final payments = transactions
-        .map((transaction) => transaction.toPayment())
-        .toList(growable: true);
-    if (considerFuturePayments) {
-      for (var sip in sips) {
-        payments.addAll(sip.getFuturePayment(till: futureDate));
-      }
-    }
-    if (payments.isEmpty && investedAmount != null && investedOn != null) {
-      payments
-          .add(Payment.from(amount: investedAmount!, createdOn: investedOn!));
-    }
+    final payments = getPayments(
+        till: futureDate, considerFuturePayments: considerFuturePayments);
 
     final value = this.value;
     final valueUpdatedOn = this.valueUpdatedOn;
@@ -96,8 +100,7 @@ class Investment {
     if (irr != null) {
       return irr;
     } else if (value != null && valueUpdatedOn != null) {
-      final List<Payment> payments =
-          transactions.map((transaction) => transaction.toPayment()).toList();
+      final List<Payment> payments = getPayments(till: DateTime.now());
 
       return IRRCalculator().calculateIRR(
           payments: payments, value: value, valueUpdatedOn: valueUpdatedOn);
