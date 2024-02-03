@@ -15,8 +15,10 @@ class GoalsPresenter extends Presenter<GoalsViewState> {
     _goalService
         .get()
         .then((goals) => goals.map((goal) => GoalVO.from(goal: goal)).toList())
-        .then((goalVOs) =>
-            updateViewState((viewState) => viewState.goalVOs = goalVOs));
+        .then((goalVOs) {
+      goalVOs.sort((a, b) => a.maturityDate.isBefore(b.maturityDate) ? -1 : 1);
+      updateViewState((viewState) => viewState.goalVOs = goalVOs);
+    });
   }
 
   void deleteGoal({required final int id}) {
