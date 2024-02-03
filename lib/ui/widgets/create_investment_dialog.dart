@@ -7,6 +7,7 @@ import 'package:wealth_wave/presentation/create_investment_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/custom/currency_text_input_formatter.dart';
 import 'package:wealth_wave/ui/custom/date_text_input_formatter.dart';
+import 'package:wealth_wave/ui/custom/decimal_text_input_formatter.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showCreateInvestmentDialog(
@@ -160,7 +161,9 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                       textInputAction: TextInputAction.next,
                       controller: _irrController,
                       keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      inputFormatters: [
+                        DecimalTextInputFormatter(decimalRange: 2)
+                      ],
                       decoration: const InputDecoration(
                           labelText: 'IRR %', border: OutlineInputBorder()),
                     ),
