@@ -35,10 +35,15 @@ double? parseCurrency(String value) {
   }
 }
 
-DateTime? parseDate(String date) {
+DateTime? parseDate(String dateText) {
   try {
-    return DateFormat('dd/MM/yyyy').parseStrict(date);
+    final date = DateFormat('dd/MM/yyyy').parseStrict(dateText);
+    if (date.isBefore(DateTime(2100, 1, 1)) &&
+        date.isAfter(DateTime(1990, 1, 1))) {
+      return date;
+    }
   } catch (e) {
     return null;
   }
+  return null;
 }

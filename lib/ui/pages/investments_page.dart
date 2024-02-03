@@ -74,16 +74,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     investmentVO.transactions.isEmpty
-                        ? FilledButton(
-                            onPressed: () {
-                              showCreateTransactionDialog(
-                                      context: context,
-                                      investmentId: investmentVO.id)
-                                  .then(
-                                      (value) => presenter.fetchInvestments());
-                            },
-                            child: const Text('Add transactions'),
-                          )
+                        ? _getAddTransactionButton(context, investmentVO)
                         : TextButton(
                             onPressed: () {
                               showTransactionsDialog(
@@ -151,6 +142,29 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
         ]),
       ),
     );
+  }
+
+  Widget _getAddTransactionButton(
+      BuildContext context, InvestmentVO investmentVO) {
+    if (investmentVO.investedValue > 0) {
+      return TextButton(
+        onPressed: () {
+          showCreateTransactionDialog(
+                  context: context, investmentId: investmentVO.id)
+              .then((value) => presenter.fetchInvestments());
+        },
+        child: const Text('Add transactions'),
+      );
+    } else {
+      return FilledButton(
+        onPressed: () {
+          showCreateTransactionDialog(
+                  context: context, investmentId: investmentVO.id)
+              .then((value) => presenter.fetchInvestments());
+        },
+        child: const Text('Add transactions'),
+      );
+    }
   }
 
   RichText _getTitleWidget(InvestmentVO investmentVO, BuildContext context) {

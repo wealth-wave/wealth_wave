@@ -124,7 +124,6 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _valueUpdatedDateController,
-              maxLength: 10,
               inputFormatters: [DateTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Date (DD/MM/YYYY)', border: OutlineInputBorder()),
