@@ -84,7 +84,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
     double totalInvested = 0;
 
     for (var investment in investments) {
-      investment.transactions
+      investment.getPayments(till: DateTime.now())
           .map((e) => MapEntry(e.createdOn, e.amount))
           .forEach((entry) {
         dateInvestmentMap.update(entry.key, (value) => value + entry.value,
