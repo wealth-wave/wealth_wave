@@ -25,6 +25,14 @@ class _BasketsPage
       final BuildContext context, final BasketsViewState snapshot) {
     List<BasketVO> basketVOs = snapshot.baskets;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Manage Baskets"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Center(
           child: ListView.builder(
         itemCount: basketVOs.length,

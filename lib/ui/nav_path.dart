@@ -1,22 +1,27 @@
 class NavPath {
-  static const String home = '/';
-  static const String createGoal = '/create-goal';
-  static String updateGoal({required final int id}) => '/goals/$id/update';
-  static const String investments = '/investments';
-  static const String createInvestment = '/create-investment';
-  static String updateInvestment({required final int id}) =>
-      '/investments/$id/update';
-  static const String createBasket = '/create-basket';
-  static String updateBasket({required final int id}) => '/baskets/$id/update';
+  static const String home = '';
+  static const String baskets = 'baskets';
+  static const String dashboard = 'dashboard';
+  static const String goals = 'goals';
+  static const String investments = 'investments';
 
-  static isMainPagePath(List<String> paths) => paths.isEmpty;
+  static isMainPagePath(List<String> paths) {
+    if (paths.isEmpty) return true;
+    final firstPath = paths[0];
+    return firstPath == dashboard ||
+        firstPath == goals ||
+        firstPath == investments;
+  }
 
-  static isCreateGoalPagePath(List<String> paths) =>
-      paths.length == 1 && paths[0] == 'create-goal';
+  static isDashboardPagePath(List<String> paths) =>
+      paths.length == 1 && paths[0] == dashboard;
 
-  static isCreateInvestmentPagePath(List<String> paths) =>
-      paths.length == 1 && paths[0] == 'create-investment';
+  static isGoalsPagePath(List<String> paths) =>
+      paths.length == 1 && paths[0] == goals;
 
-  static isCreateBasketPagePath(List<String> paths) =>
-      paths.length == 1 && paths[0] == 'create-basket';
+  static isInvestmentsPagePath(List<String> paths) =>
+      paths.length == 1 && paths[0] == investments;
+
+  static isBasketPagePath(List<String> paths) =>
+      paths.length == 1 && paths[0] == baskets;
 }
