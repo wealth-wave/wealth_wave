@@ -124,6 +124,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
           : null;
       final bool hasTransactions = investmentToUpdate.transactions.isNotEmpty;
       viewState.name = investmentToUpdate.name;
+      viewState.description = investmentToUpdate.description?? '';
       viewState.irr = investmentToUpdate.irr;
       viewState.investedAmount =
           hasTransactions ? null : investmentToUpdate.getTotalInvestedAmount();
