@@ -17,39 +17,26 @@ class IRRCalculator {
       required final DateTime valueUpdatedOn}) {
     if (payments.isEmpty) return 0.0;
 
-    payments.add(Payment.from(amount: -value, createdOn: valueUpdatedOn));
     payments.sort((a, b) => a.createdOn.compareTo(b.createdOn));
-    DateTime initialDate = payments.first.createdOn;
-    List<_CashFlow> cashFlows = payments.toList()
-        .map((transaction) {
-      double years = transaction.createdOn.difference(initialDate).inDays / 365;
-      return _CashFlow(amount: -transaction.amount, years: years);
-    }).toList();
 
-    double irr = _calculateIRR(cashFlows);
-    if (irr.isFinite) {
-      return irr;
-    } else {
-      return 0.0;
-    }
-  }
-
-  double _calculateIRR(List<_CashFlow> cashFlows) {
-    double guess = 0.1; // Initial guess for IRR
-    for (int i = 0; i < 100; i++) {
-      // Limit iterations to prevent infinite loop
-      double f = 0, df = 0;
-      for (var cashFlow in cashFlows) {
-        num r = pow(1 + guess, cashFlow.years);
-        f += cashFlow.amount / r;
-        df -= cashFlow.years * cashFlow.amount / (r * (1 + guess));
+    var irr = 0.1;
+    for (var i = 0; i < 1000; i++) {
+      final irrValue = calculateFutureValueOnIRR(
+          payments: payments, irr: irr, date: valueUpdatedOn);
+      if (irrValue < value && 1-(irrValue/value) > 0.01) {
+        irr += 1-(irrValue/value);
+      } else if(irrValue > value && 1-(value/irrValue) > 0.01){
+        irr -= 1-(value/irrValue);
+      } else {
+        break;
       }
-      if (f.abs() < 1e-6) return guess * 100; // Convergence tolerance
-      guess -= f / df;
     }
-    return guess*100;
+
+
+    return irr;
   }
 
+  
   double calculateFutureValueOnIRR(
       {required final List<Payment> payments,
       required final double irr,
@@ -73,11 +60,4 @@ class IRRCalculator {
     double years = currentValueUpdatedOn.difference(futureDate).inDays / 365;
     return currentValue / pow(1 + irr / 100, years);
   }
-}
-
-class _CashFlow {
-  final double amount;
-  final double years;
-
-  _CashFlow({required this.amount, required this.years});
 }
