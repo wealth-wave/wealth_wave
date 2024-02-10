@@ -43,7 +43,6 @@ class InvestmentVO {
   final double irr;
   final double investedValue;
   final double currentValue;
-  final DateTime? valueUpdatedOn;
   final DateTime? maturityDate;
   final int? basketId;
   final String? basketName;
@@ -61,7 +60,6 @@ class InvestmentVO {
       required this.description,
       required this.riskLevel,
       required this.irr,
-      required this.valueUpdatedOn,
       required this.basketId,
       required this.basketName,
       required this.investedValue,
@@ -80,7 +78,6 @@ class InvestmentVO {
         irr: investment.getIRR(),
         investedValue: investment.getTotalInvestedAmount(),
         currentValue: investment.getValueOn(date: DateTime.now()),
-        valueUpdatedOn: investment.valueUpdatedOn,
         basketId: investment.basketId,
         basketName: investment.basketName,
         transactions: investment.transactions,

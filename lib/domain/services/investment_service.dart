@@ -31,11 +31,10 @@ class InvestmentService {
       required final double? investedAmount,
       required final DateTime? investedOn,
       required final double? value,
-      required final DateTime? valueUpdatedOn,
       required final double? irr,
       required final DateTime? maturityDate}) async {
     if ((irr == null || irr <= 0) &&
-        (value == null || value <= 0 || valueUpdatedOn == null)) {
+        (value == null || value <= 0)) {
       throw Exception(
           "Either IRR or Value and Value Updated On must be provided");
     }
@@ -50,8 +49,7 @@ class InvestmentService {
             investedOn: investedOn,
             value: value,
             maturityDate: maturityDate,
-            irr: irr,
-            valueUpdatedOn: valueUpdatedOn)
+            irr: irr)
         .then((_) => {});
   }
 
@@ -87,7 +85,6 @@ class InvestmentService {
       required final DateTime? investedOn,
       required final RiskLevel riskLevel,
       required final double? value,
-      required final DateTime? valueUpdatedOn,
       required final double? irr,
       required final DateTime? maturityDate}) {
     return _investmentApi
@@ -98,7 +95,6 @@ class InvestmentService {
             investedAmount: investedAmount,
             investedOn: investedOn,
             value: value,
-            valueUpdatedOn: valueUpdatedOn,
             irr: irr,
             maturityDate: maturityDate,
             riskLevel: riskLevel,

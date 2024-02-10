@@ -14,7 +14,6 @@ class Investment {
   final double? irr;
   final double? investedAmount;
   final DateTime? investedOn;
-  final DateTime? valueUpdatedOn;
   final DateTime? maturityDate;
   final int? basketId;
   final String? basketName;
@@ -31,7 +30,6 @@ class Investment {
       required this.investedAmount,
       required this.investedOn,
       required this.value,
-      required this.valueUpdatedOn,
       required this.basketId,
       required this.maturityDate,
       required this.basketName,
@@ -75,16 +73,15 @@ class Investment {
         till: futureDate, considerFuturePayments: considerFuturePayments);
 
     final value = this.value;
-    final valueUpdatedOn = this.valueUpdatedOn;
     final irr = this.irr;
-    if (value != null && valueUpdatedOn != null) {
+    if (value != null) {
       final irr = IRRCalculator().calculateIRR(
-          payments: payments, value: value, valueUpdatedOn: valueUpdatedOn);
+          payments: payments, value: value, valueUpdatedOn: DateTime.now());
       return IRRCalculator().calculateValueOnIRR(
           irr: irr,
           futureDate: futureDate,
           currentValue: value,
-          currentValueUpdatedOn: valueUpdatedOn);
+          currentValueUpdatedOn: DateTime.now());
     } else if (irr != null) {
       return IRRCalculator().calculateFutureValueOnIRR(
           payments: payments, irr: irr, date: futureDate);
@@ -96,14 +93,13 @@ class Investment {
   double getIRR() {
     final irr = this.irr;
     final value = this.value;
-    final valueUpdatedOn = this.valueUpdatedOn;
     if (irr != null) {
       return irr;
-    } else if (value != null && valueUpdatedOn != null) {
+    } else if (value != null) {
       final List<Payment> payments = getPayments(till: DateTime.now());
 
       return IRRCalculator().calculateIRR(
-          payments: payments, value: value, valueUpdatedOn: valueUpdatedOn);
+          payments: payments, value: value, valueUpdatedOn: DateTime.now());
     } else {
       throw Exception('Value and IRR are null');
     }
@@ -122,7 +118,6 @@ class Investment {
           riskLevel: investmentDO.riskLevel,
           irr: investmentDO.irr,
           value: investmentDO.value,
-          valueUpdatedOn: investmentDO.valueUpdatedOn,
           basketId: investmentDO.basketId,
           maturityDate: investmentDO.maturityDate,
           basketName: investmentDO.basketName,

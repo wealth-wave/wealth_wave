@@ -301,7 +301,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                       controller: _investedOnController,
                       inputFormatters: [DateTextInputFormatter()],
                       decoration: const InputDecoration(
-                          labelText: 'Date (DD/MM/YYYY)',
+                          labelText: 'Invested Date',
                           border: OutlineInputBorder()),
                     ),
                   ],
