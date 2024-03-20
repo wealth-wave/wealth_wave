@@ -98,7 +98,7 @@ class Goal {
 
       return {
         ...acc,
-        investment.basketName: (acc[investment.riskLevel] ?? 0) + value
+        investment.basketName: (acc[investment.basketName] ?? 0) + value
       };
     }).map((key, value) => MapEntry(key, value / valueOnMaturity));
   }

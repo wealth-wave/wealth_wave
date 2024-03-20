@@ -21,7 +21,7 @@ class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
         .then((investmentVOs) {
       investmentVOs.sort((a, b) => a.currentValue > b.currentValue ? -1 : 1);
       updateViewState((viewState) {
-        viewState.investmentVOs = investmentVOs;
+        viewState.unfilteredInvestmentVOs = investmentVOs;
       });
     });
   }
@@ -29,10 +29,51 @@ class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
   void deleteInvestment({required final int id}) {
     _investmentService.deleteBy(id: id).then((value) => fetchInvestments());
   }
+
+  void filterByName(String value) {
+    updateViewState((viewState) {
+      viewState.filterText = value;
+    });
+  }
+
+  void sortBy(
+      {required final SortBy sortBy}) {
+    updateViewState((viewState) {
+      viewState.sortBy = sortBy;
+      viewState.sortByDirection = sortBy == SortBy.name
+          ? SortByDirection.ascending
+          : SortByDirection.descending;
+    });
+  }
 }
 
 class InvestmentsViewState {
-  List<InvestmentVO> investmentVOs = [];
+  List<InvestmentVO> unfilteredInvestmentVOs = [];
+  SortBy sortBy = SortBy.name;
+  SortByDirection sortByDirection = SortByDirection.ascending;
+  String filterText = '';
+
+  List<InvestmentVO> get investmentVOs {
+    List<InvestmentVO> investments = unfilteredInvestmentVOs
+        .where((investmentVO) =>
+            filterText.isEmpty ||
+            investmentVO.name.toLowerCase().contains(filterText.toLowerCase()))
+        .toList();
+    if (sortBy == SortBy.name) {
+      if (sortByDirection == SortByDirection.ascending) {
+        investments.sort((a, b) => a.name.compareTo(b.name));
+      } else {
+        investments.sort((a, b) => a.name.compareTo(b.name));
+      }
+    } else if (sortBy == SortBy.value) {
+      if (sortByDirection == SortByDirection.ascending) {
+        investments.sort((a, b) => a.currentValue > b.currentValue ? 1 : -1);
+      } else {
+        investments.sort((a, b) => a.currentValue > b.currentValue ? -1 : 1);
+      }
+    }
+    return investments;
+  }
 }
 
 class InvestmentVO {
@@ -85,4 +126,14 @@ class InvestmentVO {
         taggedGoalCount: investment.goalsCount,
         maturityDate: investment.maturityDate);
   }
+}
+
+enum SortBy {
+  name,
+  value,
+}
+
+enum SortByDirection {
+  ascending,
+  descending,
 }

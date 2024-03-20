@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/investments_presenter.dart';
@@ -20,6 +21,9 @@ class InvestmentsPage extends StatefulWidget {
 
 class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
     InvestmentsPresenter> {
+  final TextEditingController _searchController = TextEditingController();
+  bool _showFab = true;
+
   @override
   void initState() {
     super.initState();
@@ -31,23 +35,71 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
       final BuildContext context, final InvestmentsViewState snapshot) {
     List<InvestmentVO> investmentVOs = snapshot.investmentVOs;
     return Scaffold(
-      body: Center(
-          child: ListView.builder(
-        itemCount: investmentVOs.length,
-        itemBuilder: (context, index) {
+      appBar: AppBar(
+        title: TextField(
+          controller: _searchController,
+          decoration: const InputDecoration(
+            hintText: 'Search investments',
+          ),
+          onChanged: (value) {
+            presenter.filterByName(value);
+          },
+        ),
+        actions: [
+          PopupMenuButton<SortBy>(
+            icon: const Icon(Icons.sort),
+            onSelected: (value) {
+              presenter.sortBy(sortBy: value);
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: SortBy.name,
+                child: Text('Sort by Name'),
+              ),
+              const PopupMenuItem(
+                value: SortBy.value,
+                child: Text('Sort by Value'),
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: NotificationListener<UserScrollNotification>(
+          onNotification: (notification) {
+            if (notification.direction == ScrollDirection.reverse) {
+              if (_showFab) {
+                setState(() {
+                  _showFab = false;
+                });
+              }
+            } else if (notification.direction == ScrollDirection.forward) {
+              if (!_showFab) {
+                setState(() {
+                  _showFab = true;
+                });
+              }
+            }
+            return true;
+          },
+          child: Center(
+              child: ListView.builder(
+            itemCount: investmentVOs.length,
+            itemBuilder: (context, index) {
           InvestmentVO investmentVO = investmentVOs[index];
           return _investmentWidget(
               context: context, investmentVO: investmentVO);
         },
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showCreateInvestmentDialog(context: context)
+          ))),
+      floatingActionButton: _showFab
+          ? FloatingActionButton(
+              onPressed: () {
+                showCreateInvestmentDialog(context: context)
               .then((value) => presenter.fetchInvestments());
         },
         tooltip: 'Add',
         child: const Icon(Icons.add),
-      ),
+            )
+          : null,
     );
   }
 
