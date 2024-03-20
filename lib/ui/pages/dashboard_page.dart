@@ -41,14 +41,8 @@ class _DashboardPage
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Text(
-                  'Total Invested Amount: ${formatToCurrency(snapshot.invested)}',
-                  style: Theme.of(context).textTheme.bodyLarge),
-              const SizedBox(height: AppDimen.minPadding),
-              Text(
-                  'Current Value of Investment: ${formatToCurrency(snapshot.currentValue)}',
-                  style: Theme.of(context).textTheme.bodyLarge),
-              const SizedBox(height: AppDimen.minPadding),
+              _buildInvestmentProgress(
+                  snapshot.invested, snapshot.currentValue),
               Text('Risk Composition:',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
@@ -58,14 +52,6 @@ class _DashboardPage
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
               _buildBarChart(snapshot.basketComposition.entries.toList()),
-              const SizedBox(height: AppDimen.minPadding),
-              Text('IRR Composition:',
-                  style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: AppDimen.minPadding),
-              _buildIrrContribution(
-                  investedAmount: snapshot.invested,
-                  data: irrComposition,
-                  valueOfInvestment: snapshot.currentValue),
               const SizedBox(height: AppDimen.minPadding),
               Text('Investment Over Time:',
                   style: Theme.of(context).textTheme.titleMedium),
@@ -90,6 +76,37 @@ class _DashboardPage
     return const Text('');
   }
 
+  Widget _buildInvestmentProgress(
+      double investedAmount, double valueOfInvestment) {
+    if (investedAmount == 0 || valueOfInvestment == 0) {
+      return const Text('');
+    }
+
+    bool isValueGreater = valueOfInvestment > investedAmount;
+    double percentage = isValueGreater
+        ? (investedAmount / valueOfInvestment * 100)
+        : (valueOfInvestment / investedAmount * 100);
+    double remainingPercentage = 100 - percentage;
+
+    return PrimerProgressBar(
+      segments: [
+        _buildSegment(percentage, investedAmount, 'Invested', Colors.blue),
+        _buildSegment(remainingPercentage, valueOfInvestment, 'Current Value',
+            isValueGreater ? Colors.green : Colors.red),
+      ],
+    );
+  }
+
+  Segment _buildSegment(
+      double value, double amount, String label, Color color) {
+    return Segment(
+      value: value.toInt(),
+      valueLabel: Text(formatToCurrency(amount)),
+      label: Text(label),
+      color: color,
+    );
+  }
+
   Widget _buildBarChart(List<MapEntry<String, double>> data) {
     data.sort((a, b) => a.value > b.value ? -1 : 1);
     return PrimerProgressBar(
@@ -102,37 +119,6 @@ class _DashboardPage
                   Colors.primaries[e.key.hashCode % Colors.primaries.length]))
           .toList(),
     );
-  }
-
-  Widget _buildIrrContribution(
-      {required final double investedAmount,
-      required final List<MapEntry<int, double>> data,
-      required final double valueOfInvestment}) {
-    if (data.isNotEmpty) {
-      data.sort((a, b) => a.key.compareTo(b.key));
-      List<MapEntry<String, double>> contribution = [];
-      contribution.add(MapEntry("Invested", investedAmount));
-      for (var element in data) {
-        if (element.value / valueOfInvestment > 0.01) {
-          contribution.add(MapEntry(_getIrrKey(element.key), element.value));
-        }
-      }
-      contribution.add(MapEntry("Current Value", valueOfInvestment));
-      return SfCartesianChart(
-        primaryXAxis: const CategoryAxis(),
-        series: [
-          WaterfallSeries(
-            totalSumPredicate: (datum, index) =>
-                index == contribution.length - 1,
-            dataSource: contribution,
-            xValueMapper: (data, _) => data.key,
-            yValueMapper: (data, _) => data.value,
-          ),
-        ],
-      );
-    } else {
-      return const Text('');
-    }
   }
 
   Widget _buildTimeLine(final List<MapEntry<DateTime, double>> valueData,
@@ -199,21 +185,5 @@ class _DashboardPage
   @override
   DashboardPresenter initializePresenter() {
     return DashboardPresenter();
-  }
-
-  String _getIrrKey(int key) {
-    if (key < 5) {
-      return '0-5%';
-    } else if (key < 10) {
-      return '5-10%';
-    } else if (key < 15) {
-      return '10-15%';
-    } else if (key < 20) {
-      return '15-20%';
-    } else if (key < 40) {
-      return '20-40%';
-    } else {
-      return '40%+';
-    }
   }
 }
