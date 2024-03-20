@@ -35,8 +35,6 @@ class GoalInvestmentTag {
           required List<InvestmentDO> investmentDOs,
           required List<TransactionDO> transactionsDOs,
           required List<SipDO> sipDOs}) {
-    print(goalInvestmentDO.goalName);
-    print(goalInvestmentDO.splitPercentage);
     return GoalInvestmentTag._(
           id: goalInvestmentDO.id,
           investmentId: goalInvestmentDO.investmentId,
