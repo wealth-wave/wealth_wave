@@ -71,6 +71,12 @@ class InvestmentsViewState {
       } else {
         investments.sort((a, b) => a.currentValue > b.currentValue ? -1 : 1);
       }
+    } else if (sortBy == SortBy.irr) {
+      if (sortByDirection == SortByDirection.ascending) {
+        investments.sort((a, b) => a.irr > b.irr ? 1 : -1);
+      } else {
+        investments.sort((a, b) => a.irr > b.irr ? -1 : 1);
+      }
     }
     return investments;
   }
@@ -131,6 +137,7 @@ class InvestmentVO {
 enum SortBy {
   name,
   value,
+  irr,
 }
 
 enum SortByDirection {
