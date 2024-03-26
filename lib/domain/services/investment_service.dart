@@ -28,8 +28,8 @@ class InvestmentService {
       required final String? description,
       required final int? basketId,
       required final RiskLevel riskLevel,
-      required final double? investedAmount,
-      required final DateTime? investedOn,
+      required final double investedAmount,
+      required final DateTime investedOn,
       required final double? value,
       required final double? irr,
       required final DateTime? maturityDate}) async {
@@ -45,12 +45,14 @@ class InvestmentService {
             description: description,
             basketId: basketId,
             riskLevel: riskLevel,
-            investedAmount: investedAmount,
-            investedOn: investedOn,
             value: value,
             maturityDate: maturityDate,
             irr: irr)
-        .then((_) => {});
+        .then((investmentId) => _transactionApi.create(
+            investmentId: investmentId,
+            amount: investedAmount,
+            createdOn: investedOn,
+            description: "Initial Investment"));
   }
 
   Future<List<Investment>> get() async {

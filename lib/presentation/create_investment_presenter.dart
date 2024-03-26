@@ -33,8 +33,8 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     final String description = viewState.description;
     final double? value = viewState.value;
     final int? basketId = viewState.basketId;
-    final double? investedAmount = viewState.investedAmount;
-    final DateTime? investedOn = viewState.investedOn;
+    final double investedAmount = viewState.investedAmount!;
+    final DateTime investedOn = viewState.investedOn!;
     final RiskLevel riskLevel = viewState.riskLevel;
     final double? irr = viewState.irr;
     final DateTime? maturityDate = viewState.maturityDate;
@@ -118,19 +118,16 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
   void setInvestment(Investment investmentToUpdate) {
     updateViewState((viewState) {
       final double? value = investmentToUpdate.irr == null
-          ? investmentToUpdate.getValueOn(date: DateTime.now())
+          ? investmentToUpdate.value
           : null;
-      final bool hasTransactions = investmentToUpdate.transactions.isNotEmpty;
       viewState.name = investmentToUpdate.name;
       viewState.description = investmentToUpdate.description?? '';
       viewState.irr = investmentToUpdate.irr;
-      viewState.investedAmount =
-          hasTransactions ? null : investmentToUpdate.getTotalInvestedAmount();
-      viewState.investedOn =
-          hasTransactions ? null : investmentToUpdate.investedOn;
+      viewState.investedAmount = investmentToUpdate.getTotalInvestedAmount();
+      viewState.investedOn = investmentToUpdate.getLastInvestedOn();
       viewState.basketId = investmentToUpdate.basketId;
       viewState.value = value;
-      viewState.hasTransactions = investmentToUpdate.transactions.isNotEmpty;
+      viewState.oneTimeInvestment = investmentToUpdate.transactions.length == 1;
       viewState.riskLevel = investmentToUpdate.riskLevel;
       viewState.onInvestmentFetched = SingleEvent(null);
     });
@@ -153,11 +150,11 @@ class CreateInvestmentViewState {
   int? basketId;
   double? irr;
   RiskLevel riskLevel = RiskLevel.medium;
-  double? investedAmount;
-  DateTime? investedOn;
+  double? investedAmount = 0;
+  DateTime? investedOn = DateTime.now();
   double? value;
   DateTime? maturityDate;
-  bool hasTransactions = false;
+  bool oneTimeInvestment = false;
   SingleEvent<void>? onInvestmentCreated;
   SingleEvent<void>? onInvestmentFetched;
   SingleEvent<void>? onIRRCleared;
@@ -171,6 +168,9 @@ class CreateInvestmentViewState {
     final containsValue = value != null && value > 0;
     final containsIRR = irr != null && irr > 0;
 
-    return name.isNotEmpty && (containsValue || containsIRR);
+    return name.isNotEmpty &&
+        (containsValue || containsIRR) &&
+        investedOn != null &&
+        (investedAmount??0) > 0;
   }
 }

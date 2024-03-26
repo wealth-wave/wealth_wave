@@ -160,7 +160,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                 labelText: 'Description', border: OutlineInputBorder()),
           ),
           const SizedBox(height: AppDimen.defaultPadding),
-          _getInvestedAmountWidget(snapshot.hasTransactions),
+          _getInvestedAmountWidget(snapshot.oneTimeInvestment),
           Container(
               decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).dividerColor),

@@ -262,18 +262,6 @@ class $InvestmentTableTable extends InvestmentTable
   late final GeneratedColumn<double> value = GeneratedColumn<double>(
       'VALUE', aliasedName, true,
       type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _investedAmountMeta =
-      const VerificationMeta('investedAmount');
-  @override
-  late final GeneratedColumn<double> investedAmount = GeneratedColumn<double>(
-      'INVESTED_AMOUNT', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _investedOnMeta =
-      const VerificationMeta('investedOn');
-  @override
-  late final GeneratedColumn<DateTime> investedOn = GeneratedColumn<DateTime>(
-      'INVESTED_ON', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _valueUpdatedOnMeta =
       const VerificationMeta('valueUpdatedOn');
   @override
@@ -309,8 +297,6 @@ class $InvestmentTableTable extends InvestmentTable
         description,
         basketId,
         value,
-        investedAmount,
-        investedOn,
         valueUpdatedOn,
         irr,
         maturityDate,
@@ -349,18 +335,6 @@ class $InvestmentTableTable extends InvestmentTable
       context.handle(
           _valueMeta, value.isAcceptableOrUnknown(data['VALUE']!, _valueMeta));
     }
-    if (data.containsKey('INVESTED_AMOUNT')) {
-      context.handle(
-          _investedAmountMeta,
-          investedAmount.isAcceptableOrUnknown(
-              data['INVESTED_AMOUNT']!, _investedAmountMeta));
-    }
-    if (data.containsKey('INVESTED_ON')) {
-      context.handle(
-          _investedOnMeta,
-          investedOn.isAcceptableOrUnknown(
-              data['INVESTED_ON']!, _investedOnMeta));
-    }
     if (data.containsKey('VALUE_UPDATED_ON')) {
       context.handle(
           _valueUpdatedOnMeta,
@@ -397,10 +371,6 @@ class $InvestmentTableTable extends InvestmentTable
           .read(DriftSqlType.int, data['${effectivePrefix}BASKET_ID']),
       value: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}VALUE']),
-      investedAmount: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}INVESTED_AMOUNT']),
-      investedOn: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}INVESTED_ON']),
       valueUpdatedOn: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}VALUE_UPDATED_ON']),
       irr: attachedDatabase.typeMapping
@@ -429,8 +399,6 @@ class BaseInvestmentDO extends DataClass
   final String? description;
   final int? basketId;
   final double? value;
-  final double? investedAmount;
-  final DateTime? investedOn;
   final DateTime? valueUpdatedOn;
   final double? irr;
   final DateTime? maturityDate;
@@ -441,8 +409,6 @@ class BaseInvestmentDO extends DataClass
       this.description,
       this.basketId,
       this.value,
-      this.investedAmount,
-      this.investedOn,
       this.valueUpdatedOn,
       this.irr,
       this.maturityDate,
@@ -460,12 +426,6 @@ class BaseInvestmentDO extends DataClass
     }
     if (!nullToAbsent || value != null) {
       map['VALUE'] = Variable<double>(value);
-    }
-    if (!nullToAbsent || investedAmount != null) {
-      map['INVESTED_AMOUNT'] = Variable<double>(investedAmount);
-    }
-    if (!nullToAbsent || investedOn != null) {
-      map['INVESTED_ON'] = Variable<DateTime>(investedOn);
     }
     if (!nullToAbsent || valueUpdatedOn != null) {
       map['VALUE_UPDATED_ON'] = Variable<DateTime>(valueUpdatedOn);
@@ -495,12 +455,6 @@ class BaseInvestmentDO extends DataClass
           : Value(basketId),
       value:
           value == null && nullToAbsent ? const Value.absent() : Value(value),
-      investedAmount: investedAmount == null && nullToAbsent
-          ? const Value.absent()
-          : Value(investedAmount),
-      investedOn: investedOn == null && nullToAbsent
-          ? const Value.absent()
-          : Value(investedOn),
       valueUpdatedOn: valueUpdatedOn == null && nullToAbsent
           ? const Value.absent()
           : Value(valueUpdatedOn),
@@ -521,8 +475,6 @@ class BaseInvestmentDO extends DataClass
       description: serializer.fromJson<String?>(json['description']),
       basketId: serializer.fromJson<int?>(json['basketId']),
       value: serializer.fromJson<double?>(json['value']),
-      investedAmount: serializer.fromJson<double?>(json['investedAmount']),
-      investedOn: serializer.fromJson<DateTime?>(json['investedOn']),
       valueUpdatedOn: serializer.fromJson<DateTime?>(json['valueUpdatedOn']),
       irr: serializer.fromJson<double?>(json['irr']),
       maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),
@@ -539,8 +491,6 @@ class BaseInvestmentDO extends DataClass
       'description': serializer.toJson<String?>(description),
       'basketId': serializer.toJson<int?>(basketId),
       'value': serializer.toJson<double?>(value),
-      'investedAmount': serializer.toJson<double?>(investedAmount),
-      'investedOn': serializer.toJson<DateTime?>(investedOn),
       'valueUpdatedOn': serializer.toJson<DateTime?>(valueUpdatedOn),
       'irr': serializer.toJson<double?>(irr),
       'maturityDate': serializer.toJson<DateTime?>(maturityDate),
@@ -555,8 +505,6 @@ class BaseInvestmentDO extends DataClass
           Value<String?> description = const Value.absent(),
           Value<int?> basketId = const Value.absent(),
           Value<double?> value = const Value.absent(),
-          Value<double?> investedAmount = const Value.absent(),
-          Value<DateTime?> investedOn = const Value.absent(),
           Value<DateTime?> valueUpdatedOn = const Value.absent(),
           Value<double?> irr = const Value.absent(),
           Value<DateTime?> maturityDate = const Value.absent(),
@@ -567,9 +515,6 @@ class BaseInvestmentDO extends DataClass
         description: description.present ? description.value : this.description,
         basketId: basketId.present ? basketId.value : this.basketId,
         value: value.present ? value.value : this.value,
-        investedAmount:
-            investedAmount.present ? investedAmount.value : this.investedAmount,
-        investedOn: investedOn.present ? investedOn.value : this.investedOn,
         valueUpdatedOn:
             valueUpdatedOn.present ? valueUpdatedOn.value : this.valueUpdatedOn,
         irr: irr.present ? irr.value : this.irr,
@@ -585,8 +530,6 @@ class BaseInvestmentDO extends DataClass
           ..write('description: $description, ')
           ..write('basketId: $basketId, ')
           ..write('value: $value, ')
-          ..write('investedAmount: $investedAmount, ')
-          ..write('investedOn: $investedOn, ')
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
           ..write('irr: $irr, ')
           ..write('maturityDate: $maturityDate, ')
@@ -597,7 +540,7 @@ class BaseInvestmentDO extends DataClass
 
   @override
   int get hashCode => Object.hash(id, name, description, basketId, value,
-      investedAmount, investedOn, valueUpdatedOn, irr, maturityDate, riskLevel);
+      valueUpdatedOn, irr, maturityDate, riskLevel);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -607,8 +550,6 @@ class BaseInvestmentDO extends DataClass
           other.description == this.description &&
           other.basketId == this.basketId &&
           other.value == this.value &&
-          other.investedAmount == this.investedAmount &&
-          other.investedOn == this.investedOn &&
           other.valueUpdatedOn == this.valueUpdatedOn &&
           other.irr == this.irr &&
           other.maturityDate == this.maturityDate &&
@@ -621,8 +562,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
   final Value<String?> description;
   final Value<int?> basketId;
   final Value<double?> value;
-  final Value<double?> investedAmount;
-  final Value<DateTime?> investedOn;
   final Value<DateTime?> valueUpdatedOn;
   final Value<double?> irr;
   final Value<DateTime?> maturityDate;
@@ -633,8 +572,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     this.description = const Value.absent(),
     this.basketId = const Value.absent(),
     this.value = const Value.absent(),
-    this.investedAmount = const Value.absent(),
-    this.investedOn = const Value.absent(),
     this.valueUpdatedOn = const Value.absent(),
     this.irr = const Value.absent(),
     this.maturityDate = const Value.absent(),
@@ -646,8 +583,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     this.description = const Value.absent(),
     this.basketId = const Value.absent(),
     this.value = const Value.absent(),
-    this.investedAmount = const Value.absent(),
-    this.investedOn = const Value.absent(),
     this.valueUpdatedOn = const Value.absent(),
     this.irr = const Value.absent(),
     this.maturityDate = const Value.absent(),
@@ -660,8 +595,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     Expression<String>? description,
     Expression<int>? basketId,
     Expression<double>? value,
-    Expression<double>? investedAmount,
-    Expression<DateTime>? investedOn,
     Expression<DateTime>? valueUpdatedOn,
     Expression<double>? irr,
     Expression<DateTime>? maturityDate,
@@ -673,8 +606,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       if (description != null) 'DESCRIPTION': description,
       if (basketId != null) 'BASKET_ID': basketId,
       if (value != null) 'VALUE': value,
-      if (investedAmount != null) 'INVESTED_AMOUNT': investedAmount,
-      if (investedOn != null) 'INVESTED_ON': investedOn,
       if (valueUpdatedOn != null) 'VALUE_UPDATED_ON': valueUpdatedOn,
       if (irr != null) 'IRR': irr,
       if (maturityDate != null) 'MATURITY_DATE': maturityDate,
@@ -688,8 +619,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       Value<String?>? description,
       Value<int?>? basketId,
       Value<double?>? value,
-      Value<double?>? investedAmount,
-      Value<DateTime?>? investedOn,
       Value<DateTime?>? valueUpdatedOn,
       Value<double?>? irr,
       Value<DateTime?>? maturityDate,
@@ -700,8 +629,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       description: description ?? this.description,
       basketId: basketId ?? this.basketId,
       value: value ?? this.value,
-      investedAmount: investedAmount ?? this.investedAmount,
-      investedOn: investedOn ?? this.investedOn,
       valueUpdatedOn: valueUpdatedOn ?? this.valueUpdatedOn,
       irr: irr ?? this.irr,
       maturityDate: maturityDate ?? this.maturityDate,
@@ -727,12 +654,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     if (value.present) {
       map['VALUE'] = Variable<double>(value.value);
     }
-    if (investedAmount.present) {
-      map['INVESTED_AMOUNT'] = Variable<double>(investedAmount.value);
-    }
-    if (investedOn.present) {
-      map['INVESTED_ON'] = Variable<DateTime>(investedOn.value);
-    }
     if (valueUpdatedOn.present) {
       map['VALUE_UPDATED_ON'] = Variable<DateTime>(valueUpdatedOn.value);
     }
@@ -757,8 +678,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
           ..write('description: $description, ')
           ..write('basketId: $basketId, ')
           ..write('value: $value, ')
-          ..write('investedAmount: $investedAmount, ')
-          ..write('investedOn: $investedOn, ')
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
           ..write('irr: $irr, ')
           ..write('maturityDate: $maturityDate, ')
@@ -2373,8 +2292,6 @@ class InvestmentDO extends DataClass {
   final String? description;
   final RiskLevel riskLevel;
   final DateTime? maturityDate;
-  final double? investedAmount;
-  final DateTime? investedOn;
   final double? irr;
   final double? value;
   final DateTime? valueUpdatedOn;
@@ -2389,8 +2306,6 @@ class InvestmentDO extends DataClass {
       this.description,
       required this.riskLevel,
       this.maturityDate,
-      this.investedAmount,
-      this.investedOn,
       this.irr,
       this.value,
       this.valueUpdatedOn,
@@ -2409,8 +2324,6 @@ class InvestmentDO extends DataClass {
       riskLevel: $InvestmentTableTable.$converterriskLevel
           .fromJson(serializer.fromJson<String>(json['riskLevel'])),
       maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),
-      investedAmount: serializer.fromJson<double?>(json['investedAmount']),
-      investedOn: serializer.fromJson<DateTime?>(json['investedOn']),
       irr: serializer.fromJson<double?>(json['irr']),
       value: serializer.fromJson<double?>(json['value']),
       valueUpdatedOn: serializer.fromJson<DateTime?>(json['valueUpdatedOn']),
@@ -2431,8 +2344,6 @@ class InvestmentDO extends DataClass {
       'riskLevel': serializer.toJson<String>(
           $InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),
       'maturityDate': serializer.toJson<DateTime?>(maturityDate),
-      'investedAmount': serializer.toJson<double?>(investedAmount),
-      'investedOn': serializer.toJson<DateTime?>(investedOn),
       'irr': serializer.toJson<double?>(irr),
       'value': serializer.toJson<double?>(value),
       'valueUpdatedOn': serializer.toJson<DateTime?>(valueUpdatedOn),
@@ -2450,8 +2361,6 @@ class InvestmentDO extends DataClass {
           Value<String?> description = const Value.absent(),
           RiskLevel? riskLevel,
           Value<DateTime?> maturityDate = const Value.absent(),
-          Value<double?> investedAmount = const Value.absent(),
-          Value<DateTime?> investedOn = const Value.absent(),
           Value<double?> irr = const Value.absent(),
           Value<double?> value = const Value.absent(),
           Value<DateTime?> valueUpdatedOn = const Value.absent(),
@@ -2467,9 +2376,6 @@ class InvestmentDO extends DataClass {
         riskLevel: riskLevel ?? this.riskLevel,
         maturityDate:
             maturityDate.present ? maturityDate.value : this.maturityDate,
-        investedAmount:
-            investedAmount.present ? investedAmount.value : this.investedAmount,
-        investedOn: investedOn.present ? investedOn.value : this.investedOn,
         irr: irr.present ? irr.value : this.irr,
         value: value.present ? value.value : this.value,
         valueUpdatedOn:
@@ -2490,8 +2396,6 @@ class InvestmentDO extends DataClass {
           ..write('description: $description, ')
           ..write('riskLevel: $riskLevel, ')
           ..write('maturityDate: $maturityDate, ')
-          ..write('investedAmount: $investedAmount, ')
-          ..write('investedOn: $investedOn, ')
           ..write('irr: $irr, ')
           ..write('value: $value, ')
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
@@ -2511,8 +2415,6 @@ class InvestmentDO extends DataClass {
       description,
       riskLevel,
       maturityDate,
-      investedAmount,
-      investedOn,
       irr,
       value,
       valueUpdatedOn,
@@ -2530,8 +2432,6 @@ class InvestmentDO extends DataClass {
           other.description == this.description &&
           other.riskLevel == this.riskLevel &&
           other.maturityDate == this.maturityDate &&
-          other.investedAmount == this.investedAmount &&
-          other.investedOn == this.investedOn &&
           other.irr == this.irr &&
           other.value == this.value &&
           other.valueUpdatedOn == this.valueUpdatedOn &&
@@ -2565,8 +2465,6 @@ class $InvestmentEnrichedViewView
         description,
         riskLevel,
         maturityDate,
-        investedAmount,
-        investedOn,
         irr,
         value,
         valueUpdatedOn,
@@ -2599,10 +2497,6 @@ class $InvestmentEnrichedViewView
               DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!),
       maturityDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}MATURITY_DATE']),
-      investedAmount: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}INVESTED_AMOUNT']),
-      investedOn: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}INVESTED_ON']),
       irr: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}IRR']),
       value: attachedDatabase.typeMapping
@@ -2641,14 +2535,6 @@ class $InvestmentEnrichedViewView
   late final GeneratedColumn<DateTime> maturityDate = GeneratedColumn<DateTime>(
       'MATURITY_DATE', aliasedName, true,
       generatedAs: GeneratedAs(investment.maturityDate, false),
-      type: DriftSqlType.dateTime);
-  late final GeneratedColumn<double> investedAmount = GeneratedColumn<double>(
-      'INVESTED_AMOUNT', aliasedName, true,
-      generatedAs: GeneratedAs(investment.investedAmount, false),
-      type: DriftSqlType.double);
-  late final GeneratedColumn<DateTime> investedOn = GeneratedColumn<DateTime>(
-      'INVESTED_ON', aliasedName, true,
-      generatedAs: GeneratedAs(investment.investedOn, false),
       type: DriftSqlType.dateTime);
   late final GeneratedColumn<double> irr = GeneratedColumn<double>(
       'IRR', aliasedName, true,

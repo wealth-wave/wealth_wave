@@ -12,8 +12,6 @@ class Investment {
   final RiskLevel riskLevel;
   final double? value;
   final double? irr;
-  final double? investedAmount;
-  final DateTime? investedOn;
   final DateTime? maturityDate;
   final int? basketId;
   final String? basketName;
@@ -27,8 +25,6 @@ class Investment {
       required this.description,
       required this.riskLevel,
       required this.irr,
-      required this.investedAmount,
-      required this.investedOn,
       required this.value,
       required this.basketId,
       required this.maturityDate,
@@ -43,6 +39,10 @@ class Investment {
         .fold(0, (value, element) => value + element);
   }
 
+  DateTime getLastInvestedOn() {
+    return getPayments().lastOrNull?.createdOn ?? DateTime.now();
+  }
+
   List<Payment> getPayments(
       {final DateTime? till, bool considerFuturePayments = false}) {
     final payments = transactions
@@ -54,10 +54,6 @@ class Investment {
       for (var sip in sips) {
         payments.addAll(sip.getFuturePayment(till: till));
       }
-    }
-    if (investedAmount != null && investedOn != null && payments.isEmpty) {
-      payments
-          .add(Payment.from(amount: investedAmount!, createdOn: investedOn!));
     }
     return payments;
   }
@@ -112,8 +108,6 @@ class Investment {
       Investment._(
           id: investmentDO.id,
           name: investmentDO.name,
-          investedAmount: investmentDO.investedAmount,
-          investedOn: investmentDO.investedOn,
           description: investmentDO.description,
           riskLevel: investmentDO.riskLevel,
           irr: investmentDO.irr,

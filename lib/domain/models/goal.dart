@@ -88,7 +88,9 @@ class Goal {
 
   Map<String, double> get basketComposition {
     double valueOnMaturity = this.valueOnMaturity;
-    return taggedInvestments.entries.fold({}, (acc, element) {
+    return taggedInvestments.entries
+        .where((element) => element.key.basketName != null)
+        .fold({}, (acc, element) {
       Investment investment = element.key;
       double percentage = element.value;
       double value = calculatePercentageOfValue(
