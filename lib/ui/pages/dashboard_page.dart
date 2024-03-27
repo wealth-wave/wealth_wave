@@ -42,7 +42,9 @@ class _DashboardPage
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               _buildInvestmentProgress(
-                  snapshot.invested, snapshot.currentValue),
+                  investedAmount: snapshot.invested,
+                  valueOfInvestment: snapshot.currentValue,
+                  irr: snapshot.overallIRR),
               Text('Risk Composition:',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
@@ -77,7 +79,9 @@ class _DashboardPage
   }
 
   Widget _buildInvestmentProgress(
-      double investedAmount, double valueOfInvestment) {
+      {required double investedAmount,
+      required double valueOfInvestment,
+      required double irr}) {
     if (investedAmount == 0 || valueOfInvestment == 0) {
       return const Text('');
     }
@@ -91,7 +95,10 @@ class _DashboardPage
     return PrimerProgressBar(
       segments: [
         _buildSegment(percentage, investedAmount, 'Invested', Colors.blue),
-        _buildSegment(remainingPercentage, valueOfInvestment, 'Current Value',
+        _buildSegment(
+            remainingPercentage,
+            valueOfInvestment,
+            'Current Value(at ${formatToPercentage(irr)})',
             isValueGreater ? Colors.green : Colors.red),
       ],
     );

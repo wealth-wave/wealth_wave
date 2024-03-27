@@ -29,8 +29,8 @@ class IRRCalculator {
 
     double irrGuess = (((value - totalPayment)/totalPayment) * 100)/(totalYears);
 
-    final int maxIterations = 1000;
-    final double precision = 0.0001;
+    const int maxIterations = 1000;
+    const double precision = 0.0001;
 
     for (var i = 0; i < maxIterations; i++) {
       final valueOnIrr = calculateFutureValueOnIRR(

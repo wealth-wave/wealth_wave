@@ -1,13 +1,19 @@
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/domain/models/irr_calculator.dart';
+import 'package:wealth_wave/domain/models/payment.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
 
 class DashboardPresenter extends Presenter<DashboardViewState> {
   final InvestmentService _investmentService;
+  final IRRCalculator _irrCalculator;
 
-  DashboardPresenter({final InvestmentService? investmentService})
+  DashboardPresenter(
+      {final InvestmentService? investmentService,
+      final IRRCalculator? irrCalculator})
       : _investmentService = investmentService ?? InvestmentService(),
+        _irrCalculator = irrCalculator ?? IRRCalculator(),
         super(DashboardViewState());
 
   void fetchDashboard() {
@@ -17,6 +23,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
       Map<RiskLevel, double> riskComposition = {};
       Map<String, double> basketComposition = {};
       Map<int, double> irrComposition = {};
+      List<Payment> payments = [];
 
       for (var investment in investments) {
         double investmentValue = investment.getValueOn(date: DateTime.now());
@@ -33,8 +40,13 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
         irrComposition.update(_getIrrCompositionKey(investment.getIRR()),
             (value) => value + (investmentValue - investedAmount),
             ifAbsent: () => (investmentValue - investedAmount));
+        payments.addAll(investment.getPayments(till: DateTime.now()));
       }
       irrComposition.removeWhere((key, value) => value == 0);
+      final overallIRR = _irrCalculator.calculateIRR(
+          payments: payments,
+          value: totalValueOfInvestment,
+          valueUpdatedOn: DateTime.now());
 
       updateViewState((viewState) {
         viewState.invested = totalInvestedAmount;
@@ -46,6 +58,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
         viewState.irrComposition = irrComposition;
         viewState.valueOverTime = _getValueOverTime(investments);
         viewState.investmentOverTime = _getInvestmentOverTime(investments);
+        viewState.overallIRR = overallIRR;
       });
     });
   }
@@ -130,6 +143,7 @@ int _getIrrCompositionKey(double irr) {
 class DashboardViewState {
   double invested = 0;
   double currentValue = 0;
+  double overallIRR = 0;
   Map<RiskLevel, double> riskComposition = {};
   Map<String, double> basketComposition = {};
   Map<int, double> irrComposition = {};
