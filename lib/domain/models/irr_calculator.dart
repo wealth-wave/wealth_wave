@@ -23,10 +23,13 @@ class IRRCalculator {
     final totalPayment = _calculateTotalPayment(payments);
     final totalDays = _calculateTotalDays(payments, valueUpdatedOn);
 
+    if (totalPayment == 0) return 0.0;
+    if (totalDays == 0) return 0.0;
+
     double irrGuess = pow((value + totalPayment) / value, 1 / totalDays) - 1;
 
-    const int maxIterations = 1000;
-    const double precision = 0.0001;
+    final int maxIterations = 1000;
+    final double precision = 0.0001;
 
     for (var i = 0; i < maxIterations; i++) {
       final valueOnIrr = calculateFutureValueOnIRR(
@@ -71,7 +74,11 @@ class IRRCalculator {
 
     for (var payment in payments) {
       double years = payment.createdOn.difference(date).inDays / 365;
-      futureValue += payment.amount / pow(1 + (irr / 100), years);
+      if(years == 0) {
+        futureValue += payment.amount;
+      } else {
+        futureValue += payment.amount / pow(1 + (irr / 100), years);
+      }
     }
 
     return futureValue;

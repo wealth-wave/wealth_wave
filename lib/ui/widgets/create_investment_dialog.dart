@@ -277,7 +277,6 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     } else {
       return Column(
         children: [
-          const SizedBox(height: AppDimen.defaultPadding),
           Container(
               decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).dividerColor),
@@ -307,6 +306,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                   ],
                 ),
               )),
+          const SizedBox(height: AppDimen.defaultPadding),
         ],
       );
     }
