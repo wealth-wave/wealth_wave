@@ -21,12 +21,13 @@ class IRRCalculator {
     payments.sort((a, b) => a.createdOn.compareTo(b.createdOn));
 
     final totalPayment = _calculateTotalPayment(payments);
-    final totalDays = _calculateTotalDays(payments, valueUpdatedOn);
+    final totalYears = _calculateTotalYears(payments, valueUpdatedOn);
 
     if (totalPayment == 0) return 0.0;
-    if (totalDays == 0) return 0.0;
+    if (totalYears == 0) return 0.0;
+    if (value - totalPayment == 0) return 0.0;
 
-    double irrGuess = pow((value + totalPayment) / value, 1 / totalDays) - 1;
+    double irrGuess = (((value - totalPayment)/totalPayment) * 100)/(totalYears);
 
     final int maxIterations = 1000;
     final double precision = 0.0001;
@@ -50,7 +51,7 @@ class IRRCalculator {
     return payments.fold(0.0, (value, element) => value + element.amount);
   }
 
-  double _calculateTotalDays(List<Payment> payments, DateTime valueUpdatedOn) {
+  double _calculateTotalYears(List<Payment> payments, DateTime valueUpdatedOn) {
     return valueUpdatedOn.difference(payments.first.createdOn).inDays / 365;
   }
 
