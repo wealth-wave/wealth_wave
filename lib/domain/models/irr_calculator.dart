@@ -105,15 +105,15 @@ class IRRCalculator {
     required final double currentValue,
     required final DateTime currentValueUpdatedOn,
   }) {
-    final double years = currentValueUpdatedOn
-        .difference(futureDate)
-        .inDays / 365;
-    final num irrFactor = pow(1 + irr / 100, years.abs());
-
+    double years = currentValueUpdatedOn.difference(futureDate).inDays / 365;
     if (years == 0) {
       return currentValue;
+    } else if (years < 1 && years > 0) {
+      return currentValue / pow(1 + irr / 100, 1);
+    } else if (years > -1 && years < 0) {
+      return currentValue / pow(1 + irr / 100, -1);
     } else {
-      return currentValue / irrFactor;
+      return currentValue / pow(1 + irr / 100, years);
     }
   }
 }
