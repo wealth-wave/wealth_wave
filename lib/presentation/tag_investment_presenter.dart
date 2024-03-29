@@ -25,8 +25,17 @@ class TagInvestmentPresenter extends Presenter<TagInvestmentViewState> {
   }
 
   void fetchInvestments() {
-    _investmentService.get().then((investments) =>
-        updateViewState((viewState) => viewState.investments = investments));
+    _goalInvestmentService.getBy(goalId: _goalId).then((goalInvestments) {
+      final List<int> investmentIds =
+          goalInvestments.map((e) => e.investmentId).toList();
+      _investmentService.get().then((investments) {
+        updateViewState((viewState) {
+          viewState.investments = investments
+              .where((element) => !investmentIds.contains(element.id))
+              .toList();
+        });
+      });
+    });
   }
 
   void tagInvestment({final int? idToUpdate}) {

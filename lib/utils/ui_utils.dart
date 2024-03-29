@@ -20,8 +20,8 @@ String formatDecimal(double value) {
   return value == value.round() ? '${value.round()}' : value.toStringAsFixed(2);
 }
 
-String formatToCurrency(double value, { locale = 'en'}) {
-  return NumberFormat.currency(locale: locale,  symbol: '', decimalDigits: 2).format(value);
+String formatToCurrency(double value, { locale = 'en_IN'}) {
+  return NumberFormat.currency(locale: locale,  symbol: '', decimalDigits: 0).format(value);
 }
 
 double? parseCurrency(String value) {
