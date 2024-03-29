@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:intl/intl.dart';
 
 String formatDate(DateTime date) {
@@ -11,6 +9,7 @@ String formatDate(DateTime date) {
 }
 
 String formatToPercentage(double percentage, {final bool forceRound = false}) {
+  if (percentage.isNaN) return '';
   return percentage == percentage.round() || forceRound
       ? '${percentage.round()}%'
       : '${percentage.toStringAsFixed(2)}%';

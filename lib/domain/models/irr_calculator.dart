@@ -11,10 +11,9 @@ class IRRCalculator {
 
   IRRCalculator._();
 
-  double calculateIRR(
-      {required final List<Payment> payments,
-      required final double value,
-      required final DateTime valueUpdatedOn}) {
+  double calculateIRR({required final List<Payment> payments,
+    required final double value,
+    required final DateTime valueUpdatedOn}) {
     if (payments.isEmpty) return 0.0;
     if (value == 0) return 0.0;
 
@@ -27,14 +26,15 @@ class IRRCalculator {
     if (totalYears == 0) return 0.0;
     if (value - totalPayment == 0) return 0.0;
 
-    double irrGuess = (((value - totalPayment)/totalPayment) * 100)/(totalYears);
+    double irrGuess = _calculateInitialIRR(
+        value: value, totalPayment: totalPayment, totalYears: totalYears);
 
     const int maxIterations = 1000;
     const double precision = 0.0001;
 
     for (var i = 0; i < maxIterations; i++) {
       final valueOnIrr = calculateFutureValueOnIRR(
-          payments: payments, irr: irrGuess, date: valueUpdatedOn);
+          payments: payments, irr: irrGuess, futureDate: valueUpdatedOn);
       final diff = (value - valueOnIrr) / value;
 
       if (diff.abs() < precision) {
@@ -47,12 +47,21 @@ class IRRCalculator {
     return irrGuess;
   }
 
+  double _calculateInitialIRR({required final double value,
+    required final double totalPayment,
+    required final double totalYears}) {
+    final double baseIRR = ((value - totalPayment) / totalPayment) * 100;
+    return totalYears < 1 ? baseIRR : baseIRR / totalYears;
+  }
+
   double _calculateTotalPayment(List<Payment> payments) {
     return payments.fold(0.0, (value, element) => value + element.amount);
   }
 
   double _calculateTotalYears(List<Payment> payments, DateTime valueUpdatedOn) {
-    return valueUpdatedOn.difference(payments.first.createdOn).inDays / 365;
+    return valueUpdatedOn
+        .difference(payments.first.createdOn)
+        .inDays / 365;
   }
 
   double _calculateScale(double diff) {
@@ -67,16 +76,21 @@ class IRRCalculator {
     }
   }
 
-  double calculateFutureValueOnIRR(
-      {required final List<Payment> payments,
-      required final double irr,
-      required final DateTime date}) {
+  double calculateFutureValueOnIRR({required final List<Payment> payments,
+    required final double irr,
+    required final DateTime futureDate}) {
     double futureValue = 0;
 
     for (var payment in payments) {
-      double years = payment.createdOn.difference(date).inDays / 365;
-      if(years == 0) {
+      double years = payment.createdOn
+          .difference(futureDate)
+          .inDays / 365;
+      if (years == 0) {
         futureValue += payment.amount;
+      } else if (years < 1 && years > 0) {
+        futureValue += payment.amount / pow(1 + (irr / 100), 1);
+      } else if (years > -1 && years < 0) {
+        futureValue += payment.amount / pow(1 + (irr / 100), -1);
       } else {
         futureValue += payment.amount / pow(1 + (irr / 100), years);
       }
@@ -91,7 +105,15 @@ class IRRCalculator {
     required final double currentValue,
     required final DateTime currentValueUpdatedOn,
   }) {
-    double years = currentValueUpdatedOn.difference(futureDate).inDays / 365;
-    return currentValue / pow(1 + irr / 100, years);
+    final double years = currentValueUpdatedOn
+        .difference(futureDate)
+        .inDays / 365;
+    final num irrFactor = pow(1 + irr / 100, years.abs());
+
+    if (years == 0) {
+      return currentValue;
+    } else {
+      return currentValue / irrFactor;
+    }
   }
 }

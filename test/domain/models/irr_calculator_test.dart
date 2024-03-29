@@ -31,7 +31,7 @@ void main() {
       final futureDate = DateTime(2023, 1, 1);
 
       final value = calculator.calculateFutureValueOnIRR(
-          payments: payments, irr: irr, date: futureDate);
+          payments: payments, irr: irr, futureDate: futureDate);
 
       expect(value, closeTo(7051, 1)); // Expected IRR is 20%, tolerance is 1%
     });

@@ -80,7 +80,7 @@ class Investment {
           currentValueUpdatedOn: DateTime.now());
     } else if (irr != null) {
       return IRRCalculator().calculateFutureValueOnIRR(
-          payments: payments, irr: irr, date: futureDate);
+          payments: payments, irr: irr, futureDate: futureDate);
     } else {
       throw Exception('Value and IRR are null');
     }
