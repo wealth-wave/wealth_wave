@@ -55,6 +55,10 @@ class _DashboardPage
               const SizedBox(height: AppDimen.minPadding),
               _buildPieChart(snapshot.riskComposition),
               const SizedBox(height: AppDimen.minPadding),
+              Text('IRR Composition:',
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: AppDimen.minPadding),
+              _buildIrrContribution(data: snapshot.basketIrr.entries.toList()),
               const SizedBox(height: AppDimen.minPadding),
               Text('Investment Over Time:',
                   style: Theme.of(context).textTheme.titleMedium),
@@ -161,6 +165,29 @@ class _DashboardPage
       );
     }
     return const Text('');
+  }
+
+  Widget _buildIrrContribution(
+      {required final List<MapEntry<String, double>> data}) {
+    if (data.isNotEmpty) {
+      data.sort((a, b) => a.value.compareTo(b.value));
+      List<MapEntry<String, double>> contribution = [];
+      for (var element in data) {
+        contribution.add(MapEntry(element.key, element.value));
+      }
+      return SfCartesianChart(
+        primaryXAxis: const CategoryAxis(),
+        series: [
+          ColumnSeries(
+            dataSource: contribution,
+            xValueMapper: (data, _) => data.key,
+            yValueMapper: (data, _) => data.value,
+          ),
+        ],
+      );
+    } else {
+      return const Text('');
+    }
   }
 
   String _getRiskLevelName(RiskLevel riskLevel) {

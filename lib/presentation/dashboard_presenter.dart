@@ -47,6 +47,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
           payments: payments,
           value: totalValueOfInvestment,
           valueUpdatedOn: DateTime.now());
+      final basketIrr = _calculateBasketIRR(investments);
 
       updateViewState((viewState) {
         viewState.invested = totalInvestedAmount;
@@ -59,6 +60,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
         viewState.valueOverTime = _getValueOverTime(investments);
         viewState.investmentOverTime = _getInvestmentOverTime(investments);
         viewState.overallIRR = overallIRR;
+        viewState.basketIrr = basketIrr;
       });
     });
   }
@@ -122,6 +124,40 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
 
     return valueOverTime;
   }
+
+  Map<String, double> _calculateBasketIRR(List<Investment> investments) {
+    Map<String, List<Payment>> basketPayments = {};
+    Map<String, double> basketValues = {};
+    Map<String, double> basketIRR = {};
+
+    for (var investment in investments) {
+      String basketName = investment.basketName ?? '-';
+      double investmentValue = investment.getValueOn(date: DateTime.now());
+
+      if (!basketPayments.containsKey(basketName)) {
+        basketPayments[basketName] = [];
+        basketValues[basketName] = 0;
+      }
+
+      final payments = investment.getPayments(till: DateTime.now());
+      basketPayments.update(basketName, (value) {
+        final existingPayments = List.of(value, growable: true);
+        existingPayments.addAll(payments);
+        return existingPayments;
+      }, ifAbsent: () => payments);
+      basketValues.update(basketName, (value) => value + investmentValue,
+          ifAbsent: () => investmentValue);
+    }
+
+    basketPayments.forEach((basketName, payments) {
+      double totalValue = basketValues[basketName] ?? 0;
+      double irr = _irrCalculator.calculateIRR(
+          payments: payments, value: totalValue, valueUpdatedOn: DateTime.now());
+      basketIRR[basketName] = irr;
+    });
+
+    return basketIRR;
+  }
 }
 
 int _getIrrCompositionKey(double irr) {
@@ -146,6 +182,7 @@ class DashboardViewState {
   double overallIRR = 0;
   Map<RiskLevel, double> riskComposition = {};
   Map<String, double> basketComposition = {};
+  Map<String, double> basketIrr = {};
   Map<int, double> irrComposition = {};
   Map<DateTime, double> investmentOverTime = {};
   Map<DateTime, double> valueOverTime = {};
