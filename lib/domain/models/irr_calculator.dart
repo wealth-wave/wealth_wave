@@ -30,7 +30,8 @@ class IRRCalculator {
         value: value, totalPayment: totalPayment, totalYears: totalYears);
 
     const int maxIterations = 1000;
-    const double precision = 0.0001;
+    const double precision =
+        0.0001; //This precision gives more accurate result within 1000 iterations
 
     for (var i = 0; i < maxIterations; i++) {
       final valueOnIrr = calculateFutureValueOnIRR(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wealth_wave/contract/sip_frequency.dart';
+import 'package:wealth_wave/contract/frequency.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/create_sip_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
@@ -140,7 +140,7 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
                   border: OutlineInputBorder()),
             ),
             const SizedBox(height: AppDimen.defaultPadding),
-            DropdownButtonFormField<SipFrequency>(
+            DropdownButtonFormField<Frequency>(
               decoration: const InputDecoration(
                   border: OutlineInputBorder(), labelText: 'Frequency'),
               hint: const Text('Frequency'),
@@ -152,31 +152,31 @@ class _CreateTransactionPage extends PageState<CreateSipViewState,
               },
               items: const [
                 DropdownMenuItem(
-                  value: SipFrequency.daily,
+                  value: Frequency.daily,
                   child: Text('Daily'),
                 ),
                 DropdownMenuItem(
-                  value: SipFrequency.weekly,
+                  value: Frequency.weekly,
                   child: Text('Weekly'),
                 ),
                 DropdownMenuItem(
-                  value: SipFrequency.biweekly,
+                  value: Frequency.biweekly,
                   child: Text('Bi Weekly'),
                 ),
                 DropdownMenuItem(
-                  value: SipFrequency.monthly,
+                  value: Frequency.monthly,
                   child: Text('Monthly'),
                 ),
                 DropdownMenuItem(
-                  value: SipFrequency.quarterly,
+                  value: Frequency.quarterly,
                   child: Text('Quarterly'),
                 ),
                 DropdownMenuItem(
-                  value: SipFrequency.halfyearly,
+                  value: Frequency.halfYearly,
                   child: Text('Half Yearly'),
                 ),
                 DropdownMenuItem(
-                  value: SipFrequency.yearly,
+                  value: Frequency.yearly,
                   child: Text('Yearly'),
                 ),
               ],

@@ -1,5 +1,5 @@
 import 'package:wealth_wave/api/db/app_database.dart';
-import 'package:wealth_wave/contract/sip_frequency.dart';
+import 'package:wealth_wave/contract/frequency.dart';
 import 'package:wealth_wave/domain/models/payment.dart';
 
 class Sip {
@@ -9,7 +9,7 @@ class Sip {
   final double amount;
   final DateTime startDate;
   final DateTime? endDate;
-  final SipFrequency frequency;
+  final Frequency frequency;
   final DateTime? executedTill;
 
   Sip._(

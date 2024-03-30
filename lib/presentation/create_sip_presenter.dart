@@ -1,4 +1,4 @@
-import 'package:wealth_wave/contract/sip_frequency.dart';
+import 'package:wealth_wave/contract/frequency.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
@@ -28,7 +28,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     final double amount = viewState.amount;
     final DateTime startDate = viewState.startDate;
     final DateTime? endDate = viewState.endDate;
-    final SipFrequency frequency = viewState.frequency;
+    final Frequency frequency = viewState.frequency;
 
     if (idToUpdate != null) {
       _sipService
@@ -72,7 +72,7 @@ class CreateSipPresenter extends Presenter<CreateSipViewState> {
     updateViewState((viewState) => viewState.endDate = date);
   }
 
-  void onFrequencyChanged(SipFrequency frequency) {
+  void onFrequencyChanged(Frequency frequency) {
     updateViewState((viewState) => viewState.frequency = frequency);
   }
 
@@ -97,7 +97,7 @@ class CreateSipViewState {
   double amount = 0;
   DateTime startDate = DateTime.now();
   DateTime? endDate = DateTime.now().add(const Duration(days: 365));
-  SipFrequency frequency = SipFrequency.monthly;
+  Frequency frequency = Frequency.monthly;
   SingleEvent<void>? onSipCreated;
   SingleEvent<void>? onSipLoaded;
 

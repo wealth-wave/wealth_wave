@@ -1,6 +1,6 @@
 import 'package:wealth_wave/api/apis/sip_api.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
-import 'package:wealth_wave/contract/sip_frequency.dart';
+import 'package:wealth_wave/contract/frequency.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 
 class SipService {
@@ -23,7 +23,7 @@ class SipService {
           required final double amount,
           required final DateTime startDate,
           required final DateTime? endDate,
-          required final SipFrequency frequency}) =>
+          required final Frequency frequency}) =>
       _sipApi
           .create(
               investmentId: investmentId,
@@ -56,7 +56,7 @@ class SipService {
           required final double amount,
           required final DateTime startDate,
           required final DateTime? endDate,
-          required final SipFrequency frequency}) =>
+          required final Frequency frequency}) =>
       _sipApi
           .update(
               id: sipId,

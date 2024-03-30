@@ -739,10 +739,10 @@ class $SipTableTable extends SipTable
   static const VerificationMeta _frequencyMeta =
       const VerificationMeta('frequency');
   @override
-  late final GeneratedColumnWithTypeConverter<SipFrequency, String> frequency =
+  late final GeneratedColumnWithTypeConverter<Frequency, String> frequency =
       GeneratedColumn<String>('FREQUENCY', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<SipFrequency>($SipTableTable.$converterfrequency);
+          .withConverter<Frequency>($SipTableTable.$converterfrequency);
   static const VerificationMeta _executedTillMeta =
       const VerificationMeta('executedTill');
   @override
@@ -844,8 +844,8 @@ class $SipTableTable extends SipTable
     return $SipTableTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<SipFrequency, String, String> $converterfrequency =
-      const EnumNameConverter<SipFrequency>(SipFrequency.values);
+  static JsonTypeConverter2<Frequency, String, String> $converterfrequency =
+      const EnumNameConverter<Frequency>(Frequency.values);
 }
 
 class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
@@ -855,7 +855,7 @@ class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
   final double amount;
   final DateTime startDate;
   final DateTime? endDate;
-  final SipFrequency frequency;
+  final Frequency frequency;
   final DateTime? executedTill;
   const BaseSipDO(
       {required this.id,
@@ -946,7 +946,7 @@ class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
           double? amount,
           DateTime? startDate,
           Value<DateTime?> endDate = const Value.absent(),
-          SipFrequency? frequency,
+          Frequency? frequency,
           Value<DateTime?> executedTill = const Value.absent()}) =>
       BaseSipDO(
         id: id ?? this.id,
@@ -998,7 +998,7 @@ class SipTableCompanion extends UpdateCompanion<BaseSipDO> {
   final Value<double> amount;
   final Value<DateTime> startDate;
   final Value<DateTime?> endDate;
-  final Value<SipFrequency> frequency;
+  final Value<Frequency> frequency;
   final Value<DateTime?> executedTill;
   const SipTableCompanion({
     this.id = const Value.absent(),
@@ -1017,7 +1017,7 @@ class SipTableCompanion extends UpdateCompanion<BaseSipDO> {
     required double amount,
     required DateTime startDate,
     this.endDate = const Value.absent(),
-    required SipFrequency frequency,
+    required Frequency frequency,
     this.executedTill = const Value.absent(),
   })  : investmentId = Value(investmentId),
         amount = Value(amount),
@@ -1052,7 +1052,7 @@ class SipTableCompanion extends UpdateCompanion<BaseSipDO> {
       Value<double>? amount,
       Value<DateTime>? startDate,
       Value<DateTime?>? endDate,
-      Value<SipFrequency>? frequency,
+      Value<Frequency>? frequency,
       Value<DateTime?>? executedTill}) {
     return SipTableCompanion(
       id: id ?? this.id,
@@ -3002,7 +3002,7 @@ class SipDO extends DataClass {
   final double amount;
   final DateTime startDate;
   final DateTime? endDate;
-  final SipFrequency frequency;
+  final Frequency frequency;
   final DateTime? executedTill;
   final String? investmentName;
   final int? transactionCount;
@@ -3059,7 +3059,7 @@ class SipDO extends DataClass {
           double? amount,
           DateTime? startDate,
           Value<DateTime?> endDate = const Value.absent(),
-          SipFrequency? frequency,
+          Frequency? frequency,
           Value<DateTime?> executedTill = const Value.absent(),
           Value<String?> investmentName = const Value.absent(),
           Value<int?> transactionCount = const Value.absent()}) =>
@@ -3206,11 +3206,11 @@ class $SipEnrichedViewView extends ViewInfo<$SipEnrichedViewView, SipDO>
       'END_DATE', aliasedName, true,
       generatedAs: GeneratedAs(sip.endDate, false),
       type: DriftSqlType.dateTime);
-  late final GeneratedColumnWithTypeConverter<SipFrequency, String> frequency =
+  late final GeneratedColumnWithTypeConverter<Frequency, String> frequency =
       GeneratedColumn<String>('FREQUENCY', aliasedName, false,
               generatedAs: GeneratedAs(sip.frequency, false),
               type: DriftSqlType.string)
-          .withConverter<SipFrequency>($SipTableTable.$converterfrequency);
+          .withConverter<Frequency>($SipTableTable.$converterfrequency);
   late final GeneratedColumn<DateTime> executedTill = GeneratedColumn<DateTime>(
       'EXECUTED_TILL', aliasedName, true,
       generatedAs: GeneratedAs(sip.executedTill, false),

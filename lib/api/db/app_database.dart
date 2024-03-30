@@ -3,7 +3,7 @@ import 'package:drift/wasm.dart';
 import 'package:flutter/foundation.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
-import 'package:wealth_wave/contract/sip_frequency.dart';
+import 'package:wealth_wave/contract/frequency.dart';
 
 part 'app_database.g.dart';
 
@@ -79,7 +79,7 @@ class SipTable extends Table {
       .check(endDate.isNull() | endDate.isBiggerThan(startDate))
       .named('END_DATE')();
 
-  TextColumn get frequency => textEnum<SipFrequency>().named('FREQUENCY')();
+  TextColumn get frequency => textEnum<Frequency>().named('FREQUENCY')();
 
   DateTimeColumn get executedTill =>
       dateTime().nullable().named('EXECUTED_TILL')();

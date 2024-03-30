@@ -1,4 +1,4 @@
-import 'package:wealth_wave/contract/sip_frequency.dart';
+import 'package:wealth_wave/contract/frequency.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/services/sip_service.dart';
@@ -37,7 +37,7 @@ class SipVO {
   final double amount;
   final DateTime startDate;
   final DateTime? endDate;
-  final SipFrequency frequency;
+  final Frequency frequency;
 
   SipVO._(
       {required this.id,

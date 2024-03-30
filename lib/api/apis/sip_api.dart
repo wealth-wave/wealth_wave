@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
-import 'package:wealth_wave/contract/sip_frequency.dart';
+import 'package:wealth_wave/contract/frequency.dart';
 
 class SipApi {
   final AppDatabase _db;
@@ -13,7 +13,7 @@ class SipApi {
       required final double amount,
       required final DateTime startDate,
       required final DateTime? endDate,
-      required final SipFrequency frequency}) async {
+      required final Frequency frequency}) async {
     return _db.into(_db.sipTable).insert(SipTableCompanion.insert(
         investmentId: investmentId,
         description: Value(description),
@@ -53,7 +53,7 @@ class SipApi {
       required final double amount,
       required final DateTime startDate,
       required final DateTime? endDate,
-      required final SipFrequency frequency}) async {
+      required final Frequency frequency}) async {
     return (_db.update(_db.sipTable)..where((t) => t.id.equals(id))).write(
         SipTableCompanion(
             investmentId: Value(investmentId),
