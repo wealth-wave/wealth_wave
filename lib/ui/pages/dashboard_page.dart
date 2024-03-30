@@ -41,19 +41,20 @@ class _DashboardPage
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              Text('Progress:', style: Theme.of(context).textTheme.titleMedium),
               _buildInvestmentProgress(
                   investedAmount: snapshot.invested,
                   valueOfInvestment: snapshot.currentValue,
                   irr: snapshot.overallIRR),
+              Text('Basket Composition:',
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: AppDimen.minPadding),
+              _buildBarChart(snapshot.basketComposition.entries.toList()),
               Text('Risk Composition:',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
               _buildPieChart(snapshot.riskComposition),
               const SizedBox(height: AppDimen.minPadding),
-              Text('Basket Composition:',
-                  style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: AppDimen.minPadding),
-              _buildBarChart(snapshot.basketComposition.entries.toList()),
               const SizedBox(height: AppDimen.minPadding),
               Text('Investment Over Time:',
                   style: Theme.of(context).textTheme.titleMedium),
@@ -69,11 +70,16 @@ class _DashboardPage
 
   Widget _buildPieChart(Map<RiskLevel, double> data) {
     if (data.isNotEmpty) {
+      List<RiskLevel> sortedKeys = data.keys.toList()
+        ..sort((a, b) => a.intValue.compareTo(b.intValue));
+
       return PieChart(
           chartRadius: MediaQuery.of(context).size.width / 4,
           colorList: _getColorList(data),
-          dataMap: data.map(
-              (key, value) => MapEntry(_getRiskLevelName(key), value * 100)));
+          dataMap: sortedKeys.fold(
+              {},
+              (map, key) =>
+                  {...map, _getRiskLevelName(key): (data[key] ?? 0) * 100}));
     }
     return const Text('');
   }
@@ -159,22 +165,30 @@ class _DashboardPage
 
   String _getRiskLevelName(RiskLevel riskLevel) {
     switch (riskLevel) {
+      case RiskLevel.veryLow:
+        return 'Very Low Risk';
       case RiskLevel.low:
         return 'Low Risk';
       case RiskLevel.medium:
         return 'Medium Risk';
       case RiskLevel.high:
         return 'High Risk';
+      case RiskLevel.veryHigh:
+        return 'Very High Risk';
     }
   }
 
   Color _getColorForRiskLevel(RiskLevel key) {
     switch (key) {
+      case RiskLevel.veryLow:
+        return Colors.lightGreen;
       case RiskLevel.low:
         return Colors.green;
       case RiskLevel.medium:
-        return Colors.orange;
+        return Colors.yellow;
       case RiskLevel.high:
+        return Colors.orange;
+      case RiskLevel.veryHigh:
         return Colors.red;
     }
   }
@@ -182,7 +196,10 @@ class _DashboardPage
   List<Color> _getColorList(Map<RiskLevel, double> value) {
     List<Color> colors = [];
 
-    for (var element in value.keys) {
+    List<RiskLevel> sortedKeys = value.keys.toList()
+      ..sort((a, b) => a.intValue.compareTo(b.intValue));
+
+    for (var element in sortedKeys) {
       colors.add(_getColorForRiskLevel(element));
     }
 

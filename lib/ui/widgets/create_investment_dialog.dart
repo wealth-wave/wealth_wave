@@ -232,6 +232,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
             },
             items: const [
               DropdownMenuItem(
+                value: RiskLevel.veryHigh,
+                child: Text('Very High'),
+              ),
+              DropdownMenuItem(
                 value: RiskLevel.high,
                 child: Text('High'),
               ),
@@ -242,6 +246,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
               DropdownMenuItem(
                 value: RiskLevel.low,
                 child: Text('Low'),
+              ),
+              DropdownMenuItem(
+                value: RiskLevel.veryLow,
+                child: Text('Very Low'),
               ),
             ],
           )

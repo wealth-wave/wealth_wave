@@ -78,11 +78,15 @@ class GoalHealthEvaluator {
     lowRiskThreshold -= yearsLeft / 100;
     mediumRiskThreshold -= yearsLeft / 100;
 
-    if ((riskComposition[RiskLevel.low] ?? 0) < lowRiskThreshold) {
-      return 'Consider having more Low Risk Investment. Required minimum of ${formatToPercentage(lowRiskThreshold * 100, forceRound: true)}';
+    if ((riskComposition[RiskLevel.veryLow] ?? 0) +
+            (riskComposition[RiskLevel.low] ?? 0) <
+        lowRiskThreshold) {
+      return 'Consider having more Low Risk Investments. Required minimum of ${formatToPercentage(lowRiskThreshold * 100, forceRound: true)}';
     }
     if ((riskComposition[RiskLevel.medium] ?? 0) < mediumRiskThreshold &&
-        (riskComposition[RiskLevel.low] ?? 0) < mediumRiskThreshold) {
+        (riskComposition[RiskLevel.veryLow] ?? 0) +
+                (riskComposition[RiskLevel.low] ?? 0) <
+            mediumRiskThreshold) {
       return 'Consider having more Medium Risk Investment. Required minimum of ${formatToPercentage(mediumRiskThreshold * 100, forceRound: true)}';
     }
 

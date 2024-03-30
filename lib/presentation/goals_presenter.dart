@@ -70,13 +70,13 @@ class GoalVO {
   double get pendingProgressPercent => 100 - maturityProgressPercent;
 
   double get lowRiskProgressPercent =>
-      (riskComposition[RiskLevel.low] ?? 0.0) * 100;
+      ((riskComposition[RiskLevel.veryLow] ?? 0.0) + (riskComposition[RiskLevel.low] ?? 0.0)) * 100;
 
   double get mediumRiskProgressPercent =>
       (riskComposition[RiskLevel.medium] ?? 0.0) * 100;
 
   double get highRiskProgressPercent =>
-      (riskComposition[RiskLevel.high] ?? 0.0) * 100;
+      ((riskComposition[RiskLevel.high] ?? 0.0) + (riskComposition[RiskLevel.veryHigh] ?? 0.0)) * 100;
 
   GoalVO._(
       {required this.id,

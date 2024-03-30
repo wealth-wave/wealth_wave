@@ -280,12 +280,16 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
 
   String _getRiskLevel(RiskLevel riskLevel) {
     switch (riskLevel) {
+      case RiskLevel.veryLow:
+        return 'Very Low';
       case RiskLevel.low:
         return 'Low';
       case RiskLevel.medium:
         return 'Medium';
       case RiskLevel.high:
         return 'High';
+      case RiskLevel.veryHigh:
+        return 'Very High';
     }
   }
 }
