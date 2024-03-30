@@ -33,8 +33,8 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     final String description = viewState.description;
     final double? value = viewState.value;
     final int? basketId = viewState.basketId;
-    final double investedAmount = viewState.investedAmount!;
-    final DateTime investedOn = viewState.investedOn!;
+    final double? investedAmount = viewState.investedAmount;
+    final DateTime? investedOn = viewState.investedOn;
     final RiskLevel riskLevel = viewState.riskLevel;
     final double? irr = viewState.irr;
     final DateTime? maturityDate = viewState.maturityDate;
@@ -46,8 +46,6 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
               description: description,
               name: name,
               value: value,
-              investedAmount: investedAmount,
-              investedOn: investedOn,
               basketId: basketId,
               riskLevel: riskLevel,
               irr: irr,
@@ -59,8 +57,8 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
           .create(
               name: name,
               description: description,
-              investedAmount: investedAmount,
-              investedOn: investedOn,
+              investedAmount: investedAmount!,
+              investedOn: investedOn!,
               value: value,
               basketId: basketId,
               riskLevel: riskLevel,

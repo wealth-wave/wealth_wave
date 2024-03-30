@@ -58,8 +58,6 @@ class InvestmentApi {
     required final int id,
     required final String name,
     required final String? description,
-    required final double? investedAmount,
-    required final DateTime? investedOn,
     required final double? value,
     required final double? irr,
     required final DateTime? maturityDate,
