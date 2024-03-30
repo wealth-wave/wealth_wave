@@ -42,24 +42,27 @@ class _DashboardPage
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Text('Progress:', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: AppDimen.minPadding),
               _buildInvestmentProgress(
                   investedAmount: snapshot.invested,
                   valueOfInvestment: snapshot.currentValue,
                   irr: snapshot.overallIRR),
+              const SizedBox(height: AppDimen.defaultPadding),
               Text('Basket Composition:',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
               _buildBarChart(snapshot.basketComposition.entries.toList()),
+              const SizedBox(height: AppDimen.defaultPadding),
               Text('Risk Composition:',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
               _buildPieChart(snapshot.riskComposition),
-              const SizedBox(height: AppDimen.minPadding),
-              Text('IRR Composition:',
+              const SizedBox(height: AppDimen.defaultPadding),
+              Text('Basket IRR:',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
               _buildIrrContribution(data: snapshot.basketIrr.entries.toList()),
-              const SizedBox(height: AppDimen.minPadding),
+              const SizedBox(height: AppDimen.defaultPadding),
               Text('Investment Over Time:',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
@@ -178,7 +181,7 @@ class _DashboardPage
       return SfCartesianChart(
         primaryXAxis: const CategoryAxis(),
         series: [
-          ColumnSeries(
+          BarSeries(
             dataSource: contribution,
             xValueMapper: (data, _) => data.key,
             yValueMapper: (data, _) => data.value,
