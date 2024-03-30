@@ -160,7 +160,8 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                 labelText: 'Description', border: OutlineInputBorder()),
           ),
           const SizedBox(height: AppDimen.defaultPadding),
-          _getInvestedAmountWidget(snapshot.oneTimeInvestment),
+          _getInvestedAmountWidget(
+              showInvestmentAmountField: widget.investmentIdToUpdate != null),
           Container(
               decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).dividerColor),
@@ -279,8 +280,9 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     return CreateInvestmentPresenter();
   }
 
-  Widget _getInvestedAmountWidget(bool containsTransactions) {
-    if (containsTransactions) {
+  Widget _getInvestedAmountWidget(
+      {required final bool showInvestmentAmountField}) {
+    if (showInvestmentAmountField) {
       return Container();
     } else {
       return Column(

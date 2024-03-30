@@ -127,7 +127,6 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
       viewState.investedOn = investmentToUpdate.getLastInvestedOn();
       viewState.basketId = investmentToUpdate.basketId;
       viewState.value = value;
-      viewState.oneTimeInvestment = investmentToUpdate.transactions.length == 1;
       viewState.riskLevel = investmentToUpdate.riskLevel;
       viewState.onInvestmentFetched = SingleEvent(null);
     });
@@ -154,7 +153,6 @@ class CreateInvestmentViewState {
   DateTime? investedOn = DateTime.now();
   double? value;
   DateTime? maturityDate;
-  bool oneTimeInvestment = false;
   SingleEvent<void>? onInvestmentCreated;
   SingleEvent<void>? onInvestmentFetched;
   SingleEvent<void>? onIRRCleared;
