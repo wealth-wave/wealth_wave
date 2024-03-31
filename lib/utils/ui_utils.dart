@@ -25,7 +25,7 @@ String formatToCurrency(double value, { locale = 'en_IN'}) {
 
 double? parseCurrency(String value) {
   try {
-    final num number = NumberFormat.currency().parse(value);
+    final num number = NumberFormat.currency(locale: 'en_IN', symbol: '', decimalDigits: 0).parse(value);
     if (number.isFinite) {
       return number.toDouble();
     } else {

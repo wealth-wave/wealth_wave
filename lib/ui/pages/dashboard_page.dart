@@ -147,7 +147,7 @@ class _DashboardPage
       return SfCartesianChart(
         primaryXAxis: const DateTimeAxis(),
         primaryYAxis:
-            NumericAxis(numberFormat: NumberFormat.compactCurrency(symbol: '')),
+            NumericAxis(numberFormat: NumberFormat.compactCurrency(symbol: '', locale: 'en_IN', decimalDigits: 0)),
         series: [
           LineSeries<MapEntry<DateTime, double>, DateTime>(
             color: Colors.green,
