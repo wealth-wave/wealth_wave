@@ -78,6 +78,7 @@ class SipService {
       .map((payment) => _transactionApi.create(
           investmentId: sip.investmentId,
           description: sip.description,
+          sipId: sip.id,
           amount: payment.amount,
           createdOn: payment.createdOn)));
 
