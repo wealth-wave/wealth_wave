@@ -13,6 +13,7 @@ class InvestmentApi {
     required final int? basketId,
     required final RiskLevel riskLevel,
     required final double? value,
+    required final DateTime? valueUpdatedOn,
     required final double? irr,
     required final DateTime? maturityDate,
   }) async {
@@ -23,6 +24,7 @@ class InvestmentApi {
         value: Value(value),
         irr: Value(irr),
         maturityDate: Value(maturityDate),
+        valueUpdatedOn: Value(valueUpdatedOn),
         riskLevel: riskLevel));
   }
 
@@ -59,6 +61,7 @@ class InvestmentApi {
     required final String name,
     required final String? description,
     required final double? value,
+    required final DateTime? valueUpdatedOn,
     required final double? irr,
     required final DateTime? maturityDate,
     required final RiskLevel riskLevel,
@@ -71,6 +74,7 @@ class InvestmentApi {
             basketId: Value(basketId),
             riskLevel: Value(riskLevel),
             value: Value(value),
+            valueUpdatedOn: Value(valueUpdatedOn),
             irr: Value(irr),
             maturityDate: Value(maturityDate)));
   }

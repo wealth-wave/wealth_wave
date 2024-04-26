@@ -96,6 +96,7 @@ class InvestmentVO {
   final List<Sip> sips;
   final List<Transaction> transactions;
   final int taggedGoalCount;
+  final bool hasScript;
 
   int get transactionCount => transactions.length;
 
@@ -114,6 +115,7 @@ class InvestmentVO {
       required this.maturityDate,
       required this.transactions,
       required this.sips,
+      required this.hasScript,
       required this.taggedGoalCount});
 
   factory InvestmentVO.from({required final Investment investment}) {
@@ -130,6 +132,7 @@ class InvestmentVO {
         transactions: investment.transactions,
         sips: investment.sips,
         taggedGoalCount: investment.goalsCount,
+        hasScript: investment.script != null,
         maturityDate: investment.maturityDate);
   }
 }

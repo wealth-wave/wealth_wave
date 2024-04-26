@@ -1,6 +1,7 @@
 import 'package:wealth_wave/api/apis/goal_api.dart';
 import 'package:wealth_wave/api/apis/goal_investment_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
+import 'package:wealth_wave/api/apis/script_api.dart';
 import 'package:wealth_wave/api/apis/sip_api.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
@@ -14,6 +15,7 @@ class GoalService {
   final InvestmentApi _investmentApi;
   final TransactionApi _transactionAPi;
   final SipApi _sipApi;
+  final ScriptApi _scriptApi;
 
   factory GoalService() {
     return _instance;
@@ -26,12 +28,14 @@ class GoalService {
       GoalInvestmentApi? goalInvestmentApi,
       InvestmentApi? investmentApi,
       TransactionApi? transactionApi,
-      SipApi? sipApi})
+      SipApi? sipApi,
+      ScriptApi? scriptApi})
       : _goalApi = goalApi ?? GoalApi(),
         _goalInvestmentApi = goalInvestmentApi ?? GoalInvestmentApi(),
         _investmentApi = investmentApi ?? InvestmentApi(),
         _transactionAPi = transactionApi ?? TransactionApi(),
-        _sipApi = sipApi ?? SipApi();
+        _sipApi = sipApi ?? SipApi(),
+        _scriptApi = scriptApi ?? ScriptApi();
 
   Future<void> create({
     required final String name,
@@ -55,6 +59,7 @@ class GoalService {
 
   Future<List<Goal>> get() async {
     List<InvestmentDO> investmentDOs = await _investmentApi.getAll();
+    List<ScriptDO> scriptDOs = await _scriptApi.getAll();
     List<GoalDO> goalDOs = await _goalApi.get();
     List<Goal> goals = List.empty(growable: true);
     for (final goalDO in goalDOs) {
@@ -72,6 +77,10 @@ class GoalService {
         Investment investment = Investment.from(
             investmentDO: investmentEnrichedDO,
             transactionsDOs: transactionsDOs,
+            scriptDO: scriptDOs
+                .where((element) =>
+                    element.investmentId == investmentEnrichedDO.id)
+                .firstOrNull,
             sipDOs: sipDOs);
         taggedInvestment[investment] = goalInvestment.splitPercentage;
       }
@@ -83,6 +92,7 @@ class GoalService {
 
   Future<Goal> getBy({required final int id}) async {
     List<InvestmentDO> investmentDOs = await _investmentApi.getAll();
+    List<ScriptDO> scriptDOs = await _scriptApi.getAll();
     GoalDO goalDO = await _goalApi.getBy(id: id);
     List<GoalInvestmentDO> goalInvestments =
         await _goalInvestmentApi.getBy(goalId: goalDO.id);
@@ -96,6 +106,10 @@ class GoalService {
       List<SipDO> sipDOs =
           await _sipApi.getBy(investmentId: investmentEnrichedDO.id);
       Investment investment = Investment.from(
+          scriptDO: scriptDOs
+              .where(
+                  (element) => element.investmentId == investmentEnrichedDO.id)
+              .firstOrNull,
           investmentDO: investmentEnrichedDO,
           transactionsDOs: transactionsDOs,
           sipDOs: sipDOs);
