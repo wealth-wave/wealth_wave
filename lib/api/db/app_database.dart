@@ -1,9 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:drift/wasm.dart';
 import 'package:flutter/foundation.dart';
+import 'package:wealth_wave/contract/frequency.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
-import 'package:wealth_wave/contract/frequency.dart';
 
 part 'app_database.g.dart';
 
@@ -85,6 +85,18 @@ class SipTable extends Table {
       dateTime().nullable().named('EXECUTED_TILL')();
 }
 
+@DataClassName('ScriptDO')
+class ScriptTable extends Table {
+  IntColumn get id => integer().named('ID').autoIncrement()();
+
+  TextColumn get script => text().named('SCRIPT')();
+
+  IntColumn get investmentId => integer()
+      .named('INVESTMENT_ID')
+      .references(InvestmentTable, #id)
+      .unique()();
+}
+
 @DataClassName('BaseGoalDO')
 class GoalTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
@@ -140,6 +152,8 @@ abstract class InvestmentEnrichedView extends View {
 
   SipTable get sip;
 
+  ScriptTable get script;
+
   Expression<int> get basketId => basket.id;
 
   Expression<String> get basketName => basket.name;
@@ -176,7 +190,9 @@ abstract class InvestmentEnrichedView extends View {
             transaction, transaction.investmentId.equalsExp(investment.id)),
         leftOuterJoin(sip, sip.investmentId.equalsExp(investment.id)),
         leftOuterJoin(goalInvestment,
-            goalInvestment.investmentId.equalsExp(investment.id))
+            goalInvestment.investmentId.equalsExp(investment.id)),
+        leftOuterJoin(script,
+            script.investmentId.equalsExp(investment.id))
       ])
         ..groupBy([investment.id]);
 }
@@ -333,6 +349,7 @@ abstract class GoalEnrichedView extends View {
   GoalTable,
   SipTable,
   GoalInvestmentTable,
+  ScriptTable
 ], views: [
   BasketEnrichedView,
   InvestmentEnrichedView,

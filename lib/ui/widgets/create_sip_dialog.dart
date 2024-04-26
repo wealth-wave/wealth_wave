@@ -27,10 +27,10 @@ class _CreateSipDialog extends StatefulWidget {
   const _CreateSipDialog({this.sipIdToUpdate, required this.investmentId});
 
   @override
-  State<_CreateSipDialog> createState() => _CreateTransactionPage();
+  State<_CreateSipDialog> createState() => _CreateSipPage();
 }
 
-class _CreateTransactionPage extends PageState<CreateSipViewState,
+class _CreateSipPage extends PageState<CreateSipViewState,
     _CreateSipDialog, CreateSipPresenter> {
   final _descriptionController = TextEditingController();
   final _valueController = TextEditingController();
