@@ -24,6 +24,7 @@ class Basket {
   factory Basket.from(
           {required final BasketDO basketDO,
           required final List<InvestmentDO> investmentDOs,
+          required final List<ScriptDO> scriptDOs,
           required final List<SipDO> sipDOs,
           required final List<TransactionDO> transactionDOs}) =>
       Basket._(
@@ -35,6 +36,7 @@ class Basket {
               .where((investment) => investment.basketId == basketDO.id)
               .map((investmentDO) => Investment.from(
                   investmentDO: investmentDO,
+                  scriptDO: scriptDOs.where((scriptDO) => scriptDO.investmentId == investmentDO.id).firstOrNull,
                   sipDOs: sipDOs
                       .where((sipDO) => sipDO.investmentId == investmentDO.id)
                       .toList(),

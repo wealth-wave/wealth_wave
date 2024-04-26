@@ -69,6 +69,9 @@ class _CreateScriptPage extends PageState<CreateScriptViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _dslController,
+              minLines: 5,
+              maxLines: 50,
+              autocorrect: false,
               decoration: const InputDecoration(
                   labelText: 'Script', border: OutlineInputBorder()),
             )

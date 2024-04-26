@@ -1,6 +1,8 @@
 import 'package:wealth_wave/api/apis/investment_api.dart';
+import 'package:wealth_wave/api/apis/script_api.dart';
 import 'package:wealth_wave/api/apis/sip_api.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
+import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
 
@@ -8,6 +10,7 @@ class InvestmentService {
   final InvestmentApi _investmentApi;
   final TransactionApi _transactionApi;
   final SipApi _sipApi;
+  final ScriptApi _scriptApi;
 
   factory InvestmentService() {
     return _instance;
@@ -18,10 +21,12 @@ class InvestmentService {
   InvestmentService._(
       {final InvestmentApi? investmentApi,
       final TransactionApi? transactionApi,
-      final SipApi? sipApi})
+      final SipApi? sipApi,
+      final ScriptApi? scriptApi})
       : _investmentApi = investmentApi ?? InvestmentApi(),
         _transactionApi = transactionApi ?? TransactionApi(),
-        _sipApi = sipApi ?? SipApi();
+        _sipApi = sipApi ?? SipApi(),
+        _scriptApi = scriptApi ?? ScriptApi();
 
   Future<void> create(
       {required final String name,
@@ -46,6 +51,7 @@ class InvestmentService {
             basketId: basketId,
             riskLevel: riskLevel,
             value: value,
+            valueUpdatedOn: DateTime.now(),
             maturityDate: maturityDate,
             irr: irr)
         .then((investmentId) => _transactionApi.create(
@@ -56,23 +62,32 @@ class InvestmentService {
   }
 
   Future<List<Investment>> get() async {
+    List<ScriptDO> scriptDOs = await _scriptApi.getAll();
     return _investmentApi.getAll().then((investments) => Future.wait(
         investments.map((investmentEnrichedDO) => _sipApi
             .getBy(investmentId: investmentEnrichedDO.id)
             .then((sipDOs) => _transactionApi
                 .getBy(investmentId: investmentEnrichedDO.id)
                 .then((transactionDOs) => Investment.from(
+                    scriptDO: scriptDOs
+                        .where(
+                            (element) => element.investmentId == investmentEnrichedDO.id)
+                        .firstOrNull,
                     investmentDO: investmentEnrichedDO,
                     transactionsDOs: transactionDOs,
                     sipDOs: sipDOs))))));
   }
 
   Future<Investment> getBy({required final int id}) async {
+    List<ScriptDO> scriptDOs = await _scriptApi.getAll();
     return _investmentApi.getById(id: id).then((investmentEnrichedDO) => _sipApi
         .getBy(investmentId: investmentEnrichedDO.id)
         .then((sipDOs) => _transactionApi
             .getBy(investmentId: investmentEnrichedDO.id)
             .then((transactionDOs) => Investment.from(
+                scriptDO: scriptDOs
+                    .where((element) => element.investmentId == id)
+                    .firstOrNull,
                 investmentDO: investmentEnrichedDO,
                 transactionsDOs: transactionDOs,
                 sipDOs: sipDOs))));
@@ -93,6 +108,7 @@ class InvestmentService {
             name: name,
             description: description,
             value: value,
+            valueUpdatedOn: DateTime.now(),
             irr: irr,
             maturityDate: maturityDate,
             riskLevel: riskLevel,

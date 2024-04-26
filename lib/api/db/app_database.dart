@@ -40,6 +40,9 @@ class InvestmentTable extends Table {
       dateTime().nullable().named('MATURITY_DATE').check(maturityDate.isNull() |
           maturityDate.isBiggerThanValue(DateTime.now()))();
 
+  DateTimeColumn get valueUpdatedDate =>
+      dateTime().nullable().named('VALUE_UPDATED_DATE')();
+
   TextColumn get riskLevel => textEnum<RiskLevel>().named('RISK_LEVEL')();
 }
 

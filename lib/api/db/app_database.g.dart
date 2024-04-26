@@ -283,6 +283,12 @@ class $InvestmentTableTable extends InvestmentTable
           maturityDate.isBiggerThanValue(DateTime.now()),
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false);
+  static const VerificationMeta _valueUpdatedDateMeta =
+      const VerificationMeta('valueUpdatedDate');
+  @override
+  late final GeneratedColumn<DateTime> valueUpdatedDate =
+      GeneratedColumn<DateTime>('VALUE_UPDATED_DATE', aliasedName, true,
+          type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _riskLevelMeta =
       const VerificationMeta('riskLevel');
   @override
@@ -300,6 +306,7 @@ class $InvestmentTableTable extends InvestmentTable
         valueUpdatedOn,
         irr,
         maturityDate,
+        valueUpdatedDate,
         riskLevel
       ];
   @override
@@ -351,6 +358,12 @@ class $InvestmentTableTable extends InvestmentTable
           maturityDate.isAcceptableOrUnknown(
               data['MATURITY_DATE']!, _maturityDateMeta));
     }
+    if (data.containsKey('VALUE_UPDATED_DATE')) {
+      context.handle(
+          _valueUpdatedDateMeta,
+          valueUpdatedDate.isAcceptableOrUnknown(
+              data['VALUE_UPDATED_DATE']!, _valueUpdatedDateMeta));
+    }
     context.handle(_riskLevelMeta, const VerificationResult.success());
     return context;
   }
@@ -377,6 +390,8 @@ class $InvestmentTableTable extends InvestmentTable
           .read(DriftSqlType.double, data['${effectivePrefix}IRR']),
       maturityDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}MATURITY_DATE']),
+      valueUpdatedDate: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}VALUE_UPDATED_DATE']),
       riskLevel: $InvestmentTableTable.$converterriskLevel.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!),
@@ -402,6 +417,7 @@ class BaseInvestmentDO extends DataClass
   final DateTime? valueUpdatedOn;
   final double? irr;
   final DateTime? maturityDate;
+  final DateTime? valueUpdatedDate;
   final RiskLevel riskLevel;
   const BaseInvestmentDO(
       {required this.id,
@@ -412,6 +428,7 @@ class BaseInvestmentDO extends DataClass
       this.valueUpdatedOn,
       this.irr,
       this.maturityDate,
+      this.valueUpdatedDate,
       required this.riskLevel});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -435,6 +452,9 @@ class BaseInvestmentDO extends DataClass
     }
     if (!nullToAbsent || maturityDate != null) {
       map['MATURITY_DATE'] = Variable<DateTime>(maturityDate);
+    }
+    if (!nullToAbsent || valueUpdatedDate != null) {
+      map['VALUE_UPDATED_DATE'] = Variable<DateTime>(valueUpdatedDate);
     }
     {
       map['RISK_LEVEL'] = Variable<String>(
@@ -462,6 +482,9 @@ class BaseInvestmentDO extends DataClass
       maturityDate: maturityDate == null && nullToAbsent
           ? const Value.absent()
           : Value(maturityDate),
+      valueUpdatedDate: valueUpdatedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(valueUpdatedDate),
       riskLevel: Value(riskLevel),
     );
   }
@@ -478,6 +501,8 @@ class BaseInvestmentDO extends DataClass
       valueUpdatedOn: serializer.fromJson<DateTime?>(json['valueUpdatedOn']),
       irr: serializer.fromJson<double?>(json['irr']),
       maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),
+      valueUpdatedDate:
+          serializer.fromJson<DateTime?>(json['valueUpdatedDate']),
       riskLevel: $InvestmentTableTable.$converterriskLevel
           .fromJson(serializer.fromJson<String>(json['riskLevel'])),
     );
@@ -494,6 +519,7 @@ class BaseInvestmentDO extends DataClass
       'valueUpdatedOn': serializer.toJson<DateTime?>(valueUpdatedOn),
       'irr': serializer.toJson<double?>(irr),
       'maturityDate': serializer.toJson<DateTime?>(maturityDate),
+      'valueUpdatedDate': serializer.toJson<DateTime?>(valueUpdatedDate),
       'riskLevel': serializer.toJson<String>(
           $InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),
     };
@@ -508,6 +534,7 @@ class BaseInvestmentDO extends DataClass
           Value<DateTime?> valueUpdatedOn = const Value.absent(),
           Value<double?> irr = const Value.absent(),
           Value<DateTime?> maturityDate = const Value.absent(),
+          Value<DateTime?> valueUpdatedDate = const Value.absent(),
           RiskLevel? riskLevel}) =>
       BaseInvestmentDO(
         id: id ?? this.id,
@@ -520,6 +547,9 @@ class BaseInvestmentDO extends DataClass
         irr: irr.present ? irr.value : this.irr,
         maturityDate:
             maturityDate.present ? maturityDate.value : this.maturityDate,
+        valueUpdatedDate: valueUpdatedDate.present
+            ? valueUpdatedDate.value
+            : this.valueUpdatedDate,
         riskLevel: riskLevel ?? this.riskLevel,
       );
   @override
@@ -533,6 +563,7 @@ class BaseInvestmentDO extends DataClass
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
           ..write('irr: $irr, ')
           ..write('maturityDate: $maturityDate, ')
+          ..write('valueUpdatedDate: $valueUpdatedDate, ')
           ..write('riskLevel: $riskLevel')
           ..write(')'))
         .toString();
@@ -540,7 +571,7 @@ class BaseInvestmentDO extends DataClass
 
   @override
   int get hashCode => Object.hash(id, name, description, basketId, value,
-      valueUpdatedOn, irr, maturityDate, riskLevel);
+      valueUpdatedOn, irr, maturityDate, valueUpdatedDate, riskLevel);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -553,6 +584,7 @@ class BaseInvestmentDO extends DataClass
           other.valueUpdatedOn == this.valueUpdatedOn &&
           other.irr == this.irr &&
           other.maturityDate == this.maturityDate &&
+          other.valueUpdatedDate == this.valueUpdatedDate &&
           other.riskLevel == this.riskLevel);
 }
 
@@ -565,6 +597,7 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
   final Value<DateTime?> valueUpdatedOn;
   final Value<double?> irr;
   final Value<DateTime?> maturityDate;
+  final Value<DateTime?> valueUpdatedDate;
   final Value<RiskLevel> riskLevel;
   const InvestmentTableCompanion({
     this.id = const Value.absent(),
@@ -575,6 +608,7 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     this.valueUpdatedOn = const Value.absent(),
     this.irr = const Value.absent(),
     this.maturityDate = const Value.absent(),
+    this.valueUpdatedDate = const Value.absent(),
     this.riskLevel = const Value.absent(),
   });
   InvestmentTableCompanion.insert({
@@ -586,6 +620,7 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     this.valueUpdatedOn = const Value.absent(),
     this.irr = const Value.absent(),
     this.maturityDate = const Value.absent(),
+    this.valueUpdatedDate = const Value.absent(),
     required RiskLevel riskLevel,
   })  : name = Value(name),
         riskLevel = Value(riskLevel);
@@ -598,6 +633,7 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     Expression<DateTime>? valueUpdatedOn,
     Expression<double>? irr,
     Expression<DateTime>? maturityDate,
+    Expression<DateTime>? valueUpdatedDate,
     Expression<String>? riskLevel,
   }) {
     return RawValuesInsertable({
@@ -609,6 +645,7 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       if (valueUpdatedOn != null) 'VALUE_UPDATED_ON': valueUpdatedOn,
       if (irr != null) 'IRR': irr,
       if (maturityDate != null) 'MATURITY_DATE': maturityDate,
+      if (valueUpdatedDate != null) 'VALUE_UPDATED_DATE': valueUpdatedDate,
       if (riskLevel != null) 'RISK_LEVEL': riskLevel,
     });
   }
@@ -622,6 +659,7 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       Value<DateTime?>? valueUpdatedOn,
       Value<double?>? irr,
       Value<DateTime?>? maturityDate,
+      Value<DateTime?>? valueUpdatedDate,
       Value<RiskLevel>? riskLevel}) {
     return InvestmentTableCompanion(
       id: id ?? this.id,
@@ -632,6 +670,7 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       valueUpdatedOn: valueUpdatedOn ?? this.valueUpdatedOn,
       irr: irr ?? this.irr,
       maturityDate: maturityDate ?? this.maturityDate,
+      valueUpdatedDate: valueUpdatedDate ?? this.valueUpdatedDate,
       riskLevel: riskLevel ?? this.riskLevel,
     );
   }
@@ -663,6 +702,9 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     if (maturityDate.present) {
       map['MATURITY_DATE'] = Variable<DateTime>(maturityDate.value);
     }
+    if (valueUpdatedDate.present) {
+      map['VALUE_UPDATED_DATE'] = Variable<DateTime>(valueUpdatedDate.value);
+    }
     if (riskLevel.present) {
       map['RISK_LEVEL'] = Variable<String>(
           $InvestmentTableTable.$converterriskLevel.toSql(riskLevel.value));
@@ -681,6 +723,7 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
           ..write('irr: $irr, ')
           ..write('maturityDate: $maturityDate, ')
+          ..write('valueUpdatedDate: $valueUpdatedDate, ')
           ..write('riskLevel: $riskLevel')
           ..write(')'))
         .toString();

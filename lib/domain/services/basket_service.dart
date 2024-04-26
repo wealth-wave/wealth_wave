@@ -1,5 +1,6 @@
 import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
+import 'package:wealth_wave/api/apis/script_api.dart';
 import 'package:wealth_wave/api/apis/sip_api.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
@@ -10,6 +11,7 @@ class BasketService {
   final InvestmentApi _investmentApi;
   final SipApi _sipApi;
   final TransactionApi _transactionApi;
+  final ScriptApi _scriptApi;
 
   factory BasketService() {
     return _instance;
@@ -21,11 +23,13 @@ class BasketService {
       {BasketApi? basketApi,
       InvestmentApi? investmentApi,
       SipApi? sipApi,
-      TransactionApi? transactionApi})
+      TransactionApi? transactionApi,
+      ScriptApi? scriptApi})
       : _basketApi = basketApi ?? BasketApi(),
         _investmentApi = investmentApi ?? InvestmentApi(),
         _sipApi = sipApi ?? SipApi(),
-        _transactionApi = transactionApi ?? TransactionApi();
+        _transactionApi = transactionApi ?? TransactionApi(),
+        _scriptApi = scriptApi ?? ScriptApi();
 
   Future<void> create(
           {required final String name, required final String description}) =>
@@ -36,12 +40,14 @@ class BasketService {
     List<SipDO> sipDOs = await _sipApi.getAll();
     List<TransactionDO> transactionDOs = await _transactionApi.getAll();
     List<BasketDO> basketDOs = await _basketApi.get();
+    List<ScriptDO> scriptDOs = await _scriptApi.getAll();
     return basketDOs
         .map((basketDO) => Basket.from(
             basketDO: basketDO,
             investmentDOs: investmentDOs,
             sipDOs: sipDOs,
-            transactionDOs: transactionDOs))
+            transactionDOs: transactionDOs,
+            scriptDOs: scriptDOs))
         .toList();
   }
 
@@ -50,11 +56,13 @@ class BasketService {
     List<SipDO> sipDOs = await _sipApi.getAll();
     List<TransactionDO> transactionDOs = await _transactionApi.getAll();
     BasketDO basketDO = await _basketApi.getBy(id: id);
+    List<ScriptDO> scriptDOs = await _scriptApi.getAll();
     return Basket.from(
         basketDO: basketDO,
         investmentDOs: investmentDOs,
         sipDOs: sipDOs,
-        transactionDOs: transactionDOs);
+        transactionDOs: transactionDOs,
+        scriptDOs: scriptDOs);
   }
 
   Future<void> update(

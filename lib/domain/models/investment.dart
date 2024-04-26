@@ -2,6 +2,7 @@ import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/domain/models/irr_calculator.dart';
 import 'package:wealth_wave/domain/models/payment.dart';
+import 'package:wealth_wave/domain/models/script.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
 
@@ -11,6 +12,7 @@ class Investment {
   final String? description;
   final RiskLevel riskLevel;
   final double? value;
+  final DateTime? valueUpdatedOn;
   final double? irr;
   final DateTime? maturityDate;
   final int? basketId;
@@ -18,6 +20,7 @@ class Investment {
   final int goalsCount;
   final List<Transaction> transactions;
   final List<Sip> sips;
+  final Script? script;
 
   Investment._(
       {required this.id,
@@ -26,12 +29,14 @@ class Investment {
       required this.riskLevel,
       required this.irr,
       required this.value,
+      required this.valueUpdatedOn,
       required this.basketId,
       required this.maturityDate,
       required this.basketName,
       required this.goalsCount,
       required this.transactions,
-      required this.sips});
+      required this.sips,
+      required this.script});
 
   double getTotalInvestedAmount({final DateTime? till}) {
     return getPayments(till: till)
@@ -108,7 +113,8 @@ class Investment {
   factory Investment.from(
           {required final InvestmentDO investmentDO,
           required final List<TransactionDO> transactionsDOs,
-          required final List<SipDO> sipDOs}) =>
+          required final List<SipDO> sipDOs,
+          required final ScriptDO? scriptDO}) =>
       Investment._(
           id: investmentDO.id,
           name: investmentDO.name,
@@ -116,10 +122,12 @@ class Investment {
           riskLevel: investmentDO.riskLevel,
           irr: investmentDO.irr,
           value: investmentDO.value,
+          valueUpdatedOn: investmentDO.valueUpdatedOn,
           basketId: investmentDO.basketId,
           maturityDate: investmentDO.maturityDate,
           basketName: investmentDO.basketName,
           goalsCount: investmentDO.taggedGoals ?? 0,
+          script: scriptDO != null ? Script.from(scriptDO: scriptDO) : null,
           transactions: transactionsDOs
               .map((transactionDO) =>
                   Transaction.from(transactionDO: transactionDO))

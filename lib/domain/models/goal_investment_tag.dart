@@ -30,21 +30,23 @@ class GoalInvestmentTag {
       required this.maturityDate,
       required this.splitPercentage});
 
-  factory GoalInvestmentTag.from(
-          {required GoalInvestmentDO goalInvestmentDO,
-          required List<InvestmentDO> investmentDOs,
-          required List<TransactionDO> transactionsDOs,
-          required List<SipDO> sipDOs}) {
+  factory GoalInvestmentTag.from({
+    required GoalInvestmentDO goalInvestmentDO,
+    required InvestmentDO investmentDO,
+    required List<TransactionDO> transactionsDOs,
+    required List<SipDO> sipDOs,
+    required ScriptDO? scriptDO,
+  }) {
     return GoalInvestmentTag._(
           id: goalInvestmentDO.id,
           investmentId: goalInvestmentDO.investmentId,
           investmentName: goalInvestmentDO.investmentName ?? '',
           maturityDate: goalInvestmentDO.maturityDate ?? DateTime.now(),
           investment: Investment.from(
-              investmentDO: investmentDOs.firstWhere(
-                  (element) => element.id == goalInvestmentDO.investmentId),
-              transactionsDOs: transactionsDOs
-                  .where((element) =>
+            scriptDO: scriptDO,
+            investmentDO: investmentDO,
+            transactionsDOs: transactionsDOs
+                .where((element) =>
                       element.investmentId == goalInvestmentDO.investmentId)
                   .toList(),
               sipDOs: sipDOs

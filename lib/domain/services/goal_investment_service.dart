@@ -1,5 +1,6 @@
 import 'package:wealth_wave/api/apis/goal_investment_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
+import 'package:wealth_wave/api/apis/script_api.dart';
 import 'package:wealth_wave/api/apis/sip_api.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
@@ -10,6 +11,7 @@ class GoalInvestmentService {
   final InvestmentApi _investmentApi;
   final TransactionApi _transactionApi;
   final SipApi _sipApi;
+  final ScriptApi _scriptApi;
 
   factory GoalInvestmentService() {
     return _instance;
@@ -21,11 +23,13 @@ class GoalInvestmentService {
       {final GoalInvestmentApi? goalInvestmentApi,
       final InvestmentApi? investmentApi,
       final TransactionApi? transactionApi,
-      final SipApi? sipApi})
+      final SipApi? sipApi,
+      final ScriptApi? scriptApi})
       : _goalInvestmentApi = goalInvestmentApi ?? GoalInvestmentApi(),
         _investmentApi = investmentApi ?? InvestmentApi(),
         _transactionApi = transactionApi ?? TransactionApi(),
-        _sipApi = sipApi ?? SipApi();
+        _sipApi = sipApi ?? SipApi(),
+        _scriptApi = scriptApi ?? ScriptApi();
 
   Future<void> tagGoalInvestment(
           {required final int goalId,
@@ -59,10 +63,13 @@ class GoalInvestmentService {
             investmentId: goalInvestmentDO.investmentId);
         final sipDOs =
             await _sipApi.getBy(investmentId: goalInvestmentDO.investmentId);
+        final scriptDOs =
+            await _scriptApi.getBy(investmentId: goalInvestmentDO.investmentId);
         return GoalInvestmentTag.from(
-            investmentDOs: [investmentDO],
+            investmentDO: investmentDO,
             goalInvestmentDO: goalInvestmentDO,
             transactionsDOs: transactionDOs,
+            scriptDO: scriptDOs,
             sipDOs: sipDOs);
       });
 
@@ -71,13 +78,19 @@ class GoalInvestmentService {
     List<InvestmentDO> investmentDos = await _investmentApi.getAll();
     List<TransactionDO> transactionsDOs = await _transactionApi.getAll();
     List<SipDO> sipDOs = await _sipApi.getAll();
+    List<ScriptDO> scriptDOs = await _scriptApi.getAll();
 
     return _goalInvestmentApi
         .getBy(investmentId: investmentId, goalId: goalId)
         .then((goalInvestments) => goalInvestments
             .map((goalInvestment) => GoalInvestmentTag.from(
                 goalInvestmentDO: goalInvestment,
-                investmentDOs: investmentDos,
+                investmentDO: investmentDos.firstWhere(
+                    (element) => element.id == goalInvestment.investmentId),
+                scriptDO: scriptDOs
+                    .where((element) =>
+                        element.investmentId == goalInvestment.investmentId)
+                    .firstOrNull,
                 transactionsDOs: transactionsDOs,
                 sipDOs: sipDOs))
             .toList());
