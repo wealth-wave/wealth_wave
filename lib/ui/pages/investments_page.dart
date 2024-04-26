@@ -5,6 +5,7 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/investments_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
+import 'package:wealth_wave/ui/widgets/create_script_dialog.dart';
 import 'package:wealth_wave/ui/widgets/create_sip_dialog.dart';
 import 'package:wealth_wave/ui/widgets/create_transaction_dialog.dart';
 import 'package:wealth_wave/ui/widgets/view_sips_dialog.dart';
@@ -256,6 +257,10 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                     context: context, investmentIdToUpdate: investmentVO.id)
                 .then((value) => presenter.fetchInvestments());
           } else if (value == 2) {
+            showCreateScriptDialog(
+                    context: context, investmentId: investmentVO.id)
+                .then((value) => presenter.fetchInvestments());
+          } else if (value == 3) {
             presenter.deleteInvestment(id: investmentVO.id);
           }
         },
@@ -266,6 +271,10 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
           ),
           const PopupMenuItem(
             value: 2,
+            child: Text('Script'),
+          ),
+          const PopupMenuItem(
+            value: 3,
             child: Text('Delete'),
           ),
         ],

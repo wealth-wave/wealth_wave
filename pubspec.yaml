@@ -21,6 +21,8 @@ dependencies:
   pie_chart: ^5.4.0
   toastification: ^1.2.0
   syncfusion_flutter_charts: ^24.1.47+2
+  petitparser: ^6.0.2
+  http: ^1.2.1
 
 dev_dependencies:
   flutter_lints: ^3.0.1

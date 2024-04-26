@@ -2147,6 +2147,218 @@ class GoalInvestmentTableCompanion
   }
 }
 
+class $ScriptTableTable extends ScriptTable
+    with TableInfo<$ScriptTableTable, ScriptDO> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ScriptTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'ID', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _scriptMeta = const VerificationMeta('script');
+  @override
+  late final GeneratedColumn<String> script = GeneratedColumn<String>(
+      'SCRIPT', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _investmentIdMeta =
+      const VerificationMeta('investmentId');
+  @override
+  late final GeneratedColumn<int> investmentId = GeneratedColumn<int>(
+      'INVESTMENT_ID', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'UNIQUE REFERENCES investment_table (ID)'));
+  @override
+  List<GeneratedColumn> get $columns => [id, script, investmentId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'script_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<ScriptDO> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('ID')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
+    }
+    if (data.containsKey('SCRIPT')) {
+      context.handle(_scriptMeta,
+          script.isAcceptableOrUnknown(data['SCRIPT']!, _scriptMeta));
+    } else if (isInserting) {
+      context.missing(_scriptMeta);
+    }
+    if (data.containsKey('INVESTMENT_ID')) {
+      context.handle(
+          _investmentIdMeta,
+          investmentId.isAcceptableOrUnknown(
+              data['INVESTMENT_ID']!, _investmentIdMeta));
+    } else if (isInserting) {
+      context.missing(_investmentIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ScriptDO map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ScriptDO(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
+      script: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}SCRIPT'])!,
+      investmentId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!,
+    );
+  }
+
+  @override
+  $ScriptTableTable createAlias(String alias) {
+    return $ScriptTableTable(attachedDatabase, alias);
+  }
+}
+
+class ScriptDO extends DataClass implements Insertable<ScriptDO> {
+  final int id;
+  final String script;
+  final int investmentId;
+  const ScriptDO(
+      {required this.id, required this.script, required this.investmentId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['ID'] = Variable<int>(id);
+    map['SCRIPT'] = Variable<String>(script);
+    map['INVESTMENT_ID'] = Variable<int>(investmentId);
+    return map;
+  }
+
+  ScriptTableCompanion toCompanion(bool nullToAbsent) {
+    return ScriptTableCompanion(
+      id: Value(id),
+      script: Value(script),
+      investmentId: Value(investmentId),
+    );
+  }
+
+  factory ScriptDO.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ScriptDO(
+      id: serializer.fromJson<int>(json['id']),
+      script: serializer.fromJson<String>(json['script']),
+      investmentId: serializer.fromJson<int>(json['investmentId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'script': serializer.toJson<String>(script),
+      'investmentId': serializer.toJson<int>(investmentId),
+    };
+  }
+
+  ScriptDO copyWith({int? id, String? script, int? investmentId}) => ScriptDO(
+        id: id ?? this.id,
+        script: script ?? this.script,
+        investmentId: investmentId ?? this.investmentId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ScriptDO(')
+          ..write('id: $id, ')
+          ..write('script: $script, ')
+          ..write('investmentId: $investmentId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, script, investmentId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ScriptDO &&
+          other.id == this.id &&
+          other.script == this.script &&
+          other.investmentId == this.investmentId);
+}
+
+class ScriptTableCompanion extends UpdateCompanion<ScriptDO> {
+  final Value<int> id;
+  final Value<String> script;
+  final Value<int> investmentId;
+  const ScriptTableCompanion({
+    this.id = const Value.absent(),
+    this.script = const Value.absent(),
+    this.investmentId = const Value.absent(),
+  });
+  ScriptTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String script,
+    required int investmentId,
+  })  : script = Value(script),
+        investmentId = Value(investmentId);
+  static Insertable<ScriptDO> custom({
+    Expression<int>? id,
+    Expression<String>? script,
+    Expression<int>? investmentId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'ID': id,
+      if (script != null) 'SCRIPT': script,
+      if (investmentId != null) 'INVESTMENT_ID': investmentId,
+    });
+  }
+
+  ScriptTableCompanion copyWith(
+      {Value<int>? id, Value<String>? script, Value<int>? investmentId}) {
+    return ScriptTableCompanion(
+      id: id ?? this.id,
+      script: script ?? this.script,
+      investmentId: investmentId ?? this.investmentId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['ID'] = Variable<int>(id.value);
+    }
+    if (script.present) {
+      map['SCRIPT'] = Variable<String>(script.value);
+    }
+    if (investmentId.present) {
+      map['INVESTMENT_ID'] = Variable<int>(investmentId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ScriptTableCompanion(')
+          ..write('id: $id, ')
+          ..write('script: $script, ')
+          ..write('investmentId: $investmentId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class BasketDO extends DataClass {
   final int id;
   final String name;
@@ -2458,6 +2670,8 @@ class $InvestmentEnrichedViewView
   $GoalInvestmentTableTable get goalInvestment =>
       attachedDatabase.goalInvestmentTable.createAlias('t3');
   $SipTableTable get sip => attachedDatabase.sipTable.createAlias('t4');
+  $ScriptTableTable get script =>
+      attachedDatabase.scriptTable.createAlias('t5');
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2591,7 +2805,8 @@ class $InvestmentEnrichedViewView
             transaction, transaction.investmentId.equalsExp(investment.id)),
         leftOuterJoin(sip, sip.investmentId.equalsExp(investment.id)),
         leftOuterJoin(goalInvestment,
-            goalInvestment.investmentId.equalsExp(investment.id))
+            goalInvestment.investmentId.equalsExp(investment.id)),
+        leftOuterJoin(script, script.investmentId.equalsExp(investment.id))
       ])
         ..groupBy([investment.id]);
   @override
@@ -2600,7 +2815,8 @@ class $InvestmentEnrichedViewView
         'basket_table',
         'transaction_table',
         'goal_investment_table',
-        'sip_table'
+        'sip_table',
+        'script_table'
       };
 }
 
@@ -3472,6 +3688,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $GoalTableTable goalTable = $GoalTableTable(this);
   late final $GoalInvestmentTableTable goalInvestmentTable =
       $GoalInvestmentTableTable(this);
+  late final $ScriptTableTable scriptTable = $ScriptTableTable(this);
   late final $BasketEnrichedViewView basketEnrichedView =
       $BasketEnrichedViewView(this);
   late final $InvestmentEnrichedViewView investmentEnrichedView =
@@ -3494,6 +3711,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         transactionTable,
         goalTable,
         goalInvestmentTable,
+        scriptTable,
         basketEnrichedView,
         investmentEnrichedView,
         goalInvestmentEnrichedView,
