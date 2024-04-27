@@ -13,7 +13,7 @@ class GoalInvestmentTag {
   final double splitPercentage;
 
   double get currentValue => calculatePercentageOfValue(
-      value: investment.getValueOn(date: DateTime.now()),
+      value: investment.getValue(),
       percentage: splitPercentage);
 
   int get sipCount => investment.sips.length;
