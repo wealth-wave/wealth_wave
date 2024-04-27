@@ -27,9 +27,9 @@ class ScriptService {
         return Script.from(scriptDO: scriptDO);
       });
 
-  Future<Script> getBy({required final int investmentId}) =>
+  Future<Script?> getBy({required final int investmentId}) =>
       _scriptApi.getBy(investmentId: investmentId).then((scriptDO) {
-        return Script.from(scriptDO: scriptDO);
+        return scriptDO != null ? Script.from(scriptDO: scriptDO) : null;
       });
 
   Future<List<Script>> getAll() => _scriptApi.getAll().then((scripts) =>
