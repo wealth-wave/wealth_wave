@@ -79,6 +79,16 @@ class InvestmentApi {
             maturityDate: Value(maturityDate)));
   }
 
+  Future<int> updateValue({
+    required final int id,
+    required final double value,
+    required final DateTime valueUpdatedOn,
+  }) async {
+    return (_db.update(_db.investmentTable)..where((t) => t.id.equals(id)))
+        .write(InvestmentTableCompanion(
+            value: Value(value), valueUpdatedOn: Value(valueUpdatedOn)));
+  }
+
   Future<int> deleteBy({required final int id}) async {
     return (_db.delete(_db.investmentTable)..where((t) => t.id.equals(id)))
         .go();
