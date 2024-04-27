@@ -1,32 +1,17 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 import 'package:wealth_wave/api/apis/script_api.dart';
 import 'package:wealth_wave/domain/models/script.dart';
-import 'package:wealth_wave/domain/services/dsl_parser.dart';
 
 class ScriptService {
   final ScriptApi _scriptApi;
-  final DSLParser _dslParser;
 
   factory ScriptService() {
     return _instance;
   }
 
-  factory ScriptService.mock(
-      {final ScriptApi? scriptApi,
-      final DSLParser? dslParser}) {
-    return ScriptService._(
-        scriptApi: scriptApi, dslParserDefinition: dslParser);
-  }
-
   static final ScriptService _instance = ScriptService._();
 
-  ScriptService._(
-      {final ScriptApi? scriptApi,
-      final DSLParser? dslParserDefinition})
-      : _scriptApi = scriptApi ?? ScriptApi(),
-        _dslParser = dslParserDefinition ?? DSLParser();
+  ScriptService._({final ScriptApi? scriptApi})
+      : _scriptApi = scriptApi ?? ScriptApi();
 
   Future<Script> createScript(
           {required final int investmentId, required final String script}) =>
@@ -58,12 +43,4 @@ class ScriptService {
           .update(id: sipId, investmentId: investmentId, script: script)
           .then((count) => _scriptApi.getById(id: sipId))
           .then((scriptDO) => Script.from(scriptDO: scriptDO));
-
-  Future<double> executeScript({required final String script}) async {
-
-    final parsedDefn = _dslParser.parse(script);
-
-
-    return 0.0;
-  }
 }
