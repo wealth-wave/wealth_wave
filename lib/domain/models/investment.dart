@@ -63,6 +63,20 @@ class Investment {
     return payments;
   }
 
+  double getValue() {
+    final value = this.value;
+    final irr = this.irr;
+    if (value != null) {
+      return value;
+    } else if (irr != null) {
+      final payments = getPayments(till: DateTime.now());
+      return IRRCalculator().calculateFutureValueOnIRR(
+          payments: payments, irr: irr, futureDate: DateTime.now());
+    } else {
+      throw Exception('Value and IRR are null');
+    }
+  }
+
   double getValueOn(
       {required final DateTime date, bool considerFuturePayments = false}) {
     final maturityDate = this.maturityDate;

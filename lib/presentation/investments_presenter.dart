@@ -151,7 +151,7 @@ class InvestmentVO {
         riskLevel: investment.riskLevel,
         irr: investment.getIRR(),
         investedValue: investment.getTotalInvestedAmount(),
-        currentValue: investment.getValueOn(date: DateTime.now()),
+        currentValue: investment.getValue(),
         basketId: investment.basketId,
         basketName: investment.basketName,
         transactions: investment.transactions,

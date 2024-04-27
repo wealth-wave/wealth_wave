@@ -93,7 +93,7 @@ class TagInvestmentViewState {
     }
     double investmentValue = investments
         .firstWhere((element) => element.id == investmentId)
-        .getValueOn(date: DateTime.now());
+        .getValue();
     return calculatePercentageOfValue(
         value: investmentValue, percentage: sharePercentage);
   }

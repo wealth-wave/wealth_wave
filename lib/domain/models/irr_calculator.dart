@@ -45,6 +45,15 @@ class IRRCalculator {
       irrGuess += _calculateScale(diff) * diff;
     }
 
+    if (irrGuess.isNaN) {
+      return 0.0;
+    } else if (irrGuess.isInfinite) {
+      return 0.0;
+    } else if (irrGuess > 100) {
+      return 100.0;
+    } else if (irrGuess < -100) {
+      return -100.0;
+    }
     return irrGuess;
   }
 
@@ -97,6 +106,8 @@ class IRRCalculator {
       }
     }
 
+    if (futureValue.isNaN) return 0.0;
+    if (futureValue.isInfinite) return 0.0;
     return futureValue;
   }
 
