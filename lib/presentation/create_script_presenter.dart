@@ -48,15 +48,11 @@ class CreateScriptPresenter extends Presenter<CreateScriptViewState> {
 }
 
 class CreateScriptViewState {
-  String dsl = '''
-  api: https://api.example.com/data
-params: 
-  key1: value1
-  key2: value2
-extract: 
-  path: data.items
-compute: multiply
-  ''';
+  String dsl = '''apiUrl: http://api.stock.com/fund/:fundId/details
+pathParams: fundId=123
+queryParams: fundId=123
+responseJsonPath: \$.data.details.value
+compute: multiplyBy(5)''';
   SingleEvent<void>? onScriptCreated;
   SingleEvent<void>? onScriptLoaded;
 
