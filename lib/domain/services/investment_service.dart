@@ -5,12 +5,14 @@ import 'package:wealth_wave/api/apis/transaction_api.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
+import 'package:wealth_wave/domain/services/script_executor_service.dart';
 
 class InvestmentService {
   final InvestmentApi _investmentApi;
   final TransactionApi _transactionApi;
   final SipApi _sipApi;
   final ScriptApi _scriptApi;
+  final ScriptExecutorService _scriptExecutorService;
 
   factory InvestmentService() {
     return _instance;
@@ -22,11 +24,14 @@ class InvestmentService {
       {final InvestmentApi? investmentApi,
       final TransactionApi? transactionApi,
       final SipApi? sipApi,
-      final ScriptApi? scriptApi})
+      final ScriptApi? scriptApi,
+      final ScriptExecutorService? scriptExecutorService})
       : _investmentApi = investmentApi ?? InvestmentApi(),
         _transactionApi = transactionApi ?? TransactionApi(),
         _sipApi = sipApi ?? SipApi(),
-        _scriptApi = scriptApi ?? ScriptApi();
+        _scriptApi = scriptApi ?? ScriptApi(),
+        _scriptExecutorService =
+            scriptExecutorService ?? ScriptExecutorService();
 
   Future<void> create(
       {required final String name,
@@ -120,4 +125,48 @@ class InvestmentService {
       .deleteBy(investmentId: id)
       .then((_) => _sipApi.deleteBy(investmentId: id))
       .then((_) => _investmentApi.deleteBy(id: id));
+
+  Future<void> updateValues() async {
+    final investments = await _investmentApi.getAll();
+
+    for (final investment in investments) {
+      if (investment.valueUpdatedOn != null &&
+          investment.valueUpdatedOn!.difference(DateTime.now()).inDays < 1) {
+        continue;
+      }
+
+      final script = await _scriptApi.getBy(investmentId: investment.id);
+      if (script == null) {
+        continue;
+      }
+      final value =
+          await _scriptExecutorService.executeScript(script: script.script);
+
+      if (value != null) {
+        await _investmentApi.updateValue(
+          id: investment.id,
+          value: value,
+          valueUpdatedOn: DateTime.now(),
+        );
+      }
+    }
+  }
+
+  Future<void> updateValue({required int investmentId}) async {
+    final investment = await _investmentApi.getById(id: investmentId);
+    final script = await _scriptApi.getBy(investmentId: investment.id);
+    if (script == null) {
+      return;
+    }
+    final value =
+        await _scriptExecutorService.executeScript(script: script.script);
+
+    if (value != null) {
+      await _investmentApi.updateValue(
+        id: investment.id,
+        value: value,
+        valueUpdatedOn: DateTime.now(),
+      );
+    }
+  }
 }

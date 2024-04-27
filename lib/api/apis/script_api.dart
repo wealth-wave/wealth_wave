@@ -16,11 +16,11 @@ class ScriptApi {
     return (_db.select(_db.scriptTable)).get();
   }
 
-  Future<ScriptDO> getBy({final int? investmentId}) async {
+  Future<ScriptDO?> getBy({final int? investmentId}) async {
     if (investmentId != null) {
       return (_db.select(_db.scriptTable)
             ..where((t) => t.investmentId.equals(investmentId)))
-          .getSingle();
+          .getSingleOrNull();
     }
 
     throw Exception("Investment Id is null");
