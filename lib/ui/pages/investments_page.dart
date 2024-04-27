@@ -259,7 +259,8 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
           } else if (value == 2) {
             showCreateScriptDialog(
                     context: context, investmentId: investmentVO.id)
-                .then((value) => presenter.fetchInvestments());
+                .then((value) =>
+                    presenter.updateValue(investmentId: investmentVO.id));
           } else if (value == 3) {
             presenter.deleteInvestment(id: investmentVO.id);
           }

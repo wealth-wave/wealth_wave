@@ -42,8 +42,11 @@ class CreateScriptPresenter extends Presenter<CreateScriptViewState> {
 
   void fetchScript({required int investmentId}) {
     _scriptService
-        .getBy(investmentId: investmentId)
-        .then((sip) => _setScript(sip));
+        .getBy(investmentId: investmentId).then((script) {
+      if (script != null) {
+        _setScript(script);
+      }
+    });
   }
 }
 

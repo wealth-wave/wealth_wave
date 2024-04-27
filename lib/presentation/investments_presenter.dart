@@ -26,6 +26,30 @@ class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
     });
   }
 
+  void updateValues() {
+    updateViewState((viewState) {
+      viewState.updatingValues = true;
+    });
+    _investmentService.updateValues().then((value) {
+      fetchInvestments();
+      updateViewState((viewState) {
+        viewState.updatingValues = false;
+      });
+    });
+  }
+
+  void updateValue({required final int investmentId}) {
+    updateViewState((viewState) {
+      viewState.updatingValues = true;
+    });
+    _investmentService.updateValue(investmentId: investmentId).then((value) {
+      fetchInvestments();
+      updateViewState((viewState) {
+        viewState.updatingValues = false;
+      });
+    });
+  }
+
   void deleteInvestment({required final int id}) {
     _investmentService.deleteBy(id: id).then((value) => fetchInvestments());
   }
@@ -52,6 +76,7 @@ class InvestmentsViewState {
   SortBy sortBy = SortBy.name;
   SortByDirection sortByDirection = SortByDirection.ascending;
   String filterText = '';
+  bool updatingValues = false;
 
   List<InvestmentVO> get investmentVOs {
     List<InvestmentVO> investments = unfilteredInvestmentVOs
