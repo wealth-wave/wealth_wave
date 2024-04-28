@@ -11,49 +11,30 @@ class ScriptExecutorService {
     return _instance;
   }
 
-  factory ScriptExecutorService.withMock({required http.Client client}) {
-    return ScriptExecutorService._(client: client);
+  factory ScriptExecutorService.withMock({required http.Client client, required DSLParser dslParser}) {
+    return ScriptExecutorService._(client: client, dslParser: dslParser);
   }
 
   static final ScriptExecutorService _instance = ScriptExecutorService._();
 
   ScriptExecutorService._(
-      {final DSLParser? dslParserDefinition, final http.Client? client})
-      : _dslParser = dslParserDefinition ?? DSLParser(),
+      {final DSLParser? dslParser, final http.Client? client})
+      : _dslParser = dslParser ?? DSLParser(),
         _client = client ?? http.Client();
 
-  Future<double?> executeScript({required final String script}) async {
+  Future<double?> executeScript(
+      {required final String script, required final double qty}) async {
     final parsedDefn = _dslParser.parse(script);
 
     final response = await _client.get(
       Uri.parse(parsedDefn.url),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: parsedDefn.headers,
     );
 
     if (response.statusCode == 200) {
       double? value =
           _getValueFromJsonPath(response.body, parsedDefn.responsePath);
-      if (value != null) {
-        switch (parsedDefn.computeOperation) {
-          case 'multiplyBy':
-            value *= parsedDefn.computeOn;
-            break;
-          case 'divideBy':
-            value /= parsedDefn.computeOn;
-            break;
-          case 'add':
-            value += parsedDefn.computeOn;
-            break;
-          case 'subtract':
-            value -= parsedDefn.computeOn;
-            break;
-          default:
-            value = value;
-        }
-      }
-      return value;
+      return (value ?? 0) * qty;
     } else {
       throw Exception('Failed to execute script');
     }

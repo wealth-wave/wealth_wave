@@ -29,6 +29,12 @@ class CreateScriptPresenter extends Presenter<CreateScriptViewState> {
             (viewState) => viewState.onScriptCreated = SingleEvent(null)));
   }
 
+  void deleteScript() {
+    _scriptService.deleteBy(investmentId: _investmentId).then(
+        (_) => updateViewState(
+            (viewState) => viewState.onScriptDeleted = SingleEvent(null)));
+  }
+
   void onDSLChanged(String text) {
     updateViewState((viewState) => viewState.dsl = text);
   }
@@ -51,12 +57,13 @@ class CreateScriptPresenter extends Presenter<CreateScriptViewState> {
 }
 
 class CreateScriptViewState {
-  String dsl = '''apiUrl: http://api.stock.com/fund/:fundId/details
+  String dsl = '''apiUrl: https://api.mfapi.in/mf/:fundId/latest
 pathParams: fundId=123
-queryParams: fundId=123
-responseJsonPath: \$.data.details.value
-compute: multiplyBy(5)''';
+queryParams: 
+headerParams: 
+responseJsonPath: data.0.nav''';
   SingleEvent<void>? onScriptCreated;
+  SingleEvent<void>? onScriptDeleted;
   SingleEvent<void>? onScriptLoaded;
 
   bool isValid() {

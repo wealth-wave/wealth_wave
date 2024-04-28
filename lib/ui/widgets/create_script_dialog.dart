@@ -42,6 +42,9 @@ class _CreateScriptPage extends PageState<CreateScriptViewState,
       snapshot.onScriptCreated?.consume((_) {
         Navigator.of(context).pop();
       });
+      snapshot.onScriptDeleted?.consume((_) {
+        Navigator.of(context).pop();
+      });
       snapshot.onScriptLoaded?.consume((_) {
         _dslController.text = snapshot.dsl;
       });
@@ -51,9 +54,9 @@ class _CreateScriptPage extends PageState<CreateScriptViewState,
         title: Text('Script', style: Theme.of(context).textTheme.titleMedium),
         actions: [
           ElevatedButton(
-              child: const Text("Cancel"),
+              child: const Text("Delete"),
               onPressed: () {
-                Navigator.pop(context);
+                presenter.deleteScript();
               }),
           ElevatedButton(
             onPressed: snapshot.isValid()
@@ -67,7 +70,7 @@ class _CreateScriptPage extends PageState<CreateScriptViewState,
         content: SingleChildScrollView(
           child: Column(children: <Widget>[
             TextFormField(
-              textInputAction: TextInputAction.next,
+              textInputAction: TextInputAction.newline,
               controller: _dslController,
               minLines: 5,
               maxLines: 50,

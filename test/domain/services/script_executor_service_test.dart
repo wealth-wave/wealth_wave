@@ -2,32 +2,38 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
+import 'package:wealth_wave/domain/services/dsl_parser.dart';
 import 'package:wealth_wave/domain/services/script_executor_service.dart';
 
 import 'script_executor_service_test.mocks.dart';
 
-@GenerateMocks([http.Client])
+@GenerateMocks([http.Client, DSLParser])
 void main() {
   late MockClient mockClient;
+  late MockDSLParser mockDSLParser;
 
   setUp(() {
     mockClient = MockClient();
+    mockDSLParser = MockDSLParser();
   });
 
   test('should fetch data from script', () async {
-    const String script = '''apiUrl: https://api.mfapi.in/mf/:mf/latest
-pathParams: mf=128074
-queryParams: 
-responseJsonPath: data.0.nav
-compute: multiplyBy(5)''';
-    final scriptExecutorService =
-        ScriptExecutorService.withMock(client: mockClient);
-    when(mockClient.get(Uri.parse('https://api.mfapi.in/mf/128074/latest'),
-            headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8'
-        }))
+    const String script = 'test_script';
+    when(mockDSLParser.parse(script)).thenReturn(
+      ParsedScript(
+        url: 'https://api.mfapi.in/mf/128074/latest?user=11',
+        headers: {'Authorization': 'Bearer'},
+        responsePath: 'data.0.nav',
+      ),
+    );
+    final scriptExecutorService = ScriptExecutorService.withMock(
+        client: mockClient, dslParser: mockDSLParser);
+    when(mockClient.get(
+            Uri.parse('https://api.mfapi.in/mf/128074/latest?user=11'),
+            headers: {'Authorization': 'Bearer'}))
         .thenAnswer((_) async => http.Response('{"data":[{"nav":3.0}]}', 200));
-    final value = await scriptExecutorService.executeScript(script: script);
+    final value =
+        await scriptExecutorService.executeScript(script: script, qty: 5);
 
     expect(value, equals(15.0));
   });

@@ -124,7 +124,6 @@ class InvestmentVO {
   final bool hasScript;
 
   int get transactionCount => transactions.length;
-
   int get sipCount => sips.length;
 
   InvestmentVO._(

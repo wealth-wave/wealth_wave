@@ -12,6 +12,7 @@ class Investment {
   final String? description;
   final RiskLevel riskLevel;
   final double? value;
+  final double? qty;
   final DateTime? valueUpdatedOn;
   final double? irr;
   final DateTime? maturityDate;
@@ -29,6 +30,7 @@ class Investment {
       required this.riskLevel,
       required this.irr,
       required this.value,
+      required this.qty,
       required this.valueUpdatedOn,
       required this.basketId,
       required this.maturityDate,
@@ -67,7 +69,7 @@ class Investment {
     final value = this.value;
     final irr = this.irr;
     if (value != null) {
-      return value;
+      return value * (qty ?? 1);
     } else if (irr != null) {
       final payments = getPayments(till: DateTime.now());
       return IRRCalculator().calculateFutureValueOnIRR(
@@ -92,7 +94,7 @@ class Investment {
           till: futureDate, considerFuturePayments: considerFuturePayments);
       final irr = IRRCalculator().calculateIRR(
           payments: paymentTillNow,
-          value: value,
+          value: value * (qty ?? 1),
           valueUpdatedOn: DateTime.now());
       return IRRCalculator().calculateFutureValueOnIRR(
         irr: irr,
@@ -118,7 +120,9 @@ class Investment {
       final List<Payment> payments = getPayments(till: DateTime.now());
 
       return IRRCalculator().calculateIRR(
-          payments: payments, value: value, valueUpdatedOn: DateTime.now());
+          payments: payments,
+          value: value * (qty ?? 1),
+          valueUpdatedOn: DateTime.now());
     } else {
       throw Exception('Value and IRR are null');
     }
@@ -136,6 +140,7 @@ class Investment {
           riskLevel: investmentDO.riskLevel,
           irr: investmentDO.irr,
           value: investmentDO.value,
+          qty: investmentDO.qty,
           valueUpdatedOn: investmentDO.valueUpdatedOn,
           basketId: investmentDO.basketId,
           maturityDate: investmentDO.maturityDate,

@@ -32,6 +32,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     final String name = viewState.name;
     final String description = viewState.description;
     final double? value = viewState.value;
+    final double? qty = viewState.qty;
     final int? basketId = viewState.basketId;
     final double? investedAmount = viewState.investedAmount;
     final DateTime? investedOn = viewState.investedOn;
@@ -46,6 +47,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
               description: description,
               name: name,
               value: value,
+              qty: qty,
               basketId: basketId,
               riskLevel: riskLevel,
               irr: irr,
@@ -60,6 +62,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
               investedAmount: investedAmount!,
               investedOn: investedOn!,
               value: value,
+              qty: qty,
               basketId: basketId,
               riskLevel: riskLevel,
               irr: irr,
@@ -95,6 +98,10 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
     });
   }
 
+  void qtyChanged(double? qty) {
+    updateViewState((viewState) => viewState.qty = qty);
+  }
+
   void baskedIdChanged(int baskedIt) {
     updateViewState((viewState) => viewState.basketId = baskedIt);
   }
@@ -121,6 +128,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
       viewState.name = investmentToUpdate.name;
       viewState.description = investmentToUpdate.description?? '';
       viewState.irr = investmentToUpdate.irr;
+      viewState.qty = investmentToUpdate.qty;
       viewState.investedAmount = investmentToUpdate.getTotalInvestedAmount();
       viewState.investedOn = investmentToUpdate.getLastInvestedOn();
       viewState.basketId = investmentToUpdate.basketId;
@@ -150,6 +158,7 @@ class CreateInvestmentViewState {
   double? investedAmount = 0;
   DateTime? investedOn = DateTime.now();
   double? value;
+  double? qty;
   DateTime? maturityDate;
   SingleEvent<void>? onInvestmentCreated;
   SingleEvent<void>? onInvestmentFetched;
@@ -157,6 +166,8 @@ class CreateInvestmentViewState {
   SingleEvent<void>? onValueCleared;
 
   List<Basket> baskets = List.empty(growable: false);
+
+  double get totalValue => (value ?? 0) * (qty ?? 1);
 
   bool isValid() {
     final value = this.value;

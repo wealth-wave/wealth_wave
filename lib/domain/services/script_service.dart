@@ -43,4 +43,7 @@ class ScriptService {
           .update(id: sipId, investmentId: investmentId, script: script)
           .then((count) => _scriptApi.getById(id: sipId))
           .then((scriptDO) => Script.from(scriptDO: scriptDO));
+
+  Future<void> deleteBy({required final int investmentId}) =>
+      _scriptApi.deleteBy(investmentId: investmentId);
 }

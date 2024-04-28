@@ -41,6 +41,7 @@ class InvestmentService {
       required final double investedAmount,
       required final DateTime investedOn,
       required final double? value,
+      required final double? qty,
       required final double? irr,
       required final DateTime? maturityDate}) async {
     if ((irr == null || irr <= 0) &&
@@ -56,6 +57,7 @@ class InvestmentService {
             basketId: basketId,
             riskLevel: riskLevel,
             value: value,
+            qty: qty,
             valueUpdatedOn: DateTime.now(),
             maturityDate: maturityDate,
             irr: irr)
@@ -105,6 +107,7 @@ class InvestmentService {
       required final int? basketId,
       required final RiskLevel riskLevel,
       required final double? value,
+      required final double? qty,
       required final double? irr,
       required final DateTime? maturityDate}) {
     return _investmentApi
@@ -113,6 +116,7 @@ class InvestmentService {
             name: name,
             description: description,
             value: value,
+            qty: qty,
             valueUpdatedOn: DateTime.now(),
             irr: irr,
             maturityDate: maturityDate,
@@ -139,8 +143,8 @@ class InvestmentService {
       if (script == null) {
         continue;
       }
-      final value =
-          await _scriptExecutorService.executeScript(script: script.script);
+      final value = await _scriptExecutorService.executeScript(
+          script: script.script, qty: investment.qty ?? 1);
 
       if (value != null) {
         await _investmentApi.updateValue(
@@ -158,8 +162,8 @@ class InvestmentService {
     if (script == null) {
       return;
     }
-    final value =
-        await _scriptExecutorService.executeScript(script: script.script);
+    final value = await _scriptExecutorService.executeScript(
+        script: script.script, qty: investment.qty ?? 1);
 
     if (value != null) {
       await _investmentApi.updateValue(

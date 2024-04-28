@@ -33,6 +33,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
   final _descriptionController = TextEditingController();
   final _irrController = TextEditingController();
   final _valueController = TextEditingController();
+  final _qtyController = TextEditingController();
   final _investedAmountController = TextEditingController();
   final _investedOnController = TextEditingController();
   final _maturityDateController = TextEditingController();
@@ -54,6 +55,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     _investedOnController.text =
         investedOn != null ? formatDate(investedOn) : '';
     _valueController.text = value != null ? formatToCurrency(value) : '';
+    _qtyController.text = viewState.qty != null ? viewState.qty.toString() : '';
     _maturityDateController.text = viewState.maturityDate != null
         ? formatDate(viewState.maturityDate!)
         : '';
@@ -73,6 +75,10 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
 
     _valueController.addListener(() {
       presenter.valueChanged(parseCurrency(_valueController.text));
+    });
+
+    _qtyController.addListener(() {
+      presenter.qtyChanged(double.tryParse(_qtyController.text));
     });
 
     _irrController.addListener(() {
@@ -117,6 +123,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
         _descriptionController.text = snapshot.description;
         _irrController.text = irr != null ? formatDecimal(irr) : '';
         _valueController.text = value != null ? formatToCurrency(value) : '';
+        _qtyController.text = snapshot.qty != null ? snapshot.qty.toString() : '';
         _investedAmountController.text =
             investedAmount != null ? formatToCurrency(investedAmount) : '';
         _maturityDateController.text = snapshot.maturityDate != null
@@ -178,6 +185,30 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                       decoration: const InputDecoration(
                           labelText: 'Current Value',
                           border: OutlineInputBorder()),
+                    ),
+                    const SizedBox(height: AppDimen.minPadding),
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      controller: _qtyController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          labelText: 'Quantity',
+                          border: OutlineInputBorder()),
+                    ),
+                    const SizedBox(height: AppDimen.minPadding),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Total Value',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(width: 10), // Add some spacing
+                        Text(
+                          formatToCurrency(snapshot.totalValue),
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: AppDimen.minPadding),
                     const Text('Or'),
