@@ -41,7 +41,7 @@ class ScriptExecutorService {
 
   double? _getValueFromJsonPath(String json, String jsonPath) {
     Map<String, dynamic> map = jsonDecode(json);
-    List<String> keys = jsonPath.split('.');
+    List<String> keys = jsonPath.split('.').map((e) => Uri.decodeFull(e)).toList();
     dynamic current = map;
 
     for (String key in keys) {

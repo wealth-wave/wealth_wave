@@ -37,4 +37,25 @@ void main() {
 
     expect(value, equals(3.0));
   });
+
+  test('should fetch data from script for dot values', () async {
+    const String script = 'test_script';
+    when(mockDSLParser.parse(script)).thenReturn(
+      ParsedScript(
+        url: 'https://api.mfapi.in/mf/128074/latest?user=11',
+        headers: {'Authorization': 'Bearer'},
+        responsePath: 'Global Quote.05%2e price',
+      ),
+    );
+    final scriptExecutorService = ScriptExecutorService.withMock(
+        client: mockClient, dslParser: mockDSLParser);
+    when(mockClient.get(
+        Uri.parse('https://api.mfapi.in/mf/128074/latest?user=11'),
+        headers: {'Authorization': 'Bearer'}))
+        .thenAnswer((_) async => http.Response('{"Global Quote":{"05. price": "3"}}', 200));
+    final value =
+    await scriptExecutorService.executeScript(script: script);
+
+    expect(value, equals(3.0));
+  });
 }
