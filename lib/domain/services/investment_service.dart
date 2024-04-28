@@ -143,8 +143,7 @@ class InvestmentService {
       if (script == null) {
         continue;
       }
-      final value = await _scriptExecutorService.executeScript(
-          script: script.script, qty: investment.qty ?? 1);
+      final value = await _scriptExecutorService.executeScript(script: script.script);
 
       if (value != null) {
         await _investmentApi.updateValue(
@@ -162,8 +161,7 @@ class InvestmentService {
     if (script == null) {
       return;
     }
-    final value = await _scriptExecutorService.executeScript(
-        script: script.script, qty: investment.qty ?? 1);
+    final value = await _scriptExecutorService.executeScript(script: script.script);
 
     if (value != null) {
       await _investmentApi.updateValue(

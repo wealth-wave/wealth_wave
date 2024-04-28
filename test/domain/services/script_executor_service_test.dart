@@ -33,8 +33,8 @@ void main() {
             headers: {'Authorization': 'Bearer'}))
         .thenAnswer((_) async => http.Response('{"data":[{"nav":3.0}]}', 200));
     final value =
-        await scriptExecutorService.executeScript(script: script, qty: 5);
+        await scriptExecutorService.executeScript(script: script);
 
-    expect(value, equals(15.0));
+    expect(value, equals(3.0));
   });
 }

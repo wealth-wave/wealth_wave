@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:toastification/toastification.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
@@ -185,9 +186,20 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                           border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: AppDimen.minPadding),
-                    _getQtyWidget(
-                        snapshot: snapshot,
-                        showQtyField: widget.investmentIdToUpdate == null),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'X ${NumberFormat.compact().format(snapshot.qty)}',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(width: 10), // Add some spacing
+                        Text(
+                          formatToCurrency(snapshot.totalValue),
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: AppDimen.minPadding),
                     const Text('Or'),
                     const SizedBox(height: AppDimen.minPadding),
@@ -315,6 +327,14 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                     const SizedBox(height: AppDimen.defaultPadding),
                     TextFormField(
                       textInputAction: TextInputAction.next,
+                      controller: _qtyController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          labelText: 'Quantity', border: OutlineInputBorder()),
+                    ),
+                    const SizedBox(height: AppDimen.defaultPadding),
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
                       controller: _investedOnController,
                       inputFormatters: [DateTextInputFormatter()],
                       decoration: const InputDecoration(
@@ -336,13 +356,6 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     if (showQtyField) {
       return Column(
         children: [
-          TextFormField(
-            textInputAction: TextInputAction.next,
-            controller: _qtyController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-                labelText: 'Quantity', border: OutlineInputBorder()),
-          ),
           const SizedBox(height: AppDimen.minPadding),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -378,20 +391,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
             ],
           ),
           const SizedBox(height: AppDimen.minPadding),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Total Value',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(width: 10), // Add some spacing
-              Text(
-                formatToCurrency(snapshot.totalValue),
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-          )
+
         ],
       );
     }

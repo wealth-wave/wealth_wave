@@ -22,8 +22,7 @@ class ScriptExecutorService {
       : _dslParser = dslParser ?? DSLParser(),
         _client = client ?? http.Client();
 
-  Future<double?> executeScript(
-      {required final String script, required final double qty}) async {
+  Future<double?> executeScript({required final String script}) async {
     final parsedDefn = _dslParser.parse(script);
 
     final response = await _client.get(
@@ -34,7 +33,7 @@ class ScriptExecutorService {
     if (response.statusCode == 200) {
       double? value =
           _getValueFromJsonPath(response.body, parsedDefn.responsePath);
-      return (value ?? 0) * qty;
+      return value;
     } else {
       throw Exception('Failed to execute script');
     }

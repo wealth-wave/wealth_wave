@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/create_investment_transaction_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
-import 'package:wealth_wave/ui/custom/currency_text_input_formatter.dart';
 import 'package:wealth_wave/ui/custom/date_text_input_formatter.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
