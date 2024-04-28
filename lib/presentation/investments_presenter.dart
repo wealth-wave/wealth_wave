@@ -153,7 +153,7 @@ class InvestmentVO {
         irr: investment.getIRR(),
         investedValue: investment.getTotalInvestedAmount(),
         currentValue: investment.getValue(),
-        qty: investment.qty ?? 0,
+        qty: investment.qty,
         basketId: investment.basketId,
         basketName: investment.basketName,
         transactions: investment.transactions,

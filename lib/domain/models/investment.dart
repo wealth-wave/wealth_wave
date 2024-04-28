@@ -12,7 +12,7 @@ class Investment {
   final String? description;
   final RiskLevel riskLevel;
   final double? value;
-  final double? qty;
+  final double? _qty;
   final DateTime? valueUpdatedOn;
   final double? irr;
   final DateTime? maturityDate;
@@ -30,7 +30,7 @@ class Investment {
       required this.riskLevel,
       required this.irr,
       required this.value,
-      required this.qty,
+      required double? qty,
       required this.valueUpdatedOn,
       required this.basketId,
       required this.maturityDate,
@@ -38,12 +38,23 @@ class Investment {
       required this.goalsCount,
       required this.transactions,
       required this.sips,
-      required this.script});
+      required this.script})
+      : _qty = qty;
 
   double getTotalInvestedAmount({final DateTime? till}) {
     return getPayments(till: till)
         .map((transaction) => transaction.amount)
         .fold(0, (value, element) => value + element);
+  }
+
+  double get qty {
+    if (_qty == null) {
+      return 1;
+    } else if (_qty == 0) {
+      return 1;
+    } else {
+      return _qty;
+    }
   }
 
   DateTime getLastInvestedOn() {
@@ -69,7 +80,7 @@ class Investment {
     final value = this.value;
     final irr = this.irr;
     if (value != null) {
-      return value * (qty ?? 1);
+      return value * qty;
     } else if (irr != null) {
       final payments = getPayments(till: DateTime.now());
       return IRRCalculator().calculateFutureValueOnIRR(
@@ -94,7 +105,7 @@ class Investment {
           till: futureDate, considerFuturePayments: considerFuturePayments);
       final irr = IRRCalculator().calculateIRR(
           payments: paymentTillNow,
-          value: value * (qty ?? 1),
+          value: value * qty,
           valueUpdatedOn: DateTime.now());
       return IRRCalculator().calculateFutureValueOnIRR(
         irr: irr,
@@ -121,7 +132,7 @@ class Investment {
 
       return IRRCalculator().calculateIRR(
           payments: payments,
-          value: value * (qty ?? 1),
+          value: value * qty,
           valueUpdatedOn: DateTime.now());
     } else {
       throw Exception('Value and IRR are null');
