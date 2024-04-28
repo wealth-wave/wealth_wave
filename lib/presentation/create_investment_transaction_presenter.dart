@@ -74,6 +74,7 @@ class CreateInvestmentTransactionPresenter
       viewState.amount = transactionToUpdate.amount;
       viewState.investedDate = transactionToUpdate.createdOn;
       viewState.description = transactionToUpdate.description ?? '';
+      viewState.qty = transactionToUpdate.qty ?? 0;
       viewState.onTransactionLoaded = SingleEvent(null);
     });
   }

@@ -82,6 +82,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
       snapshot.onTransactionLoaded?.consume((_) {
         _descriptionController.text = snapshot.description;
         _valueController.text = formatToCurrency(snapshot.amount);
+        _qtyController.text = snapshot.qty.toString();
         _valueUpdatedDateController.text = formatDate(snapshot.investedDate);
       });
     });

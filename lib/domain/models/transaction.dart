@@ -7,6 +7,7 @@ class Transaction {
   final int? sipId;
   final String? description;
   final double amount;
+  final double qty;
   final DateTime createdOn;
 
   Transaction._(
@@ -15,6 +16,7 @@ class Transaction {
       required this.sipId,
       required this.description,
       required this.amount,
+      required this.qty,
       required this.createdOn});
 
   Payment toPayment() => Payment.from(amount: amount, createdOn: createdOn);
@@ -26,5 +28,6 @@ class Transaction {
           sipId: transactionDO.sipId,
           description: transactionDO.description,
           amount: transactionDO.amount,
+          qty: transactionDO.qty,
           createdOn: transactionDO.createdOn);
 }
