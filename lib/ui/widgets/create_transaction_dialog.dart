@@ -59,7 +59,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
     });
 
     _qtyController.addListener(() {
-      presenter.onQtyChanged(parseCurrency(_valueController.text) ?? 0);
+      presenter.onQtyChanged(parseCurrency(_qtyController.text) ?? 0);
     });
 
     _descriptionController.addListener(() {
