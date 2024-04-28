@@ -167,7 +167,10 @@ class CreateInvestmentViewState {
 
   List<Basket> baskets = List.empty(growable: false);
 
-  double get totalValue => (value ?? 0) * (qty ?? 1);
+  double get totalValue {
+    if (qty == 0 || qty == null) return value ?? 0;
+    return (value ?? 0) * qty!;
+  }
 
   bool isValid() {
     final value = this.value;
