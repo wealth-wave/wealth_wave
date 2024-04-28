@@ -36,6 +36,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
     _CreateTransactionDialog, CreateInvestmentTransactionPresenter> {
   final _descriptionController = TextEditingController();
   final _valueController = TextEditingController();
+  final _qtyController = TextEditingController();
   final _valueUpdatedDateController = TextEditingController();
 
   @override
@@ -44,6 +45,7 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
 
     final viewState = presenter.getViewState();
     _valueController.text = formatToCurrency(viewState.amount);
+    _qtyController.text = viewState.qty.toString();
     _descriptionController.text = viewState.description;
     _valueUpdatedDateController.text = formatDate(viewState.investedDate);
 
@@ -54,6 +56,10 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
 
     _valueController.addListener(() {
       presenter.onAmountChanged(parseCurrency(_valueController.text) ?? 0);
+    });
+
+    _qtyController.addListener(() {
+      presenter.onQtyChanged(parseCurrency(_valueController.text) ?? 0);
     });
 
     _descriptionController.addListener(() {
@@ -119,6 +125,13 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
               inputFormatters: [CurrencyTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Amount', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: AppDimen.defaultPadding),
+            TextFormField(
+              textInputAction: TextInputAction.next,
+              controller: _qtyController,
+              decoration: const InputDecoration(
+                  labelText: 'Qty', border: OutlineInputBorder()),
             ),
             const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(

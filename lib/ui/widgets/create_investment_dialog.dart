@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:toastification/toastification.dart';
@@ -187,29 +188,9 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                           border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: AppDimen.minPadding),
-                    TextFormField(
-                      textInputAction: TextInputAction.next,
-                      controller: _qtyController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          labelText: 'Quantity',
-                          border: OutlineInputBorder()),
-                    ),
-                    const SizedBox(height: AppDimen.minPadding),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Total Value',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(width: 10), // Add some spacing
-                        Text(
-                          formatToCurrency(snapshot.totalValue),
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ],
-                    ),
+                    _getQtyWidget(
+                        snapshot: snapshot,
+                        showQtyField: widget.investmentIdToUpdate == null),
                     const SizedBox(height: AppDimen.minPadding),
                     const Text('Or'),
                     const SizedBox(height: AppDimen.minPadding),
@@ -348,6 +329,73 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                 ),
               )),
           const SizedBox(height: AppDimen.defaultPadding),
+        ],
+      );
+    }
+  }
+
+  Widget _getQtyWidget(
+      {required final CreateInvestmentViewState snapshot,
+      required final bool showQtyField}) {
+    if (showQtyField) {
+      return Column(
+        children: [
+          TextFormField(
+            textInputAction: TextInputAction.next,
+            controller: _qtyController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+                labelText: 'Quantity', border: OutlineInputBorder()),
+          ),
+          const SizedBox(height: AppDimen.minPadding),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Total Value',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(width: 10), // Add some spacing
+              Text(
+                formatToCurrency(snapshot.totalValue),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
+          )
+        ],
+      );
+    } else {
+      return Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Quantity',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(width: 10), // Add some spacing
+              Text(
+                formatToCurrency(snapshot.qty ?? 1),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppDimen.minPadding),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Total Value',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(width: 10), // Add some spacing
+              Text(
+                formatToCurrency(snapshot.totalValue),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
+          )
         ],
       );
     }

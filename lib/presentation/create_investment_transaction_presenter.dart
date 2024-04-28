@@ -26,6 +26,7 @@ class CreateInvestmentTransactionPresenter
 
     final String description = viewState.description;
     final double amount = viewState.amount;
+    final double qty = viewState.qty;
     final DateTime investedDate = viewState.investedDate;
 
     if (idToUpdate != null) {
@@ -35,6 +36,7 @@ class CreateInvestmentTransactionPresenter
               investmentId: _investmentId,
               description: description,
               amount: amount,
+              qty: qty,
               createdOn: investedDate)
           .then((_) => updateViewState((viewState) =>
               viewState.onTransactionCreated = SingleEvent(null)));
@@ -44,6 +46,7 @@ class CreateInvestmentTransactionPresenter
               investmentId: _investmentId,
               description: description,
               amount: amount,
+              qty: qty,
               createdOn: investedDate)
           .then((_) => updateViewState((viewState) =>
               viewState.onTransactionCreated = SingleEvent(null)));
@@ -56,6 +59,10 @@ class CreateInvestmentTransactionPresenter
 
   void onAmountChanged(double value) {
     updateViewState((viewState) => viewState.amount = value);
+  }
+
+  void onQtyChanged(double value) {
+    updateViewState((viewState) => viewState.qty = value);
   }
 
   void transactionDateChanged(DateTime date) {
@@ -81,6 +88,7 @@ class CreateInvestmentTransactionPresenter
 class CreateTransactionViewState {
   String description = '';
   double amount = 0;
+  double qty = 0;
   DateTime investedDate = DateTime.now();
   SingleEvent<void>? onTransactionCreated;
   SingleEvent<void>? onTransactionLoaded;

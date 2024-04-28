@@ -262,11 +262,6 @@ class $InvestmentTableTable extends InvestmentTable
   late final GeneratedColumn<double> value = GeneratedColumn<double>(
       'VALUE', aliasedName, true,
       type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _qtyMeta = const VerificationMeta('qty');
-  @override
-  late final GeneratedColumn<double> qty = GeneratedColumn<double>(
-      'QTY', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
   static const VerificationMeta _valueUpdatedOnMeta =
       const VerificationMeta('valueUpdatedOn');
   @override
@@ -308,7 +303,6 @@ class $InvestmentTableTable extends InvestmentTable
         description,
         basketId,
         value,
-        qty,
         valueUpdatedOn,
         irr,
         maturityDate,
@@ -347,10 +341,6 @@ class $InvestmentTableTable extends InvestmentTable
     if (data.containsKey('VALUE')) {
       context.handle(
           _valueMeta, value.isAcceptableOrUnknown(data['VALUE']!, _valueMeta));
-    }
-    if (data.containsKey('QTY')) {
-      context.handle(
-          _qtyMeta, qty.isAcceptableOrUnknown(data['QTY']!, _qtyMeta));
     }
     if (data.containsKey('VALUE_UPDATED_ON')) {
       context.handle(
@@ -394,8 +384,6 @@ class $InvestmentTableTable extends InvestmentTable
           .read(DriftSqlType.int, data['${effectivePrefix}BASKET_ID']),
       value: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}VALUE']),
-      qty: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}QTY']),
       valueUpdatedOn: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}VALUE_UPDATED_ON']),
       irr: attachedDatabase.typeMapping
@@ -426,7 +414,6 @@ class BaseInvestmentDO extends DataClass
   final String? description;
   final int? basketId;
   final double? value;
-  final double? qty;
   final DateTime? valueUpdatedOn;
   final double? irr;
   final DateTime? maturityDate;
@@ -438,7 +425,6 @@ class BaseInvestmentDO extends DataClass
       this.description,
       this.basketId,
       this.value,
-      this.qty,
       this.valueUpdatedOn,
       this.irr,
       this.maturityDate,
@@ -457,9 +443,6 @@ class BaseInvestmentDO extends DataClass
     }
     if (!nullToAbsent || value != null) {
       map['VALUE'] = Variable<double>(value);
-    }
-    if (!nullToAbsent || qty != null) {
-      map['QTY'] = Variable<double>(qty);
     }
     if (!nullToAbsent || valueUpdatedOn != null) {
       map['VALUE_UPDATED_ON'] = Variable<DateTime>(valueUpdatedOn);
@@ -492,7 +475,6 @@ class BaseInvestmentDO extends DataClass
           : Value(basketId),
       value:
           value == null && nullToAbsent ? const Value.absent() : Value(value),
-      qty: qty == null && nullToAbsent ? const Value.absent() : Value(qty),
       valueUpdatedOn: valueUpdatedOn == null && nullToAbsent
           ? const Value.absent()
           : Value(valueUpdatedOn),
@@ -516,7 +498,6 @@ class BaseInvestmentDO extends DataClass
       description: serializer.fromJson<String?>(json['description']),
       basketId: serializer.fromJson<int?>(json['basketId']),
       value: serializer.fromJson<double?>(json['value']),
-      qty: serializer.fromJson<double?>(json['qty']),
       valueUpdatedOn: serializer.fromJson<DateTime?>(json['valueUpdatedOn']),
       irr: serializer.fromJson<double?>(json['irr']),
       maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),
@@ -535,7 +516,6 @@ class BaseInvestmentDO extends DataClass
       'description': serializer.toJson<String?>(description),
       'basketId': serializer.toJson<int?>(basketId),
       'value': serializer.toJson<double?>(value),
-      'qty': serializer.toJson<double?>(qty),
       'valueUpdatedOn': serializer.toJson<DateTime?>(valueUpdatedOn),
       'irr': serializer.toJson<double?>(irr),
       'maturityDate': serializer.toJson<DateTime?>(maturityDate),
@@ -551,7 +531,6 @@ class BaseInvestmentDO extends DataClass
           Value<String?> description = const Value.absent(),
           Value<int?> basketId = const Value.absent(),
           Value<double?> value = const Value.absent(),
-          Value<double?> qty = const Value.absent(),
           Value<DateTime?> valueUpdatedOn = const Value.absent(),
           Value<double?> irr = const Value.absent(),
           Value<DateTime?> maturityDate = const Value.absent(),
@@ -563,7 +542,6 @@ class BaseInvestmentDO extends DataClass
         description: description.present ? description.value : this.description,
         basketId: basketId.present ? basketId.value : this.basketId,
         value: value.present ? value.value : this.value,
-        qty: qty.present ? qty.value : this.qty,
         valueUpdatedOn:
             valueUpdatedOn.present ? valueUpdatedOn.value : this.valueUpdatedOn,
         irr: irr.present ? irr.value : this.irr,
@@ -582,7 +560,6 @@ class BaseInvestmentDO extends DataClass
           ..write('description: $description, ')
           ..write('basketId: $basketId, ')
           ..write('value: $value, ')
-          ..write('qty: $qty, ')
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
           ..write('irr: $irr, ')
           ..write('maturityDate: $maturityDate, ')
@@ -593,7 +570,7 @@ class BaseInvestmentDO extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, name, description, basketId, value, qty,
+  int get hashCode => Object.hash(id, name, description, basketId, value,
       valueUpdatedOn, irr, maturityDate, valueUpdatedDate, riskLevel);
   @override
   bool operator ==(Object other) =>
@@ -604,7 +581,6 @@ class BaseInvestmentDO extends DataClass
           other.description == this.description &&
           other.basketId == this.basketId &&
           other.value == this.value &&
-          other.qty == this.qty &&
           other.valueUpdatedOn == this.valueUpdatedOn &&
           other.irr == this.irr &&
           other.maturityDate == this.maturityDate &&
@@ -618,7 +594,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
   final Value<String?> description;
   final Value<int?> basketId;
   final Value<double?> value;
-  final Value<double?> qty;
   final Value<DateTime?> valueUpdatedOn;
   final Value<double?> irr;
   final Value<DateTime?> maturityDate;
@@ -630,7 +605,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     this.description = const Value.absent(),
     this.basketId = const Value.absent(),
     this.value = const Value.absent(),
-    this.qty = const Value.absent(),
     this.valueUpdatedOn = const Value.absent(),
     this.irr = const Value.absent(),
     this.maturityDate = const Value.absent(),
@@ -643,7 +617,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     this.description = const Value.absent(),
     this.basketId = const Value.absent(),
     this.value = const Value.absent(),
-    this.qty = const Value.absent(),
     this.valueUpdatedOn = const Value.absent(),
     this.irr = const Value.absent(),
     this.maturityDate = const Value.absent(),
@@ -657,7 +630,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     Expression<String>? description,
     Expression<int>? basketId,
     Expression<double>? value,
-    Expression<double>? qty,
     Expression<DateTime>? valueUpdatedOn,
     Expression<double>? irr,
     Expression<DateTime>? maturityDate,
@@ -670,7 +642,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       if (description != null) 'DESCRIPTION': description,
       if (basketId != null) 'BASKET_ID': basketId,
       if (value != null) 'VALUE': value,
-      if (qty != null) 'QTY': qty,
       if (valueUpdatedOn != null) 'VALUE_UPDATED_ON': valueUpdatedOn,
       if (irr != null) 'IRR': irr,
       if (maturityDate != null) 'MATURITY_DATE': maturityDate,
@@ -685,7 +656,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       Value<String?>? description,
       Value<int?>? basketId,
       Value<double?>? value,
-      Value<double?>? qty,
       Value<DateTime?>? valueUpdatedOn,
       Value<double?>? irr,
       Value<DateTime?>? maturityDate,
@@ -697,7 +667,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       description: description ?? this.description,
       basketId: basketId ?? this.basketId,
       value: value ?? this.value,
-      qty: qty ?? this.qty,
       valueUpdatedOn: valueUpdatedOn ?? this.valueUpdatedOn,
       irr: irr ?? this.irr,
       maturityDate: maturityDate ?? this.maturityDate,
@@ -723,9 +692,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     }
     if (value.present) {
       map['VALUE'] = Variable<double>(value.value);
-    }
-    if (qty.present) {
-      map['QTY'] = Variable<double>(qty.value);
     }
     if (valueUpdatedOn.present) {
       map['VALUE_UPDATED_ON'] = Variable<DateTime>(valueUpdatedOn.value);
@@ -754,7 +720,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
           ..write('description: $description, ')
           ..write('basketId: $basketId, ')
           ..write('value: $value, ')
-          ..write('qty: $qty, ')
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
           ..write('irr: $irr, ')
           ..write('maturityDate: $maturityDate, ')
@@ -1236,6 +1201,13 @@ class $TransactionTableTable extends TransactionTable
       check: () => amount.isBiggerThanValue(0),
       type: DriftSqlType.double,
       requiredDuringInsert: true);
+  static const VerificationMeta _qtyMeta = const VerificationMeta('qty');
+  @override
+  late final GeneratedColumn<double> qty = GeneratedColumn<double>(
+      'QTY', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _createdOnMeta =
       const VerificationMeta('createdOn');
   @override
@@ -1244,7 +1216,7 @@ class $TransactionTableTable extends TransactionTable
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, description, investmentId, sipId, amount, createdOn];
+      [id, description, investmentId, sipId, amount, qty, createdOn];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1282,6 +1254,10 @@ class $TransactionTableTable extends TransactionTable
     } else if (isInserting) {
       context.missing(_amountMeta);
     }
+    if (data.containsKey('QTY')) {
+      context.handle(
+          _qtyMeta, qty.isAcceptableOrUnknown(data['QTY']!, _qtyMeta));
+    }
     if (data.containsKey('CREATED_ON')) {
       context.handle(_createdOnMeta,
           createdOn.isAcceptableOrUnknown(data['CREATED_ON']!, _createdOnMeta));
@@ -1307,6 +1283,8 @@ class $TransactionTableTable extends TransactionTable
           .read(DriftSqlType.int, data['${effectivePrefix}SIP_ID']),
       amount: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!,
+      qty: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}QTY'])!,
       createdOn: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}CREATED_ON'])!,
     );
@@ -1325,6 +1303,7 @@ class BaseTransactionDO extends DataClass
   final int investmentId;
   final int? sipId;
   final double amount;
+  final double qty;
   final DateTime createdOn;
   const BaseTransactionDO(
       {required this.id,
@@ -1332,6 +1311,7 @@ class BaseTransactionDO extends DataClass
       required this.investmentId,
       this.sipId,
       required this.amount,
+      required this.qty,
       required this.createdOn});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1345,6 +1325,7 @@ class BaseTransactionDO extends DataClass
       map['SIP_ID'] = Variable<int>(sipId);
     }
     map['AMOUNT'] = Variable<double>(amount);
+    map['QTY'] = Variable<double>(qty);
     map['CREATED_ON'] = Variable<DateTime>(createdOn);
     return map;
   }
@@ -1359,6 +1340,7 @@ class BaseTransactionDO extends DataClass
       sipId:
           sipId == null && nullToAbsent ? const Value.absent() : Value(sipId),
       amount: Value(amount),
+      qty: Value(qty),
       createdOn: Value(createdOn),
     );
   }
@@ -1372,6 +1354,7 @@ class BaseTransactionDO extends DataClass
       investmentId: serializer.fromJson<int>(json['investmentId']),
       sipId: serializer.fromJson<int?>(json['sipId']),
       amount: serializer.fromJson<double>(json['amount']),
+      qty: serializer.fromJson<double>(json['qty']),
       createdOn: serializer.fromJson<DateTime>(json['createdOn']),
     );
   }
@@ -1384,6 +1367,7 @@ class BaseTransactionDO extends DataClass
       'investmentId': serializer.toJson<int>(investmentId),
       'sipId': serializer.toJson<int?>(sipId),
       'amount': serializer.toJson<double>(amount),
+      'qty': serializer.toJson<double>(qty),
       'createdOn': serializer.toJson<DateTime>(createdOn),
     };
   }
@@ -1394,6 +1378,7 @@ class BaseTransactionDO extends DataClass
           int? investmentId,
           Value<int?> sipId = const Value.absent(),
           double? amount,
+          double? qty,
           DateTime? createdOn}) =>
       BaseTransactionDO(
         id: id ?? this.id,
@@ -1401,6 +1386,7 @@ class BaseTransactionDO extends DataClass
         investmentId: investmentId ?? this.investmentId,
         sipId: sipId.present ? sipId.value : this.sipId,
         amount: amount ?? this.amount,
+        qty: qty ?? this.qty,
         createdOn: createdOn ?? this.createdOn,
       );
   @override
@@ -1411,6 +1397,7 @@ class BaseTransactionDO extends DataClass
           ..write('investmentId: $investmentId, ')
           ..write('sipId: $sipId, ')
           ..write('amount: $amount, ')
+          ..write('qty: $qty, ')
           ..write('createdOn: $createdOn')
           ..write(')'))
         .toString();
@@ -1418,7 +1405,7 @@ class BaseTransactionDO extends DataClass
 
   @override
   int get hashCode =>
-      Object.hash(id, description, investmentId, sipId, amount, createdOn);
+      Object.hash(id, description, investmentId, sipId, amount, qty, createdOn);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1428,6 +1415,7 @@ class BaseTransactionDO extends DataClass
           other.investmentId == this.investmentId &&
           other.sipId == this.sipId &&
           other.amount == this.amount &&
+          other.qty == this.qty &&
           other.createdOn == this.createdOn);
 }
 
@@ -1437,6 +1425,7 @@ class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
   final Value<int> investmentId;
   final Value<int?> sipId;
   final Value<double> amount;
+  final Value<double> qty;
   final Value<DateTime> createdOn;
   const TransactionTableCompanion({
     this.id = const Value.absent(),
@@ -1444,6 +1433,7 @@ class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
     this.investmentId = const Value.absent(),
     this.sipId = const Value.absent(),
     this.amount = const Value.absent(),
+    this.qty = const Value.absent(),
     this.createdOn = const Value.absent(),
   });
   TransactionTableCompanion.insert({
@@ -1452,6 +1442,7 @@ class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
     required int investmentId,
     this.sipId = const Value.absent(),
     required double amount,
+    this.qty = const Value.absent(),
     required DateTime createdOn,
   })  : investmentId = Value(investmentId),
         amount = Value(amount),
@@ -1462,6 +1453,7 @@ class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
     Expression<int>? investmentId,
     Expression<int>? sipId,
     Expression<double>? amount,
+    Expression<double>? qty,
     Expression<DateTime>? createdOn,
   }) {
     return RawValuesInsertable({
@@ -1470,6 +1462,7 @@ class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
       if (investmentId != null) 'INVESTMENT_ID': investmentId,
       if (sipId != null) 'SIP_ID': sipId,
       if (amount != null) 'AMOUNT': amount,
+      if (qty != null) 'QTY': qty,
       if (createdOn != null) 'CREATED_ON': createdOn,
     });
   }
@@ -1480,6 +1473,7 @@ class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
       Value<int>? investmentId,
       Value<int?>? sipId,
       Value<double>? amount,
+      Value<double>? qty,
       Value<DateTime>? createdOn}) {
     return TransactionTableCompanion(
       id: id ?? this.id,
@@ -1487,6 +1481,7 @@ class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
       investmentId: investmentId ?? this.investmentId,
       sipId: sipId ?? this.sipId,
       amount: amount ?? this.amount,
+      qty: qty ?? this.qty,
       createdOn: createdOn ?? this.createdOn,
     );
   }
@@ -1509,6 +1504,9 @@ class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
     if (amount.present) {
       map['AMOUNT'] = Variable<double>(amount.value);
     }
+    if (qty.present) {
+      map['QTY'] = Variable<double>(qty.value);
+    }
     if (createdOn.present) {
       map['CREATED_ON'] = Variable<DateTime>(createdOn.value);
     }
@@ -1523,6 +1521,7 @@ class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
           ..write('investmentId: $investmentId, ')
           ..write('sipId: $sipId, ')
           ..write('amount: $amount, ')
+          ..write('qty: $qty, ')
           ..write('createdOn: $createdOn')
           ..write(')'))
         .toString();
@@ -2583,7 +2582,6 @@ class InvestmentDO extends DataClass {
   final RiskLevel riskLevel;
   final DateTime? maturityDate;
   final double? irr;
-  final double? qty;
   final double? value;
   final DateTime? valueUpdatedOn;
   final int? basketId;
@@ -2591,6 +2589,7 @@ class InvestmentDO extends DataClass {
   final int? totalTransactions;
   final int? totalSips;
   final int? taggedGoals;
+  final double? qty;
   const InvestmentDO(
       {required this.id,
       required this.name,
@@ -2598,14 +2597,14 @@ class InvestmentDO extends DataClass {
       required this.riskLevel,
       this.maturityDate,
       this.irr,
-      this.qty,
       this.value,
       this.valueUpdatedOn,
       this.basketId,
       this.basketName,
       this.totalTransactions,
       this.totalSips,
-      this.taggedGoals});
+      this.taggedGoals,
+      this.qty});
   factory InvestmentDO.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -2617,7 +2616,6 @@ class InvestmentDO extends DataClass {
           .fromJson(serializer.fromJson<String>(json['riskLevel'])),
       maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),
       irr: serializer.fromJson<double?>(json['irr']),
-      qty: serializer.fromJson<double?>(json['qty']),
       value: serializer.fromJson<double?>(json['value']),
       valueUpdatedOn: serializer.fromJson<DateTime?>(json['valueUpdatedOn']),
       basketId: serializer.fromJson<int?>(json['basketId']),
@@ -2625,6 +2623,7 @@ class InvestmentDO extends DataClass {
       totalTransactions: serializer.fromJson<int?>(json['totalTransactions']),
       totalSips: serializer.fromJson<int?>(json['totalSips']),
       taggedGoals: serializer.fromJson<int?>(json['taggedGoals']),
+      qty: serializer.fromJson<double?>(json['qty']),
     );
   }
   @override
@@ -2638,7 +2637,6 @@ class InvestmentDO extends DataClass {
           $InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),
       'maturityDate': serializer.toJson<DateTime?>(maturityDate),
       'irr': serializer.toJson<double?>(irr),
-      'qty': serializer.toJson<double?>(qty),
       'value': serializer.toJson<double?>(value),
       'valueUpdatedOn': serializer.toJson<DateTime?>(valueUpdatedOn),
       'basketId': serializer.toJson<int?>(basketId),
@@ -2646,6 +2644,7 @@ class InvestmentDO extends DataClass {
       'totalTransactions': serializer.toJson<int?>(totalTransactions),
       'totalSips': serializer.toJson<int?>(totalSips),
       'taggedGoals': serializer.toJson<int?>(taggedGoals),
+      'qty': serializer.toJson<double?>(qty),
     };
   }
 
@@ -2656,14 +2655,14 @@ class InvestmentDO extends DataClass {
           RiskLevel? riskLevel,
           Value<DateTime?> maturityDate = const Value.absent(),
           Value<double?> irr = const Value.absent(),
-          Value<double?> qty = const Value.absent(),
           Value<double?> value = const Value.absent(),
           Value<DateTime?> valueUpdatedOn = const Value.absent(),
           Value<int?> basketId = const Value.absent(),
           Value<String?> basketName = const Value.absent(),
           Value<int?> totalTransactions = const Value.absent(),
           Value<int?> totalSips = const Value.absent(),
-          Value<int?> taggedGoals = const Value.absent()}) =>
+          Value<int?> taggedGoals = const Value.absent(),
+          Value<double?> qty = const Value.absent()}) =>
       InvestmentDO(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -2672,7 +2671,6 @@ class InvestmentDO extends DataClass {
         maturityDate:
             maturityDate.present ? maturityDate.value : this.maturityDate,
         irr: irr.present ? irr.value : this.irr,
-        qty: qty.present ? qty.value : this.qty,
         value: value.present ? value.value : this.value,
         valueUpdatedOn:
             valueUpdatedOn.present ? valueUpdatedOn.value : this.valueUpdatedOn,
@@ -2683,6 +2681,7 @@ class InvestmentDO extends DataClass {
             : this.totalTransactions,
         totalSips: totalSips.present ? totalSips.value : this.totalSips,
         taggedGoals: taggedGoals.present ? taggedGoals.value : this.taggedGoals,
+        qty: qty.present ? qty.value : this.qty,
       );
   @override
   String toString() {
@@ -2693,14 +2692,14 @@ class InvestmentDO extends DataClass {
           ..write('riskLevel: $riskLevel, ')
           ..write('maturityDate: $maturityDate, ')
           ..write('irr: $irr, ')
-          ..write('qty: $qty, ')
           ..write('value: $value, ')
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
           ..write('basketId: $basketId, ')
           ..write('basketName: $basketName, ')
           ..write('totalTransactions: $totalTransactions, ')
           ..write('totalSips: $totalSips, ')
-          ..write('taggedGoals: $taggedGoals')
+          ..write('taggedGoals: $taggedGoals, ')
+          ..write('qty: $qty')
           ..write(')'))
         .toString();
   }
@@ -2713,14 +2712,14 @@ class InvestmentDO extends DataClass {
       riskLevel,
       maturityDate,
       irr,
-      qty,
       value,
       valueUpdatedOn,
       basketId,
       basketName,
       totalTransactions,
       totalSips,
-      taggedGoals);
+      taggedGoals,
+      qty);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2731,14 +2730,14 @@ class InvestmentDO extends DataClass {
           other.riskLevel == this.riskLevel &&
           other.maturityDate == this.maturityDate &&
           other.irr == this.irr &&
-          other.qty == this.qty &&
           other.value == this.value &&
           other.valueUpdatedOn == this.valueUpdatedOn &&
           other.basketId == this.basketId &&
           other.basketName == this.basketName &&
           other.totalTransactions == this.totalTransactions &&
           other.totalSips == this.totalSips &&
-          other.taggedGoals == this.taggedGoals);
+          other.taggedGoals == this.taggedGoals &&
+          other.qty == this.qty);
 }
 
 class $InvestmentEnrichedViewView
@@ -2767,14 +2766,14 @@ class $InvestmentEnrichedViewView
         riskLevel,
         maturityDate,
         irr,
-        qty,
         value,
         valueUpdatedOn,
         basketId,
         basketName,
         totalTransactions,
         totalSips,
-        taggedGoals
+        taggedGoals,
+        qty
       ];
   @override
   String get aliasedName => _alias ?? entityName;
@@ -2801,8 +2800,6 @@ class $InvestmentEnrichedViewView
           .read(DriftSqlType.dateTime, data['${effectivePrefix}MATURITY_DATE']),
       irr: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}IRR']),
-      qty: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}QTY']),
       value: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}VALUE']),
       valueUpdatedOn: attachedDatabase.typeMapping.read(
@@ -2817,6 +2814,8 @@ class $InvestmentEnrichedViewView
           .read(DriftSqlType.int, data['${effectivePrefix}total_sips']),
       taggedGoals: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}tagged_goals']),
+      qty: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}qty']),
     );
   }
 
@@ -2843,10 +2842,6 @@ class $InvestmentEnrichedViewView
   late final GeneratedColumn<double> irr = GeneratedColumn<double>(
       'IRR', aliasedName, true,
       generatedAs: GeneratedAs(investment.irr, false),
-      type: DriftSqlType.double);
-  late final GeneratedColumn<double> qty = GeneratedColumn<double>(
-      'QTY', aliasedName, true,
-      generatedAs: GeneratedAs(investment.qty, false),
       type: DriftSqlType.double);
   late final GeneratedColumn<double> value = GeneratedColumn<double>(
       'VALUE', aliasedName, true,
@@ -2886,6 +2881,13 @@ class $InvestmentEnrichedViewView
               filter: goalInvestment.investmentId.equalsExp(investment.id)),
           false),
       type: DriftSqlType.int);
+  late final GeneratedColumn<double> qty = GeneratedColumn<double>(
+      'qty', aliasedName, true,
+      generatedAs: GeneratedAs(
+          transaction.qty
+              .sum(filter: transaction.investmentId.equalsExp(investment.id)),
+          false),
+      type: DriftSqlType.double);
   @override
   $InvestmentEnrichedViewView createAlias(String alias) {
     return $InvestmentEnrichedViewView(attachedDatabase, alias);
@@ -3108,6 +3110,7 @@ class TransactionDO extends DataClass {
   final int investmentId;
   final int? sipId;
   final double amount;
+  final double qty;
   final DateTime createdOn;
   final String? investmentName;
   final String? sipDescription;
@@ -3117,6 +3120,7 @@ class TransactionDO extends DataClass {
       required this.investmentId,
       this.sipId,
       required this.amount,
+      required this.qty,
       required this.createdOn,
       this.investmentName,
       this.sipDescription});
@@ -3129,6 +3133,7 @@ class TransactionDO extends DataClass {
       investmentId: serializer.fromJson<int>(json['investmentId']),
       sipId: serializer.fromJson<int?>(json['sipId']),
       amount: serializer.fromJson<double>(json['amount']),
+      qty: serializer.fromJson<double>(json['qty']),
       createdOn: serializer.fromJson<DateTime>(json['createdOn']),
       investmentName: serializer.fromJson<String?>(json['investmentName']),
       sipDescription: serializer.fromJson<String?>(json['sipDescription']),
@@ -3143,6 +3148,7 @@ class TransactionDO extends DataClass {
       'investmentId': serializer.toJson<int>(investmentId),
       'sipId': serializer.toJson<int?>(sipId),
       'amount': serializer.toJson<double>(amount),
+      'qty': serializer.toJson<double>(qty),
       'createdOn': serializer.toJson<DateTime>(createdOn),
       'investmentName': serializer.toJson<String?>(investmentName),
       'sipDescription': serializer.toJson<String?>(sipDescription),
@@ -3155,6 +3161,7 @@ class TransactionDO extends DataClass {
           int? investmentId,
           Value<int?> sipId = const Value.absent(),
           double? amount,
+          double? qty,
           DateTime? createdOn,
           Value<String?> investmentName = const Value.absent(),
           Value<String?> sipDescription = const Value.absent()}) =>
@@ -3164,6 +3171,7 @@ class TransactionDO extends DataClass {
         investmentId: investmentId ?? this.investmentId,
         sipId: sipId.present ? sipId.value : this.sipId,
         amount: amount ?? this.amount,
+        qty: qty ?? this.qty,
         createdOn: createdOn ?? this.createdOn,
         investmentName:
             investmentName.present ? investmentName.value : this.investmentName,
@@ -3178,6 +3186,7 @@ class TransactionDO extends DataClass {
           ..write('investmentId: $investmentId, ')
           ..write('sipId: $sipId, ')
           ..write('amount: $amount, ')
+          ..write('qty: $qty, ')
           ..write('createdOn: $createdOn, ')
           ..write('investmentName: $investmentName, ')
           ..write('sipDescription: $sipDescription')
@@ -3187,7 +3196,7 @@ class TransactionDO extends DataClass {
 
   @override
   int get hashCode => Object.hash(id, description, investmentId, sipId, amount,
-      createdOn, investmentName, sipDescription);
+      qty, createdOn, investmentName, sipDescription);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3197,6 +3206,7 @@ class TransactionDO extends DataClass {
           other.investmentId == this.investmentId &&
           other.sipId == this.sipId &&
           other.amount == this.amount &&
+          other.qty == this.qty &&
           other.createdOn == this.createdOn &&
           other.investmentName == this.investmentName &&
           other.sipDescription == this.sipDescription);
@@ -3221,6 +3231,7 @@ class $TransactionEnrichedViewView
         investmentId,
         sipId,
         amount,
+        qty,
         createdOn,
         investmentName,
         sipDescription
@@ -3247,6 +3258,8 @@ class $TransactionEnrichedViewView
           .read(DriftSqlType.int, data['${effectivePrefix}SIP_ID']),
       amount: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!,
+      qty: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}QTY'])!,
       createdOn: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}CREATED_ON'])!,
       investmentName: attachedDatabase.typeMapping
@@ -3274,6 +3287,10 @@ class $TransactionEnrichedViewView
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
       'AMOUNT', aliasedName, false,
       generatedAs: GeneratedAs(transaction.amount, false),
+      type: DriftSqlType.double);
+  late final GeneratedColumn<double> qty = GeneratedColumn<double>(
+      'QTY', aliasedName, false,
+      generatedAs: GeneratedAs(transaction.qty, false),
       type: DriftSqlType.double);
   late final GeneratedColumn<DateTime> createdOn = GeneratedColumn<DateTime>(
       'CREATED_ON', aliasedName, false,

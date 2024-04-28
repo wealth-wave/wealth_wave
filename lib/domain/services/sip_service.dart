@@ -79,6 +79,7 @@ class SipService {
           investmentId: sip.investmentId,
           description: sip.description,
           sipId: sip.id,
+          qty: 0,
           amount: payment.amount,
           createdOn: payment.createdOn)));
 

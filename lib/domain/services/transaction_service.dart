@@ -17,6 +17,7 @@ class TransactionService {
           {required final int investmentId,
           required final String? description,
           required final double amount,
+          required final double qty,
           final int? sipId,
           required final DateTime createdOn}) =>
       _transactionApi
@@ -25,6 +26,7 @@ class TransactionService {
               description: description,
               amount: amount,
               sipId: sipId,
+              qty: qty,
               createdOn: createdOn)
           .then((id) => _transactionApi.getById(id: id))
           .then((transactionDO) =>
@@ -52,6 +54,7 @@ class TransactionService {
           final int? sipId,
           required final String? description,
           required final double amount,
+          required final double qty,
           required final DateTime createdOn}) =>
       _transactionApi
           .update(
@@ -60,6 +63,7 @@ class TransactionService {
               description: description,
               amount: amount,
               sipId: sipId,
+              qty: qty,
               createdOn: createdOn)
           .then((count) => _transactionApi.getById(id: id))
           .then((transactionDO) =>

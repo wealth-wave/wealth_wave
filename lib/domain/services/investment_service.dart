@@ -57,13 +57,13 @@ class InvestmentService {
             basketId: basketId,
             riskLevel: riskLevel,
             value: value,
-            qty: qty,
             valueUpdatedOn: DateTime.now(),
             maturityDate: maturityDate,
             irr: irr)
         .then((investmentId) => _transactionApi.create(
             investmentId: investmentId,
             amount: investedAmount,
+            qty: qty ?? 0,
             createdOn: investedOn,
             description: "Initial Investment"));
   }

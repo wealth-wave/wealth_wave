@@ -99,7 +99,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
   }
 
   void qtyChanged(double? qty) {
-    updateViewState((viewState) => viewState.qty = qty);
+    updateViewState((viewState) => viewState.qty = qty ?? 1);
   }
 
   void baskedIdChanged(int baskedIt) {
@@ -128,7 +128,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
       viewState.name = investmentToUpdate.name;
       viewState.description = investmentToUpdate.description?? '';
       viewState.irr = investmentToUpdate.irr;
-      viewState.qty = investmentToUpdate.qty;
+      viewState.qty = investmentToUpdate.qty ?? 1;
       viewState.investedAmount = investmentToUpdate.getTotalInvestedAmount();
       viewState.investedOn = investmentToUpdate.getLastInvestedOn();
       viewState.basketId = investmentToUpdate.basketId;
@@ -158,7 +158,7 @@ class CreateInvestmentViewState {
   double? investedAmount = 0;
   DateTime? investedOn = DateTime.now();
   double? value;
-  double? qty;
+  double qty = 1;
   DateTime? maturityDate;
   SingleEvent<void>? onInvestmentCreated;
   SingleEvent<void>? onInvestmentFetched;

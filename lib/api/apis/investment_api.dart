@@ -13,7 +13,6 @@ class InvestmentApi {
     required final int? basketId,
     required final RiskLevel riskLevel,
     required final double? value,
-    required final double? qty,
     required final DateTime? valueUpdatedOn,
     required final double? irr,
     required final DateTime? maturityDate,
@@ -23,7 +22,6 @@ class InvestmentApi {
         description: Value(description),
         basketId: Value(basketId),
         value: Value(value),
-        qty: Value(qty),
         irr: Value(irr),
         maturityDate: Value(maturityDate),
         valueUpdatedOn: Value(valueUpdatedOn),
@@ -77,7 +75,6 @@ class InvestmentApi {
             basketId: Value(basketId),
             riskLevel: Value(riskLevel),
             value: Value(value),
-            qty: Value(qty),
             valueUpdatedOn: Value(valueUpdatedOn),
             irr: Value(irr),
             maturityDate: Value(maturityDate)));

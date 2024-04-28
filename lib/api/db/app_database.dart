@@ -31,8 +31,6 @@ class InvestmentTable extends Table {
 
   RealColumn get value => real().nullable().named('VALUE')();
 
-  RealColumn get qty => real().nullable().named('QTY')();
-
   DateTimeColumn get valueUpdatedOn =>
       dateTime().nullable().named('VALUE_UPDATED_ON')();
 
@@ -62,6 +60,8 @@ class TransactionTable extends Table {
 
   RealColumn get amount =>
       real().named('AMOUNT').check(amount.isBiggerThanValue(0))();
+
+  RealColumn get qty => real().named('QTY').withDefault(const Constant(0))();
 
   DateTimeColumn get createdOn => dateTime().named('CREATED_ON')();
 }
@@ -167,6 +167,9 @@ abstract class InvestmentEnrichedView extends View {
       distinct: true,
       filter: transaction.investmentId.equalsExp(investment.id));
 
+  Expression<double> get qty => transaction.qty
+      .sum(filter: transaction.investmentId.equalsExp(investment.id));
+
   Expression<int> get totalSips => sip.id
       .count(distinct: true, filter: sip.investmentId.equalsExp(investment.id));
 
@@ -182,14 +185,14 @@ abstract class InvestmentEnrichedView extends View {
         investment.riskLevel,
         investment.maturityDate,
         investment.irr,
-        investment.qty,
         investment.value,
         investment.valueUpdatedOn,
         basketId,
         basketName,
         totalTransactions,
         totalSips,
-        taggedGoals
+        taggedGoals,
+        qty
       ]).from(investment).join([
         leftOuterJoin(basket, basket.id.equalsExp(investment.basketId)),
         leftOuterJoin(
@@ -222,6 +225,7 @@ abstract class TransactionEnrichedView extends View {
         transaction.investmentId,
         transaction.sipId,
         transaction.amount,
+        transaction.qty,
         transaction.createdOn,
         investmentName,
         sipDescription,

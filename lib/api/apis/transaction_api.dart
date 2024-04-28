@@ -10,6 +10,7 @@ class TransactionApi {
       {required final int investmentId,
       required final String? description,
       required final double amount,
+      required final double qty,
       required final DateTime createdOn,
       final int? sipId}) async {
     return _db.into(_db.transactionTable).insert(
@@ -17,6 +18,7 @@ class TransactionApi {
             investmentId: investmentId,
             description: Value(description),
             amount: amount,
+            qty: Value(qty),
             sipId: Value(sipId),
             createdOn: createdOn));
   }
@@ -55,6 +57,7 @@ class TransactionApi {
       required final int investmentId,
       required final String? description,
       required final double amount,
+      required final double qty,
       required final DateTime createdOn,
       final int? sipId}) async {
     return (_db.update(_db.transactionTable)..where((t) => t.id.equals(id)))
@@ -62,6 +65,7 @@ class TransactionApi {
       investmentId: Value(investmentId),
       description: Value(description),
       amount: Value(amount),
+      qty: Value(qty),
       createdOn: Value(createdOn),
       sipId: Value(sipId),
     ));
