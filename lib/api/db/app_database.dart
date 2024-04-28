@@ -384,6 +384,7 @@ class AppDatabase extends _$AppDatabase {
     final goalInvestmentBackup =
         await executor.runSelect('SELECT * FROM goal_investment_table', []);
     final sipBackup = await executor.runSelect('SELECT * FROM sip_table', []);
+    final scriptBackup = await executor.runSelect('SELECT * FROM script_table', []);
 
     return {
       'basket_table': basketBackup,
@@ -392,6 +393,7 @@ class AppDatabase extends _$AppDatabase {
       'transaction_table': transactionBackup,
       'goal_table': goalBackup,
       'goal_investment_table': goalInvestmentBackup,
+      'script_table': scriptBackup,
     };
   }
 
