@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:toastification/toastification.dart';
@@ -6,7 +5,6 @@ import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/create_investment_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
-import 'package:wealth_wave/ui/custom/currency_text_input_formatter.dart';
 import 'package:wealth_wave/ui/custom/date_text_input_formatter.dart';
 import 'package:wealth_wave/ui/custom/decimal_text_input_formatter.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
@@ -56,7 +54,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
     _investedOnController.text =
         investedOn != null ? formatDate(investedOn) : '';
     _valueController.text = value != null ? formatToCurrency(value) : '';
-    _qtyController.text = viewState.qty != null ? viewState.qty.toString() : '';
+    _qtyController.text = viewState.qty.toString();
     _maturityDateController.text = viewState.maturityDate != null
         ? formatDate(viewState.maturityDate!)
         : '';
@@ -124,7 +122,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
         _descriptionController.text = snapshot.description;
         _irrController.text = irr != null ? formatDecimal(irr) : '';
         _valueController.text = value != null ? formatToCurrency(value) : '';
-        _qtyController.text = snapshot.qty != null ? snapshot.qty.toString() : '';
+        _qtyController.text = snapshot.qty.toString();
         _investedAmountController.text =
             investedAmount != null ? formatToCurrency(investedAmount) : '';
         _maturityDateController.text = snapshot.maturityDate != null
@@ -182,7 +180,6 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                       textInputAction: TextInputAction.next,
                       controller: _valueController,
                       keyboardType: TextInputType.number,
-                      inputFormatters: [CurrencyTextInputFormatter()],
                       decoration: const InputDecoration(
                           labelText: 'Current Value',
                           border: OutlineInputBorder()),
@@ -311,7 +308,6 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                       textInputAction: TextInputAction.next,
                       controller: _investedAmountController,
                       keyboardType: TextInputType.number,
-                      inputFormatters: [CurrencyTextInputFormatter()],
                       decoration: const InputDecoration(
                           labelText: 'Invested Amount',
                           border: OutlineInputBorder()),
@@ -376,7 +372,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
               ),
               const SizedBox(width: 10), // Add some spacing
               Text(
-                formatToCurrency(snapshot.qty ?? 1),
+                formatToCurrency(snapshot.qty),
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ],

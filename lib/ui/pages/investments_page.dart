@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/investments_presenter.dart';
@@ -171,6 +172,9 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                             .then((value) => presenter.fetchInvestments());
                       },
                       child: Text('${investmentVO.taggedGoalCount} goals'),
+                    ),
+                    Text(
+                      ('Qty ${NumberFormat.compact().format(investmentVO.qty)}'),
                     ),
                   ],
                 ),

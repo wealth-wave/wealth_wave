@@ -123,7 +123,6 @@ class _CreateTransactionPage extends PageState<CreateTransactionViewState,
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _valueController,
-              inputFormatters: [CurrencyTextInputFormatter()],
               decoration: const InputDecoration(
                   labelText: 'Amount', border: OutlineInputBorder()),
             ),
