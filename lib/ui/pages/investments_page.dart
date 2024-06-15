@@ -5,6 +5,7 @@ import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/investments_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/ui/nav_path.dart';
 import 'package:wealth_wave/ui/widgets/create_investment_dialog.dart';
 import 'package:wealth_wave/ui/widgets/create_script_dialog.dart';
 import 'package:wealth_wave/ui/widgets/create_sip_dialog.dart';
@@ -91,19 +92,19 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
               child: ListView.builder(
             itemCount: investmentVOs.length,
             itemBuilder: (context, index) {
-          InvestmentVO investmentVO = investmentVOs[index];
-          return _investmentWidget(
-              context: context, investmentVO: investmentVO);
-        },
+              InvestmentVO investmentVO = investmentVOs[index];
+              return _investmentWidget(
+                  context: context, investmentVO: investmentVO);
+            },
           ))),
       floatingActionButton: _showFab
           ? FloatingActionButton(
               onPressed: () {
                 showCreateInvestmentDialog(context: context)
-              .then((value) => presenter.fetchInvestments());
-        },
-        tooltip: 'Add',
-        child: const Icon(Icons.add),
+                    .then((value) => presenter.fetchInvestments());
+              },
+              tooltip: 'Add',
+              child: const Icon(Icons.add),
             )
           : null,
     );
@@ -118,80 +119,94 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
       {required final BuildContext context,
       required final InvestmentVO investmentVO}) {
     return Card(
-      margin: const EdgeInsets.all(AppDimen.defaultPadding),
-      child: Padding(
-        padding: const EdgeInsets.all(AppDimen.defaultPadding),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _getTitleWidget(investmentVO, context),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    investmentVO.transactions.isEmpty
-                        ? _getAddTransactionButton(context, investmentVO)
-                        : TextButton(
-                            onPressed: () {
-                              showTransactionsDialog(
-                                      context: context,
-                                      investmentId: investmentVO.id)
-                                  .then(
-                                      (value) => presenter.fetchInvestments());
-                            },
-                            child: Text(
-                                '${investmentVO.transactionCount} transactions'),
-                          ),
-                    investmentVO.sips.isEmpty
-                        ? TextButton(
-                            onPressed: () {
-                              showCreateSipDialog(
-                                      context: context,
-                                      investmentId: investmentVO.id)
-                                  .then(
-                                      (value) => presenter.fetchInvestments());
-                            },
-                            child: const Text('Add SIP'),
-                          )
-                        : TextButton(
-                            onPressed: () {
-                              showSipsDialog(
-                                      context: context,
-                                      investmentId: investmentVO.id)
-                                  .then(
-                                      (value) => presenter.fetchInvestments());
-                            },
-                            child: Text('${investmentVO.sipCount} sips'),
-                          ),
-                    TextButton(
-                      onPressed: () {
-                        showTaggedGoalDialog(
-                                context: context, investmentId: investmentVO.id)
-                            .then((value) => presenter.fetchInvestments());
-                      },
-                      child: Text('${investmentVO.taggedGoalCount} goals'),
-                    ),
-                    Text(
-                      ('Qty ${NumberFormat.compact().format(investmentVO.qty)}'),
-                    ),
-                  ],
-                ),
-              ]),
-          OverflowBar(
-            children: [
-              _getScriptWidget(investmentVO),
-              const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)),
-              _getInvestedWidget(investmentVO, context),
-              const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)),
-              _getValueWidget(investmentVO, context),
-              const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)),
-            ],
-          )
-        ]),
-      ),
-    );
+        margin: const EdgeInsets.all(AppDimen.defaultPadding),
+        child: InkWell(
+          onTap: () => {
+            Navigator.of(context)
+                .pushNamed(NavPath.investment(id: investmentVO.id))
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(AppDimen.defaultPadding),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _getTitleWidget(investmentVO, context),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            investmentVO.transactions.isEmpty
+                                ? _getAddTransactionButton(
+                                    context, investmentVO)
+                                : TextButton(
+                                    onPressed: () {
+                                      showTransactionsDialog(
+                                              context: context,
+                                              investmentId: investmentVO.id)
+                                          .then((value) =>
+                                              presenter.fetchInvestments());
+                                    },
+                                    child: Text(
+                                        '${investmentVO.transactionCount} transactions'),
+                                  ),
+                            investmentVO.sips.isEmpty
+                                ? TextButton(
+                                    onPressed: () {
+                                      showCreateSipDialog(
+                                              context: context,
+                                              investmentId: investmentVO.id)
+                                          .then((value) =>
+                                              presenter.fetchInvestments());
+                                    },
+                                    child: const Text('Add SIP'),
+                                  )
+                                : TextButton(
+                                    onPressed: () {
+                                      showSipsDialog(
+                                              context: context,
+                                              investmentId: investmentVO.id)
+                                          .then((value) =>
+                                              presenter.fetchInvestments());
+                                    },
+                                    child:
+                                        Text('${investmentVO.sipCount} sips'),
+                                  ),
+                            TextButton(
+                              onPressed: () {
+                                showTaggedGoalDialog(
+                                        context: context,
+                                        investmentId: investmentVO.id)
+                                    .then((value) =>
+                                        presenter.fetchInvestments());
+                              },
+                              child:
+                                  Text('${investmentVO.taggedGoalCount} goals'),
+                            ),
+                            Text(
+                              ('Qty ${NumberFormat.compact().format(investmentVO.qty)}'),
+                            ),
+                          ],
+                        ),
+                      ]),
+                  OverflowBar(
+                    children: [
+                      _getScriptWidget(investmentVO),
+                      const Padding(
+                          padding: EdgeInsets.all(AppDimen.defaultPadding)),
+                      _getInvestedWidget(investmentVO, context),
+                      const Padding(
+                          padding: EdgeInsets.all(AppDimen.defaultPadding)),
+                      _getValueWidget(investmentVO, context),
+                      const Padding(
+                          padding: EdgeInsets.all(AppDimen.defaultPadding)),
+                    ],
+                  )
+                ]),
+          ),
+        ));
   }
 
   Column _getInvestedWidget(InvestmentVO investmentVO, BuildContext context) {
@@ -281,7 +296,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
           ),
           const PopupMenuItem(
             value: 2,
-            child: Text('Script'),
+            child: Text('Edit Script'),
           ),
           const PopupMenuItem(
             value: 3,

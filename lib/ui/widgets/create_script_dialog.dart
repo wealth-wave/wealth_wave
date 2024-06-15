@@ -54,6 +54,11 @@ class _CreateScriptPage extends PageState<CreateScriptViewState,
         title: Text('Script', style: Theme.of(context).textTheme.titleMedium),
         actions: [
           ElevatedButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+          ElevatedButton(
               child: const Text("Delete"),
               onPressed: () {
                 presenter.deleteScript();
