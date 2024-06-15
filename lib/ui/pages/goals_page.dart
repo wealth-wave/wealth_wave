@@ -4,6 +4,7 @@ import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/goals_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
+import 'package:wealth_wave/ui/nav_path.dart';
 import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';
 import 'package:wealth_wave/ui/widgets/create_tag_investment_dialog.dart';
 import 'package:wealth_wave/ui/widgets/view_tagged_investment_dialog.dart';
@@ -55,57 +56,62 @@ class _GoalsPage extends PageState<GoalsViewState, GoalsPage, GoalsPresenter> {
       {required final BuildContext context, required final GoalVO goalVO}) {
     return Card(
         margin: const EdgeInsets.all(AppDimen.defaultPadding),
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimen.defaultPadding),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: InkWell(
+            onTap: () =>
+                {Navigator.of(context).pushNamed(NavPath.goal(id: goalVO.id))},
+            child: Padding(
+              padding: const EdgeInsets.all(AppDimen.defaultPadding),
+              child: Column(
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _getTitleWidget(goalVO, context),
-                      goalVO.taggedInvestmentCount == 0
-                          ? FilledButton(
-                              onPressed: () {
-                                showTagInvestmentDialog(
-                                        context: context, goalId: goalVO.id)
-                                    .then((value) => presenter.fetchGoals());
-                              },
-                              child: const Text('Tag Investment'),
-                            )
-                          : TextButton(
-                              onPressed: () {
-                                showTaggedInvestmentDialog(
-                                        context: context, goalId: goalVO.id)
-                                    .then((value) => presenter.fetchGoals());
-                              },
-                              child: Text(
-                                  '${goalVO.taggedInvestmentCount} investments'),
-                            ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          _getTitleWidget(goalVO, context),
+                          goalVO.taggedInvestmentCount == 0
+                              ? FilledButton(
+                                  onPressed: () {
+                                    showTagInvestmentDialog(
+                                            context: context, goalId: goalVO.id)
+                                        .then(
+                                            (value) => presenter.fetchGoals());
+                                  },
+                                  child: const Text('Tag Investment'),
+                                )
+                              : TextButton(
+                                  onPressed: () {
+                                    showTaggedInvestmentDialog(
+                                            context: context, goalId: goalVO.id)
+                                        .then(
+                                            (value) => presenter.fetchGoals());
+                                  },
+                                  child: Text(
+                                      '${goalVO.taggedInvestmentCount} investments'),
+                                ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(formatToCurrency(goalVO.maturityAmount),
+                              style: Theme.of(context).textTheme.bodyLarge),
+                          Text(
+                              'At ${formatToPercentage(goalVO.inflation)} inflation',
+                              style: Theme.of(context).textTheme.labelMedium),
+                        ],
+                      ),
                     ],
                   ),
-                  Column(
-                    children: [
-                      Text(formatToCurrency(goalVO.maturityAmount),
-                          style: Theme.of(context).textTheme.bodyLarge),
-                      Text(
-                          'At ${formatToPercentage(goalVO.inflation)} inflation',
-                          style: Theme.of(context).textTheme.labelMedium),
-                    ],
+                  PrimerProgressBar(
+                    segments: _getProgressSegments(goalVO, context),
                   ),
+                  const Padding(padding: EdgeInsets.all(AppDimen.minPadding)),
+                  _getSuggestions(context, goalVO)
                 ],
               ),
-              PrimerProgressBar(
-                segments: _getProgressSegments(goalVO, context),
-              ),
-              const Padding(padding: EdgeInsets.all(AppDimen.minPadding)),
-              _getSuggestions(context, goalVO)
-            ],
-          ),
-        ));
+            )));
   }
 
   Column _getSuggestions(BuildContext context, GoalVO goalVO) {
