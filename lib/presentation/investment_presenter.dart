@@ -36,6 +36,7 @@ class InvestmentPresenter extends Presenter<InvestmentViewState> {
       dateInvestmentMap.update(entry.key, (value) => value + entry.value,
           ifAbsent: () => entry.value);
     });
+    dateInvestmentMap.update(DateTime.now(), (value) => value,ifAbsent: () => 0);
     List<DateTime> investmentDates = dateInvestmentMap.keys.toList();
     investmentDates.sort((a, b) => a.compareTo(b));
 
@@ -63,6 +64,7 @@ class InvestmentPresenter extends Presenter<InvestmentViewState> {
       dateInvestmentMap.update(entry.key, (value) => value + entry.value,
           ifAbsent: () => entry.value);
     });
+    dateInvestmentMap.update(DateTime.now(), (value) => value,ifAbsent: () => 0);
     totalValue += investment.getValueOn(date: DateTime.now());
     totalInvested += investment.getTotalInvestedAmount(till: DateTime.now());
 

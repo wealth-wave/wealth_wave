@@ -78,6 +78,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
             ifAbsent: () => entry.value);
       });
     }
+    dateInvestmentMap.update(DateTime.now(), (value) => value,ifAbsent: () => 0);
     List<DateTime> investmentDates = dateInvestmentMap.keys.toList();
     investmentDates.sort((a, b) => a.compareTo(b));
 
@@ -109,6 +110,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
       totalValue += investment.getValueOn(date: DateTime.now());
       totalInvested += investment.getTotalInvestedAmount(till: DateTime.now());
     }
+    dateInvestmentMap.update(DateTime.now(), (value) => value, ifAbsent: () => 0);
 
     List<DateTime> investmentDates = dateInvestmentMap.keys.toList();
     investmentDates.sort((a, b) => a.compareTo(b));
