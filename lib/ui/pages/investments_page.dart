@@ -188,6 +188,10 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                             Text(
                               ('Qty ${NumberFormat.compact().format(investmentVO.qty)}'),
                             ),
+                            const Padding(padding: EdgeInsets.all(AppDimen.minPadding)),
+                            Text(
+                              ('Price ${NumberFormat.compact().format(investmentVO.valuePerQty)}'),
+                            ),
                           ],
                         ),
                       ]),

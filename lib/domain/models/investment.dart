@@ -90,6 +90,10 @@ class Investment {
     }
   }
 
+  double getValuePerUnit() {
+    return getValue() / qty;
+  }
+
   double getValueOn(
       {required final DateTime date, bool considerFuturePayments = false}) {
     final maturityDate = this.maturityDate;

@@ -116,6 +116,7 @@ class InvestmentVO {
   final double investedValue;
   final double currentValue;
   final double qty;
+  final double valuePerQty;
   final DateTime? maturityDate;
   final int? basketId;
   final String? basketName;
@@ -138,6 +139,7 @@ class InvestmentVO {
       required this.investedValue,
       required this.currentValue,
       required this.qty,
+      required this.valuePerQty,
       required this.maturityDate,
       required this.transactions,
       required this.sips,
@@ -154,6 +156,7 @@ class InvestmentVO {
         investedValue: investment.getTotalInvestedAmount(),
         currentValue: investment.getValue(),
         qty: investment.qty,
+        valuePerQty: investment.getValuePerUnit(),
         basketId: investment.basketId,
         basketName: investment.basketName,
         transactions: investment.transactions,
