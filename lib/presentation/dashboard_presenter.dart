@@ -1,3 +1,4 @@
+import 'package:pair/pair.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
@@ -47,7 +48,6 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
           payments: payments,
           value: totalValueOfInvestment,
           valueUpdatedOn: DateTime.now());
-      final basketIrr = _calculateBasketIRR(investments);
 
       updateViewState((viewState) {
         viewState.invested = totalInvestedAmount;
@@ -60,7 +60,8 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
         viewState.valueOverTime = _getValueOverTime(investments);
         viewState.investmentOverTime = _getInvestmentOverTime(investments);
         viewState.overallIRR = overallIRR;
-        viewState.basketIrr = basketIrr;
+        viewState.basketIrr = _calculateBasketIRR(investments);
+        viewState.irrGroups = _calculateIRRGroups(investments);
       });
     });
   }
@@ -160,6 +161,26 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
 
     return basketIRR;
   }
+
+  Map<int, Pair<double, double>> _calculateIRRGroups(
+      List<Investment> investments) {
+    Map<int, Pair<double, double>> irrValue = {};
+    List<int> thresholds = [40, 20, 15, 12, 10, 8, 5, 0, -5, -10, -15, -20, -40];
+    for (var investment in investments) {
+      double investmentValue = investment.getValueOn(date: DateTime.now());
+      double investedAmount =
+          investment.getTotalInvestedAmount(till: DateTime.now());
+      int irr = investment.getIRR().toInt();
+      irr = thresholds.firstWhere((threshold) => irr > threshold, orElse: () => irr);
+      irrValue.update(
+          irr,
+          (value) =>
+              Pair(value.key + investedAmount, value.value + investmentValue),
+          ifAbsent: () => Pair(investedAmount, investmentValue));
+    }
+
+    return irrValue;
+  }
 }
 
 int _getIrrCompositionKey(double irr) {
@@ -185,6 +206,7 @@ class DashboardViewState {
   Map<RiskLevel, double> riskComposition = {};
   Map<String, double> basketComposition = {};
   Map<String, double> basketIrr = {};
+  Map<int, Pair<double, double>> irrGroups = {};
   Map<int, double> irrComposition = {};
   Map<DateTime, double> investmentOverTime = {};
   Map<DateTime, double> valueOverTime = {};

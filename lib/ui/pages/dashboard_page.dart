@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:pair/pair.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -58,6 +60,12 @@ class _DashboardPage
               const SizedBox(height: AppDimen.minPadding),
               _buildPieChart(snapshot.riskComposition),
               const SizedBox(height: AppDimen.defaultPadding),
+              Text('IRR Contribution:',
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: AppDimen.minPadding),
+              _buildAmountIrrContribution(
+                  context: context,
+                  irrData: snapshot.irrGroups.entries.toList()),
               Text('Basket IRR:',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
@@ -146,8 +154,9 @@ class _DashboardPage
     if (valueData.isNotEmpty && investedData.isNotEmpty) {
       return SfCartesianChart(
         primaryXAxis: const DateTimeAxis(),
-        primaryYAxis:
-            NumericAxis(numberFormat: NumberFormat.compactCurrency(symbol: '', locale: 'en_IN', decimalDigits: 0)),
+        primaryYAxis: NumericAxis(
+            numberFormat: NumberFormat.compactCurrency(
+                symbol: '', locale: 'en_IN', decimalDigits: 0)),
         series: [
           LineSeries<MapEntry<DateTime, double>, DateTime>(
             color: Colors.green,
@@ -183,6 +192,44 @@ class _DashboardPage
         series: [
           BarSeries(
             dataSource: contribution,
+            xValueMapper: (data, _) => data.key,
+            yValueMapper: (data, _) => data.value,
+          ),
+        ],
+      );
+    } else {
+      return const Text('');
+    }
+  }
+
+  Widget _buildAmountIrrContribution(
+      {required final BuildContext context,
+      required final List<MapEntry<int, Pair<double, double>>> irrData}) {
+    if (irrData.isNotEmpty) {
+      irrData.sort((a, b) => a.key.compareTo(b.key));
+      List<MapEntry<int, double>> invested = [];
+      List<MapEntry<int, double>> value = [];
+      for (var element in irrData) {
+        invested.add(MapEntry(element.key, element.value.key));
+        value.add(
+            MapEntry(element.key, element.value.value - element.value.key));
+      }
+      return SfCartesianChart(
+        primaryXAxis: CategoryAxis(
+          axisLabelFormatter: (axisLabelRenderArgs) => ChartAxisLabel(
+              '${axisLabelRenderArgs.text} %+', axisLabelRenderArgs.textStyle),
+        ),
+        primaryYAxis: NumericAxis(
+            numberFormat: NumberFormat.compactCurrency(
+                symbol: '', locale: 'en_IN', decimalDigits: 0)),
+        series: [
+          StackedBarSeries(
+            dataSource: invested,
+            xValueMapper: (data, _) => data.key,
+            yValueMapper: (data, _) => data.value,
+          ),
+          StackedBarSeries(
+            dataSource: value,
             xValueMapper: (data, _) => data.key,
             yValueMapper: (data, _) => data.value,
           ),
