@@ -17,8 +17,10 @@ class BootStrapService {
       : _sipService = sipService ?? SipService(),
         _investmentService = investmentService ?? InvestmentService();
 
-  Future<void> performBootStrapOperations() => Future.wait([
+  Future<void> performBootStrapOperations() {
+    return Future.wait([
         _sipService.performSipTransactions(),
         _investmentService.updateValues(),
       ]);
+  }
 }

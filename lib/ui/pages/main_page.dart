@@ -19,6 +19,12 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
   var _selectedIndex = 0;
 
+@override
+  void initState() {
+    super.initState();
+    presenter.performSync();
+  }
+
   @override
   Widget buildWidget(BuildContext context, MainViewState snapshot) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -26,6 +32,17 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
         DialogUtils.showAppDialog(context: context, message: "Import complete");
       });
     });
+
+    if(snapshot.contentLoading) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text("Wealth Wave"),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ));
+    }
 
     return Scaffold(
         appBar: AppBar(

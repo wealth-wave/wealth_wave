@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/app_router.dart';
-import 'package:wealth_wave/domain/services/boot_strap_service.dart';
 
 void main() {
   runApp(Provider<AppDatabase>(
@@ -17,22 +16,20 @@ class WealthWaveApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: BootStrapService().performBootStrapOperations(),
-        builder: (context, snapshot) => MaterialApp(
-              title: 'Wealth Wave',
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                useMaterial3: true,
-              ),
-              onGenerateRoute: (settings) {
-                return MaterialPageRoute(
-                    settings: RouteSettings(
-                        name: settings.name, arguments: settings.arguments),
-                    maintainState: true,
-                    builder: (context) => AppRouter.route(settings.name!));
-              },
-            ));
+    return MaterialApp(
+      title: 'Wealth Wave',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute(
+            settings: RouteSettings(
+                name: settings.name, arguments: settings.arguments),
+            maintainState: true,
+            builder: (context) => AppRouter.route(settings.name!));
+      },
+    );
   }
 }
