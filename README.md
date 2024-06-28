@@ -15,3 +15,6 @@ https://wealth-wave.github.io
 ## Run
 
 - Run `flutter run -d web-server --web-port=8080`
+
+## Run tests
+- Run `flutter test --platform chrome`

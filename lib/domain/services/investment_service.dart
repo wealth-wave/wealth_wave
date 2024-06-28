@@ -147,8 +147,7 @@ class InvestmentService {
     final investments = await _investmentApi.getAll();
 
     for (final investment in investments) {
-      if (investment.valueUpdatedOn != null &&
-          investment.valueUpdatedOn!.difference(DateTime.now()).inDays > 1) {
+      if (investment.valueUpdatedOn != null && DateTime.now().difference(investment.valueUpdatedOn!).inDays < 1) {
         continue;
       }
 

@@ -48,7 +48,7 @@ void main() {
               id: 1,
               name: '',
               riskLevel: RiskLevel.low,
-              valueUpdatedOn: DateTime.now().subtract(const Duration(days: 1)))
+              valueUpdatedOn: DateTime.now())
         ]);
     await investmentService.updateValues();
     verifyNever(mockInvestmentApi.updateValue(
@@ -91,6 +91,8 @@ void main() {
             (_) async => const ScriptDO(id: 1, script: '', investmentId: 1));
     when(mockScriptExecutorService.executeScript(script: anyNamed('script')))
         .thenAnswer((_) async => 100.0);
+    when(mockInvestmentApi.updateValue(id: 1, value: 100.0, valueUpdatedOn: anyNamed('valueUpdatedOn')))
+        .thenAnswer((_) async => 1);
 
     await investmentService.updateValues();
 
