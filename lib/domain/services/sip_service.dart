@@ -1,5 +1,7 @@
 import 'package:wealth_wave/api/apis/sip_api.dart';
+import 'package:wealth_wave/api/apis/sip_api_impl.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
+import 'package:wealth_wave/api/apis/transaction_api_impl.dart';
 import 'package:wealth_wave/contract/frequency.dart';
 import 'package:wealth_wave/domain/models/sip.dart';
 
@@ -14,8 +16,8 @@ class SipService {
   static final SipService _instance = SipService._();
 
   SipService._({final SipApi? sipApi, final TransactionApi? transactionApi})
-      : _sipApi = sipApi ?? SipApi(),
-        _transactionApi = transactionApi ?? TransactionApi();
+      : _sipApi = sipApi ?? SipApiImpl(),
+        _transactionApi = transactionApi ?? TransactionApiImpl();
 
   Future<Sip> createSip(
           {required final int investmentId,

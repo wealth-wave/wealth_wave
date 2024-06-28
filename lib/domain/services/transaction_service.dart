@@ -1,4 +1,5 @@
 import 'package:wealth_wave/api/apis/transaction_api.dart';
+import 'package:wealth_wave/api/apis/transaction_api_impl.dart';
 import 'package:wealth_wave/domain/models/transaction.dart';
 
 class TransactionService {
@@ -11,7 +12,7 @@ class TransactionService {
   static final TransactionService _instance = TransactionService._();
 
   TransactionService._({final TransactionApi? transactionApi})
-      : _transactionApi = transactionApi ?? TransactionApi();
+      : _transactionApi = transactionApi ?? TransactionApiImpl();
 
   Future<Transaction> createTransaction(
           {required final int investmentId,

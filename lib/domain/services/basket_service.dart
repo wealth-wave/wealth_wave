@@ -1,8 +1,12 @@
 import 'package:wealth_wave/api/apis/basket_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
+import 'package:wealth_wave/api/apis/investment_api_impl.dart';
 import 'package:wealth_wave/api/apis/script_api.dart';
+import 'package:wealth_wave/api/apis/script_api_impl.dart';
 import 'package:wealth_wave/api/apis/sip_api.dart';
+import 'package:wealth_wave/api/apis/sip_api_impl.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
+import 'package:wealth_wave/api/apis/transaction_api_impl.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/domain/models/basket.dart';
 
@@ -26,10 +30,10 @@ class BasketService {
       TransactionApi? transactionApi,
       ScriptApi? scriptApi})
       : _basketApi = basketApi ?? BasketApi(),
-        _investmentApi = investmentApi ?? InvestmentApi(),
-        _sipApi = sipApi ?? SipApi(),
-        _transactionApi = transactionApi ?? TransactionApi(),
-        _scriptApi = scriptApi ?? ScriptApi();
+        _investmentApi = investmentApi ?? InvestmentApiImpl(),
+        _sipApi = sipApi ?? SipApiImpl(),
+        _transactionApi = transactionApi ?? TransactionApiImpl(),
+        _scriptApi = scriptApi ?? ScriptApiImpl();
 
   Future<void> create(
           {required final String name, required final String description}) =>

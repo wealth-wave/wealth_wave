@@ -1,56 +1,20 @@
-import 'package:drift/drift.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 
-class TransactionApi {
-  final AppDatabase _db;
-
-  TransactionApi({final AppDatabase? db}) : _db = db ?? AppDatabase.instance;
-
+abstract class TransactionApi {
   Future<int> create(
       {required final int investmentId,
       required final String? description,
       required final double amount,
       required final double qty,
       required final DateTime createdOn,
-      final int? sipId}) async {
-    return _db.into(_db.transactionTable).insert(
-        TransactionTableCompanion.insert(
-            investmentId: investmentId,
-            description: Value(description),
-            amount: amount,
-            qty: Value(qty),
-            sipId: Value(sipId),
-            createdOn: createdOn));
-  }
+      final int? sipId});
 
-  Future<List<TransactionDO>> getAll() {
-    return (_db.select(_db.transactionEnrichedView)
-          ..orderBy([(t) => OrderingTerm.desc(t.createdOn)]))
-        .get();
-  }
+  Future<List<TransactionDO>> getAll();
 
   Future<List<TransactionDO>> getBy(
-      {final int? investmentId, final int? sipId}) async {
-    if (investmentId != null) {
-      return (_db.select(_db.transactionEnrichedView)
-            ..where((t) => t.investmentId.equals(investmentId))
-            ..orderBy([(t) => OrderingTerm.desc(t.createdOn)]))
-          .get();
-    } else if (sipId != null) {
-      return (_db.select(_db.transactionEnrichedView)
-            ..where((t) => t.sipId.equals(sipId))
-            ..orderBy([(t) => OrderingTerm.desc(t.createdOn)]))
-          .get();
-    }
+      {final int? investmentId, final int? sipId});
 
-    throw Exception('Invalid getBy call');
-  }
-
-  Future<TransactionDO> getById({required final int id}) async {
-    return (_db.select(_db.transactionEnrichedView)
-          ..where((t) => t.id.equals(id)))
-        .getSingle();
-  }
+  Future<TransactionDO> getById({required final int id});
 
   Future<int> update(
       {required final int id,
@@ -59,32 +23,8 @@ class TransactionApi {
       required final double amount,
       required final double qty,
       required final DateTime createdOn,
-      final int? sipId}) async {
-    return (_db.update(_db.transactionTable)..where((t) => t.id.equals(id)))
-        .write(TransactionTableCompanion(
-      investmentId: Value(investmentId),
-      description: Value(description),
-      amount: Value(amount),
-      qty: Value(qty),
-      createdOn: Value(createdOn),
-      sipId: Value(sipId),
-    ));
-  }
+      final int? sipId});
 
   Future<int> deleteBy(
-      {final int? investmentId, final int? sipId, final int? id}) async {
-    if (id != null) {
-      return (_db.delete(_db.transactionTable)..where((t) => t.id.equals(id)))
-          .go();
-    } else if (sipId != null) {
-      return (_db.delete(_db.transactionTable)
-            ..where((t) => t.sipId.equals(sipId)))
-          .go();
-    } else if (investmentId != null) {
-      return (_db.delete(_db.transactionTable)
-            ..where((t) => t.investmentId.equals(investmentId)))
-          .go();
-    }
-    throw Exception('Invalid deleteTransactionsBy call');
-  }
+      {final int? investmentId, final int? sipId, final int? id});
 }

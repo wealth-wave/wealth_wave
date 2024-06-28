@@ -1,8 +1,12 @@
 import 'package:wealth_wave/api/apis/goal_investment_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
+import 'package:wealth_wave/api/apis/investment_api_impl.dart';
 import 'package:wealth_wave/api/apis/script_api.dart';
+import 'package:wealth_wave/api/apis/script_api_impl.dart';
 import 'package:wealth_wave/api/apis/sip_api.dart';
+import 'package:wealth_wave/api/apis/sip_api_impl.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
+import 'package:wealth_wave/api/apis/transaction_api_impl.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/domain/models/goal_investment_tag.dart';
 
@@ -26,10 +30,10 @@ class GoalInvestmentService {
       final SipApi? sipApi,
       final ScriptApi? scriptApi})
       : _goalInvestmentApi = goalInvestmentApi ?? GoalInvestmentApi(),
-        _investmentApi = investmentApi ?? InvestmentApi(),
-        _transactionApi = transactionApi ?? TransactionApi(),
-        _sipApi = sipApi ?? SipApi(),
-        _scriptApi = scriptApi ?? ScriptApi();
+        _investmentApi = investmentApi ?? InvestmentApiImpl(),
+        _transactionApi = transactionApi ?? TransactionApiImpl(),
+        _sipApi = sipApi ?? SipApiImpl(),
+        _scriptApi = scriptApi ?? ScriptApiImpl();
 
   Future<void> tagGoalInvestment(
           {required final int goalId,

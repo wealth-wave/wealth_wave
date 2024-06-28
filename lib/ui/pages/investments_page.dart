@@ -230,9 +230,14 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
     }
     return Column(
       children: [
-        Text(formatToCurrency(investmentVO.currentValue),
-            style:
-                Theme.of(context).textTheme.bodyLarge!.copyWith(color: color)),
+        Tooltip(
+          message: 'Value updated on ${investmentVO.valueUpdateDate}',
+          child: Text(formatToCurrency(investmentVO.currentValue),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: color)),
+        ),
         Text('(At ${formatToPercentage(investmentVO.irr)})',
             style: Theme.of(context)
                 .textTheme

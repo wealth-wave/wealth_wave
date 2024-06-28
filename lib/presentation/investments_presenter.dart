@@ -115,6 +115,7 @@ class InvestmentVO {
   final double irr;
   final double investedValue;
   final double currentValue;
+  final DateTime? valueUpdatedDate;
   final double qty;
   final double valuePerQty;
   final DateTime? maturityDate;
@@ -127,6 +128,7 @@ class InvestmentVO {
 
   int get transactionCount => transactions.length;
   int get sipCount => sips.length;
+  String get valueUpdateDate => valueUpdatedDate?.toIso8601String() ?? 'Not Updated';
 
   InvestmentVO._(
       {required this.id,
@@ -138,6 +140,7 @@ class InvestmentVO {
       required this.basketName,
       required this.investedValue,
       required this.currentValue,
+      required this.valueUpdatedDate,
       required this.qty,
       required this.valuePerQty,
       required this.maturityDate,
@@ -155,6 +158,7 @@ class InvestmentVO {
         irr: investment.getIRR(),
         investedValue: investment.getTotalInvestedAmount(),
         currentValue: investment.getValue(),
+        valueUpdatedDate: investment.valueUpdatedOn,
         qty: investment.qty,
         valuePerQty: investment.getValuePerUnit(),
         basketId: investment.basketId,

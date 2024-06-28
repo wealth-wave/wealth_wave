@@ -1,9 +1,13 @@
 import 'package:wealth_wave/api/apis/goal_api.dart';
 import 'package:wealth_wave/api/apis/goal_investment_api.dart';
 import 'package:wealth_wave/api/apis/investment_api.dart';
+import 'package:wealth_wave/api/apis/investment_api_impl.dart';
 import 'package:wealth_wave/api/apis/script_api.dart';
+import 'package:wealth_wave/api/apis/script_api_impl.dart';
 import 'package:wealth_wave/api/apis/sip_api.dart';
+import 'package:wealth_wave/api/apis/sip_api_impl.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
+import 'package:wealth_wave/api/apis/transaction_api_impl.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/domain/models/goal.dart';
@@ -32,10 +36,10 @@ class GoalService {
       ScriptApi? scriptApi})
       : _goalApi = goalApi ?? GoalApi(),
         _goalInvestmentApi = goalInvestmentApi ?? GoalInvestmentApi(),
-        _investmentApi = investmentApi ?? InvestmentApi(),
-        _transactionAPi = transactionApi ?? TransactionApi(),
-        _sipApi = sipApi ?? SipApi(),
-        _scriptApi = scriptApi ?? ScriptApi();
+        _investmentApi = investmentApi ?? InvestmentApiImpl(),
+        _transactionAPi = transactionApi ?? TransactionApiImpl(),
+        _sipApi = sipApi ?? SipApiImpl(),
+        _scriptApi = scriptApi ?? ScriptApiImpl();
 
   Future<void> create({
     required final String name,

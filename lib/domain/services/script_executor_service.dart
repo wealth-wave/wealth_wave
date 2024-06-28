@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:wealth_wave/domain/services/dsl_parser.dart';
 
 class ScriptExecutorService {
@@ -35,7 +36,8 @@ class ScriptExecutorService {
           _getValueFromJsonPath(response.body, parsedDefn.responsePath);
       return value;
     } else {
-      throw Exception('Failed to execute script');
+      Logger().e('Failed to execute script: ${response.body}');
+      return null;
     }
   }
 

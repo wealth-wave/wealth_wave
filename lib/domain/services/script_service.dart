@@ -1,4 +1,5 @@
 import 'package:wealth_wave/api/apis/script_api.dart';
+import 'package:wealth_wave/api/apis/script_api_impl.dart';
 import 'package:wealth_wave/domain/models/script.dart';
 
 class ScriptService {
@@ -11,7 +12,7 @@ class ScriptService {
   static final ScriptService _instance = ScriptService._();
 
   ScriptService._({final ScriptApi? scriptApi})
-      : _scriptApi = scriptApi ?? ScriptApi();
+      : _scriptApi = scriptApi ?? ScriptApiImpl();
 
   Future<Script> createScript(
           {required final int investmentId, required final String script}) =>

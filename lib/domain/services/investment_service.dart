@@ -1,7 +1,11 @@
 import 'package:wealth_wave/api/apis/investment_api.dart';
+import 'package:wealth_wave/api/apis/investment_api_impl.dart';
 import 'package:wealth_wave/api/apis/script_api.dart';
+import 'package:wealth_wave/api/apis/script_api_impl.dart';
 import 'package:wealth_wave/api/apis/sip_api.dart';
+import 'package:wealth_wave/api/apis/sip_api_impl.dart';
 import 'package:wealth_wave/api/apis/transaction_api.dart';
+import 'package:wealth_wave/api/apis/transaction_api_impl.dart';
 import 'package:wealth_wave/api/db/app_database.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/domain/models/investment.dart';
@@ -18,6 +22,15 @@ class InvestmentService {
     return _instance;
   }
 
+  factory InvestmentService.withMock({required InvestmentApi investmentApi, required TransactionApi transactionApi, required SipApi sipApi, required ScriptApi scriptApi, required ScriptExecutorService scriptExecutorService}) {
+    return InvestmentService._(
+      investmentApi: investmentApi,
+      transactionApi: transactionApi,
+      sipApi: sipApi,
+      scriptApi: scriptApi,
+      scriptExecutorService: scriptExecutorService);
+  }
+
   static final InvestmentService _instance = InvestmentService._();
 
   InvestmentService._(
@@ -26,10 +39,10 @@ class InvestmentService {
       final SipApi? sipApi,
       final ScriptApi? scriptApi,
       final ScriptExecutorService? scriptExecutorService})
-      : _investmentApi = investmentApi ?? InvestmentApi(),
-        _transactionApi = transactionApi ?? TransactionApi(),
-        _sipApi = sipApi ?? SipApi(),
-        _scriptApi = scriptApi ?? ScriptApi(),
+      : _investmentApi = investmentApi ?? InvestmentApiImpl(),
+        _transactionApi = transactionApi ?? TransactionApiImpl(),
+        _sipApi = sipApi ?? SipApiImpl(),
+        _scriptApi = scriptApi ?? ScriptApiImpl(),
         _scriptExecutorService =
             scriptExecutorService ?? ScriptExecutorService();
 
@@ -135,7 +148,7 @@ class InvestmentService {
 
     for (final investment in investments) {
       if (investment.valueUpdatedOn != null &&
-          investment.valueUpdatedOn!.difference(DateTime.now()).inDays < 1) {
+          investment.valueUpdatedOn!.difference(DateTime.now()).inDays > 1) {
         continue;
       }
 
