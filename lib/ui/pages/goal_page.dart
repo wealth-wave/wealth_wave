@@ -33,7 +33,10 @@ class _GoalPage extends PageState<GoalViewState, GoalPage, GoalPresenter> {
     }
 
 return Scaffold(
-        appBar: AppBar(title: const Text('Goal')),
+        appBar: AppBar(
+          title: const Text('Goal'),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        ),
         body: SingleChildScrollView(
             child: _goalWidget(context: context, goalVO: goalVO)));
   }

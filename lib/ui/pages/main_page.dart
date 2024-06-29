@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/presentation/main_presenter.dart';
-import 'package:wealth_wave/ui/pages/baskets_page.dart';
 import 'package:wealth_wave/ui/pages/dashboard_page.dart';
 import 'package:wealth_wave/ui/pages/goals_page.dart';
 import 'package:wealth_wave/ui/pages/investments_page.dart';
@@ -52,18 +51,24 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
             PopupMenuButton<int>(
               onSelected: (value) {
                 if (value == 1) {
-                  presenter.performBackup();
+                  Navigator.of(context).pushNamed('/baskets');
                 } else if (value == 2) {
+                  presenter.performBackup();
+                } else if (value == 3) {
                   presenter.performImportFile();
                 }
               },
               itemBuilder: (context) => [
                 const PopupMenuItem(
                   value: 1,
-                  child: Text('Export'),
+                  child: Text('Baskets'),
                 ),
                 const PopupMenuItem(
                   value: 2,
+                  child: Text('Export'),
+                ),
+                const PopupMenuItem(
+                  value: 3,
                   child: Text('Import'),
                 ),
               ],
@@ -84,11 +89,7 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
             NavigationDestination(
               icon: Icon(Icons.flag),
               label: 'Goals',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.shopping_basket),
-              label: 'Baskets',
-            ),
+            )
           ],
           onDestinationSelected: (index) {
             setState(() {
@@ -105,8 +106,6 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
                 return const InvestmentsPage();
               case 2:
                 return const GoalsPage();
-              case 3:
-                return const BasketsPage();
               default:
                 return Container();
             }

@@ -10,6 +10,7 @@ class NavPath {
   static String updateBasket({required final int id}) => '/baskets/$id/update';
   static String investment({required final int id}) => '/investments/$id';
   static String goal({required final int id}) => '/goals/$id';
+  static const String baskets = '/baskets';
 
   static isMainPagePath(List<String> paths) => paths.isEmpty;
 
@@ -27,4 +28,6 @@ class NavPath {
 
   static isGoalPagePath(List<String> paths) =>
       paths.length == 2 && paths[0] == 'goals';
+
+  static isBasketsPagePath(List<String> paths) => paths.length == 1 && paths[0] == 'baskets';
 }

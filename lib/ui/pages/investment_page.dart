@@ -29,7 +29,10 @@ class _InvestmentPage extends PageState<InvestmentViewState, InvestmentPage,
       final BuildContext context, final InvestmentViewState snapshot) {
     InvestmentVO? investmentVO = snapshot.investmentVO;
     return Scaffold(
-        appBar: AppBar(title: const Text('Investment')),
+        appBar: AppBar(
+          title: const Text('Investment'),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        ),
         body: SingleChildScrollView(
             child: _investmentWidget(
                 context: context, investmentVO: investmentVO)));
