@@ -52,7 +52,7 @@ class _DashboardPage
               Text('Basket Composition:',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: AppDimen.minPadding),
-              _buildBarChart(snapshot.basketComposition.entries.toList()),
+              _buildBarChart(snapshot.basketComposition.entries.toList(), snapshot.currentValue),
               const SizedBox(height: AppDimen.defaultPadding),
               Text('Risk Composition:',
                   style: Theme.of(context).textTheme.titleMedium),
@@ -134,13 +134,13 @@ class _DashboardPage
     );
   }
 
-  Widget _buildBarChart(List<MapEntry<String, double>> data) {
+  Widget _buildBarChart(List<MapEntry<String, double>> data, double currentValue) {
     data.sort((a, b) => a.value > b.value ? -1 : 1);
     return PrimerProgressBar(
       segments: data
           .map((e) => Segment(
-              value: (e.value * 100).toInt(),
-              valueLabel: Text(formatToPercentage(e.value * 100)),
+              value: (e.value).toInt(),
+              valueLabel: Text('${formatToCurrency(e.value)} (${formatToPercentage(e.value * 100/ currentValue)})'),
               label: Text(e.key),
               color:
                   Colors.primaries[e.key.hashCode % Colors.primaries.length]))

@@ -55,7 +55,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
         viewState.riskComposition = riskComposition
             .map((key, value) => MapEntry(key, value / totalValueOfInvestment));
         viewState.basketComposition = basketComposition
-            .map((key, value) => MapEntry(key, value / totalValueOfInvestment));
+            .map((key, value) => MapEntry(key, value));
         viewState.irrComposition = irrComposition;
         viewState.valueOverTime = _getValueOverTime(investments);
         viewState.investmentOverTime = _getInvestmentOverTime(investments);
