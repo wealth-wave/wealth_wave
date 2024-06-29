@@ -1,9 +1,6 @@
-import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/presenter.dart';
-import 'package:wealth_wave/domain/models/investment.dart';
-import 'package:wealth_wave/domain/models/sip.dart';
-import 'package:wealth_wave/domain/models/transaction.dart';
 import 'package:wealth_wave/domain/services/investment_service.dart';
+import 'package:wealth_wave/ui/models/investment_vo.dart';
 
 class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
   final InvestmentService _investmentService;
@@ -104,70 +101,6 @@ class InvestmentsViewState {
       }
     }
     return investments;
-  }
-}
-
-class InvestmentVO {
-  final int id;
-  final String name;
-  final String? description;
-  final RiskLevel riskLevel;
-  final double irr;
-  final double investedValue;
-  final double currentValue;
-  final DateTime? valueUpdatedDate;
-  final double qty;
-  final double valuePerQty;
-  final DateTime? maturityDate;
-  final int? basketId;
-  final String? basketName;
-  final List<Sip> sips;
-  final List<Transaction> transactions;
-  final int taggedGoalCount;
-  final bool hasScript;
-
-  int get transactionCount => transactions.length;
-  int get sipCount => sips.length;
-  String get valueUpdateDate => valueUpdatedDate?.toIso8601String() ?? 'Not Updated';
-
-  InvestmentVO._(
-      {required this.id,
-      required this.name,
-      required this.description,
-      required this.riskLevel,
-      required this.irr,
-      required this.basketId,
-      required this.basketName,
-      required this.investedValue,
-      required this.currentValue,
-      required this.valueUpdatedDate,
-      required this.qty,
-      required this.valuePerQty,
-      required this.maturityDate,
-      required this.transactions,
-      required this.sips,
-      required this.hasScript,
-      required this.taggedGoalCount});
-
-  factory InvestmentVO.from({required final Investment investment}) {
-    return InvestmentVO._(
-        id: investment.id,
-        name: investment.name,
-        description: investment.description,
-        riskLevel: investment.riskLevel,
-        irr: investment.getIRR(),
-        investedValue: investment.getTotalInvestedAmount(),
-        currentValue: investment.getValue(),
-        valueUpdatedDate: investment.valueUpdatedOn,
-        qty: investment.qty,
-        valuePerQty: investment.getValuePerUnit(),
-        basketId: investment.basketId,
-        basketName: investment.basketName,
-        transactions: investment.transactions,
-        sips: investment.sips,
-        taggedGoalCount: investment.goalsCount,
-        hasScript: investment.script != null,
-        maturityDate: investment.maturityDate);
   }
 }
 
