@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/create_script_presenter.dart';
+import 'package:wealth_wave/ui/presentation/create_script_presenter.dart';
 
 Future<void> showCreateScriptDialog(
     {required final BuildContext context, required final int investmentId}) {

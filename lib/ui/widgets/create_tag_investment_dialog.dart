@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/tag_investment_presenter.dart';
+import 'package:wealth_wave/ui/presentation/tag_investment_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 

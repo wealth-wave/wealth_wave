@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/main_presenter.dart';
+import 'package:wealth_wave/ui/presentation/main_presenter.dart';
 import 'package:wealth_wave/ui/pages/dashboard_page.dart';
 import 'package:wealth_wave/ui/pages/goals_page.dart';
 import 'package:wealth_wave/ui/pages/investments_page.dart';

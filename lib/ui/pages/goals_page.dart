@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:wealth_wave/contract/goal_importance.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/goals_presenter.dart';
+import 'package:wealth_wave/ui/presentation/goals_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/nav_path.dart';
 import 'package:wealth_wave/ui/widgets/create_goal_dialog.dart';

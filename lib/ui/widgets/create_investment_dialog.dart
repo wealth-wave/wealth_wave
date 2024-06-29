@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:toastification/toastification.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/presentation/create_investment_presenter.dart';
+import 'package:wealth_wave/ui/presentation/create_investment_presenter.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/custom/date_text_input_formatter.dart';
 import 'package:wealth_wave/ui/custom/decimal_text_input_formatter.dart';
