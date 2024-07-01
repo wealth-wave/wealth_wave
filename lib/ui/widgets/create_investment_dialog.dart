@@ -158,7 +158,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
           ),
           const SizedBox(height: AppDimen.defaultPadding),
           TextFormField(
-            textInputAction: TextInputAction.next,
+            textInputAction: TextInputAction.newline,
             maxLines: 4,
             controller: _descriptionController,
             decoration: const InputDecoration(
