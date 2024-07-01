@@ -1157,7 +1157,7 @@ class SipTableCompanion extends UpdateCompanion<BaseSipDO> {
 }
 
 class $TransactionTableTable extends TransactionTable
-    with TableInfo<$TransactionTableTable, BaseTransactionDO> {
+    with TableInfo<$TransactionTableTable, TransactionDO> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1223,7 +1223,7 @@ class $TransactionTableTable extends TransactionTable
   String get actualTableName => $name;
   static const String $name = 'transaction_table';
   @override
-  VerificationContext validateIntegrity(Insertable<BaseTransactionDO> instance,
+  VerificationContext validateIntegrity(Insertable<TransactionDO> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1270,9 +1270,9 @@ class $TransactionTableTable extends TransactionTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  BaseTransactionDO map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TransactionDO map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BaseTransactionDO(
+    return TransactionDO(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
       description: attachedDatabase.typeMapping
@@ -1296,8 +1296,7 @@ class $TransactionTableTable extends TransactionTable
   }
 }
 
-class BaseTransactionDO extends DataClass
-    implements Insertable<BaseTransactionDO> {
+class TransactionDO extends DataClass implements Insertable<TransactionDO> {
   final int id;
   final String? description;
   final int investmentId;
@@ -1305,7 +1304,7 @@ class BaseTransactionDO extends DataClass
   final double amount;
   final double qty;
   final DateTime createdOn;
-  const BaseTransactionDO(
+  const TransactionDO(
       {required this.id,
       this.description,
       required this.investmentId,
@@ -1345,10 +1344,10 @@ class BaseTransactionDO extends DataClass
     );
   }
 
-  factory BaseTransactionDO.fromJson(Map<String, dynamic> json,
+  factory TransactionDO.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BaseTransactionDO(
+    return TransactionDO(
       id: serializer.fromJson<int>(json['id']),
       description: serializer.fromJson<String?>(json['description']),
       investmentId: serializer.fromJson<int>(json['investmentId']),
@@ -1372,7 +1371,7 @@ class BaseTransactionDO extends DataClass
     };
   }
 
-  BaseTransactionDO copyWith(
+  TransactionDO copyWith(
           {int? id,
           Value<String?> description = const Value.absent(),
           int? investmentId,
@@ -1380,7 +1379,7 @@ class BaseTransactionDO extends DataClass
           double? amount,
           double? qty,
           DateTime? createdOn}) =>
-      BaseTransactionDO(
+      TransactionDO(
         id: id ?? this.id,
         description: description.present ? description.value : this.description,
         investmentId: investmentId ?? this.investmentId,
@@ -1391,7 +1390,7 @@ class BaseTransactionDO extends DataClass
       );
   @override
   String toString() {
-    return (StringBuffer('BaseTransactionDO(')
+    return (StringBuffer('TransactionDO(')
           ..write('id: $id, ')
           ..write('description: $description, ')
           ..write('investmentId: $investmentId, ')
@@ -1409,7 +1408,7 @@ class BaseTransactionDO extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is BaseTransactionDO &&
+      (other is TransactionDO &&
           other.id == this.id &&
           other.description == this.description &&
           other.investmentId == this.investmentId &&
@@ -1419,7 +1418,7 @@ class BaseTransactionDO extends DataClass
           other.createdOn == this.createdOn);
 }
 
-class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
+class TransactionTableCompanion extends UpdateCompanion<TransactionDO> {
   final Value<int> id;
   final Value<String?> description;
   final Value<int> investmentId;
@@ -1447,7 +1446,7 @@ class TransactionTableCompanion extends UpdateCompanion<BaseTransactionDO> {
   })  : investmentId = Value(investmentId),
         amount = Value(amount),
         createdOn = Value(createdOn);
-  static Insertable<BaseTransactionDO> custom({
+  static Insertable<TransactionDO> custom({
     Expression<int>? id,
     Expression<String>? description,
     Expression<int>? investmentId,
@@ -2965,224 +2964,6 @@ class $GoalInvestmentEnrichedViewView
       const {'goal_investment_table', 'investment_table', 'goal_table'};
 }
 
-class TransactionDO extends DataClass {
-  final int id;
-  final String? description;
-  final int investmentId;
-  final int? sipId;
-  final double amount;
-  final double qty;
-  final DateTime createdOn;
-  final String? investmentName;
-  final String? sipDescription;
-  const TransactionDO(
-      {required this.id,
-      this.description,
-      required this.investmentId,
-      this.sipId,
-      required this.amount,
-      required this.qty,
-      required this.createdOn,
-      this.investmentName,
-      this.sipDescription});
-  factory TransactionDO.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TransactionDO(
-      id: serializer.fromJson<int>(json['id']),
-      description: serializer.fromJson<String?>(json['description']),
-      investmentId: serializer.fromJson<int>(json['investmentId']),
-      sipId: serializer.fromJson<int?>(json['sipId']),
-      amount: serializer.fromJson<double>(json['amount']),
-      qty: serializer.fromJson<double>(json['qty']),
-      createdOn: serializer.fromJson<DateTime>(json['createdOn']),
-      investmentName: serializer.fromJson<String?>(json['investmentName']),
-      sipDescription: serializer.fromJson<String?>(json['sipDescription']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'description': serializer.toJson<String?>(description),
-      'investmentId': serializer.toJson<int>(investmentId),
-      'sipId': serializer.toJson<int?>(sipId),
-      'amount': serializer.toJson<double>(amount),
-      'qty': serializer.toJson<double>(qty),
-      'createdOn': serializer.toJson<DateTime>(createdOn),
-      'investmentName': serializer.toJson<String?>(investmentName),
-      'sipDescription': serializer.toJson<String?>(sipDescription),
-    };
-  }
-
-  TransactionDO copyWith(
-          {int? id,
-          Value<String?> description = const Value.absent(),
-          int? investmentId,
-          Value<int?> sipId = const Value.absent(),
-          double? amount,
-          double? qty,
-          DateTime? createdOn,
-          Value<String?> investmentName = const Value.absent(),
-          Value<String?> sipDescription = const Value.absent()}) =>
-      TransactionDO(
-        id: id ?? this.id,
-        description: description.present ? description.value : this.description,
-        investmentId: investmentId ?? this.investmentId,
-        sipId: sipId.present ? sipId.value : this.sipId,
-        amount: amount ?? this.amount,
-        qty: qty ?? this.qty,
-        createdOn: createdOn ?? this.createdOn,
-        investmentName:
-            investmentName.present ? investmentName.value : this.investmentName,
-        sipDescription:
-            sipDescription.present ? sipDescription.value : this.sipDescription,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('TransactionDO(')
-          ..write('id: $id, ')
-          ..write('description: $description, ')
-          ..write('investmentId: $investmentId, ')
-          ..write('sipId: $sipId, ')
-          ..write('amount: $amount, ')
-          ..write('qty: $qty, ')
-          ..write('createdOn: $createdOn, ')
-          ..write('investmentName: $investmentName, ')
-          ..write('sipDescription: $sipDescription')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, description, investmentId, sipId, amount,
-      qty, createdOn, investmentName, sipDescription);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is TransactionDO &&
-          other.id == this.id &&
-          other.description == this.description &&
-          other.investmentId == this.investmentId &&
-          other.sipId == this.sipId &&
-          other.amount == this.amount &&
-          other.qty == this.qty &&
-          other.createdOn == this.createdOn &&
-          other.investmentName == this.investmentName &&
-          other.sipDescription == this.sipDescription);
-}
-
-class $TransactionEnrichedViewView
-    extends ViewInfo<$TransactionEnrichedViewView, TransactionDO>
-    implements HasResultSet {
-  final String? _alias;
-  @override
-  final _$AppDatabase attachedDatabase;
-  $TransactionEnrichedViewView(this.attachedDatabase, [this._alias]);
-  $TransactionTableTable get transaction =>
-      attachedDatabase.transactionTable.createAlias('t0');
-  $InvestmentTableTable get investment =>
-      attachedDatabase.investmentTable.createAlias('t1');
-  $SipTableTable get sip => attachedDatabase.sipTable.createAlias('t2');
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        description,
-        investmentId,
-        sipId,
-        amount,
-        qty,
-        createdOn,
-        investmentName,
-        sipDescription
-      ];
-  @override
-  String get aliasedName => _alias ?? entityName;
-  @override
-  String get entityName => 'transaction_enriched_view';
-  @override
-  Map<SqlDialect, String>? get createViewStatements => null;
-  @override
-  $TransactionEnrichedViewView get asDslTable => this;
-  @override
-  TransactionDO map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TransactionDO(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']),
-      investmentId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!,
-      sipId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}SIP_ID']),
-      amount: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!,
-      qty: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}QTY'])!,
-      createdOn: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}CREATED_ON'])!,
-      investmentName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}investment_name']),
-      sipDescription: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}sip_description']),
-    );
-  }
-
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'ID', aliasedName, false,
-      generatedAs: GeneratedAs(transaction.id, false), type: DriftSqlType.int);
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'DESCRIPTION', aliasedName, true,
-      generatedAs: GeneratedAs(transaction.description, false),
-      type: DriftSqlType.string);
-  late final GeneratedColumn<int> investmentId = GeneratedColumn<int>(
-      'INVESTMENT_ID', aliasedName, false,
-      generatedAs: GeneratedAs(transaction.investmentId, false),
-      type: DriftSqlType.int);
-  late final GeneratedColumn<int> sipId = GeneratedColumn<int>(
-      'SIP_ID', aliasedName, true,
-      generatedAs: GeneratedAs(transaction.sipId, false),
-      type: DriftSqlType.int);
-  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
-      'AMOUNT', aliasedName, false,
-      generatedAs: GeneratedAs(transaction.amount, false),
-      type: DriftSqlType.double);
-  late final GeneratedColumn<double> qty = GeneratedColumn<double>(
-      'QTY', aliasedName, false,
-      generatedAs: GeneratedAs(transaction.qty, false),
-      type: DriftSqlType.double);
-  late final GeneratedColumn<DateTime> createdOn = GeneratedColumn<DateTime>(
-      'CREATED_ON', aliasedName, false,
-      generatedAs: GeneratedAs(transaction.createdOn, false),
-      type: DriftSqlType.dateTime);
-  late final GeneratedColumn<String> investmentName = GeneratedColumn<String>(
-      'investment_name', aliasedName, true,
-      generatedAs: GeneratedAs(investment.name, false),
-      type: DriftSqlType.string);
-  late final GeneratedColumn<String> sipDescription = GeneratedColumn<String>(
-      'sip_description', aliasedName, true,
-      generatedAs: GeneratedAs(sip.description, false),
-      type: DriftSqlType.string);
-  @override
-  $TransactionEnrichedViewView createAlias(String alias) {
-    return $TransactionEnrichedViewView(attachedDatabase, alias);
-  }
-
-  @override
-  Query? get query =>
-      (attachedDatabase.selectOnly(transaction)..addColumns($columns)).join([
-        innerJoin(
-            investment, investment.id.equalsExp(transaction.investmentId)),
-        leftOuterJoin(sip, sip.id.equalsExp(transaction.sipId))
-      ])
-        ..groupBy([transaction.id]);
-  @override
-  Set<String> get readTables =>
-      const {'transaction_table', 'investment_table', 'sip_table'};
-}
-
 class SipDO extends DataClass {
   final int id;
   final String? description;
@@ -3665,8 +3446,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $InvestmentEnrichedViewView(this);
   late final $GoalInvestmentEnrichedViewView goalInvestmentEnrichedView =
       $GoalInvestmentEnrichedViewView(this);
-  late final $TransactionEnrichedViewView transactionEnrichedView =
-      $TransactionEnrichedViewView(this);
   late final $SipEnrichedViewView sipEnrichedView = $SipEnrichedViewView(this);
   late final $GoalEnrichedViewView goalEnrichedView =
       $GoalEnrichedViewView(this);
@@ -3684,7 +3463,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         scriptTable,
         investmentEnrichedView,
         goalInvestmentEnrichedView,
-        transactionEnrichedView,
         sipEnrichedView,
         goalEnrichedView
       ];

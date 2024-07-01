@@ -46,7 +46,7 @@ class InvestmentTable extends Table {
   TextColumn get riskLevel => textEnum<RiskLevel>().named('RISK_LEVEL')();
 }
 
-@DataClassName('BaseTransactionDO')
+@DataClassName('TransactionDO')
 class TransactionTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -206,37 +206,6 @@ abstract class InvestmentEnrichedView extends View {
         ..groupBy([investment.id]);
 }
 
-@DataClassName('TransactionDO')
-abstract class TransactionEnrichedView extends View {
-  TransactionTable get transaction;
-
-  InvestmentTable get investment;
-
-  SipTable get sip;
-
-  Expression<String> get investmentName => investment.name;
-
-  Expression<String> get sipDescription => sip.description;
-
-  @override
-  Query as() => select([
-        transaction.id,
-        transaction.description,
-        transaction.investmentId,
-        transaction.sipId,
-        transaction.amount,
-        transaction.qty,
-        transaction.createdOn,
-        investmentName,
-        sipDescription,
-      ]).from(transaction).join([
-        innerJoin(
-            investment, investment.id.equalsExp(transaction.investmentId)),
-        leftOuterJoin(sip, sip.id.equalsExp(transaction.sipId)),
-      ])
-        ..groupBy([transaction.id]);
-}
-
 @DataClassName('SipDO')
 abstract class SipEnrichedView extends View {
   SipTable get sip;
@@ -351,7 +320,6 @@ class ExpenseTable extends Table {
 ], views: [
   InvestmentEnrichedView,
   GoalInvestmentEnrichedView,
-  TransactionEnrichedView,
   SipEnrichedView,
   GoalEnrichedView
 ])
