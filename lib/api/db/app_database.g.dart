@@ -730,8 +730,7 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
   }
 }
 
-class $SipTableTable extends SipTable
-    with TableInfo<$SipTableTable, BaseSipDO> {
+class $SipTableTable extends SipTable with TableInfo<$SipTableTable, SipDO> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -809,7 +808,7 @@ class $SipTableTable extends SipTable
   String get actualTableName => $name;
   static const String $name = 'sip_table';
   @override
-  VerificationContext validateIntegrity(Insertable<BaseSipDO> instance,
+  VerificationContext validateIntegrity(Insertable<SipDO> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -859,9 +858,9 @@ class $SipTableTable extends SipTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  BaseSipDO map(Map<String, dynamic> data, {String? tablePrefix}) {
+  SipDO map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BaseSipDO(
+    return SipDO(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
       description: attachedDatabase.typeMapping
@@ -891,7 +890,7 @@ class $SipTableTable extends SipTable
       const EnumNameConverter<Frequency>(Frequency.values);
 }
 
-class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
+class SipDO extends DataClass implements Insertable<SipDO> {
   final int id;
   final String? description;
   final int investmentId;
@@ -900,7 +899,7 @@ class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
   final DateTime? endDate;
   final Frequency frequency;
   final DateTime? executedTill;
-  const BaseSipDO(
+  const SipDO(
       {required this.id,
       this.description,
       required this.investmentId,
@@ -951,10 +950,10 @@ class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
     );
   }
 
-  factory BaseSipDO.fromJson(Map<String, dynamic> json,
+  factory SipDO.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BaseSipDO(
+    return SipDO(
       id: serializer.fromJson<int>(json['id']),
       description: serializer.fromJson<String?>(json['description']),
       investmentId: serializer.fromJson<int>(json['investmentId']),
@@ -982,7 +981,7 @@ class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
     };
   }
 
-  BaseSipDO copyWith(
+  SipDO copyWith(
           {int? id,
           Value<String?> description = const Value.absent(),
           int? investmentId,
@@ -991,7 +990,7 @@ class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
           Value<DateTime?> endDate = const Value.absent(),
           Frequency? frequency,
           Value<DateTime?> executedTill = const Value.absent()}) =>
-      BaseSipDO(
+      SipDO(
         id: id ?? this.id,
         description: description.present ? description.value : this.description,
         investmentId: investmentId ?? this.investmentId,
@@ -1004,7 +1003,7 @@ class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
       );
   @override
   String toString() {
-    return (StringBuffer('BaseSipDO(')
+    return (StringBuffer('SipDO(')
           ..write('id: $id, ')
           ..write('description: $description, ')
           ..write('investmentId: $investmentId, ')
@@ -1023,7 +1022,7 @@ class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is BaseSipDO &&
+      (other is SipDO &&
           other.id == this.id &&
           other.description == this.description &&
           other.investmentId == this.investmentId &&
@@ -1034,7 +1033,7 @@ class BaseSipDO extends DataClass implements Insertable<BaseSipDO> {
           other.executedTill == this.executedTill);
 }
 
-class SipTableCompanion extends UpdateCompanion<BaseSipDO> {
+class SipTableCompanion extends UpdateCompanion<SipDO> {
   final Value<int> id;
   final Value<String?> description;
   final Value<int> investmentId;
@@ -1066,7 +1065,7 @@ class SipTableCompanion extends UpdateCompanion<BaseSipDO> {
         amount = Value(amount),
         startDate = Value(startDate),
         frequency = Value(frequency);
-  static Insertable<BaseSipDO> custom({
+  static Insertable<SipDO> custom({
     Expression<int>? id,
     Expression<String>? description,
     Expression<int>? investmentId,
@@ -2964,254 +2963,6 @@ class $GoalInvestmentEnrichedViewView
       const {'goal_investment_table', 'investment_table', 'goal_table'};
 }
 
-class SipDO extends DataClass {
-  final int id;
-  final String? description;
-  final int investmentId;
-  final double amount;
-  final DateTime startDate;
-  final DateTime? endDate;
-  final Frequency frequency;
-  final DateTime? executedTill;
-  final String? investmentName;
-  final int? transactionCount;
-  const SipDO(
-      {required this.id,
-      this.description,
-      required this.investmentId,
-      required this.amount,
-      required this.startDate,
-      this.endDate,
-      required this.frequency,
-      this.executedTill,
-      this.investmentName,
-      this.transactionCount});
-  factory SipDO.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return SipDO(
-      id: serializer.fromJson<int>(json['id']),
-      description: serializer.fromJson<String?>(json['description']),
-      investmentId: serializer.fromJson<int>(json['investmentId']),
-      amount: serializer.fromJson<double>(json['amount']),
-      startDate: serializer.fromJson<DateTime>(json['startDate']),
-      endDate: serializer.fromJson<DateTime?>(json['endDate']),
-      frequency: $SipTableTable.$converterfrequency
-          .fromJson(serializer.fromJson<String>(json['frequency'])),
-      executedTill: serializer.fromJson<DateTime?>(json['executedTill']),
-      investmentName: serializer.fromJson<String?>(json['investmentName']),
-      transactionCount: serializer.fromJson<int?>(json['transactionCount']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'description': serializer.toJson<String?>(description),
-      'investmentId': serializer.toJson<int>(investmentId),
-      'amount': serializer.toJson<double>(amount),
-      'startDate': serializer.toJson<DateTime>(startDate),
-      'endDate': serializer.toJson<DateTime?>(endDate),
-      'frequency': serializer
-          .toJson<String>($SipTableTable.$converterfrequency.toJson(frequency)),
-      'executedTill': serializer.toJson<DateTime?>(executedTill),
-      'investmentName': serializer.toJson<String?>(investmentName),
-      'transactionCount': serializer.toJson<int?>(transactionCount),
-    };
-  }
-
-  SipDO copyWith(
-          {int? id,
-          Value<String?> description = const Value.absent(),
-          int? investmentId,
-          double? amount,
-          DateTime? startDate,
-          Value<DateTime?> endDate = const Value.absent(),
-          Frequency? frequency,
-          Value<DateTime?> executedTill = const Value.absent(),
-          Value<String?> investmentName = const Value.absent(),
-          Value<int?> transactionCount = const Value.absent()}) =>
-      SipDO(
-        id: id ?? this.id,
-        description: description.present ? description.value : this.description,
-        investmentId: investmentId ?? this.investmentId,
-        amount: amount ?? this.amount,
-        startDate: startDate ?? this.startDate,
-        endDate: endDate.present ? endDate.value : this.endDate,
-        frequency: frequency ?? this.frequency,
-        executedTill:
-            executedTill.present ? executedTill.value : this.executedTill,
-        investmentName:
-            investmentName.present ? investmentName.value : this.investmentName,
-        transactionCount: transactionCount.present
-            ? transactionCount.value
-            : this.transactionCount,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('SipDO(')
-          ..write('id: $id, ')
-          ..write('description: $description, ')
-          ..write('investmentId: $investmentId, ')
-          ..write('amount: $amount, ')
-          ..write('startDate: $startDate, ')
-          ..write('endDate: $endDate, ')
-          ..write('frequency: $frequency, ')
-          ..write('executedTill: $executedTill, ')
-          ..write('investmentName: $investmentName, ')
-          ..write('transactionCount: $transactionCount')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      id,
-      description,
-      investmentId,
-      amount,
-      startDate,
-      endDate,
-      frequency,
-      executedTill,
-      investmentName,
-      transactionCount);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is SipDO &&
-          other.id == this.id &&
-          other.description == this.description &&
-          other.investmentId == this.investmentId &&
-          other.amount == this.amount &&
-          other.startDate == this.startDate &&
-          other.endDate == this.endDate &&
-          other.frequency == this.frequency &&
-          other.executedTill == this.executedTill &&
-          other.investmentName == this.investmentName &&
-          other.transactionCount == this.transactionCount);
-}
-
-class $SipEnrichedViewView extends ViewInfo<$SipEnrichedViewView, SipDO>
-    implements HasResultSet {
-  final String? _alias;
-  @override
-  final _$AppDatabase attachedDatabase;
-  $SipEnrichedViewView(this.attachedDatabase, [this._alias]);
-  $SipTableTable get sip => attachedDatabase.sipTable.createAlias('t0');
-  $InvestmentTableTable get investment =>
-      attachedDatabase.investmentTable.createAlias('t1');
-  $TransactionTableTable get transaction =>
-      attachedDatabase.transactionTable.createAlias('t2');
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        description,
-        investmentId,
-        amount,
-        startDate,
-        endDate,
-        frequency,
-        executedTill,
-        investmentName,
-        transactionCount
-      ];
-  @override
-  String get aliasedName => _alias ?? entityName;
-  @override
-  String get entityName => 'sip_enriched_view';
-  @override
-  Map<SqlDialect, String>? get createViewStatements => null;
-  @override
-  $SipEnrichedViewView get asDslTable => this;
-  @override
-  SipDO map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return SipDO(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']),
-      investmentId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}INVESTMENT_ID'])!,
-      amount: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!,
-      startDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}START_DATE'])!,
-      endDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}END_DATE']),
-      frequency: $SipTableTable.$converterfrequency.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}FREQUENCY'])!),
-      executedTill: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}EXECUTED_TILL']),
-      investmentName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}investment_name']),
-      transactionCount: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}transaction_count']),
-    );
-  }
-
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'ID', aliasedName, false,
-      generatedAs: GeneratedAs(sip.id, false), type: DriftSqlType.int);
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'DESCRIPTION', aliasedName, true,
-      generatedAs: GeneratedAs(sip.description, false),
-      type: DriftSqlType.string);
-  late final GeneratedColumn<int> investmentId = GeneratedColumn<int>(
-      'INVESTMENT_ID', aliasedName, false,
-      generatedAs: GeneratedAs(sip.investmentId, false),
-      type: DriftSqlType.int);
-  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
-      'AMOUNT', aliasedName, false,
-      generatedAs: GeneratedAs(sip.amount, false), type: DriftSqlType.double);
-  late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
-      'START_DATE', aliasedName, false,
-      generatedAs: GeneratedAs(sip.startDate, false),
-      type: DriftSqlType.dateTime);
-  late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>(
-      'END_DATE', aliasedName, true,
-      generatedAs: GeneratedAs(sip.endDate, false),
-      type: DriftSqlType.dateTime);
-  late final GeneratedColumnWithTypeConverter<Frequency, String> frequency =
-      GeneratedColumn<String>('FREQUENCY', aliasedName, false,
-              generatedAs: GeneratedAs(sip.frequency, false),
-              type: DriftSqlType.string)
-          .withConverter<Frequency>($SipTableTable.$converterfrequency);
-  late final GeneratedColumn<DateTime> executedTill = GeneratedColumn<DateTime>(
-      'EXECUTED_TILL', aliasedName, true,
-      generatedAs: GeneratedAs(sip.executedTill, false),
-      type: DriftSqlType.dateTime);
-  late final GeneratedColumn<String> investmentName = GeneratedColumn<String>(
-      'investment_name', aliasedName, true,
-      generatedAs: GeneratedAs(investment.name, false),
-      type: DriftSqlType.string);
-  late final GeneratedColumn<int> transactionCount = GeneratedColumn<int>(
-      'transaction_count', aliasedName, true,
-      generatedAs: GeneratedAs(
-          transaction.id.count(
-              distinct: true, filter: transaction.sipId.equalsExp(sip.id)),
-          false),
-      type: DriftSqlType.int);
-  @override
-  $SipEnrichedViewView createAlias(String alias) {
-    return $SipEnrichedViewView(attachedDatabase, alias);
-  }
-
-  @override
-  Query? get query =>
-      (attachedDatabase.selectOnly(sip)..addColumns($columns)).join([
-        innerJoin(investment, investment.id.equalsExp(sip.investmentId)),
-        leftOuterJoin(transaction, transaction.sipId.equalsExp(sip.id))
-      ])
-        ..groupBy([sip.id]);
-  @override
-  Set<String> get readTables =>
-      const {'sip_table', 'investment_table', 'transaction_table'};
-}
-
 class GoalDO extends DataClass {
   final int id;
   final String name;
@@ -3446,7 +3197,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $InvestmentEnrichedViewView(this);
   late final $GoalInvestmentEnrichedViewView goalInvestmentEnrichedView =
       $GoalInvestmentEnrichedViewView(this);
-  late final $SipEnrichedViewView sipEnrichedView = $SipEnrichedViewView(this);
   late final $GoalEnrichedViewView goalEnrichedView =
       $GoalEnrichedViewView(this);
   @override
@@ -3463,7 +3213,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         scriptTable,
         investmentEnrichedView,
         goalInvestmentEnrichedView,
-        sipEnrichedView,
         goalEnrichedView
       ];
 }

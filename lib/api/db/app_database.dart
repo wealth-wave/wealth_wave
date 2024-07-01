@@ -66,7 +66,7 @@ class TransactionTable extends Table {
   DateTimeColumn get createdOn => dateTime().named('CREATED_ON')();
 }
 
-@DataClassName('BaseSipDO')
+@DataClassName('SipDO')
 class SipTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -206,38 +206,6 @@ abstract class InvestmentEnrichedView extends View {
         ..groupBy([investment.id]);
 }
 
-@DataClassName('SipDO')
-abstract class SipEnrichedView extends View {
-  SipTable get sip;
-
-  InvestmentTable get investment;
-
-  TransactionTable get transaction;
-
-  Expression<String> get investmentName => investment.name;
-
-  Expression<int> get transactionCount => transaction.id
-      .count(distinct: true, filter: transaction.sipId.equalsExp(sip.id));
-
-  @override
-  Query as() => select([
-        sip.id,
-        sip.description,
-        sip.investmentId,
-        sip.amount,
-        sip.startDate,
-        sip.endDate,
-        sip.frequency,
-        sip.executedTill,
-        investmentName,
-        transactionCount,
-      ]).from(sip).join([
-        innerJoin(investment, investment.id.equalsExp(sip.investmentId)),
-        leftOuterJoin(transaction, transaction.sipId.equalsExp(sip.id)),
-      ])
-        ..groupBy([sip.id]);
-}
-
 @DataClassName('GoalInvestmentDO')
 abstract class GoalInvestmentEnrichedView extends View {
   GoalInvestmentTable get goalInvestment;
@@ -320,7 +288,6 @@ class ExpenseTable extends Table {
 ], views: [
   InvestmentEnrichedView,
   GoalInvestmentEnrichedView,
-  SipEnrichedView,
   GoalEnrichedView
 ])
 class AppDatabase extends _$AppDatabase {

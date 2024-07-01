@@ -28,7 +28,7 @@ class SipApiImpl implements SipApi {
 
   @override
   Future<List<SipDO>> getAll() async {
-    return (_db.select(_db.sipEnrichedView)
+    return (_db.select(_db.sipTable)
           ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
         .get();
   }
@@ -36,7 +36,7 @@ class SipApiImpl implements SipApi {
   @override
   Future<List<SipDO>> getBy({final int? investmentId}) async {
     if (investmentId != null) {
-      return (_db.select(_db.sipEnrichedView)
+      return (_db.select(_db.sipTable)
             ..where((t) => t.investmentId.equals(investmentId))
             ..orderBy([(t) => OrderingTerm.desc(t.startDate)]))
           .get();
@@ -47,7 +47,7 @@ class SipApiImpl implements SipApi {
 
   @override
   Future<SipDO> getById({required final int id}) async {
-    return (_db.select(_db.sipEnrichedView)..where((t) => t.id.equals(id)))
+    return (_db.select(_db.sipTable)..where((t) => t.id.equals(id)))
         .getSingle();
   }
 
