@@ -2447,7 +2447,6 @@ class InvestmentDO extends DataClass {
   final String? basketName;
   final int? totalTransactions;
   final int? totalSips;
-  final int? taggedGoals;
   final double? qty;
   const InvestmentDO(
       {required this.id,
@@ -2462,7 +2461,6 @@ class InvestmentDO extends DataClass {
       this.basketName,
       this.totalTransactions,
       this.totalSips,
-      this.taggedGoals,
       this.qty});
   factory InvestmentDO.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
@@ -2481,7 +2479,6 @@ class InvestmentDO extends DataClass {
       basketName: serializer.fromJson<String?>(json['basketName']),
       totalTransactions: serializer.fromJson<int?>(json['totalTransactions']),
       totalSips: serializer.fromJson<int?>(json['totalSips']),
-      taggedGoals: serializer.fromJson<int?>(json['taggedGoals']),
       qty: serializer.fromJson<double?>(json['qty']),
     );
   }
@@ -2502,7 +2499,6 @@ class InvestmentDO extends DataClass {
       'basketName': serializer.toJson<String?>(basketName),
       'totalTransactions': serializer.toJson<int?>(totalTransactions),
       'totalSips': serializer.toJson<int?>(totalSips),
-      'taggedGoals': serializer.toJson<int?>(taggedGoals),
       'qty': serializer.toJson<double?>(qty),
     };
   }
@@ -2520,7 +2516,6 @@ class InvestmentDO extends DataClass {
           Value<String?> basketName = const Value.absent(),
           Value<int?> totalTransactions = const Value.absent(),
           Value<int?> totalSips = const Value.absent(),
-          Value<int?> taggedGoals = const Value.absent(),
           Value<double?> qty = const Value.absent()}) =>
       InvestmentDO(
         id: id ?? this.id,
@@ -2539,7 +2534,6 @@ class InvestmentDO extends DataClass {
             ? totalTransactions.value
             : this.totalTransactions,
         totalSips: totalSips.present ? totalSips.value : this.totalSips,
-        taggedGoals: taggedGoals.present ? taggedGoals.value : this.taggedGoals,
         qty: qty.present ? qty.value : this.qty,
       );
   @override
@@ -2557,7 +2551,6 @@ class InvestmentDO extends DataClass {
           ..write('basketName: $basketName, ')
           ..write('totalTransactions: $totalTransactions, ')
           ..write('totalSips: $totalSips, ')
-          ..write('taggedGoals: $taggedGoals, ')
           ..write('qty: $qty')
           ..write(')'))
         .toString();
@@ -2577,7 +2570,6 @@ class InvestmentDO extends DataClass {
       basketName,
       totalTransactions,
       totalSips,
-      taggedGoals,
       qty);
   @override
   bool operator ==(Object other) =>
@@ -2595,7 +2587,6 @@ class InvestmentDO extends DataClass {
           other.basketName == this.basketName &&
           other.totalTransactions == this.totalTransactions &&
           other.totalSips == this.totalSips &&
-          other.taggedGoals == this.taggedGoals &&
           other.qty == this.qty);
 }
 
@@ -2612,11 +2603,9 @@ class $InvestmentEnrichedViewView
       attachedDatabase.basketTable.createAlias('t1');
   $TransactionTableTable get transaction =>
       attachedDatabase.transactionTable.createAlias('t2');
-  $GoalInvestmentTableTable get goalInvestment =>
-      attachedDatabase.goalInvestmentTable.createAlias('t3');
-  $SipTableTable get sip => attachedDatabase.sipTable.createAlias('t4');
+  $SipTableTable get sip => attachedDatabase.sipTable.createAlias('t3');
   $ScriptTableTable get script =>
-      attachedDatabase.scriptTable.createAlias('t5');
+      attachedDatabase.scriptTable.createAlias('t4');
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2631,7 +2620,6 @@ class $InvestmentEnrichedViewView
         basketName,
         totalTransactions,
         totalSips,
-        taggedGoals,
         qty
       ];
   @override
@@ -2671,8 +2659,6 @@ class $InvestmentEnrichedViewView
           .read(DriftSqlType.int, data['${effectivePrefix}total_transactions']),
       totalSips: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}total_sips']),
-      taggedGoals: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}tagged_goals']),
       qty: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}qty']),
     );
@@ -2732,14 +2718,6 @@ class $InvestmentEnrichedViewView
               filter: sip.investmentId.equalsExp(investment.id)),
           false),
       type: DriftSqlType.int);
-  late final GeneratedColumn<int> taggedGoals = GeneratedColumn<int>(
-      'tagged_goals', aliasedName, true,
-      generatedAs: GeneratedAs(
-          goalInvestment.goalId.count(
-              distinct: true,
-              filter: goalInvestment.investmentId.equalsExp(investment.id)),
-          false),
-      type: DriftSqlType.int);
   late final GeneratedColumn<double> qty = GeneratedColumn<double>(
       'qty', aliasedName, true,
       generatedAs: GeneratedAs(
@@ -2759,8 +2737,6 @@ class $InvestmentEnrichedViewView
         leftOuterJoin(
             transaction, transaction.investmentId.equalsExp(investment.id)),
         leftOuterJoin(sip, sip.investmentId.equalsExp(investment.id)),
-        leftOuterJoin(goalInvestment,
-            goalInvestment.investmentId.equalsExp(investment.id)),
         leftOuterJoin(script, script.investmentId.equalsExp(investment.id))
       ])
         ..groupBy([investment.id]);
@@ -2769,7 +2745,6 @@ class $InvestmentEnrichedViewView
         'investment_table',
         'basket_table',
         'transaction_table',
-        'goal_investment_table',
         'sip_table',
         'script_table'
       };

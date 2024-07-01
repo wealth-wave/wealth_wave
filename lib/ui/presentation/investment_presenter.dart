@@ -102,7 +102,6 @@ class InvestmentVO {
   final String? basketName;
   final List<Sip> sips;
   final List<Transaction> transactions;
-  final int taggedGoalCount;
   final bool hasScript;
   final Map<DateTime, double> investmentOverTime;
   final Map<DateTime, double> valueOverTime;
@@ -125,7 +124,6 @@ class InvestmentVO {
       required this.transactions,
       required this.sips,
       required this.hasScript,
-      required this.taggedGoalCount,
       required this.investmentOverTime,
       required this.valueOverTime});
 
@@ -146,7 +144,6 @@ class InvestmentVO {
         basketName: investment.basketName,
         transactions: investment.transactions,
         sips: investment.sips,
-        taggedGoalCount: investment.goalsCount,
         hasScript: investment.script != null,
         maturityDate: investment.maturityDate,
         investmentOverTime: investmentOverTime,

@@ -153,8 +153,6 @@ abstract class InvestmentEnrichedView extends View {
 
   TransactionTable get transaction;
 
-  GoalInvestmentTable get goalInvestment;
-
   SipTable get sip;
 
   ScriptTable get script;
@@ -172,11 +170,7 @@ abstract class InvestmentEnrichedView extends View {
 
   Expression<int> get totalSips => sip.id
       .count(distinct: true, filter: sip.investmentId.equalsExp(investment.id));
-
-  Expression<int> get taggedGoals => goalInvestment.goalId.count(
-      distinct: true,
-      filter: goalInvestment.investmentId.equalsExp(investment.id));
-
+  
   @override
   Query as() => select([
         investment.id,
@@ -191,15 +185,12 @@ abstract class InvestmentEnrichedView extends View {
         basketName,
         totalTransactions,
         totalSips,
-        taggedGoals,
         qty
       ]).from(investment).join([
         leftOuterJoin(basket, basket.id.equalsExp(investment.basketId)),
         leftOuterJoin(
             transaction, transaction.investmentId.equalsExp(investment.id)),
         leftOuterJoin(sip, sip.investmentId.equalsExp(investment.id)),
-        leftOuterJoin(goalInvestment,
-            goalInvestment.investmentId.equalsExp(investment.id)),
         leftOuterJoin(script,
             script.investmentId.equalsExp(investment.id))
       ])

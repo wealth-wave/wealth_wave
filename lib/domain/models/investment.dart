@@ -18,7 +18,6 @@ class Investment {
   final DateTime? maturityDate;
   final int? basketId;
   final String? basketName;
-  final int goalsCount;
   final List<Transaction> transactions;
   final List<Sip> sips;
   final Script? script;
@@ -35,7 +34,6 @@ class Investment {
       required this.basketId,
       required this.maturityDate,
       required this.basketName,
-      required this.goalsCount,
       required this.transactions,
       required this.sips,
       required this.script})
@@ -160,7 +158,6 @@ class Investment {
           basketId: investmentDO.basketId,
           maturityDate: investmentDO.maturityDate,
           basketName: investmentDO.basketName,
-          goalsCount: investmentDO.taggedGoals ?? 0,
           script: scriptDO != null ? Script.from(scriptDO: scriptDO) : null,
           transactions: transactionsDOs
               .map((transactionDO) =>

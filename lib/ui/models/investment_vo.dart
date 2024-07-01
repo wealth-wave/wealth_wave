@@ -19,7 +19,6 @@ class InvestmentVO {
   final String? basketName;
   final List<SipVO> sips;
   final List<TransactionVO> transactions;
-  final int taggedGoalCount;
   final bool hasScript;
 
   int get transactionCount => transactions.length;
@@ -42,8 +41,7 @@ class InvestmentVO {
       required this.maturityDate,
       required this.transactions,
       required this.sips,
-      required this.hasScript,
-      required this.taggedGoalCount});
+      required this.hasScript});
 
   factory InvestmentVO.from({required final Investment investment}) {
     return InvestmentVO._(
@@ -61,7 +59,6 @@ class InvestmentVO {
         basketName: investment.basketName,
         transactions: investment.transactions.map((e) => TransactionVO.from(transaction: e)).toList(),
         sips: investment.sips.map((e) => SipVO.from(transaction: e)).toList(),
-        taggedGoalCount: investment.goalsCount,
         hasScript: investment.script != null,
         maturityDate: investment.maturityDate);
   }
