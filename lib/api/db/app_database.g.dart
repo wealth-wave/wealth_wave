@@ -2434,6 +2434,513 @@ class ScriptTableCompanion extends UpdateCompanion<ScriptDO> {
   }
 }
 
+class $ExpenseTableTable extends ExpenseTable
+    with TableInfo<$ExpenseTableTable, ExpenseDO> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExpenseTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'ID', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'DESCRIPTION', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
+      'AMOUNT', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  @override
+  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
+      'TAGS', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdOnMeta =
+      const VerificationMeta('createdOn');
+  @override
+  late final GeneratedColumn<DateTime> createdOn = GeneratedColumn<DateTime>(
+      'CREATED_ON', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, description, amount, tags, createdOn];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'expense_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<ExpenseDO> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('ID')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
+    }
+    if (data.containsKey('DESCRIPTION')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['DESCRIPTION']!, _descriptionMeta));
+    }
+    if (data.containsKey('AMOUNT')) {
+      context.handle(_amountMeta,
+          amount.isAcceptableOrUnknown(data['AMOUNT']!, _amountMeta));
+    }
+    if (data.containsKey('TAGS')) {
+      context.handle(
+          _tagsMeta, tags.isAcceptableOrUnknown(data['TAGS']!, _tagsMeta));
+    }
+    if (data.containsKey('CREATED_ON')) {
+      context.handle(_createdOnMeta,
+          createdOn.isAcceptableOrUnknown(data['CREATED_ON']!, _createdOnMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ExpenseDO map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExpenseDO(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']),
+      amount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT']),
+      tags: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}TAGS']),
+      createdOn: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}CREATED_ON']),
+    );
+  }
+
+  @override
+  $ExpenseTableTable createAlias(String alias) {
+    return $ExpenseTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExpenseDO extends DataClass implements Insertable<ExpenseDO> {
+  final int id;
+  final String? description;
+  final double? amount;
+  final String? tags;
+  final DateTime? createdOn;
+  const ExpenseDO(
+      {required this.id,
+      this.description,
+      this.amount,
+      this.tags,
+      this.createdOn});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['ID'] = Variable<int>(id);
+    if (!nullToAbsent || description != null) {
+      map['DESCRIPTION'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || amount != null) {
+      map['AMOUNT'] = Variable<double>(amount);
+    }
+    if (!nullToAbsent || tags != null) {
+      map['TAGS'] = Variable<String>(tags);
+    }
+    if (!nullToAbsent || createdOn != null) {
+      map['CREATED_ON'] = Variable<DateTime>(createdOn);
+    }
+    return map;
+  }
+
+  ExpenseTableCompanion toCompanion(bool nullToAbsent) {
+    return ExpenseTableCompanion(
+      id: Value(id),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      amount:
+          amount == null && nullToAbsent ? const Value.absent() : Value(amount),
+      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
+      createdOn: createdOn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdOn),
+    );
+  }
+
+  factory ExpenseDO.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExpenseDO(
+      id: serializer.fromJson<int>(json['id']),
+      description: serializer.fromJson<String?>(json['description']),
+      amount: serializer.fromJson<double?>(json['amount']),
+      tags: serializer.fromJson<String?>(json['tags']),
+      createdOn: serializer.fromJson<DateTime?>(json['createdOn']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'description': serializer.toJson<String?>(description),
+      'amount': serializer.toJson<double?>(amount),
+      'tags': serializer.toJson<String?>(tags),
+      'createdOn': serializer.toJson<DateTime?>(createdOn),
+    };
+  }
+
+  ExpenseDO copyWith(
+          {int? id,
+          Value<String?> description = const Value.absent(),
+          Value<double?> amount = const Value.absent(),
+          Value<String?> tags = const Value.absent(),
+          Value<DateTime?> createdOn = const Value.absent()}) =>
+      ExpenseDO(
+        id: id ?? this.id,
+        description: description.present ? description.value : this.description,
+        amount: amount.present ? amount.value : this.amount,
+        tags: tags.present ? tags.value : this.tags,
+        createdOn: createdOn.present ? createdOn.value : this.createdOn,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ExpenseDO(')
+          ..write('id: $id, ')
+          ..write('description: $description, ')
+          ..write('amount: $amount, ')
+          ..write('tags: $tags, ')
+          ..write('createdOn: $createdOn')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, description, amount, tags, createdOn);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExpenseDO &&
+          other.id == this.id &&
+          other.description == this.description &&
+          other.amount == this.amount &&
+          other.tags == this.tags &&
+          other.createdOn == this.createdOn);
+}
+
+class ExpenseTableCompanion extends UpdateCompanion<ExpenseDO> {
+  final Value<int> id;
+  final Value<String?> description;
+  final Value<double?> amount;
+  final Value<String?> tags;
+  final Value<DateTime?> createdOn;
+  const ExpenseTableCompanion({
+    this.id = const Value.absent(),
+    this.description = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.createdOn = const Value.absent(),
+  });
+  ExpenseTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.description = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.createdOn = const Value.absent(),
+  });
+  static Insertable<ExpenseDO> custom({
+    Expression<int>? id,
+    Expression<String>? description,
+    Expression<double>? amount,
+    Expression<String>? tags,
+    Expression<DateTime>? createdOn,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'ID': id,
+      if (description != null) 'DESCRIPTION': description,
+      if (amount != null) 'AMOUNT': amount,
+      if (tags != null) 'TAGS': tags,
+      if (createdOn != null) 'CREATED_ON': createdOn,
+    });
+  }
+
+  ExpenseTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String?>? description,
+      Value<double?>? amount,
+      Value<String?>? tags,
+      Value<DateTime?>? createdOn}) {
+    return ExpenseTableCompanion(
+      id: id ?? this.id,
+      description: description ?? this.description,
+      amount: amount ?? this.amount,
+      tags: tags ?? this.tags,
+      createdOn: createdOn ?? this.createdOn,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['ID'] = Variable<int>(id.value);
+    }
+    if (description.present) {
+      map['DESCRIPTION'] = Variable<String>(description.value);
+    }
+    if (amount.present) {
+      map['AMOUNT'] = Variable<double>(amount.value);
+    }
+    if (tags.present) {
+      map['TAGS'] = Variable<String>(tags.value);
+    }
+    if (createdOn.present) {
+      map['CREATED_ON'] = Variable<DateTime>(createdOn.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpenseTableCompanion(')
+          ..write('id: $id, ')
+          ..write('description: $description, ')
+          ..write('amount: $amount, ')
+          ..write('tags: $tags, ')
+          ..write('createdOn: $createdOn')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ExpenseTagTableTable extends ExpenseTagTable
+    with TableInfo<$ExpenseTagTableTable, ExpenseTagDO> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExpenseTagTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'ID', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'NAME', aliasedName, false,
+      check: () => name.isNotValue(''),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'DESCRIPTION', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, description];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'expense_tag_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<ExpenseTagDO> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('ID')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
+    }
+    if (data.containsKey('NAME')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['NAME']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('DESCRIPTION')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['DESCRIPTION']!, _descriptionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ExpenseTagDO map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExpenseTagDO(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}NAME'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']),
+    );
+  }
+
+  @override
+  $ExpenseTagTableTable createAlias(String alias) {
+    return $ExpenseTagTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExpenseTagDO extends DataClass implements Insertable<ExpenseTagDO> {
+  final int id;
+  final String name;
+  final String? description;
+  const ExpenseTagDO({required this.id, required this.name, this.description});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['ID'] = Variable<int>(id);
+    map['NAME'] = Variable<String>(name);
+    if (!nullToAbsent || description != null) {
+      map['DESCRIPTION'] = Variable<String>(description);
+    }
+    return map;
+  }
+
+  ExpenseTagTableCompanion toCompanion(bool nullToAbsent) {
+    return ExpenseTagTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+    );
+  }
+
+  factory ExpenseTagDO.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExpenseTagDO(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String?>(json['description']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String?>(description),
+    };
+  }
+
+  ExpenseTagDO copyWith(
+          {int? id,
+          String? name,
+          Value<String?> description = const Value.absent()}) =>
+      ExpenseTagDO(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description.present ? description.value : this.description,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ExpenseTagDO(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, description);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExpenseTagDO &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description);
+}
+
+class ExpenseTagTableCompanion extends UpdateCompanion<ExpenseTagDO> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String?> description;
+  const ExpenseTagTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+  });
+  ExpenseTagTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.description = const Value.absent(),
+  }) : name = Value(name);
+  static Insertable<ExpenseTagDO> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'ID': id,
+      if (name != null) 'NAME': name,
+      if (description != null) 'DESCRIPTION': description,
+    });
+  }
+
+  ExpenseTagTableCompanion copyWith(
+      {Value<int>? id, Value<String>? name, Value<String?>? description}) {
+    return ExpenseTagTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['ID'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['NAME'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['DESCRIPTION'] = Variable<String>(description.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpenseTagTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class InvestmentDO extends DataClass {
   final int id;
   final String name;
@@ -3168,6 +3675,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $GoalInvestmentTableTable goalInvestmentTable =
       $GoalInvestmentTableTable(this);
   late final $ScriptTableTable scriptTable = $ScriptTableTable(this);
+  late final $ExpenseTableTable expenseTable = $ExpenseTableTable(this);
+  late final $ExpenseTagTableTable expenseTagTable =
+      $ExpenseTagTableTable(this);
   late final $InvestmentEnrichedViewView investmentEnrichedView =
       $InvestmentEnrichedViewView(this);
   late final $GoalInvestmentEnrichedViewView goalInvestmentEnrichedView =
@@ -3186,6 +3696,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         goalTable,
         goalInvestmentTable,
         scriptTable,
+        expenseTable,
+        expenseTagTable,
         investmentEnrichedView,
         goalInvestmentEnrichedView,
         goalEnrichedView
