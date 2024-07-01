@@ -31,13 +31,9 @@ class BasketVO {
   final int id;
   final String name;
   final String description;
-  final double totalInvestedAmount;
-  final int totalInvestments;
 
   BasketVO._(
-      {required this.totalInvestedAmount,
-      required this.totalInvestments,
-      required this.id,
+      {required this.id,
       required this.name,
       required this.description});
 
@@ -45,8 +41,6 @@ class BasketVO {
     return BasketVO._(
         id: basket.id,
         name: basket.name,
-        description: basket.description ?? '',
-        totalInvestedAmount: basket.investedValue,
-        totalInvestments: basket.totalInvestment);
+        description: basket.description ?? '');
   }
 }

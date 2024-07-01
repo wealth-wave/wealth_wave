@@ -63,13 +63,7 @@ class _BasketsPage
           child: OverflowBar(
             alignment: MainAxisAlignment.spaceBetween,
             children: [
-              _getTitleWidget(basketVO, context),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(formatToCurrency(basketVO.totalInvestedAmount)),
-                ],
-              )
+              _getTitleWidget(basketVO, context)
             ],
           ),
         ));

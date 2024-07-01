@@ -4,7 +4,7 @@ part of 'app_database.dart';
 
 // ignore_for_file: type=lint
 class $BasketTableTable extends BasketTable
-    with TableInfo<$BasketTableTable, BaseBasketDO> {
+    with TableInfo<$BasketTableTable, BasketDO> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -40,7 +40,7 @@ class $BasketTableTable extends BasketTable
   String get actualTableName => $name;
   static const String $name = 'basket_table';
   @override
-  VerificationContext validateIntegrity(Insertable<BaseBasketDO> instance,
+  VerificationContext validateIntegrity(Insertable<BasketDO> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -65,9 +65,9 @@ class $BasketTableTable extends BasketTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  BaseBasketDO map(Map<String, dynamic> data, {String? tablePrefix}) {
+  BasketDO map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BaseBasketDO(
+    return BasketDO(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
       name: attachedDatabase.typeMapping
@@ -83,11 +83,11 @@ class $BasketTableTable extends BasketTable
   }
 }
 
-class BaseBasketDO extends DataClass implements Insertable<BaseBasketDO> {
+class BasketDO extends DataClass implements Insertable<BasketDO> {
   final int id;
   final String name;
   final String? description;
-  const BaseBasketDO({required this.id, required this.name, this.description});
+  const BasketDO({required this.id, required this.name, this.description});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -109,10 +109,10 @@ class BaseBasketDO extends DataClass implements Insertable<BaseBasketDO> {
     );
   }
 
-  factory BaseBasketDO.fromJson(Map<String, dynamic> json,
+  factory BasketDO.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BaseBasketDO(
+    return BasketDO(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String?>(json['description']),
@@ -128,18 +128,18 @@ class BaseBasketDO extends DataClass implements Insertable<BaseBasketDO> {
     };
   }
 
-  BaseBasketDO copyWith(
+  BasketDO copyWith(
           {int? id,
           String? name,
           Value<String?> description = const Value.absent()}) =>
-      BaseBasketDO(
+      BasketDO(
         id: id ?? this.id,
         name: name ?? this.name,
         description: description.present ? description.value : this.description,
       );
   @override
   String toString() {
-    return (StringBuffer('BaseBasketDO(')
+    return (StringBuffer('BasketDO(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('description: $description')
@@ -152,13 +152,13 @@ class BaseBasketDO extends DataClass implements Insertable<BaseBasketDO> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is BaseBasketDO &&
+      (other is BasketDO &&
           other.id == this.id &&
           other.name == this.name &&
           other.description == this.description);
 }
 
-class BasketTableCompanion extends UpdateCompanion<BaseBasketDO> {
+class BasketTableCompanion extends UpdateCompanion<BasketDO> {
   final Value<int> id;
   final Value<String> name;
   final Value<String?> description;
@@ -172,7 +172,7 @@ class BasketTableCompanion extends UpdateCompanion<BaseBasketDO> {
     required String name,
     this.description = const Value.absent(),
   }) : name = Value(name);
-  static Insertable<BaseBasketDO> custom({
+  static Insertable<BasketDO> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? description,
@@ -2436,145 +2436,6 @@ class ScriptTableCompanion extends UpdateCompanion<ScriptDO> {
   }
 }
 
-class BasketDO extends DataClass {
-  final int id;
-  final String name;
-  final String? description;
-  final int? totalInvestmentCount;
-  const BasketDO(
-      {required this.id,
-      required this.name,
-      this.description,
-      this.totalInvestmentCount});
-  factory BasketDO.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BasketDO(
-      id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      description: serializer.fromJson<String?>(json['description']),
-      totalInvestmentCount:
-          serializer.fromJson<int?>(json['totalInvestmentCount']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
-      'description': serializer.toJson<String?>(description),
-      'totalInvestmentCount': serializer.toJson<int?>(totalInvestmentCount),
-    };
-  }
-
-  BasketDO copyWith(
-          {int? id,
-          String? name,
-          Value<String?> description = const Value.absent(),
-          Value<int?> totalInvestmentCount = const Value.absent()}) =>
-      BasketDO(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        description: description.present ? description.value : this.description,
-        totalInvestmentCount: totalInvestmentCount.present
-            ? totalInvestmentCount.value
-            : this.totalInvestmentCount,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('BasketDO(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('description: $description, ')
-          ..write('totalInvestmentCount: $totalInvestmentCount')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, name, description, totalInvestmentCount);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is BasketDO &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.description == this.description &&
-          other.totalInvestmentCount == this.totalInvestmentCount);
-}
-
-class $BasketEnrichedViewView
-    extends ViewInfo<$BasketEnrichedViewView, BasketDO>
-    implements HasResultSet {
-  final String? _alias;
-  @override
-  final _$AppDatabase attachedDatabase;
-  $BasketEnrichedViewView(this.attachedDatabase, [this._alias]);
-  $BasketTableTable get basket =>
-      attachedDatabase.basketTable.createAlias('t0');
-  $InvestmentTableTable get investment =>
-      attachedDatabase.investmentTable.createAlias('t1');
-  $TransactionTableTable get transaction =>
-      attachedDatabase.transactionTable.createAlias('t2');
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, description, totalInvestmentCount];
-  @override
-  String get aliasedName => _alias ?? entityName;
-  @override
-  String get entityName => 'basket_enriched_view';
-  @override
-  Map<SqlDialect, String>? get createViewStatements => null;
-  @override
-  $BasketEnrichedViewView get asDslTable => this;
-  @override
-  BasketDO map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BasketDO(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}NAME'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']),
-      totalInvestmentCount: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}total_investment_count']),
-    );
-  }
-
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'ID', aliasedName, false,
-      generatedAs: GeneratedAs(basket.id, false), type: DriftSqlType.int);
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'NAME', aliasedName, false,
-      generatedAs: GeneratedAs(basket.name, false), type: DriftSqlType.string);
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'DESCRIPTION', aliasedName, true,
-      generatedAs: GeneratedAs(basket.description, false),
-      type: DriftSqlType.string);
-  late final GeneratedColumn<int> totalInvestmentCount = GeneratedColumn<int>(
-      'total_investment_count', aliasedName, true,
-      generatedAs: GeneratedAs(
-          investment.id.count(
-              distinct: true, filter: investment.basketId.equalsExp(basket.id)),
-          false),
-      type: DriftSqlType.int);
-  @override
-  $BasketEnrichedViewView createAlias(String alias) {
-    return $BasketEnrichedViewView(attachedDatabase, alias);
-  }
-
-  @override
-  Query? get query =>
-      (attachedDatabase.selectOnly(basket)..addColumns($columns)).join(
-          [leftOuterJoin(investment, investment.basketId.equalsExp(basket.id))])
-        ..groupBy([basket.id]);
-  @override
-  Set<String> get readTables =>
-      const {'basket_table', 'investment_table', 'transaction_table'};
-}
-
 class InvestmentDO extends DataClass {
   final int id;
   final String name;
@@ -3800,8 +3661,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $GoalInvestmentTableTable goalInvestmentTable =
       $GoalInvestmentTableTable(this);
   late final $ScriptTableTable scriptTable = $ScriptTableTable(this);
-  late final $BasketEnrichedViewView basketEnrichedView =
-      $BasketEnrichedViewView(this);
   late final $InvestmentEnrichedViewView investmentEnrichedView =
       $InvestmentEnrichedViewView(this);
   late final $GoalInvestmentEnrichedViewView goalInvestmentEnrichedView =
@@ -3823,7 +3682,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         goalTable,
         goalInvestmentTable,
         scriptTable,
-        basketEnrichedView,
         investmentEnrichedView,
         goalInvestmentEnrichedView,
         transactionEnrichedView,

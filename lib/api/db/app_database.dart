@@ -7,7 +7,7 @@ import 'package:wealth_wave/contract/risk_level.dart';
 
 part 'app_database.g.dart';
 
-@DataClassName('BaseBasketDO')
+@DataClassName('BasketDO')
 class BasketTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -269,32 +269,6 @@ abstract class SipEnrichedView extends View {
         ..groupBy([sip.id]);
 }
 
-@DataClassName('BasketDO')
-abstract class BasketEnrichedView extends View {
-  BasketTable get basket;
-
-  InvestmentTable get investment;
-
-  TransactionTable get transaction;
-
-  Expression<int> get totalInvestmentCount => investment.id
-      .count(distinct: true, filter: investment.basketId.equalsExp(basket.id));
-
-  Expression<double> get investedAmount => transaction.amount
-      .sum(filter: transaction.investmentId.equalsExp(investment.id));
-
-  @override
-  Query as() => select([
-        basket.id,
-        basket.name,
-        basket.description,
-        totalInvestmentCount,
-      ]).from(basket).join([
-        leftOuterJoin(investment, investment.basketId.equalsExp(basket.id)),
-      ])
-        ..groupBy([basket.id]);
-}
-
 @DataClassName('GoalInvestmentDO')
 abstract class GoalInvestmentEnrichedView extends View {
   GoalInvestmentTable get goalInvestment;
@@ -352,6 +326,20 @@ abstract class GoalEnrichedView extends View {
         ..groupBy([goal.id]);
 }
 
+@DataClassName('BaseExpenseDO')
+class ExpenseTable extends Table {
+  IntColumn get id => integer().named('ID').autoIncrement()();
+
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
+
+  RealColumn get amount => real().nullable().named('AMOUNT')();
+
+  TextColumn get tags => text().nullable().named('TAGS')();
+
+  DateTimeColumn get createdOn =>
+      dateTime().nullable().named('CREATED_ON')();
+}
+
 @DriftDatabase(tables: [
   BasketTable,
   InvestmentTable,
@@ -361,7 +349,6 @@ abstract class GoalEnrichedView extends View {
   GoalInvestmentTable,
   ScriptTable
 ], views: [
-  BasketEnrichedView,
   InvestmentEnrichedView,
   GoalInvestmentEnrichedView,
   TransactionEnrichedView,
