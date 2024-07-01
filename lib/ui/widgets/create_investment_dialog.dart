@@ -159,10 +159,8 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
           const SizedBox(height: AppDimen.defaultPadding),
           TextFormField(
             textInputAction: TextInputAction.next,
+            maxLines: 4,
             controller: _descriptionController,
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[^a-zA-Z0-9\s]'))
-            ],
             decoration: const InputDecoration(
                 labelText: 'Description', border: OutlineInputBorder()),
           ),
