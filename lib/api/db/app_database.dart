@@ -197,6 +197,32 @@ abstract class InvestmentEnrichedView extends View {
         ..groupBy([investment.id]);
 }
 
+@DataClassName('GoalDO')
+abstract class GoalEnrichedView extends View {
+  GoalTable get goal;
+
+  GoalInvestmentTable get goalInvestment;
+
+  Expression<int> get taggedInvestmentCount => goalInvestment.investmentId
+      .count(distinct: true, filter: goalInvestment.goalId.equalsExp(goal.id));
+
+  @override
+  Query as() => select([
+        goal.id,
+        goal.name,
+        goal.description,
+        goal.importance,
+        goal.maturityDate,
+        goal.amount,
+        goal.inflation,
+        goal.amountUpdatedOn,
+        taggedInvestmentCount
+      ]).from(goal).join([
+        leftOuterJoin(goalInvestment, goalInvestment.goalId.equalsExp(goal.id)),
+      ])
+        ..groupBy([goal.id]);
+}
+
 @DataClassName('GoalInvestmentDO')
 abstract class GoalInvestmentEnrichedView extends View {
   GoalInvestmentTable get goalInvestment;
@@ -228,33 +254,7 @@ abstract class GoalInvestmentEnrichedView extends View {
         ..groupBy([goalInvestment.id]);
 }
 
-@DataClassName('GoalDO')
-abstract class GoalEnrichedView extends View {
-  GoalTable get goal;
-
-  GoalInvestmentTable get goalInvestment;
-
-  Expression<int> get taggedInvestmentCount => goalInvestment.investmentId
-      .count(distinct: true, filter: goalInvestment.goalId.equalsExp(goal.id));
-
-  @override
-  Query as() => select([
-        goal.id,
-        goal.name,
-        goal.description,
-        goal.importance,
-        goal.maturityDate,
-        goal.amount,
-        goal.inflation,
-        goal.amountUpdatedOn,
-        taggedInvestmentCount
-      ]).from(goal).join([
-        leftOuterJoin(goalInvestment, goalInvestment.goalId.equalsExp(goal.id)),
-      ])
-        ..groupBy([goal.id]);
-}
-
-@DataClassName('BaseExpenseDO')
+@DataClassName('ExpenseDO')
 class ExpenseTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
@@ -268,6 +268,16 @@ class ExpenseTable extends Table {
       dateTime().nullable().named('CREATED_ON')();
 }
 
+@DataClassName('ExpenseTagDO')
+class ExpenseTagTable extends Table {
+  IntColumn get id => integer().named('ID').autoIncrement()();
+
+  TextColumn get name =>
+      text().named('NAME').check(name.isNotValue('')).unique()();
+
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
+}
+
 @DriftDatabase(tables: [
   BasketTable,
   InvestmentTable,
@@ -275,7 +285,9 @@ class ExpenseTable extends Table {
   GoalTable,
   SipTable,
   GoalInvestmentTable,
-  ScriptTable
+  ScriptTable,
+  ExpenseTable,
+  ExpenseTagTable
 ], views: [
   InvestmentEnrichedView,
   GoalInvestmentEnrichedView,
@@ -305,6 +317,8 @@ class AppDatabase extends _$AppDatabase {
         await executor.runSelect('SELECT * FROM goal_investment_table', []);
     final sipBackup = await executor.runSelect('SELECT * FROM sip_table', []);
     final scriptBackup = await executor.runSelect('SELECT * FROM script_table', []);
+    final expenseBackup = await executor.runSelect('SELECT * FROM expense_table', []);
+    final expenseTagBackup = await executor.runSelect('SELECT * FROM expense_tag_table', []);
 
     return {
       'basket_table': basketBackup,
@@ -314,6 +328,8 @@ class AppDatabase extends _$AppDatabase {
       'goal_table': goalBackup,
       'goal_investment_table': goalInvestmentBackup,
       'script_table': scriptBackup,
+      'expense_table': expenseBackup,
+      'expense_tag_table': expenseTagBackup
     };
   }
 
