@@ -2941,6 +2941,262 @@ class ExpenseTagTableCompanion extends UpdateCompanion<ExpenseTagDO> {
   }
 }
 
+class $AggregatedExpenseTableTable extends AggregatedExpenseTable
+    with TableInfo<$AggregatedExpenseTableTable, AggregatedExpenseDO> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AggregatedExpenseTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'ID', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
+      'AMOUNT', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  @override
+  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
+      'TAGS', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdMonthDateMeta =
+      const VerificationMeta('createdMonthDate');
+  @override
+  late final GeneratedColumn<DateTime> createdMonthDate =
+      GeneratedColumn<DateTime>('CREATED_MONTH_DATE', aliasedName, true,
+          type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, amount, tags, createdMonthDate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'aggregated_expense_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<AggregatedExpenseDO> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('ID')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['ID']!, _idMeta));
+    }
+    if (data.containsKey('AMOUNT')) {
+      context.handle(_amountMeta,
+          amount.isAcceptableOrUnknown(data['AMOUNT']!, _amountMeta));
+    }
+    if (data.containsKey('TAGS')) {
+      context.handle(
+          _tagsMeta, tags.isAcceptableOrUnknown(data['TAGS']!, _tagsMeta));
+    }
+    if (data.containsKey('CREATED_MONTH_DATE')) {
+      context.handle(
+          _createdMonthDateMeta,
+          createdMonthDate.isAcceptableOrUnknown(
+              data['CREATED_MONTH_DATE']!, _createdMonthDateMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AggregatedExpenseDO map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AggregatedExpenseDO(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
+      amount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT']),
+      tags: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}TAGS']),
+      createdMonthDate: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}CREATED_MONTH_DATE']),
+    );
+  }
+
+  @override
+  $AggregatedExpenseTableTable createAlias(String alias) {
+    return $AggregatedExpenseTableTable(attachedDatabase, alias);
+  }
+}
+
+class AggregatedExpenseDO extends DataClass
+    implements Insertable<AggregatedExpenseDO> {
+  final int id;
+  final double? amount;
+  final String? tags;
+  final DateTime? createdMonthDate;
+  const AggregatedExpenseDO(
+      {required this.id, this.amount, this.tags, this.createdMonthDate});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['ID'] = Variable<int>(id);
+    if (!nullToAbsent || amount != null) {
+      map['AMOUNT'] = Variable<double>(amount);
+    }
+    if (!nullToAbsent || tags != null) {
+      map['TAGS'] = Variable<String>(tags);
+    }
+    if (!nullToAbsent || createdMonthDate != null) {
+      map['CREATED_MONTH_DATE'] = Variable<DateTime>(createdMonthDate);
+    }
+    return map;
+  }
+
+  AggregatedExpenseTableCompanion toCompanion(bool nullToAbsent) {
+    return AggregatedExpenseTableCompanion(
+      id: Value(id),
+      amount:
+          amount == null && nullToAbsent ? const Value.absent() : Value(amount),
+      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
+      createdMonthDate: createdMonthDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdMonthDate),
+    );
+  }
+
+  factory AggregatedExpenseDO.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AggregatedExpenseDO(
+      id: serializer.fromJson<int>(json['id']),
+      amount: serializer.fromJson<double?>(json['amount']),
+      tags: serializer.fromJson<String?>(json['tags']),
+      createdMonthDate:
+          serializer.fromJson<DateTime?>(json['createdMonthDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'amount': serializer.toJson<double?>(amount),
+      'tags': serializer.toJson<String?>(tags),
+      'createdMonthDate': serializer.toJson<DateTime?>(createdMonthDate),
+    };
+  }
+
+  AggregatedExpenseDO copyWith(
+          {int? id,
+          Value<double?> amount = const Value.absent(),
+          Value<String?> tags = const Value.absent(),
+          Value<DateTime?> createdMonthDate = const Value.absent()}) =>
+      AggregatedExpenseDO(
+        id: id ?? this.id,
+        amount: amount.present ? amount.value : this.amount,
+        tags: tags.present ? tags.value : this.tags,
+        createdMonthDate: createdMonthDate.present
+            ? createdMonthDate.value
+            : this.createdMonthDate,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('AggregatedExpenseDO(')
+          ..write('id: $id, ')
+          ..write('amount: $amount, ')
+          ..write('tags: $tags, ')
+          ..write('createdMonthDate: $createdMonthDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, amount, tags, createdMonthDate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AggregatedExpenseDO &&
+          other.id == this.id &&
+          other.amount == this.amount &&
+          other.tags == this.tags &&
+          other.createdMonthDate == this.createdMonthDate);
+}
+
+class AggregatedExpenseTableCompanion
+    extends UpdateCompanion<AggregatedExpenseDO> {
+  final Value<int> id;
+  final Value<double?> amount;
+  final Value<String?> tags;
+  final Value<DateTime?> createdMonthDate;
+  const AggregatedExpenseTableCompanion({
+    this.id = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.createdMonthDate = const Value.absent(),
+  });
+  AggregatedExpenseTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.createdMonthDate = const Value.absent(),
+  });
+  static Insertable<AggregatedExpenseDO> custom({
+    Expression<int>? id,
+    Expression<double>? amount,
+    Expression<String>? tags,
+    Expression<DateTime>? createdMonthDate,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'ID': id,
+      if (amount != null) 'AMOUNT': amount,
+      if (tags != null) 'TAGS': tags,
+      if (createdMonthDate != null) 'CREATED_MONTH_DATE': createdMonthDate,
+    });
+  }
+
+  AggregatedExpenseTableCompanion copyWith(
+      {Value<int>? id,
+      Value<double?>? amount,
+      Value<String?>? tags,
+      Value<DateTime?>? createdMonthDate}) {
+    return AggregatedExpenseTableCompanion(
+      id: id ?? this.id,
+      amount: amount ?? this.amount,
+      tags: tags ?? this.tags,
+      createdMonthDate: createdMonthDate ?? this.createdMonthDate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['ID'] = Variable<int>(id.value);
+    }
+    if (amount.present) {
+      map['AMOUNT'] = Variable<double>(amount.value);
+    }
+    if (tags.present) {
+      map['TAGS'] = Variable<String>(tags.value);
+    }
+    if (createdMonthDate.present) {
+      map['CREATED_MONTH_DATE'] = Variable<DateTime>(createdMonthDate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AggregatedExpenseTableCompanion(')
+          ..write('id: $id, ')
+          ..write('amount: $amount, ')
+          ..write('tags: $tags, ')
+          ..write('createdMonthDate: $createdMonthDate')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class InvestmentDO extends DataClass {
   final int id;
   final String name;
@@ -3678,6 +3934,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ExpenseTableTable expenseTable = $ExpenseTableTable(this);
   late final $ExpenseTagTableTable expenseTagTable =
       $ExpenseTagTableTable(this);
+  late final $AggregatedExpenseTableTable aggregatedExpenseTable =
+      $AggregatedExpenseTableTable(this);
   late final $InvestmentEnrichedViewView investmentEnrichedView =
       $InvestmentEnrichedViewView(this);
   late final $GoalInvestmentEnrichedViewView goalInvestmentEnrichedView =
@@ -3698,6 +3956,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         scriptTable,
         expenseTable,
         expenseTagTable,
+        aggregatedExpenseTable,
         investmentEnrichedView,
         goalInvestmentEnrichedView,
         goalEnrichedView

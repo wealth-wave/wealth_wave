@@ -268,6 +268,18 @@ class ExpenseTable extends Table {
       dateTime().nullable().named('CREATED_ON')();
 }
 
+@DataClassName('AggregatedExpenseDO')
+class AggregatedExpenseTable extends Table {
+  IntColumn get id => integer().named('ID').autoIncrement()();
+
+  RealColumn get amount => real().nullable().named('AMOUNT')();
+
+  TextColumn get tags => text().nullable().named('TAGS')();
+
+  DateTimeColumn get createdMonthDate =>
+      dateTime().nullable().named('CREATED_MONTH_DATE')();
+}
+
 @DataClassName('ExpenseTagDO')
 class ExpenseTagTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
@@ -287,7 +299,8 @@ class ExpenseTagTable extends Table {
   GoalInvestmentTable,
   ScriptTable,
   ExpenseTable,
-  ExpenseTagTable
+  ExpenseTagTable,
+  AggregatedExpenseTable
 ], views: [
   InvestmentEnrichedView,
   GoalInvestmentEnrichedView,
@@ -319,6 +332,7 @@ class AppDatabase extends _$AppDatabase {
     final scriptBackup = await executor.runSelect('SELECT * FROM script_table', []);
     final expenseBackup = await executor.runSelect('SELECT * FROM expense_table', []);
     final expenseTagBackup = await executor.runSelect('SELECT * FROM expense_tag_table', []);
+    final aggregatedExpenseBackup = await executor.runSelect('SELECT * FROM aggregated_expense_table', []);
 
     return {
       'basket_table': basketBackup,
@@ -329,7 +343,8 @@ class AppDatabase extends _$AppDatabase {
       'goal_investment_table': goalInvestmentBackup,
       'script_table': scriptBackup,
       'expense_table': expenseBackup,
-      'expense_tag_table': expenseTagBackup
+      'expense_tag_table': expenseTagBackup,
+      'aggregated_expense_table': aggregatedExpenseBackup,
     };
   }
 
