@@ -260,24 +260,24 @@ class ExpenseTable extends Table {
 
   TextColumn get description => text().nullable().named('DESCRIPTION')();
 
-  RealColumn get amount => real().nullable().named('AMOUNT')();
+  RealColumn get amount => real().named('AMOUNT')();
 
-  TextColumn get tags => text().nullable().named('TAGS')();
+  TextColumn get tags => text().named('TAGS')();
 
   DateTimeColumn get createdOn =>
-      dateTime().nullable().named('CREATED_ON')();
+      dateTime().named('CREATED_ON')();
 }
 
 @DataClassName('AggregatedExpenseDO')
 class AggregatedExpenseTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
-  RealColumn get amount => real().nullable().named('AMOUNT')();
+  RealColumn get amount => real().named('AMOUNT')();
 
-  TextColumn get tags => text().nullable().named('TAGS')();
+  TextColumn get tags => text().named('TAGS')();
 
   DateTimeColumn get createdMonthDate =>
-      dateTime().nullable().named('CREATED_MONTH_DATE')();
+      dateTime().named('CREATED_MONTH_DATE')();
 }
 
 @DataClassName('ExpenseTagDO')

@@ -13,9 +13,9 @@ class AggregatedExpenseApi {
       required final List<String> tags}) async {
     return _db.into(_db.aggregatedExpenseTable).insert(
         AggregatedExpenseTableCompanion.insert(
-            amount: Value(amount),
-            tags: Value(tags.join(',')),
-            createdMonthDate: Value(monthDate)));
+            amount: amount,
+            tags: tags.join(','),
+            createdMonthDate: monthDate));
   }
 
   Future<List<AggregatedExpenseDO>> get() async {
@@ -28,6 +28,12 @@ class AggregatedExpenseApi {
     return (_db.select(_db.aggregatedExpenseTable)
           ..where((t) => t.id.equals(id)))
         .getSingle();
+  }
+
+  Future<AggregatedExpenseDO?> getByMonthAndTag({required final DateTime monthDate, required final List<String> tags}) async {
+    return (_db.select(_db.aggregatedExpenseTable)
+          ..where((t) => t.createdMonthDate.equals(monthDate) & t.tags.equals(tags.join(','))))
+        .getSingleOrNull();
   }
 
   Future<int> update(

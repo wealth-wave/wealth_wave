@@ -12,14 +12,24 @@ class ExpenseApi {
       required final DateTime createdOn,
       required final List<String> tags}) async {
     return _db.into(_db.expenseTable).insert(ExpenseTableCompanion.insert(
-        amount: Value(amount),
+        amount: amount,
         description: Value(description),
-        tags: Value(tags.join(',')),
-        createdOn: Value(createdOn)));
+        tags: tags.join(','),
+        createdOn: createdOn));
   }
 
   Future<List<ExpenseDO>> get() async {
     return (_db.select(_db.expenseTable)
+          ..orderBy([(t) => OrderingTerm(expression: t.createdOn)]))
+        .get();
+  }
+
+  Future<List<ExpenseDO>> getByMonth(
+      {required final DateTime monthDate}) async {
+    return (_db.select(_db.expenseTable)
+          ..where((t) =>
+              t.createdOn.year.equals(monthDate.year) &
+              t.createdOn.month.equals(monthDate.month))
           ..orderBy([(t) => OrderingTerm(expression: t.createdOn)]))
         .get();
   }
@@ -44,7 +54,6 @@ class ExpenseApi {
   }
 
   Future<int> deleteBy({required final int id}) async {
-    return (_db.delete(_db.expenseTable)..where((t) => t.id.equals(id)))
-        .go();
+    return (_db.delete(_db.expenseTable)..where((t) => t.id.equals(id))).go();
   }
 }

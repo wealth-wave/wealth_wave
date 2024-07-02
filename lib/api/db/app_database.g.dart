@@ -2458,19 +2458,19 @@ class $ExpenseTableTable extends ExpenseTable
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
-      'AMOUNT', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
+      'AMOUNT', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
   static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
   @override
   late final GeneratedColumn<String> tags = GeneratedColumn<String>(
-      'TAGS', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'TAGS', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _createdOnMeta =
       const VerificationMeta('createdOn');
   @override
   late final GeneratedColumn<DateTime> createdOn = GeneratedColumn<DateTime>(
-      'CREATED_ON', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      'CREATED_ON', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
       [id, description, amount, tags, createdOn];
@@ -2496,14 +2496,20 @@ class $ExpenseTableTable extends ExpenseTable
     if (data.containsKey('AMOUNT')) {
       context.handle(_amountMeta,
           amount.isAcceptableOrUnknown(data['AMOUNT']!, _amountMeta));
+    } else if (isInserting) {
+      context.missing(_amountMeta);
     }
     if (data.containsKey('TAGS')) {
       context.handle(
           _tagsMeta, tags.isAcceptableOrUnknown(data['TAGS']!, _tagsMeta));
+    } else if (isInserting) {
+      context.missing(_tagsMeta);
     }
     if (data.containsKey('CREATED_ON')) {
       context.handle(_createdOnMeta,
           createdOn.isAcceptableOrUnknown(data['CREATED_ON']!, _createdOnMeta));
+    } else if (isInserting) {
+      context.missing(_createdOnMeta);
     }
     return context;
   }
@@ -2519,11 +2525,11 @@ class $ExpenseTableTable extends ExpenseTable
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}DESCRIPTION']),
       amount: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT']),
+          .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!,
       tags: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}TAGS']),
+          .read(DriftSqlType.string, data['${effectivePrefix}TAGS'])!,
       createdOn: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}CREATED_ON']),
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}CREATED_ON'])!,
     );
   }
 
@@ -2536,15 +2542,15 @@ class $ExpenseTableTable extends ExpenseTable
 class ExpenseDO extends DataClass implements Insertable<ExpenseDO> {
   final int id;
   final String? description;
-  final double? amount;
-  final String? tags;
-  final DateTime? createdOn;
+  final double amount;
+  final String tags;
+  final DateTime createdOn;
   const ExpenseDO(
       {required this.id,
       this.description,
-      this.amount,
-      this.tags,
-      this.createdOn});
+      required this.amount,
+      required this.tags,
+      required this.createdOn});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2552,15 +2558,9 @@ class ExpenseDO extends DataClass implements Insertable<ExpenseDO> {
     if (!nullToAbsent || description != null) {
       map['DESCRIPTION'] = Variable<String>(description);
     }
-    if (!nullToAbsent || amount != null) {
-      map['AMOUNT'] = Variable<double>(amount);
-    }
-    if (!nullToAbsent || tags != null) {
-      map['TAGS'] = Variable<String>(tags);
-    }
-    if (!nullToAbsent || createdOn != null) {
-      map['CREATED_ON'] = Variable<DateTime>(createdOn);
-    }
+    map['AMOUNT'] = Variable<double>(amount);
+    map['TAGS'] = Variable<String>(tags);
+    map['CREATED_ON'] = Variable<DateTime>(createdOn);
     return map;
   }
 
@@ -2570,12 +2570,9 @@ class ExpenseDO extends DataClass implements Insertable<ExpenseDO> {
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
-      amount:
-          amount == null && nullToAbsent ? const Value.absent() : Value(amount),
-      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
-      createdOn: createdOn == null && nullToAbsent
-          ? const Value.absent()
-          : Value(createdOn),
+      amount: Value(amount),
+      tags: Value(tags),
+      createdOn: Value(createdOn),
     );
   }
 
@@ -2585,9 +2582,9 @@ class ExpenseDO extends DataClass implements Insertable<ExpenseDO> {
     return ExpenseDO(
       id: serializer.fromJson<int>(json['id']),
       description: serializer.fromJson<String?>(json['description']),
-      amount: serializer.fromJson<double?>(json['amount']),
-      tags: serializer.fromJson<String?>(json['tags']),
-      createdOn: serializer.fromJson<DateTime?>(json['createdOn']),
+      amount: serializer.fromJson<double>(json['amount']),
+      tags: serializer.fromJson<String>(json['tags']),
+      createdOn: serializer.fromJson<DateTime>(json['createdOn']),
     );
   }
   @override
@@ -2596,24 +2593,24 @@ class ExpenseDO extends DataClass implements Insertable<ExpenseDO> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'description': serializer.toJson<String?>(description),
-      'amount': serializer.toJson<double?>(amount),
-      'tags': serializer.toJson<String?>(tags),
-      'createdOn': serializer.toJson<DateTime?>(createdOn),
+      'amount': serializer.toJson<double>(amount),
+      'tags': serializer.toJson<String>(tags),
+      'createdOn': serializer.toJson<DateTime>(createdOn),
     };
   }
 
   ExpenseDO copyWith(
           {int? id,
           Value<String?> description = const Value.absent(),
-          Value<double?> amount = const Value.absent(),
-          Value<String?> tags = const Value.absent(),
-          Value<DateTime?> createdOn = const Value.absent()}) =>
+          double? amount,
+          String? tags,
+          DateTime? createdOn}) =>
       ExpenseDO(
         id: id ?? this.id,
         description: description.present ? description.value : this.description,
-        amount: amount.present ? amount.value : this.amount,
-        tags: tags.present ? tags.value : this.tags,
-        createdOn: createdOn.present ? createdOn.value : this.createdOn,
+        amount: amount ?? this.amount,
+        tags: tags ?? this.tags,
+        createdOn: createdOn ?? this.createdOn,
       );
   @override
   String toString() {
@@ -2643,9 +2640,9 @@ class ExpenseDO extends DataClass implements Insertable<ExpenseDO> {
 class ExpenseTableCompanion extends UpdateCompanion<ExpenseDO> {
   final Value<int> id;
   final Value<String?> description;
-  final Value<double?> amount;
-  final Value<String?> tags;
-  final Value<DateTime?> createdOn;
+  final Value<double> amount;
+  final Value<String> tags;
+  final Value<DateTime> createdOn;
   const ExpenseTableCompanion({
     this.id = const Value.absent(),
     this.description = const Value.absent(),
@@ -2656,10 +2653,12 @@ class ExpenseTableCompanion extends UpdateCompanion<ExpenseDO> {
   ExpenseTableCompanion.insert({
     this.id = const Value.absent(),
     this.description = const Value.absent(),
-    this.amount = const Value.absent(),
-    this.tags = const Value.absent(),
-    this.createdOn = const Value.absent(),
-  });
+    required double amount,
+    required String tags,
+    required DateTime createdOn,
+  })  : amount = Value(amount),
+        tags = Value(tags),
+        createdOn = Value(createdOn);
   static Insertable<ExpenseDO> custom({
     Expression<int>? id,
     Expression<String>? description,
@@ -2679,9 +2678,9 @@ class ExpenseTableCompanion extends UpdateCompanion<ExpenseDO> {
   ExpenseTableCompanion copyWith(
       {Value<int>? id,
       Value<String?>? description,
-      Value<double?>? amount,
-      Value<String?>? tags,
-      Value<DateTime?>? createdOn}) {
+      Value<double>? amount,
+      Value<String>? tags,
+      Value<DateTime>? createdOn}) {
     return ExpenseTableCompanion(
       id: id ?? this.id,
       description: description ?? this.description,
@@ -2959,19 +2958,19 @@ class $AggregatedExpenseTableTable extends AggregatedExpenseTable
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
-      'AMOUNT', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
+      'AMOUNT', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
   static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
   @override
   late final GeneratedColumn<String> tags = GeneratedColumn<String>(
-      'TAGS', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'TAGS', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _createdMonthDateMeta =
       const VerificationMeta('createdMonthDate');
   @override
   late final GeneratedColumn<DateTime> createdMonthDate =
-      GeneratedColumn<DateTime>('CREATED_MONTH_DATE', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      GeneratedColumn<DateTime>('CREATED_MONTH_DATE', aliasedName, false,
+          type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, amount, tags, createdMonthDate];
   @override
@@ -2991,16 +2990,22 @@ class $AggregatedExpenseTableTable extends AggregatedExpenseTable
     if (data.containsKey('AMOUNT')) {
       context.handle(_amountMeta,
           amount.isAcceptableOrUnknown(data['AMOUNT']!, _amountMeta));
+    } else if (isInserting) {
+      context.missing(_amountMeta);
     }
     if (data.containsKey('TAGS')) {
       context.handle(
           _tagsMeta, tags.isAcceptableOrUnknown(data['TAGS']!, _tagsMeta));
+    } else if (isInserting) {
+      context.missing(_tagsMeta);
     }
     if (data.containsKey('CREATED_MONTH_DATE')) {
       context.handle(
           _createdMonthDateMeta,
           createdMonthDate.isAcceptableOrUnknown(
               data['CREATED_MONTH_DATE']!, _createdMonthDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdMonthDateMeta);
     }
     return context;
   }
@@ -3014,11 +3019,11 @@ class $AggregatedExpenseTableTable extends AggregatedExpenseTable
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}ID'])!,
       amount: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT']),
+          .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!,
       tags: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}TAGS']),
+          .read(DriftSqlType.string, data['${effectivePrefix}TAGS'])!,
       createdMonthDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}CREATED_MONTH_DATE']),
+          DriftSqlType.dateTime, data['${effectivePrefix}CREATED_MONTH_DATE'])!,
     );
   }
 
@@ -3031,36 +3036,30 @@ class $AggregatedExpenseTableTable extends AggregatedExpenseTable
 class AggregatedExpenseDO extends DataClass
     implements Insertable<AggregatedExpenseDO> {
   final int id;
-  final double? amount;
-  final String? tags;
-  final DateTime? createdMonthDate;
+  final double amount;
+  final String tags;
+  final DateTime createdMonthDate;
   const AggregatedExpenseDO(
-      {required this.id, this.amount, this.tags, this.createdMonthDate});
+      {required this.id,
+      required this.amount,
+      required this.tags,
+      required this.createdMonthDate});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['ID'] = Variable<int>(id);
-    if (!nullToAbsent || amount != null) {
-      map['AMOUNT'] = Variable<double>(amount);
-    }
-    if (!nullToAbsent || tags != null) {
-      map['TAGS'] = Variable<String>(tags);
-    }
-    if (!nullToAbsent || createdMonthDate != null) {
-      map['CREATED_MONTH_DATE'] = Variable<DateTime>(createdMonthDate);
-    }
+    map['AMOUNT'] = Variable<double>(amount);
+    map['TAGS'] = Variable<String>(tags);
+    map['CREATED_MONTH_DATE'] = Variable<DateTime>(createdMonthDate);
     return map;
   }
 
   AggregatedExpenseTableCompanion toCompanion(bool nullToAbsent) {
     return AggregatedExpenseTableCompanion(
       id: Value(id),
-      amount:
-          amount == null && nullToAbsent ? const Value.absent() : Value(amount),
-      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
-      createdMonthDate: createdMonthDate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(createdMonthDate),
+      amount: Value(amount),
+      tags: Value(tags),
+      createdMonthDate: Value(createdMonthDate),
     );
   }
 
@@ -3069,10 +3068,9 @@ class AggregatedExpenseDO extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return AggregatedExpenseDO(
       id: serializer.fromJson<int>(json['id']),
-      amount: serializer.fromJson<double?>(json['amount']),
-      tags: serializer.fromJson<String?>(json['tags']),
-      createdMonthDate:
-          serializer.fromJson<DateTime?>(json['createdMonthDate']),
+      amount: serializer.fromJson<double>(json['amount']),
+      tags: serializer.fromJson<String>(json['tags']),
+      createdMonthDate: serializer.fromJson<DateTime>(json['createdMonthDate']),
     );
   }
   @override
@@ -3080,24 +3078,22 @@ class AggregatedExpenseDO extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'amount': serializer.toJson<double?>(amount),
-      'tags': serializer.toJson<String?>(tags),
-      'createdMonthDate': serializer.toJson<DateTime?>(createdMonthDate),
+      'amount': serializer.toJson<double>(amount),
+      'tags': serializer.toJson<String>(tags),
+      'createdMonthDate': serializer.toJson<DateTime>(createdMonthDate),
     };
   }
 
   AggregatedExpenseDO copyWith(
           {int? id,
-          Value<double?> amount = const Value.absent(),
-          Value<String?> tags = const Value.absent(),
-          Value<DateTime?> createdMonthDate = const Value.absent()}) =>
+          double? amount,
+          String? tags,
+          DateTime? createdMonthDate}) =>
       AggregatedExpenseDO(
         id: id ?? this.id,
-        amount: amount.present ? amount.value : this.amount,
-        tags: tags.present ? tags.value : this.tags,
-        createdMonthDate: createdMonthDate.present
-            ? createdMonthDate.value
-            : this.createdMonthDate,
+        amount: amount ?? this.amount,
+        tags: tags ?? this.tags,
+        createdMonthDate: createdMonthDate ?? this.createdMonthDate,
       );
   @override
   String toString() {
@@ -3125,9 +3121,9 @@ class AggregatedExpenseDO extends DataClass
 class AggregatedExpenseTableCompanion
     extends UpdateCompanion<AggregatedExpenseDO> {
   final Value<int> id;
-  final Value<double?> amount;
-  final Value<String?> tags;
-  final Value<DateTime?> createdMonthDate;
+  final Value<double> amount;
+  final Value<String> tags;
+  final Value<DateTime> createdMonthDate;
   const AggregatedExpenseTableCompanion({
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
@@ -3136,10 +3132,12 @@ class AggregatedExpenseTableCompanion
   });
   AggregatedExpenseTableCompanion.insert({
     this.id = const Value.absent(),
-    this.amount = const Value.absent(),
-    this.tags = const Value.absent(),
-    this.createdMonthDate = const Value.absent(),
-  });
+    required double amount,
+    required String tags,
+    required DateTime createdMonthDate,
+  })  : amount = Value(amount),
+        tags = Value(tags),
+        createdMonthDate = Value(createdMonthDate);
   static Insertable<AggregatedExpenseDO> custom({
     Expression<int>? id,
     Expression<double>? amount,
@@ -3156,9 +3154,9 @@ class AggregatedExpenseTableCompanion
 
   AggregatedExpenseTableCompanion copyWith(
       {Value<int>? id,
-      Value<double?>? amount,
-      Value<String?>? tags,
-      Value<DateTime?>? createdMonthDate}) {
+      Value<double>? amount,
+      Value<String>? tags,
+      Value<DateTime>? createdMonthDate}) {
     return AggregatedExpenseTableCompanion(
       id: id ?? this.id,
       amount: amount ?? this.amount,
