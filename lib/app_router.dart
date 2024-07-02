@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/ui/nav_path.dart';
 import 'package:wealth_wave/ui/pages/baskets_page.dart';
+import 'package:wealth_wave/ui/pages/expense_tags_page.dart';
 import 'package:wealth_wave/ui/pages/goal_page.dart';
 import 'package:wealth_wave/ui/pages/investment_page.dart';
 import 'package:wealth_wave/ui/pages/main_page.dart';
@@ -16,6 +17,8 @@ class AppRouter {
       return GoalPage(goalId: int.parse(uri.pathSegments[1]));
     } else if(NavPath.isBasketsPagePath(uri.pathSegments)) {
       return const BasketsPage();
+    } else if(NavPath.isExpenseTagsPagePath(uri.pathSegments)) {
+      return const ExpenseTagsPage();
     }
     return const MainPage(path: []);
   }

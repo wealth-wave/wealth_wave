@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
+import 'package:wealth_wave/ui/nav_path.dart';
 import 'package:wealth_wave/ui/presentation/main_presenter.dart';
 import 'package:wealth_wave/ui/pages/dashboard_page.dart';
 import 'package:wealth_wave/ui/pages/goals_page.dart';
@@ -18,7 +19,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
   var _selectedIndex = 0;
 
-@override
+  @override
   void initState() {
     super.initState();
     presenter.performSync();
@@ -32,15 +33,15 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
       });
     });
 
-    if(snapshot.contentLoading) {
+    if (snapshot.contentLoading) {
       return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Wealth Wave"),
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ));
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: const Text("Wealth Wave"),
+          ),
+          body: const Center(
+            child: CircularProgressIndicator(),
+          ));
     }
 
     return Scaffold(
@@ -51,10 +52,12 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
             PopupMenuButton<int>(
               onSelected: (value) {
                 if (value == 1) {
-                  Navigator.of(context).pushNamed('/baskets');
+                  Navigator.of(context).pushNamed(NavPath.baskets);
                 } else if (value == 2) {
-                  presenter.performBackup();
+                  Navigator.of(context).pushNamed(NavPath.expenseTags);
                 } else if (value == 3) {
+                  presenter.performBackup();
+                } else if (value == 4) {
                   presenter.performImportFile();
                 }
               },
@@ -65,10 +68,14 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
                 ),
                 const PopupMenuItem(
                   value: 2,
-                  child: Text('Export'),
+                  child: Text('Expense Tags'),
                 ),
                 const PopupMenuItem(
                   value: 3,
+                  child: Text('Export'),
+                ),
+                const PopupMenuItem(
+                  value: 4,
                   child: Text('Import'),
                 ),
               ],
