@@ -10,11 +10,11 @@ class ExpenseApi {
       {required final double amount,
       required final String? description,
       required final DateTime createdOn,
-      required final List<String> tags}) async {
+      required final String tags}) async {
     return _db.into(_db.expenseTable).insert(ExpenseTableCompanion.insert(
         amount: amount,
         description: Value(description),
-        tags: tags.join(','),
+        tags: tags,
         createdOn: createdOn));
   }
 
@@ -44,12 +44,12 @@ class ExpenseApi {
       required final double amount,
       required final String? description,
       required final DateTime createdOn,
-      required final List<String> tags}) async {
+      required final String tags}) async {
     return (_db.update(_db.expenseTable)..where((t) => t.id.equals(id))).write(
         ExpenseTableCompanion(
             amount: Value(amount),
             description: Value(description),
-            tags: Value(tags.join(',')),
+            tags: Value(tags),
             createdOn: Value(createdOn)));
   }
 
@@ -58,7 +58,10 @@ class ExpenseApi {
   }
 
   Future<int> deleteByMonthDate({required final DateTime monthDate}) async {
-    return (_db.delete(_db.expenseTable)..where((t) => t.createdOn.year.equals(monthDate.year) &
-              t.createdOn.month.equals(monthDate.month))).go();
+    return (_db.delete(_db.expenseTable)
+          ..where((t) =>
+              t.createdOn.year.equals(monthDate.year) &
+              t.createdOn.month.equals(monthDate.month)))
+        .go();
   }
 }

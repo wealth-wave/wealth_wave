@@ -10,10 +10,10 @@ class AggregatedExpenseApi {
   Future<int> create(
       {required final double amount,
       required final DateTime monthDate,
-      required final List<String> tags}) async {
+      required final String tags}) async {
     return _db.into(_db.aggregatedExpenseTable).insert(
         AggregatedExpenseTableCompanion.insert(
-            amount: amount, tags: processTag(tags), createdMonthDate: monthDate));
+            amount: amount, tags: tags, createdMonthDate: monthDate));
   }
 
   Future<List<AggregatedExpenseDO>> get() async {
@@ -29,12 +29,10 @@ class AggregatedExpenseApi {
   }
 
   Future<AggregatedExpenseDO?> getByMonthAndTag(
-      {required final DateTime monthDate,
-      required final List<String> tags}) async {
+      {required final DateTime monthDate, required final String tags}) async {
     return (_db.select(_db.aggregatedExpenseTable)
           ..where((t) =>
-              t.createdMonthDate.equals(monthDate) &
-              t.tags.equals(processTag(tags))))
+              t.createdMonthDate.equals(monthDate) & t.tags.equals(tags)))
         .getSingleOrNull();
   }
 
@@ -42,12 +40,12 @@ class AggregatedExpenseApi {
       {required final int id,
       required final double amount,
       required final DateTime createdOn,
-      required final List<String> tags}) async {
+      required final String tags}) async {
     return (_db.update(_db.aggregatedExpenseTable)
           ..where((t) => t.id.equals(id)))
         .write(AggregatedExpenseTableCompanion(
             amount: Value(amount),
-            tags: Value(processTag(tags)),
+            tags: Value(tags),
             createdMonthDate: Value(createdOn)));
   }
 
@@ -61,10 +59,5 @@ class AggregatedExpenseApi {
     return (_db.delete(_db.aggregatedExpenseTable)
           ..where((t) => t.createdMonthDate.equals(monthDate)))
         .go();
-  }
-
-  String processTag(final List<String> tags) {
-    tags.sort();
-    return tags.join(',');
   }
 }
