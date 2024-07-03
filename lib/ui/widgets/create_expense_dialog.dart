@@ -135,7 +135,8 @@ class _CreateExpensePage extends PageState<CreateExpenseViewState,
             MultiSelectDropDown(
               controller: _tagsController,
               onOptionSelected: (options) {
-                
+                presenter
+                    .onTagsChanged(options.map((e) => e.value ?? '').toList());
               },
               options: snapshot.tags
                   .map((e) => ValueItem(label: e, value: e))

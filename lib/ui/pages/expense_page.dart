@@ -24,23 +24,17 @@ class _ExpensePage
     super.initState();
     presenter.fetchTags();
     presenter.fetchExpenses();
-
-    _tagsController.addListener(() {
-      presenter.onTagsChanged(
-          tags: _tagsController.selectedOptions
-              .map((e) => e.value ?? '')
-              .toList());
-    });
   }
 
   @override
   Widget buildWidget(
       final BuildContext context, final ExpenseViewState snapshot) {
-
-    snapshot.onTagsFetched?.consume((_) {
-      _tagsController.setOptions(snapshot.tags
-          .map((e) => ValueItem(label: e, value: e))
-          .toList());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+       snapshot.onTagsFetched?.consume((_) {
+        _tagsController.setOptions(snapshot.tags
+            .map((e) => ValueItem(label: e, value: e))
+            .toList());
+      });
     });
 
     Map<DateTime, double> monthlyExpenses = snapshot.monthlyExpenses;
@@ -129,11 +123,13 @@ class _ExpensePage
           flex: 1,
           child: MultiSelectDropDown(
             controller: _tagsController,
-            onOptionSelected: (options) {},
+            onOptionSelected: (options) {
+              presenter.onTagsChanged(
+                  tags: options.map((e) => e.value ?? '').toList());
+            },
             options: tags.map((e) => ValueItem(label: e, value: e)).toList(),
-            selectedOptions: selectedTags
-                .map((e) => ValueItem(label: e, value: e))
-                .toList(),
+            selectedOptions:
+                selectedTags.map((e) => ValueItem(label: e, value: e)).toList(),
             chipConfig: const ChipConfig(wrapType: WrapType.wrap),
             dropdownHeight: 300,
             optionTextStyle: const TextStyle(fontSize: 16),
