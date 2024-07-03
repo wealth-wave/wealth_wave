@@ -123,6 +123,8 @@ class _CreateExpensePage extends PageState<CreateExpenseViewState,
             ),
             const SizedBox(height: AppDimen.defaultPadding),
             MultiSelectDialogField<String>(
+              buttonText: const Text('Choose Tags'),
+              title: const Text('Select Tags'),
               items: snapshot.tags.map((e) => MultiSelectItem(e, e)).toList(),
               initialValue: snapshot.selected,
               listType: MultiSelectListType.CHIP,

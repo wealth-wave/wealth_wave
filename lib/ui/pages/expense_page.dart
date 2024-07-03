@@ -202,59 +202,30 @@ class _ExpensePage
         padding: const EdgeInsets.all(AppDimen.defaultPadding),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Flexible(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Text(
-                      'Filter by Tag',
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                  ),
-                  MultiSelectDialogField<String>(
-                    items: tags.map((e) => MultiSelectItem(e, e)).toList(),
-                    initialValue: selectedTags,
-                    listType: MultiSelectListType.CHIP,
-                    onConfirm: (options) {
-                      presenter.onTagsChanged(tags: options);
-                    },
-                  ),
-                ],
+            MultiSelectDialogField<String>(
+                items: tags.map((e) => MultiSelectItem(e, e)).toList(),
+                initialValue: selectedTags,
+                buttonText: const Text('Filter by Tags'),
+                title: const Text('Select Tags'),
+                listType: MultiSelectListType.CHIP,
+                onConfirm: (options) {
+                  presenter.onTagsChanged(tags: options);
+                },
               ),
-            ),
+        
             const Padding(padding: EdgeInsets.all(AppDimen.minPadding)),
-            Flexible(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      'Filter by Duration',
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                  ),
-                  DropdownButton<ExpenseFilterType>(
-                    isExpanded: true,
-                    value: filterType,
-                    items: ExpenseFilterType.values
-                        .map((filterType) => DropdownMenuItem(
-                              value: filterType,
-                              child: Text(filterType.description),
-                            ))
-                        .toList(),
-                    onChanged: (filterType) {
-                      presenter.onFilterTypeChanged(filterType: filterType!);
-                    },
-                  ),
-                ],
-              ),
-            ),
+            MultiSelectDialogField<ExpenseFilterType>(
+                items: ExpenseFilterType.values.map((e) => MultiSelectItem(e, e.description)).toList(),
+                buttonText: const Text('Filter by Duration'),
+                title: const Text('Select Duration'),
+                validator: (value) => (value?.length ?? 0) > 1 ? 'Select single duration' : null,
+                listType: MultiSelectListType.CHIP,
+                onConfirm: (options) {
+                  presenter.onFilterTypeChanged(filterType: options.first);
+                },
+              )
           ],
         ));
   }
