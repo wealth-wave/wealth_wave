@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:pair/pair.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/presentation/expense_presenter.dart';
 import 'package:wealth_wave/ui/widgets/create_expense_dialog.dart';
+import 'package:wealth_wave/ui/widgets/view_monthly_expenses_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 class ExpensePage extends StatefulWidget {
@@ -146,22 +145,28 @@ class _ExpensePage
       required final double amount}) {
     return Card(
         margin: const EdgeInsets.all(AppDimen.minPadding),
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimen.minPadding),
-          child: OverflowBar(
-            alignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _getTitleWidget(
-                  context: context, monthDate: monthDate, amount: amount),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+        child: InkWell(
+            onTap: () => {
+                  showViewMonthlyExpensesDialog(
+                          context: context, monthDate: monthDate)
+                      .then((value) => presenter.fetchExpenses())
+                },
+            child: Padding(
+              padding: const EdgeInsets.all(AppDimen.minPadding),
+              child: OverflowBar(
+                alignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(formatToCurrency(amount)),
+                  _getTitleWidget(
+                      context: context, monthDate: monthDate, amount: amount),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(formatToCurrency(amount)),
+                    ],
+                  )
                 ],
-              )
-            ],
-          ),
-        ));
+              ),
+            )));
   }
 
   RichText _getTitleWidget(
@@ -205,27 +210,29 @@ class _ExpensePage
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             MultiSelectDialogField<String>(
-                items: tags.map((e) => MultiSelectItem(e, e)).toList(),
-                initialValue: selectedTags,
-                buttonText: const Text('Filter by Tags'),
-                title: const Text('Select Tags'),
-                listType: MultiSelectListType.CHIP,
-                onConfirm: (options) {
-                  presenter.onTagsChanged(tags: options);
-                },
-              ),
-        
+              items: tags.map((e) => MultiSelectItem(e, e)).toList(),
+              initialValue: selectedTags,
+              buttonText: const Text('Filter by Tags'),
+              title: const Text('Select Tags'),
+              listType: MultiSelectListType.CHIP,
+              onConfirm: (options) {
+                presenter.onTagsChanged(tags: options);
+              },
+            ),
             const Padding(padding: EdgeInsets.all(AppDimen.minPadding)),
             MultiSelectDialogField<ExpenseFilterType>(
-                items: ExpenseFilterType.values.map((e) => MultiSelectItem(e, e.description)).toList(),
-                buttonText: const Text('Filter by Duration'),
-                title: const Text('Select Duration'),
-                validator: (value) => (value?.length ?? 0) > 1 ? 'Select single duration' : null,
-                listType: MultiSelectListType.CHIP,
-                onConfirm: (options) {
-                  presenter.onFilterTypeChanged(filterType: options.first);
-                },
-              )
+              items: ExpenseFilterType.values
+                  .map((e) => MultiSelectItem(e, e.description))
+                  .toList(),
+              buttonText: const Text('Filter by Duration'),
+              title: const Text('Select Duration'),
+              validator: (value) =>
+                  (value?.length ?? 0) > 1 ? 'Select single duration' : null,
+              listType: MultiSelectListType.CHIP,
+              onConfirm: (options) {
+                presenter.onFilterTypeChanged(filterType: options.first);
+              },
+            )
           ],
         ));
   }
