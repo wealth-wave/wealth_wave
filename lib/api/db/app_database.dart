@@ -330,9 +330,9 @@ class AppDatabase extends _$AppDatabase {
         await executor.runSelect('SELECT * FROM goal_investment_table', []);
     final sipBackup = await executor.runSelect('SELECT * FROM sip_table', []);
     final scriptBackup = await executor.runSelect('SELECT * FROM script_table', []);
-    final expenseBackup = await executor.runSelect('SELECT * FROM expense_table', []);
-    final expenseTagBackup = await executor.runSelect('SELECT * FROM expense_tag_table', []);
-    final aggregatedExpenseBackup = await executor.runSelect('SELECT * FROM aggregated_expense_table', []);
+    //final expenseBackup = await executor.runSelect('SELECT * FROM expense_table', []);
+    //final expenseTagBackup = await executor.runSelect('SELECT * FROM expense_tag_table', []);
+    //final aggregatedExpenseBackup = await executor.runSelect('SELECT * FROM aggregated_expense_table', []);
 
     return {
       'basket_table': basketBackup,
@@ -342,9 +342,9 @@ class AppDatabase extends _$AppDatabase {
       'goal_table': goalBackup,
       'goal_investment_table': goalInvestmentBackup,
       'script_table': scriptBackup,
-      'expense_table': expenseBackup,
-      'expense_tag_table': expenseTagBackup,
-      'aggregated_expense_table': aggregatedExpenseBackup,
+      //'expense_table': expenseBackup,
+      //'expense_tag_table': expenseTagBackup,
+      //'aggregated_expense_table': aggregatedExpenseBackup,
     };
   }
 
