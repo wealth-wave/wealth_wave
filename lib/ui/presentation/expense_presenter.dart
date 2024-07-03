@@ -1,4 +1,5 @@
 import 'package:wealth_wave/core/presenter.dart';
+import 'package:wealth_wave/core/single_event.dart';
 import 'package:wealth_wave/domain/services/expense_service.dart';
 import 'package:wealth_wave/domain/services/expense_tag_service.dart';
 
@@ -16,8 +17,10 @@ class ExpensePresenter extends Presenter<ExpenseViewState> {
   void fetchTags() {
     _expenseTagService.get().then((tags) {
       tags.sort((a, b) => a.name.compareTo(b.name));
-      updateViewState((viewState) =>
-          viewState.tagsToFilter = tags.map((e) => e.name).toList());
+      updateViewState((viewState) {
+        viewState.tags = tags.map((e) => e.name).toList();
+        viewState.onTagsFetched = SingleEvent(null);
+      });
     });
   }
 
@@ -28,6 +31,12 @@ class ExpensePresenter extends Presenter<ExpenseViewState> {
       expenses
           .where((element) => element.tags
               .any((tag) => tagsToFilter.isEmpty || tagsToFilter.contains(tag)))
+          .where((element) => element.createdMonthDate.isAfter(DateTime.now()
+              .subtract(Duration(
+                  days: getViewState().filterType ==
+                          ExpenseFilterType.last12Months
+                      ? 365
+                      : 3650))))
           .forEach((element) {
         monthlyExpenses.update(
             element.createdMonthDate, (value) => value + element.amount,
@@ -37,9 +46,37 @@ class ExpensePresenter extends Presenter<ExpenseViewState> {
           (viewState) => viewState.monthlyExpenses = monthlyExpenses);
     });
   }
+
+  void onTagsChanged({required final List<String> tags}) {
+    updateViewState((viewState) => viewState.tagsToFilter = tags);
+    fetchExpenses();
+  }
+
+  void onFilterTypeChanged({required final ExpenseFilterType filterType}) {
+    updateViewState((viewState) => viewState.filterType = filterType);
+    fetchExpenses();
+  }
 }
 
 class ExpenseViewState {
+  ExpenseFilterType filterType = ExpenseFilterType.last10Years;
   List<String> tagsToFilter = [];
+  List<String> tags = [];
   Map<DateTime, double> monthlyExpenses = {};
+  SingleEvent<void>? onTagsFetched;
+}
+
+enum ExpenseFilterType { last12Months, last10Years }
+
+extension ExpenseFilterTypeDescription on ExpenseFilterType {
+  String get description {
+    switch (this) {
+      case ExpenseFilterType.last12Months:
+        return 'Last 12 Months';
+      case ExpenseFilterType.last10Years:
+        return 'Last 10 Years';
+      default:
+        return 'Unknown';
+    }
+  }
 }
