@@ -73,22 +73,41 @@ class _ExpensePage
     return ExpensePresenter();
   }
 
-  Widget _showMonthlyExpenseGraph(
-      {required BuildContext context,
-      required Map<DateTime, double> expenses}) {
-    List<Pair<String, double>> chartData = expenses.entries
-        .map((entry) => Pair(DateFormat('MMM').format(entry.key), entry.value))
-        .toList();
+  Widget _showMonthlyExpenseGraph({
+    required BuildContext context,
+    required Map<DateTime, double> expenses,
+  }) {
+    List<Pair<String, double>> chartData = [];
+    List<Pair<String, double>> cumulativeAverageData = [];
+    double runningTotal = 0;
+    int count = 0;
+
+    for (var entry in expenses.entries) {
+      count++;
+      runningTotal += entry.value;
+      double cumulativeAverage = runningTotal / count;
+      String month = DateFormat('MMM').format(entry.key);
+      chartData.add(Pair(month, entry.value));
+      cumulativeAverageData.add(Pair(month, cumulativeAverage));
+    }
+
     return SfCartesianChart(
       primaryXAxis: const CategoryAxis(),
       primaryYAxis: const NumericAxis(),
-      series: <ColumnSeries>[
+      series: [
         ColumnSeries<Pair<String, double>, String>(
           dataSource: chartData,
           xValueMapper: (Pair<String, double> data, _) => data.key,
           yValueMapper: (Pair<String, double> data, _) => data.value,
           name: 'Expenses',
-        )
+        ),
+        LineSeries<Pair<String, double>, String>(
+          dataSource: cumulativeAverageData,
+          xValueMapper: (Pair<String, double> data, _) => data.key,
+          yValueMapper: (Pair<String, double> data, _) => data.value,
+          name: 'Cumulative Average',
+          color: Colors.red,
+        ),
       ],
     );
   }
@@ -158,46 +177,74 @@ class _ExpensePage
             children: widgets));
   }
 
-  Widget _showFilterOptions(
-      {required BuildContext context,
-      required List<String> tags,
-      required List<String> selectedTags,
-      required ExpenseFilterType filterType}) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: MultiSelectDropDown(
-            controller: _tagsController,
-            onOptionSelected: (options) {
-              presenter.onTagsChanged(
-                  tags: options.map((e) => e.value ?? '').toList());
-            },
-            options: tags.map((e) => ValueItem(label: e, value: e)).toList(),
-            selectedOptions:
-                selectedTags.map((e) => ValueItem(label: e, value: e)).toList(),
-            chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-            dropdownHeight: 300,
-            optionTextStyle: const TextStyle(fontSize: 16),
-            selectedOptionIcon: const Icon(Icons.check_circle),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: DropdownButton<ExpenseFilterType>(
-            value: filterType,
-            items: ExpenseFilterType.values
-                .map((filterType) => DropdownMenuItem(
-                      value: filterType,
-                      child: Text(filterType.description),
-                    ))
-                .toList(),
-            onChanged: (filterType) {
-              presenter.onFilterTypeChanged(filterType: filterType!);
-            },
-          ),
-        ),
-      ],
-    );
+  Widget _showFilterOptions({
+    required BuildContext context,
+    required List<String> tags,
+    required List<String> selectedTags,
+    required ExpenseFilterType filterType,
+  }) {
+    return Padding(
+        padding: const EdgeInsets.all(AppDimen.defaultPadding),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Flexible(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Text(
+                      'Filter by Tag',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  ),
+                  MultiSelectDropDown(
+                    controller: _tagsController,
+                    onOptionSelected: (options) {
+                      presenter.onTagsChanged(
+                          tags: options.map((e) => e.value ?? '').toList());
+                    },
+                    options:
+                        tags.map((e) => ValueItem(label: e, value: e)).toList(),
+                    selectedOptions: selectedTags
+                        .map((e) => ValueItem(label: e, value: e))
+                        .toList(),
+                  ),
+                ],
+              ),
+            ),
+            const Padding(padding: EdgeInsets.all(AppDimen.minPadding)),
+            Flexible(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      'Filter by Duration',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  ),
+                  DropdownButton<ExpenseFilterType>(
+                    isExpanded: true,
+                    value: filterType,
+                    items: ExpenseFilterType.values
+                        .map((filterType) => DropdownMenuItem(
+                              value: filterType,
+                              child: Text(filterType.description),
+                            ))
+                        .toList(),
+                    onChanged: (filterType) {
+                      presenter.onFilterTypeChanged(filterType: filterType!);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 }
