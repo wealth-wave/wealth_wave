@@ -41,19 +41,35 @@ class _ExpensePage
     return Scaffold(
       body: Column(
         children: [
-          _showFilterOptions(
-              context: context,
-              tags: snapshot.tags,
-              selectedTags: snapshot.tagsToFilter,
-              filterType: snapshot.filterType),
+          Container(
+            padding: const EdgeInsets.all(AppDimen.minPadding),
+            child: _showFilterOptions(
+                context: context,
+                tags: snapshot.tags,
+                selectedTags: snapshot.tagsToFilter,
+                filterType: snapshot.filterType),
+          ),
           Expanded(
-              flex: 1,
+            flex: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              margin: const EdgeInsets.all(AppDimen.minPadding),
+              padding: const EdgeInsets.all(AppDimen.minPadding),
               child: _showMonthlyExpenseGraph(
-                  context: context, expenses: monthlyExpenses)),
+                  context: context, expenses: monthlyExpenses),
+            ),
+          ),
           Expanded(
-              flex: 1,
+            flex: 1,
+            child: Container(
+              padding: const EdgeInsets.all(AppDimen.minPadding),
               child: _showMonthlyExpenseList(
-                  context: context, expenses: monthlyExpenses)),
+                  context: context, expenses: monthlyExpenses),
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -93,7 +109,7 @@ class _ExpensePage
 
     return SfCartesianChart(
       primaryXAxis: const CategoryAxis(),
-      primaryYAxis: const NumericAxis(),
+      primaryYAxis: NumericAxis(numberFormat: NumberFormat.compactCurrency(symbol: '', locale: 'en_IN', decimalDigits: 0)),
       series: [
         ColumnSeries<Pair<String, double>, String>(
           dataSource: chartData,
@@ -130,9 +146,9 @@ class _ExpensePage
       required final DateTime monthDate,
       required final double amount}) {
     return Card(
-        margin: const EdgeInsets.all(AppDimen.defaultPadding),
+        margin: const EdgeInsets.all(AppDimen.minPadding),
         child: Padding(
-          padding: const EdgeInsets.all(AppDimen.defaultPadding),
+          padding: const EdgeInsets.all(AppDimen.minPadding),
           child: OverflowBar(
             alignment: MainAxisAlignment.spaceBetween,
             children: [
