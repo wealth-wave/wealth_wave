@@ -3,7 +3,7 @@ import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/ui/models/expense_tag_vo.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/presentation/expense_tags_presenter.dart';
-import 'package:wealth_wave/ui/widgets/create_basket_dialog.dart';
+import 'package:wealth_wave/ui/widgets/create_expense_tag_dialog.dart';
 
 class ExpenseTagsPage extends StatefulWidget {
   const ExpenseTagsPage({super.key});
@@ -39,7 +39,7 @@ class _ExpenseTagsPage
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showCreateBasketDialog(context: context).then((value) {
+          showCreateExpenseTagDialog(context: context).then((value) {
             presenter.fetchExpenseTags();
           });
         },
@@ -76,11 +76,11 @@ class _ExpenseTagsPage
       child: PopupMenuButton<int>(
         onSelected: (value) {
           if (value == 1) {
-            showCreateBasketDialog(
-                    context: context, basketIdTOUpdate: expenseTagVO.id)
+            showCreateExpenseTagDialog(
+                    context: context, tagIdTOUpdate: expenseTagVO.id)
                 .then((value) => presenter.fetchExpenseTags());
           } else if (value == 2) {
-            presenter.deleteBasket(id: expenseTagVO.id);
+            presenter.deleteTag(id: expenseTagVO.id);
           }
         },
         itemBuilder: (context) => [

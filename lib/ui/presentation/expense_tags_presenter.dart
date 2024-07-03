@@ -19,7 +19,7 @@ class ExpenseTagsPresenter extends Presenter<ExpenseTagsViewState> {
             (viewState) => viewState.expenseTags = expenseTags));
   }
 
-  void deleteBasket({required final int id}) {
+  void deleteTag({required final int id}) {
     _expenseTagsService.deleteBy(id: id).then((_) => fetchExpenseTags());
   }
 }
