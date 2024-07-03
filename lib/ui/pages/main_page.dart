@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/ui/nav_path.dart';
+import 'package:wealth_wave/ui/pages/expense_page.dart';
 import 'package:wealth_wave/ui/presentation/main_presenter.dart';
 import 'package:wealth_wave/ui/pages/dashboard_page.dart';
 import 'package:wealth_wave/ui/pages/goals_page.dart';
@@ -96,6 +97,10 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
             NavigationDestination(
               icon: Icon(Icons.flag),
               label: 'Goals',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.money_rounded),
+              label: 'Expenses',
             )
           ],
           onDestinationSelected: (index) {
@@ -113,6 +118,8 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
                 return const InvestmentsPage();
               case 2:
                 return const GoalsPage();
+              case 3:
+                return const ExpensePage();
               default:
                 return Container();
             }
