@@ -4,9 +4,10 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:pair/pair.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:wealth_wave/core/page_state.dart';
+import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/presentation/expense_presenter.dart';
 import 'package:wealth_wave/ui/widgets/create_expense_dialog.dart';
-import 'package:wealth_wave/ui/widgets/view_monthly_expenses_dialog.dart';
+import 'package:wealth_wave/utils/ui_utils.dart';
 
 class ExpensePage extends StatefulWidget {
   const ExpensePage({super.key});
@@ -30,10 +31,9 @@ class _ExpensePage
   Widget buildWidget(
       final BuildContext context, final ExpenseViewState snapshot) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-       snapshot.onTagsFetched?.consume((_) {
-        _tagsController.setOptions(snapshot.tags
-            .map((e) => ValueItem(label: e, value: e))
-            .toList());
+      snapshot.onTagsFetched?.consume((_) {
+        _tagsController.setOptions(
+            snapshot.tags.map((e) => ValueItem(label: e, value: e)).toList());
       });
     });
 
@@ -96,20 +96,66 @@ class _ExpensePage
   Widget _showMonthlyExpenseList(
       {required BuildContext context,
       required Map<DateTime, double> expenses}) {
-    return ListView.builder(
-      itemCount: expenses.length,
-      itemBuilder: (BuildContext context, int index) {
-        final entry = expenses.entries.elementAt(index);
-        return ListTile(
-          title: Text(DateFormat('MMM').format(entry.key)),
-          subtitle: Text(entry.value.toString()),
-          onTap: () {
-            showViewMonthlyExpensesDialog(
-                context: context, monthDate: entry.key);
-          },
-        );
-      },
-    );
+    List<Pair<DateTime, double>> sortedExpenses =
+        expenses.entries.map((e) => Pair(e.key, e.value)).toList();
+    sortedExpenses.sort((a, b) => b.key.compareTo(a.key));
+    return ListView(
+        children: sortedExpenses
+            .map((e) => _expenseItem(
+                context: context, monthDate: e.key, amount: e.value))
+            .toList());
+  }
+
+  Widget _expenseItem(
+      {required final BuildContext context,
+      required final DateTime monthDate,
+      required final double amount}) {
+    return Card(
+        margin: const EdgeInsets.all(AppDimen.defaultPadding),
+        child: Padding(
+          padding: const EdgeInsets.all(AppDimen.defaultPadding),
+          child: OverflowBar(
+            alignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _getTitleWidget(
+                  context: context, monthDate: monthDate, amount: amount),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(formatToCurrency(amount)),
+                ],
+              )
+            ],
+          ),
+        ));
+  }
+
+  RichText _getTitleWidget(
+      {required final BuildContext context,
+      required final DateTime monthDate,
+      required final double amount}) {
+    List<WidgetSpan> widgets = [];
+    widgets.add(WidgetSpan(
+      alignment: PlaceholderAlignment.middle,
+      child: PopupMenuButton<int>(
+        onSelected: (value) {
+          if (value == 1) {
+            presenter.deleteMonthlyExpense(monthDate: monthDate);
+          }
+        },
+        itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: 1,
+            child: Text('Delete'),
+          )
+        ],
+      ),
+    ));
+    return RichText(
+        text: TextSpan(
+            text: DateFormat('MMM yyyy').format(monthDate),
+            style: Theme.of(context).textTheme.titleMedium,
+            children: widgets));
   }
 
   Widget _showFilterOptions(

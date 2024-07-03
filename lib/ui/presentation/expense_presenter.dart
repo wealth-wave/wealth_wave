@@ -47,6 +47,12 @@ class ExpensePresenter extends Presenter<ExpenseViewState> {
     });
   }
 
+  void deleteMonthlyExpense({required final DateTime monthDate}) {
+    _expenseService
+        .deleteAggregatedExpense(monthDate: monthDate)
+        .then((value) => fetchExpenses());
+  }
+
   void onTagsChanged({required final List<String> tags}) {
     updateViewState((viewState) => viewState.tagsToFilter = tags);
     fetchExpenses();

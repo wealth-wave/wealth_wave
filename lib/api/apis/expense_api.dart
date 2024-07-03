@@ -56,4 +56,9 @@ class ExpenseApi {
   Future<int> deleteBy({required final int id}) async {
     return (_db.delete(_db.expenseTable)..where((t) => t.id.equals(id))).go();
   }
+
+  Future<int> deleteByMonthDate({required final DateTime monthDate}) async {
+    return (_db.delete(_db.expenseTable)..where((t) => t.createdOn.year.equals(monthDate.year) &
+              t.createdOn.month.equals(monthDate.month))).go();
+  }
 }
