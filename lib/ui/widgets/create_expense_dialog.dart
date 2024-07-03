@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:wealth_wave/core/page_state.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/custom/date_text_input_formatter.dart';
@@ -28,7 +30,6 @@ class _CreateExpensePage extends PageState<CreateExpenseViewState,
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _createdOnController = TextEditingController();
-  final _tagsController = MultiSelectController<String>();
 
   @override
   void initState() {
@@ -36,8 +37,6 @@ class _CreateExpensePage extends PageState<CreateExpenseViewState,
 
     final viewState = presenter.getViewState();
     _descriptionController.text = viewState.description;
-    _tagsController.setSelectedOptions(
-        viewState.selected.map((e) => ValueItem(label: e, value: e)).toList());
     _amountController.text = formatToCurrency(viewState.amount);
     _createdOnController.text =
         viewState.date != null ? formatDate(viewState.date!) : '';
@@ -59,11 +58,6 @@ class _CreateExpensePage extends PageState<CreateExpenseViewState,
     _createdOnController.addListener(() {
       presenter.onCreatedOnChanged(parseDate(_createdOnController.text));
     });
-
-    _tagsController.addListener(() {
-      presenter.onTagsChanged(
-          _tagsController.selectedOptions.map((e) => e.value ?? '').toList());
-    });
   }
 
   @override
@@ -74,18 +68,11 @@ class _CreateExpensePage extends PageState<CreateExpenseViewState,
       });
       snapshot.onExpenseFetched?.consume((_) {
         _descriptionController.text = snapshot.description;
-        _tagsController.setSelectedOptions(snapshot.selected
-            .map((e) => ValueItem(label: e, value: e))
-            .toList());
         _amountController.text = formatToCurrency(snapshot.amount);
         _createdOnController.text =
             snapshot.date != null ? formatDate(snapshot.date!) : '';
       });
-      snapshot.onTagsFetched?.consume((_) {
-        _tagsController.setOptions(snapshot.tags
-            .map((e) => ValueItem(label: e, value: e))
-            .toList());
-      });
+      snapshot.onTagsFetched?.consume((_) {});
     });
 
     return AlertDialog(
@@ -118,6 +105,7 @@ class _CreateExpensePage extends PageState<CreateExpenseViewState,
               decoration: const InputDecoration(
                   labelText: 'Description', border: OutlineInputBorder()),
             ),
+            const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _amountController,
@@ -125,6 +113,7 @@ class _CreateExpensePage extends PageState<CreateExpenseViewState,
               decoration: const InputDecoration(
                   labelText: 'Current Value', border: OutlineInputBorder()),
             ),
+            const SizedBox(height: AppDimen.defaultPadding),
             TextFormField(
               textInputAction: TextInputAction.next,
               controller: _createdOnController,
@@ -132,20 +121,14 @@ class _CreateExpensePage extends PageState<CreateExpenseViewState,
               decoration: const InputDecoration(
                   labelText: 'Created Date', border: OutlineInputBorder()),
             ),
-            MultiSelectDropDown(
-              controller: _tagsController,
-              onOptionSelected: (options) {
-                presenter
-                    .onTagsChanged(options.map((e) => e.value ?? '').toList());
+            const SizedBox(height: AppDimen.defaultPadding),
+            MultiSelectDialogField<String>(
+              items: snapshot.tags.map((e) => MultiSelectItem(e, e)).toList(),
+              initialValue: snapshot.selected,
+              listType: MultiSelectListType.CHIP,
+              onConfirm: (options) {
+                presenter.onTagsChanged(options);
               },
-              options: snapshot.tags
-                  .map((e) => ValueItem(label: e, value: e))
-                  .toList(),
-              selectionType: SelectionType.multi,
-              chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-              dropdownHeight: 300,
-              optionTextStyle: const TextStyle(fontSize: 16),
-              selectedOptionIcon: const Icon(Icons.check_circle),
             ),
           ]),
         ));

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:pair/pair.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:wealth_wave/core/page_state.dart';
@@ -18,8 +20,6 @@ class ExpensePage extends StatefulWidget {
 
 class _ExpensePage
     extends PageState<ExpenseViewState, ExpensePage, ExpensePresenter> {
-  final _tagsController = MultiSelectController<String>();
-
   @override
   void initState() {
     super.initState();
@@ -31,10 +31,7 @@ class _ExpensePage
   Widget buildWidget(
       final BuildContext context, final ExpenseViewState snapshot) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      snapshot.onTagsFetched?.consume((_) {
-        _tagsController.setOptions(
-            snapshot.tags.map((e) => ValueItem(label: e, value: e)).toList());
-      });
+      snapshot.onTagsFetched?.consume((_) {});
     });
 
     Map<DateTime, double> monthlyExpenses = snapshot.monthlyExpenses;
@@ -109,7 +106,9 @@ class _ExpensePage
 
     return SfCartesianChart(
       primaryXAxis: const CategoryAxis(),
-      primaryYAxis: NumericAxis(numberFormat: NumberFormat.compactCurrency(symbol: '', locale: 'en_IN', decimalDigits: 0)),
+      primaryYAxis: NumericAxis(
+          numberFormat: NumberFormat.compactCurrency(
+              symbol: '', locale: 'en_IN', decimalDigits: 0)),
       series: [
         ColumnSeries<Pair<String, double>, String>(
           dataSource: chartData,
@@ -216,17 +215,13 @@ class _ExpensePage
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
-                  MultiSelectDropDown(
-                    controller: _tagsController,
-                    onOptionSelected: (options) {
-                      presenter.onTagsChanged(
-                          tags: options.map((e) => e.value ?? '').toList());
+                  MultiSelectDialogField<String>(
+                    items: tags.map((e) => MultiSelectItem(e, e)).toList(),
+                    initialValue: selectedTags,
+                    listType: MultiSelectListType.CHIP,
+                    onConfirm: (options) {
+                      presenter.onTagsChanged(tags: options);
                     },
-                    options:
-                        tags.map((e) => ValueItem(label: e, value: e)).toList(),
-                    selectedOptions: selectedTags
-                        .map((e) => ValueItem(label: e, value: e))
-                        .toList(),
                   ),
                 ],
               ),
