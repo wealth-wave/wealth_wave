@@ -94,6 +94,14 @@ class ExpenseService {
       .getBy(id: id)
       .then((expenseDO) => Expense.from(expenseDO: expenseDO));
 
+  Future<List<Expense>> getExpensesForMonthDate({required final DateTime monthDate}) {
+    return _expenseApi
+        .getByMonth(monthDate: monthDate)
+        .then((expenseDOs) => expenseDOs
+            .map((expenseDO) => Expense.from(expenseDO: expenseDO))
+            .toList());
+  }
+
   Future<void> deleteBy({required final int id}) =>
       _expenseApi.getBy(id: id).then((expenseDO) {
         DateTime monthDate =
