@@ -22,13 +22,18 @@ class InvestmentService {
     return _instance;
   }
 
-  factory InvestmentService.withMock({required InvestmentApi investmentApi, required TransactionApi transactionApi, required SipApi sipApi, required ScriptApi scriptApi, required ScriptExecutorService scriptExecutorService}) {
+  factory InvestmentService.withMock(
+      {required InvestmentApi investmentApi,
+      required TransactionApi transactionApi,
+      required SipApi sipApi,
+      required ScriptApi scriptApi,
+      required ScriptExecutorService scriptExecutorService}) {
     return InvestmentService._(
-      investmentApi: investmentApi,
-      transactionApi: transactionApi,
-      sipApi: sipApi,
-      scriptApi: scriptApi,
-      scriptExecutorService: scriptExecutorService);
+        investmentApi: investmentApi,
+        transactionApi: transactionApi,
+        sipApi: sipApi,
+        scriptApi: scriptApi,
+        scriptExecutorService: scriptExecutorService);
   }
 
   static final InvestmentService _instance = InvestmentService._();
@@ -57,8 +62,7 @@ class InvestmentService {
       required final double? qty,
       required final double? irr,
       required final DateTime? maturityDate}) async {
-    if ((irr == null || irr <= 0) &&
-        (value == null || value <= 0)) {
+    if ((irr == null || irr <= 0) && (value == null || value <= 0)) {
       throw Exception(
           "Either IRR or Value and Value Updated On must be provided");
     }
@@ -145,25 +149,30 @@ class InvestmentService {
 
   Future<void> updateValues() async {
     final investments = await _investmentApi.getAll();
+    final List<Future<void>> updateFutures =
+        investments.map((investment) => _updateInvestment(investment)).toList();
+    await Future.wait(updateFutures);
+  }
 
-    for (final investment in investments) {
-      if (investment.valueUpdatedOn != null && DateTime.now().difference(investment.valueUpdatedOn!).inDays < 1) {
-        continue;
-      }
+  Future<void> _updateInvestment(InvestmentDO investment) async {
+    if (investment.valueUpdatedOn != null &&
+        DateTime.now().difference(investment.valueUpdatedOn!).inDays < 1) {
+      return;
+    }
 
-      final script = await _scriptApi.getBy(investmentId: investment.id);
-      if (script == null) {
-        continue;
-      }
-      final value = await _scriptExecutorService.executeScript(script: script.script);
+    final script = await _scriptApi.getBy(investmentId: investment.id);
+    if (script == null) {
+      return;
+    }
+    final value =
+        await _scriptExecutorService.executeScript(script: script.script);
 
-      if (value != null) {
-        await _investmentApi.updateValue(
-          id: investment.id,
-          value: value,
-          valueUpdatedOn: DateTime.now(),
-        );
-      }
+    if (value != null) {
+      await _investmentApi.updateValue(
+        id: investment.id,
+        value: value,
+        valueUpdatedOn: DateTime.now(),
+      );
     }
   }
 
@@ -173,7 +182,8 @@ class InvestmentService {
     if (script == null) {
       return;
     }
-    final value = await _scriptExecutorService.executeScript(script: script.script);
+    final value =
+        await _scriptExecutorService.executeScript(script: script.script);
 
     if (value != null) {
       await _investmentApi.updateValue(
