@@ -31,11 +31,7 @@ class _DashboardPage
     final irrComposition = snapshot.irrComposition.entries.toList();
     irrComposition.sort((a, b) => a.key.compareTo(b.key));
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Investment Portfolio Dashboard'),
-      ),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(AppDimen.defaultPadding),
           child: Column(
@@ -78,8 +74,7 @@ class _DashboardPage
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildPieChart(Map<RiskLevel, double> data) {
@@ -226,11 +221,13 @@ class _DashboardPage
             dataSource: invested,
             xValueMapper: (data, _) => data.key,
             yValueMapper: (data, _) => data.value,
+            color: Colors.blue,
           ),
           StackedBarSeries(
             dataSource: value,
             xValueMapper: (data, _) => data.key,
             yValueMapper: (data, _) => data.value,
+            color: Colors.green,
           ),
         ],
       );

@@ -26,7 +26,6 @@ class _BasketsPage
     return Scaffold(
       appBar: AppBar(
         title: const Text('Baskets'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
           child: ListView.builder(

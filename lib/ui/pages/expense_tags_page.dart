@@ -27,7 +27,6 @@ class _ExpenseTagsPage
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expense Tags'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
           child: ListView.builder(

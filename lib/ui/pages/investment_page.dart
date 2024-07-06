@@ -31,7 +31,6 @@ class _InvestmentPage extends PageState<InvestmentViewState, InvestmentPage,
     return Scaffold(
         appBar: AppBar(
           title: const Text('Investment'),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
         body: SingleChildScrollView(
             child: _investmentWidget(

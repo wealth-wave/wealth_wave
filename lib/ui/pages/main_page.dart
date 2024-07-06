@@ -37,7 +37,6 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
     if (snapshot.contentLoading) {
       return Scaffold(
           appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: const Text("Wealth Wave"),
           ),
           body: const Center(
@@ -47,7 +46,6 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text("Wealth Wave"),
           actions: [
             PopupMenuButton<int>(

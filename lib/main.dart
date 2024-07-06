@@ -20,7 +20,19 @@ class WealthWaveApp extends StatelessWidget {
       title: 'Wealth Wave',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        colorScheme: const ColorScheme.light(
+          primary: Colors.teal, // A deep green, conveys stability and growth
+          secondary: Colors.white, // A lighter teal, for a refreshing, modern feel
+          surface: Colors.white, // A very light teal for backgrounds, provides contrast
+          background: Colors.white, // A soft blue, calming and trustworthy
+          error: Colors.red, // Standard error color for visibility
+          onPrimary: Colors.white, // White text/icons on primary color for readability
+          onSecondary: Colors.black, // Black text/icons on secondary for contrast and readability
+          onSurface: Colors.black, // Black text/icons on surface color for readability
+          onBackground: Colors.black, // Black text/icons on background for readability
+          onError: Colors.white, // White text/icons on error color for readability
+          brightness: Brightness.light, // Overall brightness, light theme
+        ),
         useMaterial3: true,
       ),
       onGenerateRoute: (settings) {
