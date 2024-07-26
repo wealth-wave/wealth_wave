@@ -65,6 +65,11 @@ class _CreateSipPage extends PageState<CreateSipViewState,
       presenter.startDateChanged(
           parseDate(_startDateController.text) ?? DateTime.now());
     });
+
+    _endDateController.addListener(() {
+      presenter.endDateChanged(
+          parseDate(_endDateController.text) ?? DateTime.now());
+    });
   }
 
   @override
