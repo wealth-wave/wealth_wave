@@ -8,22 +8,22 @@ enum Frequency {
   yearly,
 }
 
-Duration getDuration(Frequency frequency) {
+DateTime getNextOccurrenceDateTime(DateTime dateTime, Frequency frequency) {
   switch (frequency) {
     case Frequency.daily:
-      return const Duration(days: 1);
+      return DateTime(dateTime.year, dateTime.month, dateTime.day + 1);
     case Frequency.weekly:
-      return const Duration(days: 7);
+      return DateTime(dateTime.year, dateTime.month, dateTime.day + 7);
     case Frequency.biweekly:
-      return const Duration(days: 14);
+      return DateTime(dateTime.year, dateTime.month, dateTime.day + 14);
     case Frequency.monthly:
-      return const Duration(days: 30);
+      return DateTime(dateTime.year, dateTime.month + 1, dateTime.day);
     case Frequency.quarterly:
-      return const Duration(days: 91);
+      return DateTime(dateTime.year, dateTime.month + 3, dateTime.day);
     case Frequency.halfYearly:
-      return const Duration(days: 182);
+      return DateTime(dateTime.year, dateTime.month + 6, dateTime.day);
     case Frequency.yearly:
-      return const Duration(days: 365);
+      return DateTime(dateTime.year + 1, dateTime.month + 6, dateTime.day);
     default:
       throw Exception('Invalid frequency');
   }

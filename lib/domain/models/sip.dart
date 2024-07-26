@@ -27,7 +27,7 @@ class Sip {
     final DateTime? endDate = this.endDate;
     for (var i = executedTill ?? startDate;
         i.isBefore(till) && (endDate == null || i.isBefore(endDate));
-        i = i.add(getDuration(frequency))) {
+        i = getNextOccurrenceDateTime(i, frequency)) {
       payments.add(Payment.from(amount: amount, createdOn: i));
     }
     return payments;
