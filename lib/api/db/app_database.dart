@@ -326,9 +326,9 @@ class AppDatabase extends _$AppDatabase {
     final transactionBackup =
         await executor.runSelect('SELECT * FROM transaction_table', []);
     final goalBackup = await executor.runSelect('SELECT * FROM goal_table', []);
+    final sipBackup = await executor.runSelect('SELECT * FROM sip_table', []);
     final goalInvestmentBackup =
         await executor.runSelect('SELECT * FROM goal_investment_table', []);
-    final sipBackup = await executor.runSelect('SELECT * FROM sip_table', []);
     final scriptBackup = await executor.runSelect('SELECT * FROM script_table', []);
     final expenseBackup = await executor.runSelect('SELECT * FROM expense_table', []);
     final expenseTagBackup = await executor.runSelect('SELECT * FROM expense_tag_table', []);
@@ -337,9 +337,9 @@ class AppDatabase extends _$AppDatabase {
     return {
       'basket_table': basketBackup,
       'investment_table': investmentBackup,
-      'sip_table': sipBackup,
       'transaction_table': transactionBackup,
       'goal_table': goalBackup,
+      'sip_table': sipBackup,
       'goal_investment_table': goalInvestmentBackup,
       'script_table': scriptBackup,
       'expense_table': expenseBackup,
@@ -375,6 +375,8 @@ class AppDatabase extends _$AppDatabase {
                 return Variable.withDateTime(value);
               } else if (value is String) {
                 return Variable.withString(value);
+              } else if (value is bool) {
+                return Variable.withBool(value);
               } else {
                 throw Exception('Unknown type $value');
               }
