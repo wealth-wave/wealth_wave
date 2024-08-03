@@ -88,6 +88,7 @@ class SipService {
   Future<void> deleteSIP({required final int id}) => _transactionApi
       .deleteBy(sipId: id)
       .then((_) => _sipApi.deleteBy(id: id))
+      .then((value) => _transactionApi.deleteBy(sipId: id))
       .then((_) => {});
 
   Future<void> performSipTransactions() => _sipApi
