@@ -95,6 +95,6 @@ class CreateTransactionViewState {
   SingleEvent<void>? onTransactionLoaded;
 
   bool isValid() {
-    return amount > 0;
+    return amount != 0;
   }
 }

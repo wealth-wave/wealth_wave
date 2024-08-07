@@ -37,8 +37,7 @@ class InvestmentTable extends Table {
   RealColumn get irr => real().nullable().named('IRR')();
 
   DateTimeColumn get maturityDate =>
-      dateTime().nullable().named('MATURITY_DATE').check(maturityDate.isNull() |
-          maturityDate.isBiggerThanValue(DateTime.now()))();
+      dateTime().nullable().named('MATURITY_DATE')();
 
   DateTimeColumn get valueUpdatedDate =>
       dateTime().nullable().named('VALUE_UPDATED_DATE')();
@@ -59,7 +58,7 @@ class TransactionTable extends Table {
       integer().nullable().named('SIP_ID').references(SipTable, #id)();
 
   RealColumn get amount =>
-      real().named('AMOUNT').check(amount.isBiggerThanValue(0))();
+      real().named('AMOUNT').check(amount.isNotValue(0))();
 
   RealColumn get qty => real().named('QTY').withDefault(const Constant(0))();
 
@@ -119,8 +118,7 @@ class GoalTable extends Table {
       real().named('INFLATION').check(inflation.isBetweenValues(1, 100))();
 
   DateTimeColumn get maturityDate => dateTime()
-      .named('MATURITY_DATE')
-      .check(maturityDate.isBiggerThanValue(DateTime.now()))();
+      .named('MATURITY_DATE')();
 
   TextColumn get importance => textEnum<GoalImportance>().named('IMPORTANCE')();
 }
@@ -355,7 +353,9 @@ class AppDatabase extends _$AppDatabase {
         var tableName = entry.key;
         var tableDataList = entry.value;
 
+        print("Updating table $tableName");
         for (var tableData in tableDataList) {
+          print("Inserting $tableData");
           final String columnsString =
               tableData.keys.where((key) => tableData[key] != null).join(', ');
           final String valuesString = tableData.keys
@@ -378,7 +378,7 @@ class AppDatabase extends _$AppDatabase {
               } else if (value is bool) {
                 return Variable.withBool(value);
               } else {
-                throw Exception('Unknown type $value');
+                return Variable.withString("");
               }
             }).toList(),
           );

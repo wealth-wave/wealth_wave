@@ -278,11 +278,7 @@ class $InvestmentTableTable extends InvestmentTable
   @override
   late final GeneratedColumn<DateTime> maturityDate = GeneratedColumn<DateTime>(
       'MATURITY_DATE', aliasedName, true,
-      check: () =>
-          maturityDate.isNull() |
-          maturityDate.isBiggerThanValue(DateTime.now()),
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false);
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _valueUpdatedDateMeta =
       const VerificationMeta('valueUpdatedDate');
   @override
@@ -1197,7 +1193,7 @@ class $TransactionTableTable extends TransactionTable
   @override
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
       'AMOUNT', aliasedName, false,
-      check: () => amount.isBiggerThanValue(0),
+      check: () => amount.isNotValue(0),
       type: DriftSqlType.double,
       requiredDuringInsert: true);
   static const VerificationMeta _qtyMeta = const VerificationMeta('qty');
@@ -1580,9 +1576,7 @@ class $GoalTableTable extends GoalTable
   @override
   late final GeneratedColumn<DateTime> maturityDate = GeneratedColumn<DateTime>(
       'MATURITY_DATE', aliasedName, false,
-      check: () => maturityDate.isBiggerThanValue(DateTime.now()),
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: true);
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _importanceMeta =
       const VerificationMeta('importance');
   @override
