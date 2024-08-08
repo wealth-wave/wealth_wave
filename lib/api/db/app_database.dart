@@ -271,11 +271,10 @@ class AggregatedExpenseTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
 
   RealColumn get amount => real().named('AMOUNT')();
-
   TextColumn get tags => text().named('TAGS')();
 
-  DateTimeColumn get createdMonthDate =>
-      dateTime().named('CREATED_MONTH_DATE')();
+  IntColumn get month => integer().named('MONTH')();
+  IntColumn get year => integer().named('YEAR')();
 }
 
 @DataClassName('ExpenseTagDO')

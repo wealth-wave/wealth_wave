@@ -1,5 +1,6 @@
 import 'package:wealth_wave/core/presenter.dart';
 import 'package:wealth_wave/core/single_event.dart';
+import 'package:wealth_wave/domain/models/month.dart';
 import 'package:wealth_wave/domain/services/expense_service.dart';
 import 'package:wealth_wave/domain/services/expense_tag_service.dart';
 
@@ -27,19 +28,18 @@ class ExpensePresenter extends Presenter<ExpenseViewState> {
   void fetchExpenses() {
     final tagsToFilter = getViewState().tagsToFilter;
     _expenseService.getAggregatedExpenses().then((expenses) {
-      final monthlyExpenses = <DateTime, double>{};
+      final now = DateTime.now();
+      int yearToLookBack =
+          getViewState().filterType == ExpenseFilterType.last12Months ? 1 : 10;
+      final dateToFilter = DateTime(now.year - yearToLookBack, now.month);
+      final monthlyExpenses = <Month, double>{};
       expenses
           .where((element) => element.tags
               .any((tag) => tagsToFilter.isEmpty || tagsToFilter.contains(tag)))
-          .where((element) => element.createdMonthDate.isAfter(DateTime.now()
-              .subtract(Duration(
-                  days: getViewState().filterType ==
-                          ExpenseFilterType.last12Months
-                      ? 365
-                      : 3650))))
+          .where((element) => element.year >= dateToFilter.year)
           .forEach((element) {
-        monthlyExpenses.update(
-            element.createdMonthDate, (value) => value + element.amount,
+        monthlyExpenses.update(Month(year: element.year, month: element.month),
+            (value) => value + element.amount,
             ifAbsent: () => element.amount);
       });
       updateViewState(
@@ -47,9 +47,10 @@ class ExpensePresenter extends Presenter<ExpenseViewState> {
     });
   }
 
-  void deleteMonthlyExpense({required final DateTime monthDate}) {
+  void deleteMonthlyExpense(
+      {required final int year, required final int month}) {
     _expenseService
-        .deleteAggregatedExpense(monthDate: monthDate)
+        .deleteAggregatedExpense(year: year, month: month)
         .then((value) => fetchExpenses());
   }
 
@@ -68,7 +69,7 @@ class ExpenseViewState {
   ExpenseFilterType filterType = ExpenseFilterType.last10Years;
   List<String> tagsToFilter = [];
   List<String> tags = [];
-  Map<DateTime, double> monthlyExpenses = {};
+  Map<Month, double> monthlyExpenses = {};
   SingleEvent<void>? onTagsFetched;
 }
 

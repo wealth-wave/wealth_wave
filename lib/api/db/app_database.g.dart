@@ -2959,14 +2959,18 @@ class $AggregatedExpenseTableTable extends AggregatedExpenseTable
   late final GeneratedColumn<String> tags = GeneratedColumn<String>(
       'TAGS', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdMonthDateMeta =
-      const VerificationMeta('createdMonthDate');
+  static const VerificationMeta _monthMeta = const VerificationMeta('month');
   @override
-  late final GeneratedColumn<DateTime> createdMonthDate =
-      GeneratedColumn<DateTime>('CREATED_MONTH_DATE', aliasedName, false,
-          type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  late final GeneratedColumn<int> month = GeneratedColumn<int>(
+      'MONTH', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _yearMeta = const VerificationMeta('year');
   @override
-  List<GeneratedColumn> get $columns => [id, amount, tags, createdMonthDate];
+  late final GeneratedColumn<int> year = GeneratedColumn<int>(
+      'YEAR', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, amount, tags, month, year];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2993,13 +2997,17 @@ class $AggregatedExpenseTableTable extends AggregatedExpenseTable
     } else if (isInserting) {
       context.missing(_tagsMeta);
     }
-    if (data.containsKey('CREATED_MONTH_DATE')) {
+    if (data.containsKey('MONTH')) {
       context.handle(
-          _createdMonthDateMeta,
-          createdMonthDate.isAcceptableOrUnknown(
-              data['CREATED_MONTH_DATE']!, _createdMonthDateMeta));
+          _monthMeta, month.isAcceptableOrUnknown(data['MONTH']!, _monthMeta));
     } else if (isInserting) {
-      context.missing(_createdMonthDateMeta);
+      context.missing(_monthMeta);
+    }
+    if (data.containsKey('YEAR')) {
+      context.handle(
+          _yearMeta, year.isAcceptableOrUnknown(data['YEAR']!, _yearMeta));
+    } else if (isInserting) {
+      context.missing(_yearMeta);
     }
     return context;
   }
@@ -3016,8 +3024,10 @@ class $AggregatedExpenseTableTable extends AggregatedExpenseTable
           .read(DriftSqlType.double, data['${effectivePrefix}AMOUNT'])!,
       tags: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}TAGS'])!,
-      createdMonthDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}CREATED_MONTH_DATE'])!,
+      month: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}MONTH'])!,
+      year: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}YEAR'])!,
     );
   }
 
@@ -3032,19 +3042,22 @@ class AggregatedExpenseDO extends DataClass
   final int id;
   final double amount;
   final String tags;
-  final DateTime createdMonthDate;
+  final int month;
+  final int year;
   const AggregatedExpenseDO(
       {required this.id,
       required this.amount,
       required this.tags,
-      required this.createdMonthDate});
+      required this.month,
+      required this.year});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['ID'] = Variable<int>(id);
     map['AMOUNT'] = Variable<double>(amount);
     map['TAGS'] = Variable<String>(tags);
-    map['CREATED_MONTH_DATE'] = Variable<DateTime>(createdMonthDate);
+    map['MONTH'] = Variable<int>(month);
+    map['YEAR'] = Variable<int>(year);
     return map;
   }
 
@@ -3053,7 +3066,8 @@ class AggregatedExpenseDO extends DataClass
       id: Value(id),
       amount: Value(amount),
       tags: Value(tags),
-      createdMonthDate: Value(createdMonthDate),
+      month: Value(month),
+      year: Value(year),
     );
   }
 
@@ -3064,7 +3078,8 @@ class AggregatedExpenseDO extends DataClass
       id: serializer.fromJson<int>(json['id']),
       amount: serializer.fromJson<double>(json['amount']),
       tags: serializer.fromJson<String>(json['tags']),
-      createdMonthDate: serializer.fromJson<DateTime>(json['createdMonthDate']),
+      month: serializer.fromJson<int>(json['month']),
+      year: serializer.fromJson<int>(json['year']),
     );
   }
   @override
@@ -3074,20 +3089,19 @@ class AggregatedExpenseDO extends DataClass
       'id': serializer.toJson<int>(id),
       'amount': serializer.toJson<double>(amount),
       'tags': serializer.toJson<String>(tags),
-      'createdMonthDate': serializer.toJson<DateTime>(createdMonthDate),
+      'month': serializer.toJson<int>(month),
+      'year': serializer.toJson<int>(year),
     };
   }
 
   AggregatedExpenseDO copyWith(
-          {int? id,
-          double? amount,
-          String? tags,
-          DateTime? createdMonthDate}) =>
+          {int? id, double? amount, String? tags, int? month, int? year}) =>
       AggregatedExpenseDO(
         id: id ?? this.id,
         amount: amount ?? this.amount,
         tags: tags ?? this.tags,
-        createdMonthDate: createdMonthDate ?? this.createdMonthDate,
+        month: month ?? this.month,
+        year: year ?? this.year,
       );
   @override
   String toString() {
@@ -3095,13 +3109,14 @@ class AggregatedExpenseDO extends DataClass
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('tags: $tags, ')
-          ..write('createdMonthDate: $createdMonthDate')
+          ..write('month: $month, ')
+          ..write('year: $year')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, amount, tags, createdMonthDate);
+  int get hashCode => Object.hash(id, amount, tags, month, year);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3109,7 +3124,8 @@ class AggregatedExpenseDO extends DataClass
           other.id == this.id &&
           other.amount == this.amount &&
           other.tags == this.tags &&
-          other.createdMonthDate == this.createdMonthDate);
+          other.month == this.month &&
+          other.year == this.year);
 }
 
 class AggregatedExpenseTableCompanion
@@ -3117,32 +3133,38 @@ class AggregatedExpenseTableCompanion
   final Value<int> id;
   final Value<double> amount;
   final Value<String> tags;
-  final Value<DateTime> createdMonthDate;
+  final Value<int> month;
+  final Value<int> year;
   const AggregatedExpenseTableCompanion({
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
     this.tags = const Value.absent(),
-    this.createdMonthDate = const Value.absent(),
+    this.month = const Value.absent(),
+    this.year = const Value.absent(),
   });
   AggregatedExpenseTableCompanion.insert({
     this.id = const Value.absent(),
     required double amount,
     required String tags,
-    required DateTime createdMonthDate,
+    required int month,
+    required int year,
   })  : amount = Value(amount),
         tags = Value(tags),
-        createdMonthDate = Value(createdMonthDate);
+        month = Value(month),
+        year = Value(year);
   static Insertable<AggregatedExpenseDO> custom({
     Expression<int>? id,
     Expression<double>? amount,
     Expression<String>? tags,
-    Expression<DateTime>? createdMonthDate,
+    Expression<int>? month,
+    Expression<int>? year,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
       if (amount != null) 'AMOUNT': amount,
       if (tags != null) 'TAGS': tags,
-      if (createdMonthDate != null) 'CREATED_MONTH_DATE': createdMonthDate,
+      if (month != null) 'MONTH': month,
+      if (year != null) 'YEAR': year,
     });
   }
 
@@ -3150,12 +3172,14 @@ class AggregatedExpenseTableCompanion
       {Value<int>? id,
       Value<double>? amount,
       Value<String>? tags,
-      Value<DateTime>? createdMonthDate}) {
+      Value<int>? month,
+      Value<int>? year}) {
     return AggregatedExpenseTableCompanion(
       id: id ?? this.id,
       amount: amount ?? this.amount,
       tags: tags ?? this.tags,
-      createdMonthDate: createdMonthDate ?? this.createdMonthDate,
+      month: month ?? this.month,
+      year: year ?? this.year,
     );
   }
 
@@ -3171,8 +3195,11 @@ class AggregatedExpenseTableCompanion
     if (tags.present) {
       map['TAGS'] = Variable<String>(tags.value);
     }
-    if (createdMonthDate.present) {
-      map['CREATED_MONTH_DATE'] = Variable<DateTime>(createdMonthDate.value);
+    if (month.present) {
+      map['MONTH'] = Variable<int>(month.value);
+    }
+    if (year.present) {
+      map['YEAR'] = Variable<int>(year.value);
     }
     return map;
   }
@@ -3183,7 +3210,8 @@ class AggregatedExpenseTableCompanion
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('tags: $tags, ')
-          ..write('createdMonthDate: $createdMonthDate')
+          ..write('month: $month, ')
+          ..write('year: $year')
           ..write(')'))
         .toString();
   }

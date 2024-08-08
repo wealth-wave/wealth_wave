@@ -7,18 +7,22 @@ import 'package:wealth_wave/ui/widgets/create_expense_dialog.dart';
 import 'package:wealth_wave/utils/ui_utils.dart';
 
 Future<void> showViewMonthlyExpensesDialog(
-    {required final BuildContext context, required final DateTime monthDate}) {
+    {required final BuildContext context,
+    required final int year,
+    required final int month}) {
   return showDialog(
       context: context,
       builder: (context) => _MonthlyExpensesDialog(
-            monthDate: monthDate,
+            year: year,
+            month: month,
           ));
 }
 
 class _MonthlyExpensesDialog extends StatefulWidget {
-  final DateTime monthDate;
+  final int year;
+  final int month;
 
-  const _MonthlyExpensesDialog({required this.monthDate});
+  const _MonthlyExpensesDialog({required this.year, required this.month});
 
   @override
   State<_MonthlyExpensesDialog> createState() => _MonthlyExpensesPage();
@@ -98,6 +102,6 @@ class _MonthlyExpensesPage extends PageState<MonthlyExpenseViewState,
 
   @override
   MonthlyExpensePresenter initializePresenter() {
-    return MonthlyExpensePresenter(monthDate: widget.monthDate);
+    return MonthlyExpensePresenter(year: widget.year, month: widget.month);
   }
 }

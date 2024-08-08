@@ -25,11 +25,11 @@ class ExpenseApi {
   }
 
   Future<List<ExpenseDO>> getByMonth(
-      {required final DateTime monthDate}) async {
+      {required final int year, required final int month}) async {
     return (_db.select(_db.expenseTable)
           ..where((t) =>
-              t.createdOn.year.equals(monthDate.year) &
-              t.createdOn.month.equals(monthDate.month))
+              t.createdOn.year.equals(year) &
+              t.createdOn.month.equals(month))
           ..orderBy([(t) => OrderingTerm(expression: t.createdOn)]))
         .get();
   }
@@ -57,11 +57,11 @@ class ExpenseApi {
     return (_db.delete(_db.expenseTable)..where((t) => t.id.equals(id))).go();
   }
 
-  Future<int> deleteByMonthDate({required final DateTime monthDate}) async {
+  Future<int> deleteByMonthDate({required final int year, required final int month}) async {
     return (_db.delete(_db.expenseTable)
           ..where((t) =>
-              t.createdOn.year.equals(monthDate.year) &
-              t.createdOn.month.equals(monthDate.month)))
+              t.createdOn.year.equals(year) &
+              t.createdOn.month.equals(month)))
         .go();
   }
 }

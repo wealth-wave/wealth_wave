@@ -67,9 +67,9 @@ class ExpenseService {
   }
 
   Future<List<Expense>> getExpensesForMonthDate(
-      {required final DateTime monthDate}) async {
+      {required final int year, required final int month}) async {
     List<ExpenseDO> expenseDOs =
-        await _expenseApi.getByMonth(monthDate: monthDate);
+        await _expenseApi.getByMonth(year: year, month: month);
     return expenseDOs
         .map((expenseDO) => Expense.from(expenseDO: expenseDO))
         .toList();
@@ -85,9 +85,9 @@ class ExpenseService {
   }
 
   Future<void> deleteAggregatedExpense(
-      {required final DateTime monthDate}) async {
-    await _expenseApi.deleteByMonthDate(monthDate: monthDate);
-    await _aggregatedExpenseApi.deleteByMonthDate(monthDate: monthDate);
+      {required final int year, required final int month}) async {
+    await _expenseApi.deleteByMonthDate(year: year, month: month);
+    await _aggregatedExpenseApi.deleteByMonthDate(year: year, month: month);
   }
 
   Future<List<AggregatedExpense>> getAggregatedExpenses() async {
@@ -103,23 +103,25 @@ class ExpenseService {
       {required final DateTime dateTime,
       required final String tags,
       required final double amount}) async {
-    final monthDate = DateTime(dateTime.year, dateTime.month);
     final aggregatedExpense = await _aggregatedExpenseApi.getByMonthAndTag(
-      monthDate: monthDate,
+      year: dateTime.year,
+      month: dateTime.month,
       tags: tags,
     );
 
     if (aggregatedExpense == null) {
       await _aggregatedExpenseApi.create(
         amount: amount,
-        monthDate: monthDate,
+        year: dateTime.year,
+        month: dateTime.month,
         tags: tags,
       );
     } else {
       await _aggregatedExpenseApi.update(
         id: aggregatedExpense.id,
         amount: aggregatedExpense.amount + amount,
-        createdOn: monthDate,
+        year: dateTime.year,
+        month: dateTime.month,
         tags: tags,
       );
     }

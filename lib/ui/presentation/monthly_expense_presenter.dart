@@ -3,18 +3,22 @@ import 'package:wealth_wave/domain/services/expense_service.dart';
 import 'package:wealth_wave/ui/models/expense_vo.dart';
 
 class MonthlyExpensePresenter extends Presenter<MonthlyExpenseViewState> {
-  final DateTime _monthDate;
+  final int _year;
+  final int _month;
   final ExpenseService _expenseService;
 
   MonthlyExpensePresenter(
-      {required final DateTime monthDate, final ExpenseService? expenseService})
-      : _monthDate = monthDate,
+      {required final int year,
+      required final int month,
+      final ExpenseService? expenseService})
+      : _year = year,
+        _month = month,
         _expenseService = expenseService ?? ExpenseService(),
         super(MonthlyExpenseViewState());
 
   void getExpenses() {
     _expenseService
-        .getExpensesForMonthDate(monthDate: _monthDate)
+        .getExpensesForMonthDate(year: _year, month: _month)
         .then((expenses) => expenses
             .map((expense) => ExpenseVO.from(expense: expense))
             .toList())

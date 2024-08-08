@@ -38,13 +38,8 @@ double? parseCurrency(String value) {
 
 DateTime? parseDate(String dateText) {
   try {
-    final date = DateFormat('dd/MM/yyyy').parseStrict(dateText);
-    if (date.isBefore(DateTime(2100, 1, 1)) &&
-        date.isAfter(DateTime(1990, 1, 1))) {
-      return date;
-    }
+    return DateFormat('dd/MM/yyyy').parseStrict(dateText, true);
   } catch (e) {
     return null;
   }
-  return null;
 }
