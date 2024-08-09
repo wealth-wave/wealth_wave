@@ -85,9 +85,9 @@ class ExpenseService {
   }
 
   Future<void> deleteAggregatedExpense(
-      {required final int year, required final int month}) async {
-    await _expenseApi.deleteByMonthDate(year: year, month: month);
-    await _aggregatedExpenseApi.deleteByMonthDate(year: year, month: month);
+      {required final DateTime month}) async {
+    await _expenseApi.deleteByMonthDate(month: month);
+    await _aggregatedExpenseApi.deleteByMonthDate(month: month);
   }
 
   Future<List<AggregatedExpense>> getAggregatedExpenses() async {
@@ -103,25 +103,23 @@ class ExpenseService {
       {required final DateTime dateTime,
       required final String tags,
       required final double amount}) async {
+    DateTime month = DateTime.utc(dateTime.year, dateTime.month);
     final aggregatedExpense = await _aggregatedExpenseApi.getByMonthAndTag(
-      year: dateTime.year,
-      month: dateTime.month,
+      month: month,
       tags: tags,
     );
 
     if (aggregatedExpense == null) {
       await _aggregatedExpenseApi.create(
         amount: amount,
-        year: dateTime.year,
-        month: dateTime.month,
+        month: month,
         tags: tags,
       );
     } else {
       await _aggregatedExpenseApi.update(
         id: aggregatedExpense.id,
         amount: aggregatedExpense.amount + amount,
-        year: dateTime.year,
-        month: dateTime.month,
+        month: month,
         tags: tags,
       );
     }

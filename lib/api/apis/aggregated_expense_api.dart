@@ -9,17 +9,16 @@ class AggregatedExpenseApi {
 
   Future<int> create(
       {required final double amount,
-      required final int year,
-      required final int month,
+      required final DateTime month,
       required final String tags}) async {
     return _db.into(_db.aggregatedExpenseTable).insert(
         AggregatedExpenseTableCompanion.insert(
-            amount: amount, tags: tags, year: year, month: month));
+            amount: amount, tags: tags, month: month));
   }
 
   Future<List<AggregatedExpenseDO>> get() async {
     return (_db.select(_db.aggregatedExpenseTable)
-          ..orderBy([(t) => OrderingTerm(expression: t.year)]))
+          ..orderBy([(t) => OrderingTerm(expression: t.month)]))
         .get();
   }
 
@@ -30,26 +29,21 @@ class AggregatedExpenseApi {
   }
 
   Future<AggregatedExpenseDO?> getByMonthAndTag(
-      {required final int year, required final int month, required final String tags}) async {
+      {required final DateTime month, required final String tags}) async {
     return (_db.select(_db.aggregatedExpenseTable)
-          ..where((t) =>
-              t.year.equals(year) & t.month.equals(month) & t.tags.equals(tags)))
+          ..where((t) => t.month.equals(month) & t.tags.equals(tags)))
         .getSingleOrNull();
   }
 
   Future<int> update(
       {required final int id,
       required final double amount,
-      required final int year,
-      required final int month,
+      required final DateTime month,
       required final String tags}) async {
     return (_db.update(_db.aggregatedExpenseTable)
           ..where((t) => t.id.equals(id)))
         .write(AggregatedExpenseTableCompanion(
-            amount: Value(amount),
-            tags: Value(tags),
-            year: Value(year),
-            month: Value(month)));
+            amount: Value(amount), tags: Value(tags), month: Value(month)));
   }
 
   Future<int> deleteBy({required final int id}) async {
@@ -58,9 +52,9 @@ class AggregatedExpenseApi {
         .go();
   }
 
-  Future<int> deleteByMonthDate({required final int year, required final int month}) async {
+  Future<int> deleteByMonthDate({required final DateTime month}) async {
     return (_db.delete(_db.aggregatedExpenseTable)
-          ..where((t) => t.year.equals(year) & t.month.equals(month)))
+          ..where((t) => t.month.equals(month)))
         .go();
   }
 }

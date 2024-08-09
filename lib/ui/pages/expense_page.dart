@@ -4,7 +4,6 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:pair/pair.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:wealth_wave/core/page_state.dart';
-import 'package:wealth_wave/domain/models/month.dart';
 import 'package:wealth_wave/ui/app_dimen.dart';
 import 'package:wealth_wave/ui/presentation/expense_presenter.dart';
 import 'package:wealth_wave/ui/widgets/create_expense_dialog.dart';
@@ -34,7 +33,7 @@ class _ExpensePage
       snapshot.onTagsFetched?.consume((_) {});
     });
 
-    Map<Month, double> monthlyExpenses = snapshot.monthlyExpenses;
+    Map<DateTime, double> monthlyExpenses = snapshot.monthlyExpenses;
     return Scaffold(
       body: Column(
         children: [
@@ -88,21 +87,21 @@ class _ExpensePage
 
   Widget _showMonthlyExpenseGraph({
     required BuildContext context,
-    required Map<Month, double> expenses,
+    required Map<DateTime, double> expenses,
   }) {
     List<Pair<String, double>> chartData = [];
     List<Pair<String, double>> cumulativeAverageData = [];
     double runningTotal = 0;
     int count = 0;
 
-    List<MapEntry<Month, double>> expenseList = expenses.entries.toList();
-    expenseList.sort((a, b) => a.key.getValue().compareTo(b.key.getValue()));
+    List<MapEntry<DateTime, double>> expenseList = expenses.entries.toList();
+    expenseList.sort((a, b) => a.key.compareTo(b.key));
 
     for (var entry in expenseList) {
       count++;
       runningTotal += entry.value;
       double cumulativeAverage = runningTotal / count;
-      String month = DateFormat('MMM').format(DateTime(entry.key.year, entry.key.month));
+      String month = DateFormat('MMM').format(DateTime.utc(entry.key.year, entry.key.month));
       chartData.add(Pair(month, entry.value));
       cumulativeAverageData.add(Pair(month, cumulativeAverage));
     }
@@ -132,10 +131,10 @@ class _ExpensePage
 
   Widget _showMonthlyExpenseList(
       {required BuildContext context,
-      required Map<Month, double> expenses}) {
-    List<Pair<Month, double>> sortedExpenses =
+      required Map<DateTime, double> expenses}) {
+    List<Pair<DateTime, double>> sortedExpenses =
         expenses.entries.map((e) => Pair(e.key, e.value)).toList();
-    sortedExpenses.sort((a, b) => b.key.getValue().compareTo(a.key.getValue()));
+    sortedExpenses.sort((a, b) => b.key.compareTo(a.key));
     return ListView(
         children: sortedExpenses
             .map((e) => _expenseItem(
@@ -145,7 +144,7 @@ class _ExpensePage
 
   Widget _expenseItem(
       {required final BuildContext context,
-      required final Month month,
+      required final DateTime month,
       required final double amount}) {
     return Card(
         margin: const EdgeInsets.all(AppDimen.minPadding),
@@ -175,7 +174,7 @@ class _ExpensePage
 
   RichText _getTitleWidget(
       {required final BuildContext context,
-      required final Month month,
+      required final DateTime month,
       required final double amount}) {
     List<WidgetSpan> widgets = [];
     widgets.add(WidgetSpan(
@@ -183,7 +182,7 @@ class _ExpensePage
       child: PopupMenuButton<int>(
         onSelected: (value) {
           if (value == 1) {
-            presenter.deleteMonthlyExpense(year: month.year, month: month.month);
+            presenter.deleteMonthlyExpense(month: month);
           }
         },
         itemBuilder: (context) => [
@@ -196,7 +195,7 @@ class _ExpensePage
     ));
     return RichText(
         text: TextSpan(
-            text: DateFormat('MMM yyyy').format(DateTime(month.year, month.month)),
+            text: DateFormat('MMM yyyy').format(month),
             style: Theme.of(context).textTheme.titleMedium,
             children: widgets));
   }

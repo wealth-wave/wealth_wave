@@ -279,12 +279,6 @@ class $InvestmentTableTable extends InvestmentTable
   late final GeneratedColumn<DateTime> maturityDate = GeneratedColumn<DateTime>(
       'MATURITY_DATE', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _valueUpdatedDateMeta =
-      const VerificationMeta('valueUpdatedDate');
-  @override
-  late final GeneratedColumn<DateTime> valueUpdatedDate =
-      GeneratedColumn<DateTime>('VALUE_UPDATED_DATE', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _riskLevelMeta =
       const VerificationMeta('riskLevel');
   @override
@@ -302,7 +296,6 @@ class $InvestmentTableTable extends InvestmentTable
         valueUpdatedOn,
         irr,
         maturityDate,
-        valueUpdatedDate,
         riskLevel
       ];
   @override
@@ -354,12 +347,6 @@ class $InvestmentTableTable extends InvestmentTable
           maturityDate.isAcceptableOrUnknown(
               data['MATURITY_DATE']!, _maturityDateMeta));
     }
-    if (data.containsKey('VALUE_UPDATED_DATE')) {
-      context.handle(
-          _valueUpdatedDateMeta,
-          valueUpdatedDate.isAcceptableOrUnknown(
-              data['VALUE_UPDATED_DATE']!, _valueUpdatedDateMeta));
-    }
     context.handle(_riskLevelMeta, const VerificationResult.success());
     return context;
   }
@@ -386,8 +373,6 @@ class $InvestmentTableTable extends InvestmentTable
           .read(DriftSqlType.double, data['${effectivePrefix}IRR']),
       maturityDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}MATURITY_DATE']),
-      valueUpdatedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}VALUE_UPDATED_DATE']),
       riskLevel: $InvestmentTableTable.$converterriskLevel.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}RISK_LEVEL'])!),
@@ -413,7 +398,6 @@ class BaseInvestmentDO extends DataClass
   final DateTime? valueUpdatedOn;
   final double? irr;
   final DateTime? maturityDate;
-  final DateTime? valueUpdatedDate;
   final RiskLevel riskLevel;
   const BaseInvestmentDO(
       {required this.id,
@@ -424,7 +408,6 @@ class BaseInvestmentDO extends DataClass
       this.valueUpdatedOn,
       this.irr,
       this.maturityDate,
-      this.valueUpdatedDate,
       required this.riskLevel});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -448,9 +431,6 @@ class BaseInvestmentDO extends DataClass
     }
     if (!nullToAbsent || maturityDate != null) {
       map['MATURITY_DATE'] = Variable<DateTime>(maturityDate);
-    }
-    if (!nullToAbsent || valueUpdatedDate != null) {
-      map['VALUE_UPDATED_DATE'] = Variable<DateTime>(valueUpdatedDate);
     }
     {
       map['RISK_LEVEL'] = Variable<String>(
@@ -478,9 +458,6 @@ class BaseInvestmentDO extends DataClass
       maturityDate: maturityDate == null && nullToAbsent
           ? const Value.absent()
           : Value(maturityDate),
-      valueUpdatedDate: valueUpdatedDate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(valueUpdatedDate),
       riskLevel: Value(riskLevel),
     );
   }
@@ -497,8 +474,6 @@ class BaseInvestmentDO extends DataClass
       valueUpdatedOn: serializer.fromJson<DateTime?>(json['valueUpdatedOn']),
       irr: serializer.fromJson<double?>(json['irr']),
       maturityDate: serializer.fromJson<DateTime?>(json['maturityDate']),
-      valueUpdatedDate:
-          serializer.fromJson<DateTime?>(json['valueUpdatedDate']),
       riskLevel: $InvestmentTableTable.$converterriskLevel
           .fromJson(serializer.fromJson<String>(json['riskLevel'])),
     );
@@ -515,7 +490,6 @@ class BaseInvestmentDO extends DataClass
       'valueUpdatedOn': serializer.toJson<DateTime?>(valueUpdatedOn),
       'irr': serializer.toJson<double?>(irr),
       'maturityDate': serializer.toJson<DateTime?>(maturityDate),
-      'valueUpdatedDate': serializer.toJson<DateTime?>(valueUpdatedDate),
       'riskLevel': serializer.toJson<String>(
           $InvestmentTableTable.$converterriskLevel.toJson(riskLevel)),
     };
@@ -530,7 +504,6 @@ class BaseInvestmentDO extends DataClass
           Value<DateTime?> valueUpdatedOn = const Value.absent(),
           Value<double?> irr = const Value.absent(),
           Value<DateTime?> maturityDate = const Value.absent(),
-          Value<DateTime?> valueUpdatedDate = const Value.absent(),
           RiskLevel? riskLevel}) =>
       BaseInvestmentDO(
         id: id ?? this.id,
@@ -543,9 +516,6 @@ class BaseInvestmentDO extends DataClass
         irr: irr.present ? irr.value : this.irr,
         maturityDate:
             maturityDate.present ? maturityDate.value : this.maturityDate,
-        valueUpdatedDate: valueUpdatedDate.present
-            ? valueUpdatedDate.value
-            : this.valueUpdatedDate,
         riskLevel: riskLevel ?? this.riskLevel,
       );
   @override
@@ -559,7 +529,6 @@ class BaseInvestmentDO extends DataClass
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
           ..write('irr: $irr, ')
           ..write('maturityDate: $maturityDate, ')
-          ..write('valueUpdatedDate: $valueUpdatedDate, ')
           ..write('riskLevel: $riskLevel')
           ..write(')'))
         .toString();
@@ -567,7 +536,7 @@ class BaseInvestmentDO extends DataClass
 
   @override
   int get hashCode => Object.hash(id, name, description, basketId, value,
-      valueUpdatedOn, irr, maturityDate, valueUpdatedDate, riskLevel);
+      valueUpdatedOn, irr, maturityDate, riskLevel);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -580,7 +549,6 @@ class BaseInvestmentDO extends DataClass
           other.valueUpdatedOn == this.valueUpdatedOn &&
           other.irr == this.irr &&
           other.maturityDate == this.maturityDate &&
-          other.valueUpdatedDate == this.valueUpdatedDate &&
           other.riskLevel == this.riskLevel);
 }
 
@@ -593,7 +561,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
   final Value<DateTime?> valueUpdatedOn;
   final Value<double?> irr;
   final Value<DateTime?> maturityDate;
-  final Value<DateTime?> valueUpdatedDate;
   final Value<RiskLevel> riskLevel;
   const InvestmentTableCompanion({
     this.id = const Value.absent(),
@@ -604,7 +571,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     this.valueUpdatedOn = const Value.absent(),
     this.irr = const Value.absent(),
     this.maturityDate = const Value.absent(),
-    this.valueUpdatedDate = const Value.absent(),
     this.riskLevel = const Value.absent(),
   });
   InvestmentTableCompanion.insert({
@@ -616,7 +582,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     this.valueUpdatedOn = const Value.absent(),
     this.irr = const Value.absent(),
     this.maturityDate = const Value.absent(),
-    this.valueUpdatedDate = const Value.absent(),
     required RiskLevel riskLevel,
   })  : name = Value(name),
         riskLevel = Value(riskLevel);
@@ -629,7 +594,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     Expression<DateTime>? valueUpdatedOn,
     Expression<double>? irr,
     Expression<DateTime>? maturityDate,
-    Expression<DateTime>? valueUpdatedDate,
     Expression<String>? riskLevel,
   }) {
     return RawValuesInsertable({
@@ -641,7 +605,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       if (valueUpdatedOn != null) 'VALUE_UPDATED_ON': valueUpdatedOn,
       if (irr != null) 'IRR': irr,
       if (maturityDate != null) 'MATURITY_DATE': maturityDate,
-      if (valueUpdatedDate != null) 'VALUE_UPDATED_DATE': valueUpdatedDate,
       if (riskLevel != null) 'RISK_LEVEL': riskLevel,
     });
   }
@@ -655,7 +618,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       Value<DateTime?>? valueUpdatedOn,
       Value<double?>? irr,
       Value<DateTime?>? maturityDate,
-      Value<DateTime?>? valueUpdatedDate,
       Value<RiskLevel>? riskLevel}) {
     return InvestmentTableCompanion(
       id: id ?? this.id,
@@ -666,7 +628,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
       valueUpdatedOn: valueUpdatedOn ?? this.valueUpdatedOn,
       irr: irr ?? this.irr,
       maturityDate: maturityDate ?? this.maturityDate,
-      valueUpdatedDate: valueUpdatedDate ?? this.valueUpdatedDate,
       riskLevel: riskLevel ?? this.riskLevel,
     );
   }
@@ -698,9 +659,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
     if (maturityDate.present) {
       map['MATURITY_DATE'] = Variable<DateTime>(maturityDate.value);
     }
-    if (valueUpdatedDate.present) {
-      map['VALUE_UPDATED_DATE'] = Variable<DateTime>(valueUpdatedDate.value);
-    }
     if (riskLevel.present) {
       map['RISK_LEVEL'] = Variable<String>(
           $InvestmentTableTable.$converterriskLevel.toSql(riskLevel.value));
@@ -719,7 +677,6 @@ class InvestmentTableCompanion extends UpdateCompanion<BaseInvestmentDO> {
           ..write('valueUpdatedOn: $valueUpdatedOn, ')
           ..write('irr: $irr, ')
           ..write('maturityDate: $maturityDate, ')
-          ..write('valueUpdatedDate: $valueUpdatedDate, ')
           ..write('riskLevel: $riskLevel')
           ..write(')'))
         .toString();
@@ -2961,16 +2918,11 @@ class $AggregatedExpenseTableTable extends AggregatedExpenseTable
       type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _monthMeta = const VerificationMeta('month');
   @override
-  late final GeneratedColumn<int> month = GeneratedColumn<int>(
+  late final GeneratedColumn<DateTime> month = GeneratedColumn<DateTime>(
       'MONTH', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _yearMeta = const VerificationMeta('year');
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
-  late final GeneratedColumn<int> year = GeneratedColumn<int>(
-      'YEAR', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, amount, tags, month, year];
+  List<GeneratedColumn> get $columns => [id, amount, tags, month];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3003,12 +2955,6 @@ class $AggregatedExpenseTableTable extends AggregatedExpenseTable
     } else if (isInserting) {
       context.missing(_monthMeta);
     }
-    if (data.containsKey('YEAR')) {
-      context.handle(
-          _yearMeta, year.isAcceptableOrUnknown(data['YEAR']!, _yearMeta));
-    } else if (isInserting) {
-      context.missing(_yearMeta);
-    }
     return context;
   }
 
@@ -3025,9 +2971,7 @@ class $AggregatedExpenseTableTable extends AggregatedExpenseTable
       tags: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}TAGS'])!,
       month: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}MONTH'])!,
-      year: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}YEAR'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}MONTH'])!,
     );
   }
 
@@ -3042,22 +2986,19 @@ class AggregatedExpenseDO extends DataClass
   final int id;
   final double amount;
   final String tags;
-  final int month;
-  final int year;
+  final DateTime month;
   const AggregatedExpenseDO(
       {required this.id,
       required this.amount,
       required this.tags,
-      required this.month,
-      required this.year});
+      required this.month});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['ID'] = Variable<int>(id);
     map['AMOUNT'] = Variable<double>(amount);
     map['TAGS'] = Variable<String>(tags);
-    map['MONTH'] = Variable<int>(month);
-    map['YEAR'] = Variable<int>(year);
+    map['MONTH'] = Variable<DateTime>(month);
     return map;
   }
 
@@ -3067,7 +3008,6 @@ class AggregatedExpenseDO extends DataClass
       amount: Value(amount),
       tags: Value(tags),
       month: Value(month),
-      year: Value(year),
     );
   }
 
@@ -3078,8 +3018,7 @@ class AggregatedExpenseDO extends DataClass
       id: serializer.fromJson<int>(json['id']),
       amount: serializer.fromJson<double>(json['amount']),
       tags: serializer.fromJson<String>(json['tags']),
-      month: serializer.fromJson<int>(json['month']),
-      year: serializer.fromJson<int>(json['year']),
+      month: serializer.fromJson<DateTime>(json['month']),
     );
   }
   @override
@@ -3089,19 +3028,17 @@ class AggregatedExpenseDO extends DataClass
       'id': serializer.toJson<int>(id),
       'amount': serializer.toJson<double>(amount),
       'tags': serializer.toJson<String>(tags),
-      'month': serializer.toJson<int>(month),
-      'year': serializer.toJson<int>(year),
+      'month': serializer.toJson<DateTime>(month),
     };
   }
 
   AggregatedExpenseDO copyWith(
-          {int? id, double? amount, String? tags, int? month, int? year}) =>
+          {int? id, double? amount, String? tags, DateTime? month}) =>
       AggregatedExpenseDO(
         id: id ?? this.id,
         amount: amount ?? this.amount,
         tags: tags ?? this.tags,
         month: month ?? this.month,
-        year: year ?? this.year,
       );
   @override
   String toString() {
@@ -3109,14 +3046,13 @@ class AggregatedExpenseDO extends DataClass
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('tags: $tags, ')
-          ..write('month: $month, ')
-          ..write('year: $year')
+          ..write('month: $month')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, amount, tags, month, year);
+  int get hashCode => Object.hash(id, amount, tags, month);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3124,8 +3060,7 @@ class AggregatedExpenseDO extends DataClass
           other.id == this.id &&
           other.amount == this.amount &&
           other.tags == this.tags &&
-          other.month == this.month &&
-          other.year == this.year);
+          other.month == this.month);
 }
 
 class AggregatedExpenseTableCompanion
@@ -3133,38 +3068,32 @@ class AggregatedExpenseTableCompanion
   final Value<int> id;
   final Value<double> amount;
   final Value<String> tags;
-  final Value<int> month;
-  final Value<int> year;
+  final Value<DateTime> month;
   const AggregatedExpenseTableCompanion({
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
     this.tags = const Value.absent(),
     this.month = const Value.absent(),
-    this.year = const Value.absent(),
   });
   AggregatedExpenseTableCompanion.insert({
     this.id = const Value.absent(),
     required double amount,
     required String tags,
-    required int month,
-    required int year,
+    required DateTime month,
   })  : amount = Value(amount),
         tags = Value(tags),
-        month = Value(month),
-        year = Value(year);
+        month = Value(month);
   static Insertable<AggregatedExpenseDO> custom({
     Expression<int>? id,
     Expression<double>? amount,
     Expression<String>? tags,
-    Expression<int>? month,
-    Expression<int>? year,
+    Expression<DateTime>? month,
   }) {
     return RawValuesInsertable({
       if (id != null) 'ID': id,
       if (amount != null) 'AMOUNT': amount,
       if (tags != null) 'TAGS': tags,
       if (month != null) 'MONTH': month,
-      if (year != null) 'YEAR': year,
     });
   }
 
@@ -3172,14 +3101,12 @@ class AggregatedExpenseTableCompanion
       {Value<int>? id,
       Value<double>? amount,
       Value<String>? tags,
-      Value<int>? month,
-      Value<int>? year}) {
+      Value<DateTime>? month}) {
     return AggregatedExpenseTableCompanion(
       id: id ?? this.id,
       amount: amount ?? this.amount,
       tags: tags ?? this.tags,
       month: month ?? this.month,
-      year: year ?? this.year,
     );
   }
 
@@ -3196,10 +3123,7 @@ class AggregatedExpenseTableCompanion
       map['TAGS'] = Variable<String>(tags.value);
     }
     if (month.present) {
-      map['MONTH'] = Variable<int>(month.value);
-    }
-    if (year.present) {
-      map['YEAR'] = Variable<int>(year.value);
+      map['MONTH'] = Variable<DateTime>(month.value);
     }
     return map;
   }
@@ -3210,8 +3134,7 @@ class AggregatedExpenseTableCompanion
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('tags: $tags, ')
-          ..write('month: $month, ')
-          ..write('year: $year')
+          ..write('month: $month')
           ..write(')'))
         .toString();
   }

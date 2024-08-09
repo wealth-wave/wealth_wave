@@ -28,8 +28,7 @@ class ExpenseApi {
       {required final int year, required final int month}) async {
     return (_db.select(_db.expenseTable)
           ..where((t) =>
-              t.createdOn.year.equals(year) &
-              t.createdOn.month.equals(month))
+              t.createdOn.year.equals(year) & t.createdOn.month.equals(month))
           ..orderBy([(t) => OrderingTerm(expression: t.createdOn)]))
         .get();
   }
@@ -57,11 +56,11 @@ class ExpenseApi {
     return (_db.delete(_db.expenseTable)..where((t) => t.id.equals(id))).go();
   }
 
-  Future<int> deleteByMonthDate({required final int year, required final int month}) async {
+  Future<int> deleteByMonthDate({required final DateTime month}) async {
     return (_db.delete(_db.expenseTable)
           ..where((t) =>
-              t.createdOn.year.equals(year) &
-              t.createdOn.month.equals(month)))
+              t.createdOn.year.equals(month.year) &
+              t.createdOn.month.equals(month.month)))
         .go();
   }
 }

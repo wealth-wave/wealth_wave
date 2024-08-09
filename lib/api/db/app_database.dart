@@ -39,9 +39,6 @@ class InvestmentTable extends Table {
   DateTimeColumn get maturityDate =>
       dateTime().nullable().named('MATURITY_DATE')();
 
-  DateTimeColumn get valueUpdatedDate =>
-      dateTime().nullable().named('VALUE_UPDATED_DATE')();
-
   TextColumn get riskLevel => textEnum<RiskLevel>().named('RISK_LEVEL')();
 }
 
@@ -273,8 +270,7 @@ class AggregatedExpenseTable extends Table {
   RealColumn get amount => real().named('AMOUNT')();
   TextColumn get tags => text().named('TAGS')();
 
-  IntColumn get month => integer().named('MONTH')();
-  IntColumn get year => integer().named('YEAR')();
+  DateTimeColumn get month => dateTime().named('MONTH')();
 }
 
 @DataClassName('ExpenseTagDO')
