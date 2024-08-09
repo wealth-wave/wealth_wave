@@ -53,7 +53,7 @@ class InvestmentVO {
         investedValue: investment.getTotalInvestedAmount(),
         currentValue: investment.getValue(),
         valueUpdatedDate: investment.valueUpdatedOn,
-        qty: investment.qty,
+        qty: investment.qty ?? 1,
         valuePerQty: investment.getValuePerUnit(),
         basketId: investment.basketId,
         basketName: investment.basketName,

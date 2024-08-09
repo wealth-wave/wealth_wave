@@ -45,14 +45,8 @@ class Investment {
         .fold(0, (value, element) => value + element);
   }
 
-  double get qty {
-    if (_qty == null) {
-      return 1;
-    } else if (_qty == 0) {
-      return 1;
-    } else {
-      return _qty;
-    }
+  double? get qty {
+    return _qty;
   }
 
   DateTime getLastInvestedOn() {
@@ -78,18 +72,21 @@ class Investment {
     final value = this.value;
     final irr = this.irr;
     if (value != null) {
-      return value * qty;
+      return value * (qty ?? 1);
     } else if (irr != null) {
       final payments = getPayments(till: DateTime.now());
       return IRRCalculator().calculateFutureValueOnIRR(
           payments: payments, irr: irr, futureDate: DateTime.now());
     } else {
-      throw Exception('Value and IRR are null');
+      return 0;
     }
   }
 
   double getValuePerUnit() {
-    return getValue() / qty;
+    if (qty == 0) {
+      return 0;
+    }
+    return getValue() / (qty ?? 1);
   }
 
   double getValueOn(
@@ -107,7 +104,7 @@ class Investment {
           till: futureDate, considerFuturePayments: considerFuturePayments);
       final irr = IRRCalculator().calculateIRR(
           payments: paymentTillNow,
-          value: value * qty,
+          value: value * (qty ?? 1),
           valueUpdatedOn: DateTime.now());
       return IRRCalculator().calculateFutureValueOnIRR(
         irr: irr,
@@ -120,7 +117,7 @@ class Investment {
       return IRRCalculator().calculateFutureValueOnIRR(
           payments: payments, irr: irr, futureDate: futureDate);
     } else {
-      throw Exception('Value and IRR are null');
+      return 0;
     }
   }
 
@@ -134,10 +131,10 @@ class Investment {
 
       return IRRCalculator().calculateIRR(
           payments: payments,
-          value: value * qty,
+          value: value * (qty ?? 1),
           valueUpdatedOn: DateTime.now());
     } else {
-      throw Exception('Value and IRR are null');
+      return 0;
     }
   }
 
@@ -153,7 +150,9 @@ class Investment {
           riskLevel: investmentDO.riskLevel,
           irr: investmentDO.irr,
           value: investmentDO.value,
-          qty: investmentDO.qty,
+          qty: transactionsDOs.any((element) => element.qty > 0)
+              ? investmentDO.qty
+              : null,
           valueUpdatedOn: investmentDO.valueUpdatedOn,
           basketId: investmentDO.basketId,
           maturityDate: investmentDO.maturityDate,

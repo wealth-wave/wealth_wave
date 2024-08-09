@@ -119,6 +119,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
       {required final BuildContext context,
       required final InvestmentVO investmentVO}) {
     return Card(
+        color: investmentVO.qty == 0 ? Colors.grey : null,
         margin: const EdgeInsets.all(AppDimen.defaultPadding),
         child: InkWell(
           onTap: () => {
@@ -177,7 +178,8 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                             Text(
                               ('Qty ${NumberFormat.compact().format(investmentVO.qty)}'),
                             ),
-                            const Padding(padding: EdgeInsets.all(AppDimen.minPadding)),
+                            const Padding(
+                                padding: EdgeInsets.all(AppDimen.minPadding)),
                             Text(
                               ('Price ${NumberFormat.compact().format(investmentVO.valuePerQty)}'),
                             ),

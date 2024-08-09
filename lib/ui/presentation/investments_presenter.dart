@@ -14,7 +14,6 @@ class InvestmentsPresenter extends Presenter<InvestmentsViewState> {
         .get()
         .then((investments) => investments
             .map((investment) => InvestmentVO.from(investment: investment))
-            .where((element) => element.qty > 0)
             .toList())
         .then((investmentVOs) {
       investmentVOs.sort((a, b) => a.currentValue > b.currentValue ? -1 : 1);
