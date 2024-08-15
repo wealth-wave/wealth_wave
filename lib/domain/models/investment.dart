@@ -53,6 +53,10 @@ class Investment {
     return getPayments().lastOrNull?.createdOn ?? DateTime.now();
   }
 
+  bool inActive() {
+    return transactions.any((element) => element.qty > 0) && qty == 0;
+  }
+
   List<Payment> getPayments(
       {final DateTime? till, bool considerFuturePayments = false}) {
     final payments = transactions

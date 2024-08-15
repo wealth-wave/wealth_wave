@@ -119,7 +119,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
       {required final BuildContext context,
       required final InvestmentVO investmentVO}) {
     return Card(
-        color: investmentVO.qty == 0 ? Colors.grey : null,
+        color: investmentVO.inActive ? Colors.grey : null,
         margin: const EdgeInsets.all(AppDimen.defaultPadding),
         child: InkWell(
           onTap: () => {

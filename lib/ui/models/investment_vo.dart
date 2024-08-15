@@ -13,6 +13,7 @@ class InvestmentVO {
   final double currentValue;
   final DateTime? valueUpdatedDate;
   final double qty;
+  final bool inActive;
   final double valuePerQty;
   final DateTime? maturityDate;
   final int? basketId;
@@ -37,6 +38,7 @@ class InvestmentVO {
       required this.currentValue,
       required this.valueUpdatedDate,
       required this.qty,
+      required this.inActive,
       required this.valuePerQty,
       required this.maturityDate,
       required this.transactions,
@@ -53,6 +55,7 @@ class InvestmentVO {
         investedValue: investment.getTotalInvestedAmount(),
         currentValue: investment.getValue(),
         valueUpdatedDate: investment.valueUpdatedOn,
+        inActive: investment.inActive(),
         qty: investment.qty ?? 1,
         valuePerQty: investment.getValuePerUnit(),
         basketId: investment.basketId,

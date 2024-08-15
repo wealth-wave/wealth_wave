@@ -26,7 +26,8 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
       Map<int, double> irrComposition = {};
       List<Payment> payments = [];
 
-      for (var investment in investments) {
+      var activeInvestments = investments.where((investment) => !investment.inActive()).toList();
+      for (var investment in activeInvestments) {
         double investmentValue = investment.getValueOn(date: DateTime.now());
         double investedAmount =
             investment.getTotalInvestedAmount(till: DateTime.now());
@@ -60,8 +61,8 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
         viewState.valueOverTime = _getValueOverTime(investments);
         viewState.investmentOverTime = _getInvestmentOverTime(investments);
         viewState.overallIRR = overallIRR;
-        viewState.basketIrr = _calculateBasketIRR(investments);
-        viewState.irrGroups = _calculateIRRGroups(investments);
+        viewState.basketIrr = _calculateBasketIRR(activeInvestments);
+        viewState.irrGroups = _calculateIRRGroups(activeInvestments);
       });
     });
   }
