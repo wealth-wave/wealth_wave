@@ -263,6 +263,29 @@ class ExpenseTable extends Table {
       dateTime().named('CREATED_ON')();
 }
 
+@DataClassName('RecurringExpenseDO')
+class RecurringExpenseTable extends Table {
+  IntColumn get id => integer().named('ID').autoIncrement()();
+
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
+
+  RealColumn get amount => real().named('AMOUNT')();
+
+  TextColumn get tags => text().named('TAGS')();
+
+  DateTimeColumn get startDate => dateTime().named('START_DATE')();
+
+  DateTimeColumn get endDate => dateTime()
+      .nullable()
+      .check(endDate.isNull() | endDate.isBiggerThan(startDate))
+      .named('END_DATE')();
+
+  TextColumn get frequency => textEnum<Frequency>().named('FREQUENCY')();
+
+  DateTimeColumn get executedTill =>
+      dateTime().nullable().named('EXECUTED_TILL')();
+}
+
 @DataClassName('AggregatedExpenseDO')
 class AggregatedExpenseTable extends Table {
   IntColumn get id => integer().named('ID').autoIncrement()();
@@ -281,6 +304,47 @@ class ExpenseTagTable extends Table {
       text().named('NAME').check(name.isNotValue('')).unique()();
 
   TextColumn get description => text().nullable().named('DESCRIPTION')();
+}
+
+@DataClassName('LoanDO')
+class LoanTable extends Table {
+  IntColumn get id => integer().named('ID').autoIncrement()();
+  
+  TextColumn get name =>
+      text().named('NAME').check(name.isNotValue('')).unique()();
+
+  RealColumn get totalAmount =>
+      real().named('TOTAL_AMOUNT').check(totalAmount.isBiggerThanValue(0))();
+
+  RealColumn get currentAmount =>
+      real().named('CURRENT_AMOUNT')();
+
+  DateTimeColumn get startDate => dateTime().named('START_DATE')();
+
+  DateTimeColumn get maturityDate => dateTime().named('MATURITY_DATE')();
+}
+
+@DataClassName('RepaymentDO')
+class RepaymentDO extends Table {
+  IntColumn get id => integer().named('ID').autoIncrement()();
+
+  TextColumn get description => text().nullable().named('DESCRIPTION')();
+
+  RealColumn get amount => real().named('AMOUNT')();
+
+  TextColumn get tags => text().named('TAGS')();
+
+  DateTimeColumn get startDate => dateTime().named('START_DATE')();
+
+  DateTimeColumn get endDate => dateTime()
+      .nullable()
+      .check(endDate.isNull() | endDate.isBiggerThan(startDate))
+      .named('END_DATE')();
+
+  TextColumn get frequency => textEnum<Frequency>().named('FREQUENCY')();
+
+  DateTimeColumn get executedTill =>
+      dateTime().nullable().named('EXECUTED_TILL')();
 }
 
 @DriftDatabase(tables: [
