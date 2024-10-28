@@ -175,12 +175,12 @@ class CreateInvestmentViewState {
   bool isValid() {
     final value = this.value;
     final irr = this.irr;
-    final containsValue = value != null && value > 0;
-    final containsIRR = irr != null && irr > 0;
+    final containsValue = value != null;
+    final containsIRR = irr != null;
 
     return name.isNotEmpty &&
         (containsValue || containsIRR) &&
         investedOn != null &&
-        (investedAmount??0) > 0;
+        investedAmount != null;
   }
 }
