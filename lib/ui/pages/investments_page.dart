@@ -190,23 +190,18 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                       top: 0,
                       left: 0,
                       right: 0,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8.0),
-                            color: Colors.white,
-                            child: Text(
-                              'Sold: ${formatToCurrency(investmentVO.profit)}',
-                              style: TextStyle(
-                                color: investmentVO.isProfit
-                                    ? Colors.green
-                                    : Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        color: Colors.white,
+                        child: Text(
+                          'Sold: ${formatToCurrency(investmentVO.profit)}',
+                          style: TextStyle(
+                            color: investmentVO.isProfit
+                                ? Colors.green
+                                : Colors.red,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
+                        ),
                       ),
                     )
                   else
