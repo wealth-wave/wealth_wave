@@ -119,7 +119,6 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
       {required final BuildContext context,
       required final InvestmentVO investmentVO}) {
     return Card(
-        color: investmentVO.inActive ? Colors.grey : null,
         margin: const EdgeInsets.all(AppDimen.defaultPadding),
         child: InkWell(
           onTap: () => {
@@ -186,19 +185,44 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                           ],
                         ),
                       ]),
-                  OverflowBar(
-                    children: [
-                      _getScriptWidget(investmentVO),
-                      const Padding(
-                          padding: EdgeInsets.all(AppDimen.defaultPadding)),
-                      _getInvestedWidget(investmentVO, context),
-                      const Padding(
-                          padding: EdgeInsets.all(AppDimen.defaultPadding)),
-                      _getValueWidget(investmentVO, context),
-                      const Padding(
-                          padding: EdgeInsets.all(AppDimen.defaultPadding)),
-                    ],
-                  )
+                  if (investmentVO.inActive)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8.0),
+                            color: Colors.white,
+                            child: Text(
+                              'Sold: ${formatToCurrency(investmentVO.profit)}',
+                              style: TextStyle(
+                                color: investmentVO.isProfit
+                                    ? Colors.green
+                                    : Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    OverflowBar(
+                      children: [
+                        _getScriptWidget(investmentVO),
+                        const Padding(
+                            padding: EdgeInsets.all(AppDimen.defaultPadding)),
+                        _getInvestedWidget(investmentVO, context),
+                        const Padding(
+                            padding: EdgeInsets.all(AppDimen.defaultPadding)),
+                        _getValueWidget(investmentVO, context),
+                        const Padding(
+                            padding: EdgeInsets.all(AppDimen.defaultPadding)),
+                      ],
+                    ),
                 ]),
           ),
         ));

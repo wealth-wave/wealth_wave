@@ -25,6 +25,8 @@ class InvestmentVO {
   int get transactionCount => transactions.length;
   int get sipCount => sips.length;
   String get valueUpdateDate => valueUpdatedDate?.toIso8601String() ?? 'Not Updated';
+  bool get isProfit => currentValue > investedValue;
+  double get profit => currentValue - investedValue;
 
   InvestmentVO._(
       {required this.id,
