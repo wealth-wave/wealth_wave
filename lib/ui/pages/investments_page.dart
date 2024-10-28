@@ -186,21 +186,15 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                         ),
                       ]),
                   if (investmentVO.inActive)
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        color: Colors.white,
-                        child: Text(
-                          'Sold: ${formatToCurrency(investmentVO.profit)}',
-                          style: TextStyle(
-                            color: investmentVO.isProfit
-                                ? Colors.green
-                                : Colors.red,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      color: Colors.white,
+                      child: Text(
+                        'Sold: ${formatToCurrency(investmentVO.profit)}',
+                        style: TextStyle(
+                          color:
+                              investmentVO.isProfit ? Colors.green : Colors.red,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     )
