@@ -26,7 +26,8 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
       Map<int, double> irrComposition = {};
       List<Payment> payments = [];
 
-      var activeInvestments = investments.where((investment) => !investment.inActive()).toList();
+      var activeInvestments =
+          investments.where((investment) => !investment.inActive()).toList();
       for (var investment in activeInvestments) {
         double investmentValue = investment.getValueOn(date: DateTime.now());
         double investedAmount =
@@ -55,14 +56,15 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
         viewState.currentValue = totalValueOfInvestment;
         viewState.riskComposition = riskComposition
             .map((key, value) => MapEntry(key, value / totalValueOfInvestment));
-        viewState.basketComposition = basketComposition
-            .map((key, value) => MapEntry(key, value));
+        viewState.basketComposition =
+            basketComposition.map((key, value) => MapEntry(key, value));
         viewState.irrComposition = irrComposition;
         viewState.valueOverTime = _getValueOverTime(investments);
         viewState.investmentOverTime = _getInvestmentOverTime(investments);
         viewState.overallIRR = overallIRR;
         viewState.basketIrr = _calculateBasketIRR(activeInvestments);
         viewState.irrGroups = _calculateIRRGroups(activeInvestments);
+        viewState.investmentsByMonth = _getInvestmentByMonth(investments);
       });
     });
   }
@@ -80,7 +82,8 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
             ifAbsent: () => entry.value);
       });
     }
-    dateInvestmentMap.update(DateTime.now(), (value) => value,ifAbsent: () => 0);
+    dateInvestmentMap.update(DateTime.now(), (value) => value,
+        ifAbsent: () => 0);
     List<DateTime> investmentDates = dateInvestmentMap.keys.toList();
     investmentDates.sort((a, b) => a.compareTo(b));
 
@@ -112,7 +115,8 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
       totalValue += investment.getValueOn(date: DateTime.now());
       totalInvested += investment.getTotalInvestedAmount(till: DateTime.now());
     }
-    dateInvestmentMap.update(DateTime.now(), (value) => value, ifAbsent: () => 0);
+    dateInvestmentMap.update(DateTime.now(), (value) => value,
+        ifAbsent: () => 0);
 
     List<DateTime> investmentDates = dateInvestmentMap.keys.toList();
     investmentDates.sort((a, b) => a.compareTo(b));
@@ -127,6 +131,27 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
     }
 
     return valueOverTime;
+  }
+
+  Map<DateTime, double> _getInvestmentByMonth(List<Investment> investments) {
+    Map<DateTime, double> investmentByMonth = {};
+
+    for (var investment in investments) {
+      if (investment.getTotalInvestedAmount() > 0) {
+        investment
+            .getPayments(till: DateTime.now())
+            .map((e) => MapEntry(e.createdOn, e.amount))
+            .forEach((entry) {
+              if(entry.key.isAfter(DateTime.now().subtract(const Duration(days: 365)))) {
+                DateTime month = DateTime(entry.key.year, entry.key.month);
+                investmentByMonth.update(month, (value) => value + entry.value,
+                    ifAbsent: () => entry.value);
+              }
+        });
+      }
+    }
+
+    return investmentByMonth;
   }
 
   Map<String, double> _calculateBasketIRR(List<Investment> investments) {
@@ -156,7 +181,9 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
     basketPayments.forEach((basketName, payments) {
       double totalValue = basketValues[basketName] ?? 0;
       double irr = _irrCalculator.calculateIRR(
-          payments: payments, value: totalValue, valueUpdatedOn: DateTime.now());
+          payments: payments,
+          value: totalValue,
+          valueUpdatedOn: DateTime.now());
       basketIRR[basketName] = irr;
     });
 
@@ -166,13 +193,28 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
   Map<int, Pair<double, double>> _calculateIRRGroups(
       List<Investment> investments) {
     Map<int, Pair<double, double>> irrValue = {};
-    List<int> thresholds = [40, 20, 15, 12, 10, 8, 5, 0, -5, -10, -15, -20, -40];
+    List<int> thresholds = [
+      40,
+      20,
+      15,
+      12,
+      10,
+      8,
+      5,
+      0,
+      -5,
+      -10,
+      -15,
+      -20,
+      -40
+    ];
     for (var investment in investments) {
       double investmentValue = investment.getValueOn(date: DateTime.now());
       double investedAmount =
           investment.getTotalInvestedAmount(till: DateTime.now());
       int irr = investment.getIRR().toInt();
-      irr = thresholds.firstWhere((threshold) => irr > threshold, orElse: () => irr);
+      irr = thresholds.firstWhere((threshold) => irr > threshold,
+          orElse: () => irr);
       irrValue.update(
           irr,
           (value) =>
@@ -211,4 +253,5 @@ class DashboardViewState {
   Map<int, double> irrComposition = {};
   Map<DateTime, double> investmentOverTime = {};
   Map<DateTime, double> valueOverTime = {};
+  Map<DateTime, double> investmentsByMonth = {};
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:toastification/toastification.dart';
 import 'package:wealth_wave/contract/risk_level.dart';
 import 'package:wealth_wave/core/page_state.dart';
@@ -188,7 +187,7 @@ class _CreateInvestmentPage extends PageState<CreateInvestmentViewState,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'X ${NumberFormat.compact().format(snapshot.qty)}',
+                          snapshot.qty != null ? 'X ${formatDecimal(snapshot.qty ?? 0)}': '',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(width: 10), // Add some spacing

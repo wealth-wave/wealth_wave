@@ -71,6 +71,11 @@ class _DashboardPage
               const SizedBox(height: AppDimen.minPadding),
               _buildTimeLine(snapshot.valueOverTime.entries.toList(),
                   snapshot.investmentOverTime.entries.toList()),
+              Text('Monthly Investments:',
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: AppDimen.minPadding),
+              _buildMonthlyInvestmentGraph(context: context,
+                  investments: snapshot.investmentsByMonth),
             ],
           ),
         ),
@@ -234,6 +239,50 @@ class _DashboardPage
     } else {
       return const Text('');
     }
+  }
+
+  Widget _buildMonthlyInvestmentGraph({
+    required BuildContext context,
+    required Map<DateTime, double> investments,
+  }) {
+    List<Pair<String, double>> chartData = [];
+    List<Pair<String, double>> cumulativeAverageData = [];
+    double runningTotal = 0;
+    int count = 0;
+
+    List<MapEntry<DateTime, double>> expenseList = investments.entries.toList();
+    expenseList.sort((a, b) => a.key.compareTo(b.key));
+
+    for (var entry in expenseList) {
+      count++;
+      runningTotal += entry.value;
+      double cumulativeAverage = runningTotal / count;
+      String month = DateFormat('MMM').format(DateTime.utc(entry.key.year, entry.key.month));
+      chartData.add(Pair(month, entry.value));
+      cumulativeAverageData.add(Pair(month, cumulativeAverage));
+    }
+
+    return SfCartesianChart(
+      primaryXAxis: const CategoryAxis(),
+      primaryYAxis: NumericAxis(
+          numberFormat: NumberFormat.compactCurrency(
+              symbol: '', locale: 'en_IN', decimalDigits: 0)),
+      series: [
+        ColumnSeries<Pair<String, double>, String>(
+          dataSource: chartData,
+          xValueMapper: (Pair<String, double> data, _) => data.key,
+          yValueMapper: (Pair<String, double> data, _) => data.value,
+          name: 'Expenses',
+        ),
+        LineSeries<Pair<String, double>, String>(
+          dataSource: cumulativeAverageData,
+          xValueMapper: (Pair<String, double> data, _) => data.key,
+          yValueMapper: (Pair<String, double> data, _) => data.value,
+          name: 'Cumulative Average',
+          color: Colors.red,
+        ),
+      ],
+    );
   }
 
   String _getRiskLevelName(RiskLevel riskLevel) {
