@@ -74,15 +74,13 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
     Map<DateTime, double> dateInvestmentMap = {};
 
     for (var investment in investments) {
-      if (investment.getValue() > 0) {
-        investment
-            .getPayments(till: DateTime.now())
-            .map((e) => MapEntry(e.createdOn, e.amount))
-            .forEach((entry) {
-          dateInvestmentMap.update(entry.key, (value) => value + entry.value,
-              ifAbsent: () => entry.value);
-        });
-      }
+      investment
+          .getPayments(till: DateTime.now())
+          .map((e) => MapEntry(e.createdOn, e.amount))
+          .forEach((entry) {
+        dateInvestmentMap.update(entry.key, (value) => value + entry.value,
+            ifAbsent: () => entry.value);
+      });
     }
     dateInvestmentMap.update(DateTime.now(), (value) => value,
         ifAbsent: () => 0);
@@ -139,17 +137,19 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
     Map<DateTime, double> investmentByMonth = {};
 
     for (var investment in investments) {
-      investment
-          .getPayments(till: DateTime.now())
-          .map((e) => MapEntry(e.createdOn, e.amount))
-          .forEach((entry) {
-        if (entry.key
-            .isAfter(DateTime.now().subtract(const Duration(days: 365)))) {
-          DateTime month = DateTime(entry.key.year, entry.key.month);
-          investmentByMonth.update(month, (value) => value + entry.value,
-              ifAbsent: () => entry.value);
-        }
-      });
+      if (investment.getValue() > 0) {
+        investment
+            .getPayments(till: DateTime.now())
+            .map((e) => MapEntry(e.createdOn, e.amount))
+            .forEach((entry) {
+          if (entry.key
+              .isAfter(DateTime.now().subtract(const Duration(days: 365)))) {
+            DateTime month = DateTime(entry.key.year, entry.key.month);
+            investmentByMonth.update(month, (value) => value + entry.value,
+                ifAbsent: () => entry.value);
+          }
+        });
+      }
     }
 
     return investmentByMonth;
