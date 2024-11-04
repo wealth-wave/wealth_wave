@@ -12,6 +12,7 @@ class NavPath {
   static String goal({required final int id}) => '/goals/$id';
   static const String baskets = '/baskets';
   static const String expenseTags = '/expense-tags';
+  static const String upcomingSips = '/upcoming-sips';
 
   static isMainPagePath(List<String> paths) => paths.isEmpty;
 
@@ -33,4 +34,6 @@ class NavPath {
   static isBasketsPagePath(List<String> paths) => paths.length == 1 && paths[0] == 'baskets';
   
   static isExpenseTagsPagePath(List<String> paths) => paths.length == 1 && paths[0] == 'expense-tags';
+
+  static isUpcomingSipPath(List<String> paths) => paths.length == 1 && paths[0] == 'upcoming-sips';
 }

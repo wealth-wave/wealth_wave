@@ -55,8 +55,10 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
                 } else if (value == 2) {
                   Navigator.of(context).pushNamed(NavPath.expenseTags);
                 } else if (value == 3) {
-                  presenter.performBackup();
+                  Navigator.of(context).pushNamed(NavPath.upcomingSips);
                 } else if (value == 4) {
+                  presenter.performBackup();
+                } else if (value == 5) {
                   presenter.performImportFile();
                 }
               },
@@ -71,10 +73,14 @@ class _MainPageState extends PageState<MainViewState, MainPage, MainPresenter> {
                 ),
                 const PopupMenuItem(
                   value: 3,
-                  child: Text('Export'),
+                  child: Text('Upcoming Sips'),
                 ),
                 const PopupMenuItem(
                   value: 4,
+                  child: Text('Export'),
+                ),
+                const PopupMenuItem(
+                  value: 5,
                   child: Text('Import'),
                 ),
               ],

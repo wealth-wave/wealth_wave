@@ -5,6 +5,7 @@ import 'package:wealth_wave/ui/pages/expense_tags_page.dart';
 import 'package:wealth_wave/ui/pages/goal_page.dart';
 import 'package:wealth_wave/ui/pages/investment_page.dart';
 import 'package:wealth_wave/ui/pages/main_page.dart';
+import 'package:wealth_wave/ui/pages/upcoming_sips_page.dart';
 
 class AppRouter {
   static Widget route(String path) {
@@ -19,6 +20,8 @@ class AppRouter {
       return const BasketsPage();
     } else if(NavPath.isExpenseTagsPagePath(uri.pathSegments)) {
       return const ExpenseTagsPage();
+    } else if(NavPath.isUpcomingSipPath(uri.pathSegments)) {
+      return const UpcomingSipsPage();
     }
     return const MainPage(path: []);
   }

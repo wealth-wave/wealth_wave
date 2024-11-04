@@ -24,14 +24,34 @@ class Sip {
 
   List<Payment> getFuturePayment({required final DateTime till}) {
     final List<Payment> payments = [];
-    DateTime nextPaymentDate = executedTill ?? startDate;
+    DateTime nextPaymentDate = _getInitialPaymentDate();
 
-    while (nextPaymentDate.compareTo(till) <= 0 &&
-        (endDate == null || nextPaymentDate.compareTo(endDate!) < 0)) {
+    while (_shouldAddPayment(nextPaymentDate, till)) {
       payments.add(Payment.from(amount: amount, createdOn: nextPaymentDate));
       nextPaymentDate = _getNextOccurrenceDateTime(nextPaymentDate, frequency);
     }
     return payments;
+  }
+
+  Payment? getNextPayment() {
+    DateTime nextPaymentDate = _getInitialPaymentDate();
+
+    if (_shouldAddPayment(nextPaymentDate, endDate)) {
+      return Payment.from(amount: amount, createdOn: nextPaymentDate);
+    }
+
+    return null;
+  }
+
+  DateTime _getInitialPaymentDate() {
+    return executedTill != null
+        ? _getNextOccurrenceDateTime(executedTill!, frequency)
+        : startDate;
+  }
+
+  bool _shouldAddPayment(DateTime nextPaymentDate, DateTime? till) {
+    return nextPaymentDate.compareTo(till ?? DateTime.now()) <= 0 &&
+        (endDate == null || nextPaymentDate.compareTo(endDate!) < 0);
   }
 
   DateTime _getNextOccurrenceDateTime(DateTime dateTime, Frequency frequency) {
@@ -49,7 +69,8 @@ class Sip {
       case Frequency.halfYearly:
         return DateTime.utc(dateTime.year, dateTime.month + 6, dateTime.day);
       case Frequency.yearly:
-        return DateTime.utc(dateTime.year + 1, dateTime.month + 6, dateTime.day);
+        return DateTime.utc(
+            dateTime.year + 1, dateTime.month + 6, dateTime.day);
       default:
         throw Exception('Invalid frequency');
     }
