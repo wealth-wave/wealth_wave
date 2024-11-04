@@ -44,7 +44,7 @@ class TransactionVO {
   final double qty;
   final DateTime createdOn;
 
-  double get rate => qty > 0 ? amount / qty : 0;
+  double get rate => qty != 0 ? amount / qty : 0;
 
   TransactionVO._(
       {required this.id,

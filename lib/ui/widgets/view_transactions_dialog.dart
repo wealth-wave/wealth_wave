@@ -58,12 +58,13 @@ class _TransactionPage extends PageState<TransactionsViewState,
                         height: AppDimen.minPadding), // Add some spacing
                     Row(
                       children: [
-                        Text('Amount: ${formatToCurrency(transaction.amount)}'),
-                        if (transaction.qty > 0) ...[
+                        if (transaction.qty != 0) ...[
                           Text('Rate: ${formatToCurrency(transaction.rate)}'),
-                          const Text(' | '),
-                          Text('Qty: ${transaction.qty}'),
+                          const Text(' x '),
+                          Text('${transaction.qty}'),
+                          const Text(' = '),
                         ],
+                        Text('Amount: ${formatToCurrency(transaction.amount)}'),
                       ],
                     )
                   ],
