@@ -143,7 +143,7 @@ class DashboardPresenter extends Presenter<DashboardViewState> {
             .map((e) => MapEntry(e.createdOn, e.amount))
             .forEach((entry) {
           if (entry.key
-              .isAfter(DateTime.now().subtract(const Duration(days: 365)))) {
+              .isAfter(DateTime.now().subtract(const Duration(days: 330)))) {
             DateTime month = DateTime(entry.key.year, entry.key.month);
             investmentByMonth.update(month, (value) => value + entry.value,
                 ifAbsent: () => entry.value);

@@ -41,7 +41,10 @@ class TransactionVO {
   final int? sipId;
   final String? description;
   final double amount;
+  final double qty;
   final DateTime createdOn;
+
+  double get rate => qty > 0 ? amount / qty : 0;
 
   TransactionVO._(
       {required this.id,
@@ -49,6 +52,7 @@ class TransactionVO {
       required this.sipId,
       required this.description,
       required this.amount,
+      required this.qty,
       required this.createdOn});
 
   factory TransactionVO.from({required final Transaction transaction}) {
@@ -58,6 +62,7 @@ class TransactionVO {
         sipId: transaction.sipId,
         description: transaction.description,
         amount: transaction.amount,
+        qty: transaction.qty,
         createdOn: transaction.createdOn);
   }
 }
