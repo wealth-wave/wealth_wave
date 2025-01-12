@@ -34,6 +34,20 @@ class InvestmentVO {
 
   double get profit => currentValue - investedValue;
 
+  String get maturityPeriod {
+    if (maturityDate == null) return 'N/A';
+    final difference = maturityDate!.difference(DateTime.now());
+    final years = difference.inDays ~/ 365;
+    if (years >= 1) {
+      return '$years years';
+    }
+    final months = difference.inDays ~/ 30;
+    if (months >= 1) {
+      return '$months months';
+    }
+    return '${difference.inDays} days';
+  }
+
   InvestmentVO._(
       {required this.id,
       required this.name,

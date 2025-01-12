@@ -210,12 +210,12 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
   List<Widget> _getValueWidgets(
       InvestmentVO investmentVO, BuildContext context) {
     List<Widget> widgets = [];
-    widgets.add(const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)));
+    widgets.add(const Padding(padding: EdgeInsets.all(AppDimen.minPadding)));
     widgets.add(_getInvestedWidget(investmentVO, context));
-    widgets.add(const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)));
+    widgets.add(const Padding(padding: EdgeInsets.all(AppDimen.minPadding)));
     widgets.add(_getValueWidget(investmentVO, context));
     if(investmentVO.maturityDate != null) {
-      widgets.add(const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)));
+      widgets.add(const Padding(padding: EdgeInsets.all(AppDimen.minPadding)));
       widgets.add(_getMaturityValueWidget(investmentVO, context));
     }
 
@@ -240,8 +240,8 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
     return Column(
       children: [
         Tooltip(
-          message: 'Value updated on ${investmentVO.valueUpdateDate}',
-          child: Text((investmentVO.hasScript ? '<>' : '') + formatToCurrency(investmentVO.currentValue),
+          message: '⚡ Value updated on ${investmentVO.valueUpdateDate}',
+          child: Text(formatToCurrency(investmentVO.currentValue),
               style: Theme.of(context)
                   .textTheme
                   .bodyLarge!
@@ -268,7 +268,7 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                   .textTheme
                   .bodyLarge!
                   .copyWith(color: color)),
-        Text('(Maturity)',
+        Text('(In ${investmentVO.maturityPeriod})',
             style: Theme.of(context)
                 .textTheme
                 .labelMedium!
