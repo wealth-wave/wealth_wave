@@ -132,6 +132,7 @@ class CreateInvestmentPresenter extends Presenter<CreateInvestmentViewState> {
       viewState.investedAmount = investmentToUpdate.getTotalInvestedAmount();
       viewState.investedOn = investmentToUpdate.getLastInvestedOn();
       viewState.basketId = investmentToUpdate.basketId;
+      viewState.maturityDate = investmentToUpdate.maturityDate;
       viewState.value = value;
       viewState.riskLevel = investmentToUpdate.riskLevel;
       viewState.onInvestmentFetched = SingleEvent(null);

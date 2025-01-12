@@ -200,21 +200,26 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
                     )
                   else
                     OverflowBar(
-                      children: [
-                        _getScriptWidget(investmentVO),
-                        const Padding(
-                            padding: EdgeInsets.all(AppDimen.defaultPadding)),
-                        _getInvestedWidget(investmentVO, context),
-                        const Padding(
-                            padding: EdgeInsets.all(AppDimen.defaultPadding)),
-                        _getValueWidget(investmentVO, context),
-                        const Padding(
-                            padding: EdgeInsets.all(AppDimen.defaultPadding)),
-                      ],
+                      children: _getValueWidgets(investmentVO, context),
                     ),
                 ]),
           ),
         ));
+  }
+
+  List<Widget> _getValueWidgets(
+      InvestmentVO investmentVO, BuildContext context) {
+    List<Widget> widgets = [];
+    widgets.add(const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)));
+    widgets.add(_getInvestedWidget(investmentVO, context));
+    widgets.add(const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)));
+    widgets.add(_getValueWidget(investmentVO, context));
+    if(investmentVO.maturityDate != null) {
+      widgets.add(const Padding(padding: EdgeInsets.all(AppDimen.defaultPadding)));
+      widgets.add(_getMaturityValueWidget(investmentVO, context));
+    }
+
+    return widgets;
   }
 
   Column _getInvestedWidget(InvestmentVO investmentVO, BuildContext context) {
@@ -236,13 +241,34 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
       children: [
         Tooltip(
           message: 'Value updated on ${investmentVO.valueUpdateDate}',
-          child: Text(formatToCurrency(investmentVO.currentValue),
+          child: Text((investmentVO.hasScript ? '<>' : '') + formatToCurrency(investmentVO.currentValue),
               style: Theme.of(context)
                   .textTheme
                   .bodyLarge!
                   .copyWith(color: color)),
         ),
         Text('(At ${formatToPercentage(investmentVO.irr)})',
+            style: Theme.of(context)
+                .textTheme
+                .labelMedium!
+                .copyWith(color: color)),
+      ],
+    );
+  }
+
+  Column _getMaturityValueWidget(InvestmentVO investmentVO, BuildContext context) {
+    Color color = Colors.red;
+    if (investmentVO.currentValue > investmentVO.investedValue) {
+      color = Colors.green;
+    }
+    return Column(
+      children: [
+        Text(formatToCurrency(investmentVO.maturityValue!),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: color)),
+        Text('(Maturity)',
             style: Theme.of(context)
                 .textTheme
                 .labelMedium!
@@ -338,14 +364,5 @@ class _InvestmentsPage extends PageState<InvestmentsViewState, InvestmentsPage,
       case RiskLevel.veryHigh:
         return 'Very High';
     }
-  }
-
-  Widget _getScriptWidget(InvestmentVO investmentVO) {
-    return investmentVO.hasScript
-        ? IconButton(
-            onPressed: () =>
-                presenter.updateValue(investmentId: investmentVO.id),
-            icon: const Icon(Icons.code, color: Colors.green))
-        : const Text('');
   }
 }
